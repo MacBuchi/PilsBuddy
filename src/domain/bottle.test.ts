@@ -24,6 +24,8 @@ describe('buildBottle', () => {
     expect(shapeFor(getBeer('duvel'))).toBe('belgian')
     expect(shapeFor(getBeer('salvator'))).toBe('steinie')
     expect(shapeFor(getBeer('augustiner'))).toBe('euro')
+    expect(shapeFor(getBeer('erdinger-af'))).toBe('weizen')
+    expect(shapeFor(getBeer('chimay-blue'))).toBe('belgian')
   })
 
   it('uses a swing top for Kellerbier and the Bügelverschluss tag', () => {

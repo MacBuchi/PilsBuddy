@@ -26,6 +26,11 @@ const FORM_BY_STYLE = {
   'Belgian Strong Ale': 'Belgische Flasche 0,33 l, bauchig, Korken-/Kronkorken-Look',
   'Abbey Blonde': 'Belgische Flasche 0,33 l, bauchig',
   Export: 'Euroflasche 0,5 l, günstiger Look',
+  Alkoholfrei: 'Longneck 0,33 l, wie das Vorbild mit Alkohol, dazu ein kleiner „0,0“-/„alkoholfrei“-Akzent',
+  'Alkoholfreies Weißbier': 'Weißbierflasche 0,5 l, frisch-sportlich',
+  Dunkles: 'Euroflasche 0,5 l, braun',
+  Trappist: 'Belgische Flasche 0,33 l, bauchig, Korken-Look',
+  'Berliner Weisse': 'Stubby 0,33 l, dazu Kelch mit rotem oder grünem Schuss und Strohhalm',
 }
 
 /** Hand-written character notes: form, colours, mood. Inspired-by, never a 1:1 copy of the real label. */
@@ -72,6 +77,24 @@ const CHARACTER = {
   'andechser-doppelbock': 'Klosterbier vom Heiligen Berg: dunkle Flasche, Etikett in Braun/Gold/Rot mit Kloster-Silhouette, ehrwürdig, warm, Karamell.',
   'moenchshof-keller': 'Bügelflasche, ungefiltert, bernsteinfarbener Inhalt, Etikett in Braun/Creme mit Mönch-Motiv, fränkisch, urig.',
   'einbecker-urbock': 'Bock-Erfinder: braune Flasche, Etikett in Dunkelrot/Gold mit historischer Typo, Niedersachsen, stolz auf 1378.',
+  'jever-fun': 'Kleiner Bruder von Jever: gleiche strenge Haltung, aber hellere Farbwelt (Weiß/Grün/Silber) und ein deutliches „alkoholfrei“-Siegel. Fahrer-Held.',
+  'erdinger-af': 'Sportlich: Weißbierflasche, Etikett in Blau/Weiß/Gold mit frischem Grün-Akzent, Schweißband-Energie, isotonisch-optimistisch.',
+  clausthaler: 'Ruhiger Klassiker: Longneck, Etikett in Grün/Silber/Weiß, schlicht und sachlich, ein bisschen Neunziger-Werbung.',
+  'schneider-tap7': 'Weißbier mit Lebenserfahrung: Weißbierflasche, bernsteinfarbener Inhalt, Etikett in Creme/Rot mit Brauhaus-Anmutung, kleine „7“ als Detail.',
+  franziskaner: 'Freundlicher Mönch: Weißbierflasche, Etikett in Weiß/Gold mit Kutten-Silhouette, gut gelaunt, Biergarten.',
+  'augustiner-edelstoff': 'Edler Bruder vom Hellen: braune Euroflasche, cremefarbenes Etikett mit Gold und tiefem Rot statt Grün, noch eine Spur feierlicher.',
+  'schoenramer-pils': 'Geheimtipp vom Land: braune Flasche, Etikett in Weiß/Grün mit Alpen-Andeutung und Hopfendolde, ehrlich-handwerklich.',
+  'brlo-pale-ale': 'Berliner Container-Craft: Dose oder Longneck, reduziertes Etikett in Schwarz/Weiß mit einem knalligen Zitrus-Akzent, urban.',
+  'maisel-pale-ale': 'Fränkisches Craft: Longneck, Etikett in Orange/Petrol mit handgezeichneten Früchten, freundlich-verspielt.',
+  'sierra-nevada': 'Craft-Opa aus Kalifornien: grünes Etikett-Gefühl mit Bergkette und Fluss (eigene Interpretation), Cascade-Hopfendolden, Outdoor.',
+  peroni: 'Dolce Vita: schlanke Longneck, Etikett in Blau/Weiß/Rot mit Band-Motiv, elegant, Sonnenbrille.',
+  budvar: 'Böhmischer Stolz: grüne Flasche, Etikett in Rot/Gold/Weiß mit Wappen-Anmutung, würdevoll, etwas streitlustig.',
+  'kozel-dark': 'Dunkles mit Ziege: braune Flasche, fast schwarzer Inhalt, Etikett in Schwarz/Gold/Rot mit Ziegenbock-Silhouette (eigene Interpretation).',
+  'chimay-blue': 'Trappist: bauchige Flasche, dunkelblau-goldenes Etikett, Klostersiegel, Korken-Look, ehrwürdig und schwer.',
+  licher: 'Hessische Natur: Longneck, Etikett in Grün/Weiß mit Wald und Bach, ruhig und freundlich.',
+  luebzer: 'Mecklenburger Seenplatte: grüne Flasche, Etikett in Grün/Weiß/Blau mit Wasser-Andeutung, wortkarg.',
+  'ur-krostitzer': 'Schwedenkönig-Legende: braune Flasche, Etikett in Rot/Gold mit Krone und Reiter-Andeutung (eigene Interpretation), sächsisch-stolz.',
+  'berliner-weisse': 'Berliner Original: kleine Flasche, dazu Kelch mit rotem (Himbeer) oder grünem (Waldmeister) Schuss und Strohhalm, Etikett in Weiß/Rot mit Bär-Andeutung.',
 }
 
 const abv = (n) => n.toFixed(1).replace('.', ',') + ' %'

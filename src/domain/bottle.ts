@@ -45,6 +45,11 @@ const SHAPE_BY_STYLE: Record<string, BottleShape> = {
   IPA: 'can',
   'Belgian Strong Ale': 'belgian',
   'Abbey Blonde': 'belgian',
+  Trappist: 'belgian',
+  Dunkles: 'euro',
+  Alkoholfrei: 'longneck',
+  'Alkoholfreies Weißbier': 'weizen',
+  'Berliner Weisse': 'stubby',
 }
 
 export const GLASS = {
