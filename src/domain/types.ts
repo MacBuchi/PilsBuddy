@@ -53,6 +53,8 @@ export interface RatingEntry {
   rating: Rating
   /** Unix ms; lets us order history and later sync. */
   at: number
+  /** The rating this one replaced, e.g. WANT_TO_TRY after the beer was finally tried. */
+  previous?: Rating
 }
 
 /** Everything PilsBuddy knows about one user. Keyed by beer id. */

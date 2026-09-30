@@ -1,5 +1,5 @@
 import { RATINGS } from '../domain/types'
-import type { Ratings } from '../domain/types'
+import type { Rating, Ratings } from '../domain/types'
 import { initialProfile } from './reducer'
 import type { Profile } from './reducer'
 
@@ -21,14 +21,17 @@ export interface ProfileStore {
   clear: () => void
 }
 
+const isRating = (v: unknown): v is Rating => typeof v === 'string' && (RATINGS as readonly string[]).includes(v)
+
 function sanitizeRatings(raw: unknown): Ratings {
   const out: Ratings = {}
   if (!raw || typeof raw !== 'object') return out
   for (const [id, e] of Object.entries(raw as Record<string, unknown>)) {
     if (!e || typeof e !== 'object') continue
-    const { rating, at } = e as { rating?: unknown; at?: unknown }
-    if (typeof rating === 'string' && (RATINGS as readonly string[]).includes(rating)) {
-      out[id] = { rating: rating as Ratings[string]['rating'], at: typeof at === 'number' ? at : 0 }
+    const { rating, at, previous } = e as { rating?: unknown; at?: unknown; previous?: unknown }
+    if (isRating(rating)) {
+      out[id] = { rating, at: typeof at === 'number' ? at : 0 }
+      if (isRating(previous) && previous !== rating) out[id].previous = previous
     }
   }
   return out

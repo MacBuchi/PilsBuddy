@@ -42,6 +42,18 @@ describe('reducer', () => {
     expect(s.profile.ratings.jever).toEqual({ rating: 'WANT_TO_TRY', at: 1 })
   })
 
+  it('RATE keeps the replaced rating as previous (Probierliste → verdict)', () => {
+    const s = run(
+      fresh(),
+      { type: 'RATE', id: 'jever', rating: 'WANT_TO_TRY', at: 1 },
+      { type: 'RATE', id: 'jever', rating: 'LIKE', at: 2 },
+    )
+    expect(s.profile.ratings.jever).toEqual({ rating: 'LIKE', at: 2, previous: 'WANT_TO_TRY' })
+    // same rating again keeps the history
+    const again = reducer(s, { type: 'RATE', id: 'jever', rating: 'LIKE', at: 3 })
+    expect(again.profile.ratings.jever.previous).toBe('WANT_TO_TRY')
+  })
+
   it('undo is one step: a second UNRATE changes nothing', () => {
     const once = run(
       fresh(),

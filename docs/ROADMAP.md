@@ -19,11 +19,11 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | Spaß beim ersten Öffnen | Welcome, Onboarding, Swipe-Coach auf der ersten Karte, „?“-Hilfe | – |
 | Bier-Swipe | Touch/Maus/Tasten/Buttons, Stempel, Fly-out, Undo (1 Schritt) | – |
 | Bierdatenmodell | 60 Biere, 8 Achsen, illustrierte Flaschen, `image` optional | eigene Flaschen-Designs fehlen |
-| DNA / Persona / Matching | deterministisch, getestet, kuratiertes Deck | „nächstes Bier“ mobil nur im Matches-Tab |
+| DNA / Persona / Matching | deterministisch, getestet, kuratiertes Deck, Nächstes-Match-Chip | – |
 | Avatar | 8 Archetypen, 3 Stufen | Entwicklung endet bei 70 % |
-| Gamification | 9 Achievements, Toast | kein Moment beim Freischalten |
+| Gamification | 10 Achievements, Toast | kein Moment beim Freischalten |
 | Humor | Copy-Bank, Quips je Rating, `disLikeQuip` für alle Biere | Wiederholung nach ~15 Swipes |
-| WANT_TO_TRY | Interesse-Signal | keine Probierliste |
+| WANT_TO_TRY | Interesse-Signal, Probierliste mit Nachbewertung | – |
 | Persistenz | localStorage, versioniert | kein Export/Import, kein Offline |
 | Share | Text | keine Share-Card |
 | Social | `buddyMatch()` vorbereitet | keine UI, kein Backend |
@@ -78,13 +78,11 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 - [x] `buildDeck`: nach dem Referenz-Set 2 × „Für dich · 94 %“ : 1 × „Mal was anderes“,
       deterministisch; Badge als Sticker auf der Karte; Kartennummer zählt fortlaufend
 
-### A4 · Probierliste + „Nächstes Match“ im Header (M)
+### A4 · Probierliste + „Nächstes Match“ im Header (M) ✅
 
-- [ ] Segment „Probierliste“ in Matches; „Probiert!“ → `RateSheet` (Mag ich / Nicht meins / Kenn ich)
-- [ ] Achievement „Wort gehalten“ (3 nachbewertet); `RatingEntry.previous`
-- [ ] Swipe-Header-Chip „Nächstes Match: … · 93 %“ → Detail
-
-Akzeptanz: Nachbewertung entfernt aus Liste und aktualisiert DNA; Chip öffnet Detail.
+- [x] Segment „Probierliste“ in Matches; „Probiert!“ → `RateSheet` (Mag ich / Nicht meins / Ganz okay)
+- [x] Achievement „Wort gehalten“ (3 nachbewertet); `RatingEntry.previous`; Achievement-Toast zentral in `rate()`
+- [x] Swipe-Header-Chip „♥ Schönramer Pils 93 %“ → Detail (ersetzt nach dem Onboarding die DNA-Pille)
 
 ### A5 · Humor- und Copy-Bank (S)
 

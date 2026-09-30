@@ -75,6 +75,24 @@ export const COPY = {
     forYou: 'Für dich · {pct} %',
     horizon: 'Mal was anderes',
   },
+  tryList: {
+    label: 'Vorgemerkt · {n}',
+    empty: 'Noch nichts vorgemerkt. Nach oben swipen hilft.',
+    cta: 'Probiert!',
+  },
+  rateSheet: {
+    title: "Und? Wie war's?",
+    sub: 'Erstes Date mit {name}. Ehrlich jetzt.',
+    options: [
+      { rating: 'LIKE', label: 'Mag ich', sub: 'Es hat gefunkt.' },
+      { rating: 'DISLIKE', label: 'Nicht meins', sub: 'Kein zweites Date.' },
+      { rating: 'KNOW', label: 'Ganz okay', sub: 'Man kennt sich jetzt.' },
+    ] as const,
+    later: 'Doch noch nicht probiert',
+  },
+  nextMatch: {
+    aria: 'Nächstes Match: {name}, {pct} Prozent',
+  },
   undo: {
     label: 'Zurückholen',
     done: 'Zurückgeholt. Wir sagen nichts.',
@@ -162,6 +180,7 @@ export const COPY = {
     title: 'Matches',
     tabBeers: 'Biere',
     tabPeople: 'Menschen',
+    tabTry: 'Probierliste',
     beta: 'BETA',
     freshFor: 'Frisch empfohlen für {who}',
     newForYou: 'neu für dich',

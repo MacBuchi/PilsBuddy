@@ -12,7 +12,7 @@ export type Screen =
   | 'matches'
   | 'profile'
 
-export type MatchTab = 'biere' | 'menschen'
+export type MatchTab = 'biere' | 'probieren' | 'menschen'
 
 /** Screens that show the bottom tab bar once the user is onboarded. */
 export const TAB_SCREENS = ['swipe', 'dna', 'matches', 'profile'] as const satisfies readonly Screen[]
@@ -88,15 +88,19 @@ export function reducer(state: AppState, action: Action): AppState {
         detailFrom: state.screen === 'detail' ? state.detailFrom : state.screen,
         detailId: action.id,
       }
-    case 'RATE':
+    case 'RATE': {
+      const old = state.profile.ratings[action.id]
+      const previous = old && old.rating !== action.rating ? old.rating : old?.previous
+      const entry: RatingEntry = previous ? { rating: action.rating, at: action.at, previous } : { rating: action.rating, at: action.at }
       return {
         ...state,
         profile: {
           ...state.profile,
-          ratings: { ...state.profile.ratings, [action.id]: { rating: action.rating, at: action.at } },
+          ratings: { ...state.profile.ratings, [action.id]: entry },
         },
-        lastRated: { id: action.id, rating: action.rating, previous: state.profile.ratings[action.id] ?? null },
+        lastRated: { id: action.id, rating: action.rating, previous: old ?? null },
       }
+    }
     case 'UNRATE': {
       const last = state.lastRated
       if (!last) return state

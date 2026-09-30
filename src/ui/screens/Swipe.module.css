@@ -74,6 +74,23 @@
   cursor: pointer;
 }
 
+.nextChip {
+  max-width: 220px;
+  min-width: 0;
+}
+
+.nextHeart {
+  flex: none;
+  color: var(--like);
+}
+
+.nextName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .progress {
   padding: 0 20px 12px;
   display: flex;

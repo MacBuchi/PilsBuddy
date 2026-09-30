@@ -5,6 +5,7 @@ import {
   DnaIcon,
   FireIcon,
   HandWavingIcon,
+  HandshakeIcon,
   HeartIcon,
   MedalIcon,
   MoonStarsIcon,
@@ -33,6 +34,7 @@ const ACH_ICON: Record<AchievementDef['icon'], ReactNode> = {
   fire: <FireIcon weight="fill" />,
   medal: <MedalIcon weight="fill" />,
   package: <PackageIcon weight="bold" />,
+  handshake: <HandshakeIcon weight="bold" />,
 }
 
 export function Profile() {

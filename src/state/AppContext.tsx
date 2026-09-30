@@ -1,6 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { newlyUnlocked, progressOf } from '../domain/achievements'
+import type { AchievementDef } from '../domain/achievements'
 import { countRatings } from '../domain/dna'
 import type { Rating } from '../domain/types'
 import { initialState, reducer, TAB_SCREENS } from './reducer'
@@ -20,7 +22,8 @@ interface AppApi {
   dispatch: (a: Action) => void
   go: (screen: Screen) => void
   openDetail: (id: string) => void
-  rate: (id: string, rating: Rating) => void
+  /** Rates a beer; shows the achievement toast if one unlocks and returns what unlocked. */
+  rate: (id: string, rating: Rating) => AchievementDef[]
   /** Global toast shown at the top of the shell. */
   toast: (text: string, color?: string) => void
   globalToast: ToastMsg | null
@@ -99,7 +102,15 @@ export function AppProvider({ children, initial, store = profileStore }: { child
       dispatch,
       go: (screen) => dispatch({ type: 'GO', screen }),
       openDetail: (id) => dispatch({ type: 'OPEN_DETAIL', id }),
-      rate: (id, rating) => dispatch({ type: 'RATE', id, rating, at: Date.now() }),
+      rate: (id, rating) => {
+        const before = state.profile.ratings
+        const old = before[id]
+        const next = { ...before, [id]: { rating, at: 0, previous: old && old.rating !== rating ? old.rating : old?.previous } }
+        dispatch({ type: 'RATE', id, rating, at: Date.now() })
+        const unlocked = newlyUnlocked(progressOf(before), progressOf(next))
+        if (unlocked.length) toast(`🏅 ${unlocked[0].title} – ${unlocked[0].desc}`)
+        return unlocked
+      },
       toast,
       globalToast,
       withTabs: state.profile.onboarded && (TAB_SCREENS as readonly string[]).includes(state.screen),
