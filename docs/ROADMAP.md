@@ -16,7 +16,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 
 | Konzeptpunkt | Stand | Lücke |
 | --- | --- | --- |
-| Spaß beim ersten Öffnen | Welcome, Onboarding mit Gesten-Karten | Swipe-Anleitung nur vorab auf einem Textscreen |
+| Spaß beim ersten Öffnen | Welcome, Onboarding, Swipe-Coach auf der ersten Karte, „?“-Hilfe | – |
 | Bier-Swipe | Touch/Maus/Tasten/Buttons, Stempel, Fly-out | kein Undo |
 | Bierdatenmodell | 42 Biere, 8 Achsen, `image` optional | keine Bilder; Referenz-Set Pils-lastig |
 | DNA / Persona / Matching | deterministisch, getestet | Deck nach Onboarding unkuratiert; „nächstes Bier“ mobil nur im Matches-Tab |
@@ -33,13 +33,13 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 
 Reihenfolge: A0 → A1 → A2 → A9 → A3 → A4 → A5 → A6 → A7 → A8.
 
-### A0 · Swipe-Anleitung auf der ersten Karte (S)
+### A0 · Swipe-Anleitung auf der ersten Karte (S) ✅
 
-- [ ] `SwipeCoach.tsx`: Richtungs-Chips am Kartenrand in den Aktionsfarben + „Geister-Hand“, die
+- [x] `SwipeCoach.tsx`: Richtungs-Chips am Kartenrand in den Aktionsfarben + „Geister-Hand“, die
       die echte Karte einmal nach rechts kippt (`SwipeDeck`-Prop `coachOffset`)
-- [ ] verschwindet beim ersten `pointerdown`/Commit; „?“ im Swipe-Header öffnet Gesten-Legende
+- [x] verschwindet beim ersten `pointerdown`/Commit; „?“ im Swipe-Header öffnet Gesten-Legende
       (`GestureLegend.tsx`, auch in `Howto.tsx` verwendet)
-- [ ] Copy unter `coach` in `data/copy.ts`; reduced-motion: statische Chips
+- [x] Copy unter `coach` in `data/copy.ts`; reduced-motion: statische Chips
 
 Akzeptanz: erste Karte zeigt Chips + Hand, danach weg; „?“ öffnet Legende; E2E grün.
 

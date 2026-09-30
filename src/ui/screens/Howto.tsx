@@ -1,27 +1,9 @@
-import {
-  ArrowDownIcon,
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  BeerBottleIcon,
-  CheckIcon,
-  EyeIcon,
-} from '@phosphor-icons/react'
-import type { ReactNode } from 'react'
+import { ArrowLeftIcon, BeerBottleIcon, CheckIcon } from '@phosphor-icons/react'
 import { COPY } from '../../data/copy'
-import type { Rating } from '../../domain/types'
 import { useApp } from '../../state/AppContext'
 import { Button } from '../components/Button'
-import { RATING_COLOR } from '../ratingStyle'
+import { GestureLegend } from '../components/GestureLegend'
 import styles from './Howto.module.css'
-
-const GESTURE_ICON: Record<Rating, ReactNode> = {
-  LIKE: <ArrowRightIcon weight="bold" />,
-  DISLIKE: <ArrowLeftIcon weight="bold" />,
-  WANT_TO_TRY: <ArrowUpIcon weight="bold" />,
-  UNKNOWN: <ArrowDownIcon weight="bold" />,
-  KNOW: <EyeIcon weight="bold" />,
-}
 
 export function Howto() {
   const { state, dispatch, go, toast } = useApp()
@@ -47,19 +29,7 @@ export function Howto() {
         <p className={styles.sub}>{COPY.howto.sub}</p>
       </div>
 
-      <div className={styles.grid}>
-        {COPY.howto.gestures.map((g, i) => (
-          <div key={g.rating} className={styles.card} style={i === 4 ? { gridColumn: '1 / -1' } : undefined}>
-            <span className={styles.badge} style={{ background: RATING_COLOR[g.rating] }}>
-              {GESTURE_ICON[g.rating]}
-            </span>
-            <span className={styles.cardText}>
-              <span className={styles.cardLabel}>{g.label}</span>
-              <span className={styles.cardSub}>{g.sub}</span>
-            </span>
-          </div>
-        ))}
-      </div>
+      <GestureLegend />
 
       <div className={styles.spacer} />
 

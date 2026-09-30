@@ -1,4 +1,4 @@
-import { DnaIcon, EyeIcon, FireIcon, HeartIcon, QuestionIcon, XIcon } from '@phosphor-icons/react'
+import { DnaIcon, EyeIcon, FireIcon, HeartIcon, QuestionIcon, QuestionMarkIcon, XIcon } from '@phosphor-icons/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { getBeer } from '../../data/beers'
@@ -12,6 +12,10 @@ import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
+import { GestureLegend } from '../components/GestureLegend'
+import { Sheet } from '../components/Sheet'
+import { COACH_OFFSET, useCoachSteps } from '../coach'
+import { SwipeCoach } from '../components/SwipeCoach'
 import { SwipeDeck } from '../components/SwipeDeck'
 import type { SwipeDeckHandle } from '../components/SwipeDeck'
 import { Toast } from '../components/Toast'
@@ -51,7 +55,8 @@ export function Swipe() {
   const { counts, decoded, avatar } = useDerived()
   const queue = deckQueue(ratings).map(getBeer)
   const deck = useRef<SwipeDeckHandle>(null)
-  const [dragging, setDragging] = useState(false)
+  const [coachOff, setCoachOff] = useState(false)
+  const [help, setHelp] = useState(false)
   const [toast, setToast] = useState<LocalToast | null>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
@@ -73,17 +78,21 @@ export function Swipe() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (help) return
       const r = KEYMAP[e.key]
       if (!r || e.metaKey || e.ctrlKey || e.altKey) return
       e.preventDefault()
+      setCoachOff(true)
       deck.current?.commit(r)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  }, [help])
 
   const empty = queue.length === 0
-  const showHint = counts.total === 0 && !dragging && !empty
+  const coachActive = counts.total === 0 && !coachOff && !empty && !help
+  const coach = useCoachSteps(coachActive)
+  const closeHelp = useCallback(() => setHelp(false), [])
   const showAnalyze = !onboarded && counts.total >= ANALYZE_AFTER && !empty
 
   return (
@@ -93,9 +102,14 @@ export function Swipe() {
           <BuddyAvatar archetype="logo" size={34} />
           <span className={styles.wordmark}>{COPY.app.name}</span>
         </div>
-        <button type="button" className={styles.dnaPill} onClick={() => go(onboarded ? 'dna' : 'analyzing')}>
-          <DnaIcon weight="bold" /> {decoded} %
-        </button>
+        <div className={styles.headerRight}>
+          <button type="button" className={styles.helpBtn} onClick={() => setHelp(true)} aria-label={COPY.coach.help}>
+            <QuestionMarkIcon weight="bold" />
+          </button>
+          <button type="button" className={styles.dnaPill} onClick={() => go(onboarded ? 'dna' : 'analyzing')}>
+            <DnaIcon weight="bold" /> {decoded} %
+          </button>
+        </div>
       </header>
 
       <div className={styles.progress}>
@@ -108,14 +122,14 @@ export function Swipe() {
         </div>
       </div>
 
-      <div className={styles.stage}>
+      <div className={styles.stage} onPointerDownCapture={() => setCoachOff(true)}>
         {!empty && (
           <SwipeDeck
             ref={deck}
             queue={queue}
             onCommit={onCommit}
             onTap={(b) => openDetail(b.id)}
-            onDragChange={setDragging}
+            coachOffset={coachActive && coach.direction ? COACH_OFFSET[coach.direction] : null}
           />
         )}
         {empty && (
@@ -135,7 +149,12 @@ export function Swipe() {
             </div>
           </div>
         )}
-        {showHint && <div className={styles.hint}>{COPY.swipe.hint}</div>}
+        {coachActive && (
+          <>
+            <SwipeCoach step={coach} />
+            <div className={styles.hint}>{COPY.coach.caption}</div>
+          </>
+        )}
         {toast && <Toast text={toast.text} color={toast.color} position="bottom" animKey={toast.key} />}
       </div>
 
@@ -153,7 +172,10 @@ export function Swipe() {
             key={rating}
             type="button"
             className={styles.action}
-            onClick={() => deck.current?.commit(rating)}
+            onClick={() => {
+              setCoachOff(true)
+              deck.current?.commit(rating)
+            }}
             disabled={empty}
             aria-label={COPY.rating[rating].label}
           >
@@ -167,6 +189,17 @@ export function Swipe() {
           </button>
         ))}
       </div>
+
+      {help && (
+        <Sheet title={COPY.coach.sheetTitle} onClose={closeHelp}>
+          <p className={styles.sheetSub}>{COPY.coach.sheetSub}</p>
+          <GestureLegend />
+          <p className={styles.sheetKeys}>{COPY.coach.captionKeys}</p>
+          <Button block onClick={closeHelp}>
+            {COPY.coach.close}
+          </Button>
+        </Sheet>
+      )}
     </div>
   )
 }
