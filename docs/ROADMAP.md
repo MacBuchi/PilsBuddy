@@ -22,7 +22,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | DNA / Persona / Matching | deterministisch, getestet, kuratiertes Deck, Nächstes-Match-Chip | – |
 | Avatar | 8 Archetypen, 3 Stufen | Entwicklung endet bei 70 % |
 | Gamification | 10 Achievements, Toast | kein Moment beim Freischalten |
-| Humor | Copy-Bank, Quips je Rating, `disLikeQuip` für alle Biere | Wiederholung nach ~15 Swipes |
+| Humor | 12 Quips je Rating, Meilensteine, Persona-Zeilen, `disLikeQuip` für alle | – |
 | WANT_TO_TRY | Interesse-Signal, Probierliste mit Nachbewertung | – |
 | Persistenz | localStorage, versioniert | kein Export/Import, kein Offline |
 | Share | Text | keine Share-Card |
@@ -84,11 +84,13 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 - [x] Achievement „Wort gehalten“ (3 nachbewertet); `RatingEntry.previous`; Achievement-Toast zentral in `rate()`
 - [x] Swipe-Header-Chip „♥ Schönramer Pils 93 %“ → Detail (ersetzt nach dem Onboarding die DNA-Pille)
 
-### A5 · Humor- und Copy-Bank (S)
+### A5 · Humor- und Copy-Bank (S) ✅
 
-- [ ] 10–12 Quips je Rating, Meilensteine (10/20/30, erstes Weißbier, Kultbier abgelehnt), Persona-Zeilen
-- [ ] Detail: „Warum passt es zu dir?“ deterministisch aus `matchReason` + Achsen-Abweichungen
-- [ ] Test: keine Wiederholung in 10 Swipes gleichen Ratings
+- [x] 12 Quips je Rating (reihum, keine Wiederholung in 10 gleichen Swipes), Meilensteine 20/30/40/50,
+      erstes Weißbier (Herz/Korb), erstes abgelehntes Kultbier, erstes alkoholfreies Herz,
+      Persona-Zeilen jeden 7. Swipe, 8 Ladezeilen
+- [x] Detail: „Warum passt es zu dir?“ deterministisch aus `matchReason` + zwei größten Achsen-Abweichungen (`whyItFits`)
+- [x] Tests: `quips.test.ts`, `whyItFits` in `matching.test.ts`
 
 ### A6 · Avatar-Entwicklung & Momente (M)
 

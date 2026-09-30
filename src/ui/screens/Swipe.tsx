@@ -12,7 +12,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { getBeer } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
-import { countRatings } from '../../domain/dna'
 import { buildDeck } from '../../domain/deck'
 import { progressMessage, quipAfterRating } from '../../domain/quips'
 import type { Beer, Rating } from '../../domain/types'
@@ -61,7 +60,7 @@ interface LocalToast {
 export function Swipe() {
   const { state, rate, go, openDetail, dispatch, withTabs } = useApp()
   const { ratings, onboarded } = state.profile
-  const { counts, decoded, avatar, candidates } = useDerived()
+  const { counts, decoded, avatar, candidates, archetype } = useDerived()
   const cards = useMemo(() => buildDeck(ratings), [ratings])
   const queue = cards.map((c) => getBeer(c.id))
   const badges = useMemo(() => {
@@ -80,14 +79,12 @@ export function Swipe() {
 
   const onCommit = useCallback(
     (beer: Beer, rating: Rating) => {
-      const before = countRatings(ratings)
       rate(beer.id, rating)
-      const after = countRatings({ ...ratings, [beer.id]: { rating, at: 0 } })
       clearTimeout(toastTimer.current)
-      setToast({ text: quipAfterRating(rating, beer, after, before.total), color: RATING_COLOR[rating], key: Date.now() })
+      setToast({ text: quipAfterRating({ rating, beer, before: ratings, archetype }), color: RATING_COLOR[rating], key: Date.now() })
       toastTimer.current = setTimeout(() => setToast(null), 2400)
     },
-    [ratings, rate],
+    [ratings, rate, archetype],
   )
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])

@@ -2,7 +2,7 @@ import { ArrowCounterClockwiseIcon, ArrowLeftIcon, HeartIcon } from '@phosphor-i
 import { BEER_BY_ID, formatAbv } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
 import { DISPLAY_AXES } from '../../domain/dna'
-import { compatibility } from '../../domain/matching'
+import { compatibility, whyItFits } from '../../domain/matching'
 import { hashId, relationQuip } from '../../domain/quips'
 import { RATINGS } from '../../domain/types'
 import type { Rating } from '../../domain/types'
@@ -96,6 +96,21 @@ export function Detail() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className={styles.why}>
+          <span className={styles.h3}>{COPY.why.title}</span>
+          {dna.counts.total === 0 ? (
+            <p className={styles.whyLine}>{COPY.why.noData}</p>
+          ) : (
+            <ul className={styles.whyList}>
+              {whyItFits(dna.taste, beer).map((line) => (
+                <li key={line} className={styles.whyLine}>
+                  {line}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className={styles.relation}>

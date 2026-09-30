@@ -43,6 +43,26 @@ export function matchReason(user: TasteVector, beer: Beer): string {
   return fill(COPY.match.reason, { adj: axes.map((a) => COPY.axisAdjectives[a]).join(', ') })
 }
 
+/** Minimum axis gap (points) worth mentioning in "Warum passt es zu dir?". */
+export const WHY_MIN_GAP = 15
+
+/**
+ * "Warum passt es zu dir?" – the shared strengths plus the two biggest differences, as sentences.
+ * Deterministic; the optional AI layer (Stufe D) may later rephrase, never replace, this.
+ */
+export function whyItFits(user: TasteVector, beer: Beer): string[] {
+  const gaps = TASTE_AXES.map((axis) => ({ axis, d: beer.taste[axis] - user[axis] }))
+    .filter((g) => Math.abs(g.d) >= WHY_MIN_GAP)
+    .sort((a, b) => Math.abs(b.d) - Math.abs(a.d) || TASTE_AXES.indexOf(a.axis) - TASTE_AXES.indexOf(b.axis))
+    .slice(0, 2)
+  const lines = [matchReason(user, beer)]
+  if (!gaps.length) lines.push(COPY.why.close)
+  for (const g of gaps) {
+    lines.push(fill(g.d > 0 ? COPY.why.more : COPY.why.less, { axis: COPY.why.axisNames[g.axis], n: Math.round(Math.abs(g.d)) }))
+  }
+  return lines
+}
+
 /* ---------- Social matching (prepared, not yet exposed in the UI) ---------- */
 
 /** Cosine similarity of two taste vectors, 0–1. */
