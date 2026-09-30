@@ -25,7 +25,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | Humor | 12 Quips je Rating, Meilensteine, Persona-Zeilen, `disLikeQuip` für alle | – |
 | WANT_TO_TRY | Interesse-Signal, Probierliste mit Nachbewertung | – |
 | Persistenz | localStorage, versioniert | kein Export/Import, kein Offline |
-| Share | Text | keine Share-Card |
+| Share | Bild-Karte (Story-Format) + Text-Fallback | – |
 | Social | `buddyMatch()` vorbereitet | keine UI, kein Backend |
 | Qualität | Domain-, Reducer-, Komponententests, E2E in CI | Auto-Deploy wartet auf Secrets |
 
@@ -100,9 +100,11 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
       Kasten-Kenner – einmalig, `Profile.seen` persistiert; Altprofile gelten beim Laden als „gesehen“
 - [x] Hinweis nach der ersten Karte („So geht's. Noch 13, dann kennen wir dich.“)
 
-### A7 · Share-Card (S)
+### A7 · Share-Card (S) ✅
 
-- [ ] Canvas 1080×1350 mit Avatar, Persona, DNA-Balken, Top-3; Web Share mit Datei, sonst Download
+- [x] Canvas 1080×1350 mit Avatar (Canvas-Zwilling von `BuddyAvatar`, Sticker als Emoji), Persona,
+      Eigenschaften, DNA-Balken, Herzbiere (Fallback: nächste Matches); Web Share mit Datei, sonst Download
+- [x] Daten pur in `domain/shareCard.ts` (getestet); E2E prüft den PNG-Download
 
 ### A8 · PWA/Offline + Export/Import (S)
 
