@@ -1,0 +1,162 @@
+/* PilsBuddy design tokens – see docs/pilsbuddy-mobile-app-design (Designsystem §3) */
+:root {
+  /* brand */
+  --gold: #f2b53a;
+  --gold-2: #f8cd6c;
+  --gold-text: #b07a12;
+  --gold-shadow: #8a5e0e;
+  --foam: #fff6e3;
+  --ink-fixed: #1d1811;
+  --cream-fixed: #fffbf3;
+
+  /* semantic actions – identical in both themes */
+  --like: #2fa56b;
+  --like-dark: #1f7a4d;
+  --nope: #e5534b;
+  --nope-dark: #c13c35;
+  --try: #f07a2b;
+  --know: #5b7fe0;
+  --unknown: #8a8173;
+
+  /* DNA axis colors */
+  --ax-herb: #5fb25a;
+  --ax-hopfig: #8db23a;
+  --ax-malzig: #c98a3c;
+  --ax-suffig: #4c9fd6;
+  --ax-charakter: #e5534b;
+
+  /* surfaces – light = "Biergarten am Nachmittag" */
+  --page: #e4ddcf;
+  --bg: #f4eee2;
+  --sf: #fffbf3;
+  --sf2: #ede5d5;
+  --ink: #1d1811;
+  --mut: #6b6254;
+  --line: rgba(29, 24, 17, 0.13);
+  --line-strong: rgba(29, 24, 17, 0.2);
+  --edge: #1d1811;
+
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  --r-card: 30px;
+  --r-panel: 24px;
+  --r-list: 18px;
+  --shell-w: 390px;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  /* "Kneipen-Modus" */
+  --page: #0c0a07;
+  --bg: #15120d;
+  --sf: #231d15;
+  --sf2: #2f281e;
+  --ink: #f4eee2;
+  --mut: #aba08e;
+  --line: rgba(244, 238, 226, 0.14);
+  --line-strong: rgba(244, 238, 226, 0.22);
+  --edge: #050403;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  transition: background 0.3s;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--gold-text);
+  text-decoration: none;
+}
+
+/* shared type styles */
+.t-label {
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.t-body {
+  font: 500 16px/1.4 var(--font-display);
+}
+
+/* keyframes (Designsystem §5) */
+@keyframes pbToast {
+  0% { opacity: 0; transform: translate(-50%, 14px) scale(0.94); }
+  10% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  85% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -8px); }
+}
+@keyframes pbFloat {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+@keyframes pbRise {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.9; }
+  100% { transform: translateY(-760px); opacity: 0; }
+}
+@keyframes pbSpin { to { transform: rotate(360deg); } }
+@keyframes pbIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pbPop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes pbPulse {
+  0%, 100% { box-shadow: 0 4px 0 var(--ink-fixed), 0 0 0 0 rgba(242, 181, 58, 0.7); }
+  50% { box-shadow: 0 4px 0 var(--ink-fixed), 0 0 0 12px rgba(242, 181, 58, 0); }
+}
+@keyframes pbSlide {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(260%); }
+}
+@keyframes pbBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

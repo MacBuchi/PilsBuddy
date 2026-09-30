@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>body{margin:0;background:#E9E3D6;font-family:'Bricolage Grotesque',system-ui,sans-serif;color:#1D1811}a{color:#B07A12}a:hover{color:#1D1811}.dv-turn{padding:44px 48px 36px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:800 26px/1.1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em;color:#1a1a1a}.dv-lead{font:500 15px/1.5 'Bricolage Grotesque',sans-serif;color:#5d5548;max-width:760px;margin:0 0 24px;text-wrap:pretty}.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:500 12px/1.3 'Bricolage Grotesque',sans-serif;color:rgba(0,0,0,.6)}.dv-card{max-width:100%;background:#FFFBF3;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}</style>
+</helmet>
+
+<section class="dv-turn" id="t0" style="background:#F2B53A">
+<div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+<dc-import name="BuddyAvatar" archetype="logo" size="{{120}}" hint-size="120px,120px"></dc-import>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font:800 64px/.9 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">PilsBuddy</div>
+<div style="font:600 20px/1.3 'Bricolage Grotesque',sans-serif">Designsystem, Specs & Handoff · v0.1</div>
+</div>
+</div>
+<div style="margin-top:22px;max-width:820px;font:500 16px/1.5 'Bricolage Grotesque',sans-serif;text-wrap:pretty">Leitidee: <b>Jedes Bier ist ein Glas, jede Karte ist ein Bierdeckel.</b> Schaumkrone (Creme + Wellenkante), Bernstein-Flächen, dicke Tinten-Kanten mit harten Schatten wie gedruckte Bierdeckel. Verspielt durch Form und Text – nicht durch Farbverläufe. Interaktiver Prototyp: <a href="PilsBuddy Prototype.dc.html">PilsBuddy Prototype →</a></div>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Logo</span></div>
+<p class="dv-lead">Drei Richtungen. Empfehlung: <a class="dv-oid" href="#1a">1a</a> – der Buddy ist Logo und Avatar-Grundform zugleich. Das Logo ist also der „unentschlüsselte“ Nutzer, bevor er seine Persönlichkeit bekommt.</p>
+<div class="dv-opts">
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Buddy-Glas · empfohlen</div>
+<div class="dv-card" style="width:400px">
+<div style="height:220px;background:#FFF6E3;display:flex;align-items:center;justify-content:center;gap:14px"><dc-import name="BuddyAvatar" archetype="logo" size="{{96}}" hint-size="96px,96px"></dc-import><span style="font:800 46px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">PilsBuddy</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr">
+<div style="height:120px;background:#F2B53A;display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="logo" size="{{84}}" hint-size="84px,84px"></dc-import></div>
+<div style="height:120px;background:#15120D;display:flex;align-items:center;justify-content:center"><div style="width:84px;height:84px;border-radius:50%;background:#F2B53A;display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="logo" size="{{66}}" hint-size="66px,66px"></dc-import></div></div>
+<div style="height:120px;background:#EDE5D5;display:flex;align-items:center;justify-content:center"><div style="width:76px;height:76px;border-radius:18px;background:#F2B53A;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="logo" size="{{62}}" hint-size="62px,62px"></dc-import></div></div>
+</div>
+<div style="padding:12px 16px;font:500 13px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Wortmarke Bricolage Grotesque 800, −5 % Tracking. Glas + 3 Schaumblasen + Gesicht, nur Kreise und Rechtecke → skaliert bis 16 px. App-Icon: Gold-Kachel mit Tinten-Kante.</div>
+</div></div>
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Kronkorken-Badge</div>
+<div class="dv-card" style="width:300px">
+<div style="height:220px;background:#FFF6E3;display:flex;align-items:center;justify-content:center"><div style="width:150px;height:150px;border-radius:50%;background:#F2B53A;border:3px solid #1D1811;box-shadow:0 6px 0 #1D1811;display:flex;align-items:center;justify-content:center"><div style="width:118px;height:118px;border-radius:50%;border:3px dashed #1D1811;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px"><span style="font:800 40px/.85 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">Pils</span><span style="font:800 22px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em">Buddy</span></div></div></div>
+<div style="height:120px;background:#15120D;display:flex;align-items:center;justify-content:center"><div style="width:72px;height:72px;border-radius:50%;background:#F2B53A;border:3px dashed #1D1811;box-shadow:0 0 0 3px #F2B53A;display:flex;align-items:center;justify-content:center;font:800 26px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">PB</div></div>
+<div style="padding:12px 16px;font:500 13px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Klassischer, „brauereihafter“. Stark als Sticker/Merch, aber weniger Charakter und kein Bezug zum Avatar.</div>
+</div></div>
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Zwei Gläser – „Prost“</div>
+<div class="dv-card" style="width:300px">
+<div style="height:220px;background:#FFF6E3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+<div style="display:flex;align-items:flex-end;gap:0"><div style="transform:rotate(-14deg) translateX(10px)"><dc-import name="BuddyAvatar" archetype="logo" size="{{86}}" hint-size="86px,86px"></dc-import></div><div style="transform:rotate(14deg) translateX(-10px)"><dc-import name="BuddyAvatar" archetype="feierabend" size="{{86}}" hint-size="86px,86px"></dc-import></div></div>
+<span style="font:800 36px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">pilsbuddy</span></div>
+<div style="height:120px;background:#1D1811;display:flex;align-items:center;justify-content:center;color:#F2B53A;font:800 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">pils<span style="color:#FFF6E3">buddy</span></div>
+<div style="padding:12px 16px;font:500 13px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Erzählt das Social-Versprechen („Buddy“) am deutlichsten – gut für die spätere Pils-Match-Phase, zu komplex als App-Icon.</div>
+</div></div>
+</div>
+<p class="dv-next">Try next: "<a class="dv-oid" href="#1a">1a</a> mit Henkel" · "Wortmarke in Kleinbuchstaben wie <a class="dv-oid" href="#1c">1c</a>" · "animiertes Logo-Intro"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Bier-Avatar</span></div>
+<p class="dv-lead">Empfehlung: <a class="dv-oid" href="#2a">2a</a>. Der Avatar wird aus Parametern gebaut, nicht gezeichnet: <b>Glasform</b> (Archetyp), <b>Bierfarbe</b>, <b>Schaummenge</b>, <b>Augen/Mund</b>, <b>Accessoire</b>. Unter 30 % DNA: Silhouette mit „?“. Ab 70 %: Accessoire wird freigeschaltet – „PilsBuddy lernt mich kennen“.</p>
+<div class="dv-opts">
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Glas-Charakter · empfohlen · live im Prototyp</div>
+<div class="dv-card" style="width:760px">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(29,24,17,.1)">
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="herb" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Der Herbe</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">Stange · strenge Brauen</span></div>
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="feierabend" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Der Feierabend-Pilsner</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">Becher · gelockerte Krawatte</span></div>
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="abenteurer" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Der Hopfen-Abenteurer</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">Tulpe · Hopfenblatt</span></div>
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="geniesser" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Der unkomplizierte Genießer</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">Becher · Sonnenbrille</span></div>
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="philosoph" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Der Biergarten-Philosoph</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">Seidel · Schaum-Schnauzer</span></div>
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="probierer" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Der neugierige Probierer</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">Probierglas · Funkeln</span></div>
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="kasten" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Der Kasten-Kenner</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">Glas · Kappe · Zwinkern</span></div>
+<div style="background:#FFFBF3;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><dc-import name="BuddyAvatar" archetype="logo" size="{{110}}" hint-size="110px,110px"></dc-import><b style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">Buddy (Logo)</b><span style="font:500 11.5px/1.3 'JetBrains Mono',monospace;color:#6B6254">neutraler Ausgangszustand</span></div>
+</div>
+<div style="padding:16px;display:flex;align-items:center;gap:18px;border-top:1px solid rgba(29,24,17,.1);flex-wrap:wrap">
+<div style="display:flex;align-items:flex-end;gap:10px"><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><dc-import name="BuddyAvatar" archetype="abenteurer" decoded="{{15}}" size="{{70}}" hint-size="70px,70px"></dc-import><span style="font:700 10px/1 'JetBrains Mono',monospace">0–29 %</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><dc-import name="BuddyAvatar" archetype="abenteurer" decoded="{{50}}" size="{{80}}" hint-size="80px,80px"></dc-import><span style="font:700 10px/1 'JetBrains Mono',monospace">30–69 %</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:4px"><dc-import name="BuddyAvatar" archetype="abenteurer" decoded="{{100}}" size="{{92}}" hint-size="92px,92px"></dc-import><span style="font:700 10px/1 'JetBrains Mono',monospace">70–100 %</span></div></div>
+<div style="flex:1;min-width:240px;font:500 13.5px/1.5 'Bricolage Grotesque',sans-serif;color:#5d5548"><b style="color:#1D1811">Evolution:</b> Rätsel → Rohling (Gesicht) → Voll entfaltet (Accessoire). Später erweiterbar: saisonale Accessoires, Achievements als Sticker am Glas, Schaumhöhe = Aktivität der letzten 7 Tage.</div>
+</div>
+</div></div>
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Bierdeckel-Badge</div>
+<div class="dv-card" style="width:300px">
+<div style="padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:16px;justify-items:center">
+<div style="width:104px;height:104px;border-radius:50%;background:#E9C552;border:3px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center"><div style="width:82px;height:82px;border-radius:50%;border:2.5px dashed #1D1811;display:flex;align-items:center;justify-content:center;font:800 30px/1 'Bricolage Grotesque',sans-serif">DH</div></div>
+<div style="width:104px;height:104px;border-radius:50%;background:#DB8A2A;border:3px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center"><div style="width:82px;height:82px;border-radius:50%;border:2.5px dashed #1D1811;display:flex;align-items:center;justify-content:center;font:800 30px/1 'Bricolage Grotesque',sans-serif">HA</div></div>
+<div style="width:104px;height:104px;border-radius:50%;background:#B8651E;border:3px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#FFF6E3"><div style="width:82px;height:82px;border-radius:50%;border:2.5px dashed #FFF6E3;display:flex;align-items:center;justify-content:center;font:800 30px/1 'Bricolage Grotesque',sans-serif">BP</div></div>
+<div style="width:104px;height:104px;border-radius:50%;background:#F0B23B;border:3px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center"><div style="width:82px;height:82px;border-radius:50%;border:2.5px dashed #1D1811;display:flex;align-items:center;justify-content:center;font:800 30px/1 'Bricolage Grotesque',sans-serif">FP</div></div>
+</div>
+<div style="padding:0 16px 14px;font:500 13px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Typografisch, ruhig, sehr leicht zu bauen. Aber: kaum Humor, kein Gesicht, keine sichtbare Entwicklung.</div>
+</div></div>
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Illustriertes Maskottchen</div>
+<div class="dv-card" style="width:300px">
+<div style="margin:18px;height:220px;border-radius:14px;border:2px dashed rgba(29,24,17,.35);background:repeating-linear-gradient(135deg,rgba(29,24,17,.06) 0 8px,transparent 8px 16px);display:flex;align-items:center;justify-content:center;text-align:center;font:700 11px/1.5 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#6B6254">Illustration<br>Figur hält Glas<br>(Illustrator:in)</div>
+<div style="padding:0 16px 14px;font:500 13px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Menschliche Figur mit Bier-Attributen. Emotionalster Ansatz, braucht aber pro Archetyp × Stufe eigene Zeichnungen (7 × 3 = 21+) – teuer, schwer generativ.</div>
+</div></div>
+</div>
+<p class="dv-next">Try next: "mehr Accessoires für <a class="dv-oid" href="#2a">2a</a>" · "Avatar mit Mimik-Animation" · "<a class="dv-oid" href="#2b">2b</a> als Share-Card"</p>
+</section>
+
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Foundations</span></div>
+<p class="dv-lead">Warm, cremig, Bernstein. Hell = „Biergarten am Nachmittag“, Dunkel = „Kneipen-Modus“. Aktionsfarben sind semantisch fest und in beiden Modi gleich.</p>
+<div class="dv-opts">
+<div class="dv-opt" id="3a"><div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Farbpalette</div>
+<div class="dv-card" style="width:560px;padding:18px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
+<div style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#6B6254">Marke</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:12px;background:#F2B53A;border:2px solid #1D1811"></div><b style="font:800 13px/1 'Bricolage Grotesque'">Pils-Gold</b><span style="font:500 10.5px/1 'JetBrains Mono',monospace">#F2B53A</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:12px;background:#FFF6E3;border:2px solid #1D1811"></div><b style="font:800 13px/1 'Bricolage Grotesque'">Schaum</b><span style="font:500 10.5px/1 'JetBrains Mono',monospace">#FFF6E3</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:12px;background:#1D1811;border:2px solid #1D1811"></div><b style="font:800 13px/1 'Bricolage Grotesque'">Tinte</b><span style="font:500 10.5px/1 'JetBrains Mono',monospace">#1D1811</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="height:64px;border-radius:12px;background:#B07A12;border:2px solid #1D1811"></div><b style="font:800 13px/1 'Bricolage Grotesque'">Gold-Text</b><span style="font:500 10.5px/1 'JetBrains Mono',monospace">#B07A12</span></div>
+</div>
+<div style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#6B6254">Aktionen (semantisch)</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+<div style="display:flex;flex-direction:column;gap:5px"><div style="height:44px;border-radius:10px;background:#2FA56B"></div><b style="font:800 12px/1 'Bricolage Grotesque'">Mag ich</b><span style="font:500 10px/1 'JetBrains Mono',monospace">#2FA56B</span></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="height:44px;border-radius:10px;background:#E5534B"></div><b style="font:800 12px/1 'Bricolage Grotesque'">Nicht meins</b><span style="font:500 10px/1 'JetBrains Mono',monospace">#E5534B</span></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="height:44px;border-radius:10px;background:#F07A2B"></div><b style="font:800 12px/1 'Bricolage Grotesque'">Probieren</b><span style="font:500 10px/1 'JetBrains Mono',monospace">#F07A2B</span></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="height:44px;border-radius:10px;background:#5B7FE0"></div><b style="font:800 12px/1 'Bricolage Grotesque'">Kenne ich</b><span style="font:500 10px/1 'JetBrains Mono',monospace">#5B7FE0</span></div>
+<div style="display:flex;flex-direction:column;gap:5px"><div style="height:44px;border-radius:10px;background:#8A8173"></div><b style="font:800 12px/1 'Bricolage Grotesque'">Kenne nicht</b><span style="font:500 10px/1 'JetBrains Mono',monospace">#8A8173</span></div>
+</div>
+<div style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#6B6254">Flächen · Hell / Dunkel</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="border-radius:14px;overflow:hidden;border:2px solid #1D1811;display:grid;grid-template-columns:repeat(4,1fr);font:500 9.5px/1.3 'JetBrains Mono',monospace"><div style="background:#F4EEE2;padding:28px 6px 6px">bg<br>#F4EEE2</div><div style="background:#FFFBF3;padding:28px 6px 6px">sf<br>#FFFBF3</div><div style="background:#EDE5D5;padding:28px 6px 6px">sf2<br>#EDE5D5</div><div style="background:#6B6254;color:#FFFBF3;padding:28px 6px 6px">mut<br>#6B6254</div></div>
+<div style="border-radius:14px;overflow:hidden;border:2px solid #1D1811;display:grid;grid-template-columns:repeat(4,1fr);font:500 9.5px/1.3 'JetBrains Mono',monospace;color:#F4EEE2"><div style="background:#15120D;padding:28px 6px 6px">bg<br>#15120D</div><div style="background:#231D15;padding:28px 6px 6px">sf<br>#231D15</div><div style="background:#2F281E;padding:28px 6px 6px">sf2<br>#2F281E</div><div style="background:#ABA08E;color:#15120D;padding:28px 6px 6px">mut<br>#ABA08E</div></div>
+</div>
+<div style="font:500 12.5px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Bierfarben (Karten-Hintergründe) kommen aus den Daten, Skala Hell #F3CD62 → Rauchbier #6B3316. Tinten-Text liegt immer auf Gold/Bier – nie Creme-Text auf hellem Bier.</div>
+</div></div>
+<div class="dv-opt" id="3b"><div class="dv-olabel"><a class="dv-oid" href="#3b">3b</a>Typografie</div>
+<div class="dv-card" style="width:460px;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font:800 56px/.9 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">96 %</span><span style="font:500 10.5px/1.3 'JetBrains Mono',monospace;color:#6B6254;text-align:right">Display · 800<br>56–96 / −5 %</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font:800 34px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">Der Herbe</span><span style="font:500 10.5px/1.3 'JetBrains Mono',monospace;color:#6B6254;text-align:right">H1 · 800<br>32–44 / −3,5 %</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font:800 19px/1.1 'Bricolage Grotesque',sans-serif">Ihr im Vergleich</span><span style="font:500 10.5px/1.3 'JetBrains Mono',monospace;color:#6B6254;text-align:right">H3 · 800 · 17–19</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font:500 16px/1.4 'Bricolage Grotesque',sans-serif;max-width:280px">„Herb. Trocken. Kein Bier für Leute, die ihr Bier gerne um Verzeihung bitten.“</span><span style="font:500 10.5px/1.3 'JetBrains Mono',monospace;color:#6B6254;text-align:right">Body · 500<br>15–17 / 1.4</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase">Pils · 4,9 % · Friesland</span><span style="font:500 10.5px/1.3 'JetBrains Mono',monospace;color:#6B6254;text-align:right">Label · Mono 700<br>9–12 / +12 % caps</span></div>
+<div style="padding-top:12px;border-top:1px solid rgba(29,24,17,.12);font:500 12.5px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548"><b style="color:#1D1811">Bricolage Grotesque</b> (Google Fonts) trägt Persönlichkeit: eng gesetzte, fette Headlines mit leichtem Wackel-Charme. <b style="color:#1D1811">JetBrains Mono</b> für Daten, Prozente, Labels – „Labor-Look“ fürs Bier-DNA-Thema. Icons: Phosphor Bold/Fill.</div>
+</div></div>
+<div class="dv-opt" id="3c"><div class="dv-olabel"><a class="dv-oid" href="#3c">3c</a>Form & Tiefe</div>
+<div class="dv-card" style="width:320px;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:14px;align-items:flex-end"><div style="width:70px;height:70px;border-radius:30px;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 7px 0 #1D1811"></div><div style="width:70px;height:50px;border-radius:20px;background:#FFFBF3;border:2px solid #1D1811;box-shadow:0 3px 0 #1D1811"></div><div style="width:70px;height:40px;border-radius:999px;background:#F2B53A;border:2.5px solid #1D1811;box-shadow:0 5px 0 #1D1811"></div></div>
+<div style="font:500 12.5px/1.5 'Bricolage Grotesque',sans-serif;color:#5d5548"><b style="color:#1D1811">Kante:</b> 2–2,5 px Tinte. <b style="color:#1D1811">Schatten:</b> hart, nur Y (3/5/7 px), keine Unschärfe – wie gedruckt. Gedrückt: translateY = Schattenhöhe, Schatten → 1 px.<br><b style="color:#1D1811">Radien:</b> Karte 30 · Panel 22–26 · Liste 16–20 · Button pill.<br><b style="color:#1D1811">Spacing:</b> 4er-Raster; Screen-Rand 20–22.<br><b style="color:#1D1811">Schaumkante:</b> radial-gradient-Wellen (28 px Periode) unter Creme-Band – DAS Wiedererkennungsmerkmal.</div>
+<div style="position:relative;height:60px;border-radius:14px;overflow:hidden;background:#E6C150;border:2px solid #1D1811"><div style="position:absolute;left:0;right:0;top:0;height:22px;background:#FFF6E3"></div><div style="position:absolute;left:-6px;right:-6px;top:21px;height:16px;background:radial-gradient(circle at 14px 0,#FFF6E3 13px,transparent 14px) 0 0/28px 16px repeat-x"></div></div>
+</div></div>
+</div>
+</section>
+
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">Komponenten</span></div>
+<p class="dv-lead">Alle Komponenten sind im Prototyp live. Hier die Referenz-Zustände.</p>
+<div class="dv-opts">
+<div class="dv-opt" id="4a"><div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>Bierkarte</div>
+<div class="dv-card" style="width:330px;padding:18px;box-sizing:border-box;background:#F4EEE2">
+<div style="position:relative;height:470px;border-radius:30px;border:2.5px solid #1D1811;background:#FFFBF3;box-shadow:0 7px 0 #1D1811;overflow:hidden;display:flex;flex-direction:column;transform:rotate(-2deg)">
+<div style="position:relative;flex:1;background:#E6C150;overflow:hidden">
+<div style="position:absolute;left:0;right:0;top:0;height:34px;background:#FFF6E3"></div>
+<div style="position:absolute;left:-6px;right:-6px;top:33px;height:16px;background:radial-gradient(circle at 14px 0,#FFF6E3 13px,transparent 14px) 0 0/28px 16px repeat-x"></div>
+<div style="position:absolute;left:16px;right:16px;top:11px;display:flex;justify-content:space-between;font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase"><span>Pils · 4,9 %</span><span>01/15</span></div>
+<div style="position:absolute;left:50%;top:62px;bottom:18px;width:86px;transform:translateX(-50%);border-radius:18px;border:2px dashed rgba(29,24,17,.38);background:repeating-linear-gradient(135deg,rgba(29,24,17,.09) 0 6px,transparent 6px 12px)"></div>
+<div style="position:absolute;left:16px;top:70px;transform:rotate(-14deg);padding:4px 12px;border:4px solid #2FA56B;border-radius:12px;color:#2FA56B;background:rgba(255,251,243,.92);font:800 28px/1 'Bricolage Grotesque',sans-serif">MAG ICH</div>
+</div>
+<div style="padding:14px 18px 16px;display:flex;flex-direction:column;gap:8px;border-top:2.5px solid #1D1811">
+<div style="display:flex;align-items:baseline;justify-content:space-between"><span style="font:800 32px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">Jever</span><span style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6B6254">Friesland</span></div>
+<div style="font:500 15px/1.35 'Bricolage Grotesque',sans-serif">„Herb. Trocken. Kein Bier für Leute, die ihr Bier gerne um Verzeihung bitten.“</div>
+<div style="display:flex;gap:6px"><span style="font:700 10px/1 'JetBrains Mono',monospace;text-transform:uppercase;padding:5px 9px;border-radius:99px;border:1.5px solid rgba(29,24,17,.14);color:#6B6254">herb</span><span style="font:700 10px/1 'JetBrains Mono',monospace;text-transform:uppercase;padding:5px 9px;border-radius:99px;border:1.5px solid rgba(29,24,17,.14);color:#6B6254">trocken</span></div>
+</div>
+</div>
+<div style="margin-top:18px;font:500 12.5px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Obere Hälfte = das Glas (Bierfarbe + Schaum + Produktfoto). Stempel erscheinen proportional zum Drag. Stapel: nächste Karte scale .95 / +16 px, wächst mit Drag-Fortschritt.</div>
+</div></div>
+<div class="dv-opt" id="4b"><div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>Aktionen, Buttons, Chips</div>
+<div class="dv-card" style="width:400px;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="width:60px;height:60px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#E5534B;font-size:26px"><i class="ph-bold ph-x"></i></span><span style="font:700 9px/1 'JetBrains Mono',monospace;text-transform:uppercase;color:#6B6254">Nö</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px"><span style="width:48px;height:48px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#8A8173;font-size:20px"><i class="ph-bold ph-question"></i></span><span style="font:700 9px/1 'JetBrains Mono',monospace;text-transform:uppercase;color:#6B6254">Kenn nicht</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="width:60px;height:60px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#F07A2B;font-size:26px"><i class="ph-fill ph-fire"></i></span><span style="font:700 9px/1 'JetBrains Mono',monospace;text-transform:uppercase;color:#6B6254">Probieren</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px"><span style="width:48px;height:48px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#5B7FE0;font-size:20px"><i class="ph-bold ph-eye"></i></span><span style="font:700 9px/1 'JetBrains Mono',monospace;text-transform:uppercase;color:#6B6254">Kenn ich</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="width:60px;height:60px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#2FA56B;font-size:26px"><i class="ph-fill ph-heart"></i></span><span style="font:700 9px/1 'JetBrains Mono',monospace;text-transform:uppercase;color:#6B6254">Mag ich</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="height:58px;border-radius:999px;background:#F2B53A;border:2.5px solid #1D1811;box-shadow:0 5px 0 #1D1811;display:flex;align-items:center;justify-content:center;font:800 16px/1 'Bricolage Grotesque';letter-spacing:.06em;text-transform:uppercase">Primär · Entdecken</div>
+<div style="height:58px;border-radius:999px;background:#1D1811;color:#FFF6E3;box-shadow:0 5px 0 #F2B53A;display:flex;align-items:center;justify-content:center;font:800 16px/1 'Bricolage Grotesque';letter-spacing:.06em;text-transform:uppercase">Tinte · auf Gold-Flächen</div>
+<div style="height:50px;border-radius:999px;border:2px solid #1D1811;display:flex;align-items:center;justify-content:center;font:700 15px/1 'Bricolage Grotesque'">Sekundär · Weiterswipen</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<span style="height:36px;padding:0 12px;border-radius:99px;background:#2FA56B;color:#FFFBF3;display:flex;align-items:center;gap:6px;font:700 13px/1 'Bricolage Grotesque'"><i class="ph-fill ph-heart"></i>Mag ich</span>
+<span style="height:36px;padding:0 12px;border-radius:99px;border:2px solid rgba(29,24,17,.2);display:flex;align-items:center;gap:6px;font:700 13px/1 'Bricolage Grotesque'"><i class="ph-fill ph-fire"></i>Will probieren</span>
+<span style="font:700 10px/1 'JetBrains Mono',monospace;text-transform:uppercase;padding:6px 10px;border-radius:99px;border:2px solid #1D1811;align-self:center">Trait-Chip</span>
+</div>
+<div style="align-self:center;max-width:280px;padding:12px 16px;border-radius:18px;background:#1D1811;color:#FFF6E3;border:2px solid #E5534B;font:700 15px/1.3 'Bricolage Grotesque';text-align:center">Du und Jever habt eine komplizierte Vergangenheit.</div>
+<div style="font:500 12px/1.4 'Bricolage Grotesque',sans-serif;color:#5d5548;text-align:center">Toast · Rahmenfarbe = Aktion · 2,4 s</div>
+</div></div>
+<div class="dv-opt" id="4c"><div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a>DNA & Fortschritt</div>
+<div class="dv-card" style="width:340px;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;flex-direction:column;gap:7px"><div style="display:flex;justify-content:space-between;font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6B6254"><span>47 % – wir kennen dich langsam</span></div><div style="height:10px;border-radius:99px;background:#EDE5D5;border:2px solid #1D1811;overflow:hidden"><div style="height:100%;width:47%;background:#F2B53A;border-right:2px solid #1D1811"></div></div></div>
+<div style="display:flex;flex-direction:column;gap:7px"><div style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:28px;border-radius:50%;background:#5FB25A;color:#FFFBF3;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-leaf"></i></span><b style="flex:1;font:800 17px/1 'Bricolage Grotesque'">Herb</b><span style="font:700 14px/1 'JetBrains Mono',monospace">82 %</span></div><div style="height:14px;border-radius:99px;border:2px solid #1D1811;background:#EDE5D5;overflow:hidden"><div style="height:100%;width:82%;background:#5FB25A"></div></div></div>
+<div style="display:flex;flex-direction:column;gap:7px"><div style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:28px;border-radius:50%;background:#4C9FD6;color:#FFFBF3;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-drop"></i></span><b style="flex:1;font:800 17px/1 'Bricolage Grotesque'">Süffig</b><span style="font:700 14px/1 'JetBrains Mono',monospace">91 %</span></div><div style="height:14px;border-radius:99px;border:2px solid #1D1811;background:#EDE5D5;overflow:hidden"><div style="height:100%;width:91%;background:#4C9FD6"></div></div></div>
+<div style="font:500 12.5px/1.45 'Bricolage Grotesque',sans-serif;color:#5d5548">Achsen: Herb #5FB25A · Hopfig #8DB23A · Malzig #C98A3C · Süffig #4C9FD6 · Charakter #E5534B. Intern zusätzlich „Trocken“ + „Neugier“ (aus Probieren/Kenn-ich-nicht).</div>
+</div></div>
+</div>
+</section>
+
+<section class="dv-turn" id="t5">
+<div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">Motion & Interaktion</span></div>
+<p class="dv-lead">Physisch, federnd, kurz. Alles fühlt sich an wie ein Bierdeckel, den man über den Tisch schnippt.</p>
+<div class="dv-card" style="max-width:980px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:rgba(29,24,17,.1)">
+<div style="background:#FFFBF3;padding:18px;display:flex;flex-direction:column;gap:6px"><b style="font:800 17px/1.1 'Bricolage Grotesque'">Drag</b><span style="font:500 13.5px/1.5 'Bricolage Grotesque';color:#5d5548">1:1 dem Finger folgen, rotate = dx × 0,06°. Stempel-Opazität = dx / 110 px. Pointer-Capture, touch-action: none.</span></div>
+<div style="background:#FFFBF3;padding:18px;display:flex;flex-direction:column;gap:6px"><b style="font:800 17px/1.1 'Bricolage Grotesque'">Commit</b><span style="font:500 13.5px/1.5 'Bricolage Grotesque';color:#5d5548">Schwelle 110 px (↓ 120 px) ODER Velocity &gt; 0,7 px/ms. Flug-Dauer 340 ms − Speed × 80 ms (min 180), ease-in. Haptik: 14 ms, Nope: Doppel-Tick.</span></div>
+<div style="background:#FFFBF3;padding:18px;display:flex;flex-direction:column;gap:6px"><b style="font:800 17px/1.1 'Bricolage Grotesque'">Snap-back</b><span style="font:500 13.5px/1.5 'Bricolage Grotesque';color:#5d5548">500 ms cubic-bezier(.2,1.5,.4,1) – leichtes Überschwingen. Tippen ohne Drag (&lt; 6 px) öffnet das Bier-Detail.</span></div>
+<div style="background:#FFFBF3;padding:18px;display:flex;flex-direction:column;gap:6px"><b style="font:800 17px/1.1 'Bricolage Grotesque'">Stapel</b><span style="font:500 13.5px/1.5 'Bricolage Grotesque';color:#5d5548">3 Karten sichtbar. Hintere Karten skalieren mit Drag-Fortschritt nach vorn, sodass der Tausch nahtlos ist.</span></div>
+<div style="background:#FFFBF3;padding:18px;display:flex;flex-direction:column;gap:6px"><b style="font:800 17px/1.1 'Bricolage Grotesque'">Reveals</b><span style="font:500 13.5px/1.5 'Bricolage Grotesque';color:#5d5548">DNA-Balken füllen sich 1 s, 90 ms versetzt. Avatar: Pop-in scale .4 → 1,08 → 1. Match-% zählt 1,1 s hoch (ease-out cubic).</span></div>
+<div style="background:#FFFBF3;padding:18px;display:flex;flex-direction:column;gap:6px"><b style="font:800 17px/1.1 'Bricolage Grotesque'">Ambient</b><span style="font:500 13.5px/1.5 'Bricolage Grotesque';color:#5d5548">Aufsteigende Bläschen (Welcome), schwebender Buddy (4 s), Sonnenstrahlen drehen 40 s. prefers-reduced-motion: alles Ambient aus, Reveals als Fade.</span></div>
+</div>
+</section>
+
+<section class="dv-turn" id="t6">
+<div class="dv-thd"><a class="dv-tid" href="#t6">6</a><span class="dv-tname">Desktop-Anpassung</span></div>
+<p class="dv-lead">Ab 1024 px: Navigation links, Kartenstapel mittig (max. 420 px breit), Bier-DNA rechts <b>live</b> – jede Entscheidung bewegt sofort die Balken. Tastatur: ← → ↑ ↓ + K. Buttons bleiben sichtbar.</p>
+<div class="dv-opt" id="6a"><div class="dv-olabel"><a class="dv-oid" href="#6a">6a</a>Swipe · 1280 px</div>
+<div class="dv-card" style="width:1180px;background:#F4EEE2">
+<div style="height:64px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(29,24,17,.12);background:#FFFBF3"><div style="display:flex;align-items:center;gap:10px"><dc-import name="BuddyAvatar" archetype="logo" size="{{38}}" hint-size="38px,38px"></dc-import><span style="font:800 24px/1 'Bricolage Grotesque';letter-spacing:-.04em">PilsBuddy</span></div><div style="display:flex;gap:18px;font:700 12px/1 'JetBrains Mono',monospace;color:#6B6254"><span>← Nö</span><span>→ Mag ich</span><span>↑ Probieren</span><span>↓ Kenn ich nicht</span><span>K Kenn ich</span></div></div>
+<div style="display:grid;grid-template-columns:220px 1fr 340px;min-height:660px">
+<div style="padding:24px 16px;display:flex;flex-direction:column;gap:6px;border-right:2px solid rgba(29,24,17,.1)">
+<div style="height:44px;padding:0 14px;border-radius:14px;background:#F2B53A;border:2px solid #1D1811;display:flex;align-items:center;gap:10px;font:800 15px/1 'Bricolage Grotesque'"><i class="ph-fill ph-cards"></i>Swipen</div>
+<div style="height:44px;padding:0 14px;display:flex;align-items:center;gap:10px;font:700 15px/1 'Bricolage Grotesque';color:#6B6254"><i class="ph-bold ph-dna"></i>Bier-DNA</div>
+<div style="height:44px;padding:0 14px;display:flex;align-items:center;gap:10px;font:700 15px/1 'Bricolage Grotesque';color:#6B6254"><i class="ph-bold ph-heart"></i>Matches</div>
+<div style="height:44px;padding:0 14px;display:flex;align-items:center;gap:10px;font:700 15px/1 'Bricolage Grotesque';color:#6B6254"><i class="ph-bold ph-user-circle"></i>Profil</div>
+</div>
+<div style="padding:30px;display:flex;flex-direction:column;align-items:center;gap:22px">
+<div style="width:400px;display:flex;flex-direction:column;gap:7px"><div style="display:flex;justify-content:space-between;font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6B6254"><span>64 % – wir kennen dich langsam</span><span>6 übrig</span></div><div style="height:10px;border-radius:99px;background:#EDE5D5;border:2px solid #1D1811;overflow:hidden"><div style="height:100%;width:64%;background:#F2B53A"></div></div></div>
+<div style="position:relative;width:400px;height:470px">
+<div style="position:absolute;inset:0;transform:translateY(16px) scale(.95);border-radius:30px;border:2.5px solid #1D1811;background:#FFFBF3;box-shadow:0 7px 0 #1D1811"></div>
+<div style="position:absolute;inset:0;border-radius:30px;border:2.5px solid #1D1811;background:#FFFBF3;box-shadow:0 7px 0 #1D1811;overflow:hidden;display:flex;flex-direction:column;transform:translateX(40px) rotate(3deg)">
+<div style="position:relative;flex:1;background:#E3BC4A"><div style="position:absolute;left:0;right:0;top:0;height:34px;background:#FFF6E3"></div><div style="position:absolute;left:-6px;right:-6px;top:33px;height:16px;background:radial-gradient(circle at 14px 0,#FFF6E3 13px,transparent 14px) 0 0/28px 16px repeat-x"></div><div style="position:absolute;left:50%;top:62px;bottom:18px;width:90px;transform:translateX(-50%);border-radius:18px;border:2px dashed rgba(29,24,17,.38);background:repeating-linear-gradient(135deg,rgba(29,24,17,.09) 0 6px,transparent 6px 12px)"></div><div style="position:absolute;left:18px;top:70px;transform:rotate(-14deg);opacity:.6;padding:4px 12px;border:4px solid #2FA56B;border-radius:12px;color:#2FA56B;background:rgba(255,251,243,.92);font:800 28px/1 'Bricolage Grotesque'">MAG ICH</div></div>
+<div style="padding:14px 18px;border-top:2.5px solid #1D1811;display:flex;flex-direction:column;gap:6px"><span style="font:800 32px/1 'Bricolage Grotesque';letter-spacing:-.035em">Flensburger</span><span style="font:500 15px/1.35 'Bricolage Grotesque'">„Macht Plopp. Redet nicht viel. Meint es aber ernst.“</span></div>
+</div>
+</div>
+<div style="display:flex;gap:18px;align-items:center;margin-top:8px">
+<span style="width:60px;height:60px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#E5534B;font-size:26px"><i class="ph-bold ph-x"></i></span><span style="width:48px;height:48px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#8A8173;font-size:20px"><i class="ph-bold ph-question"></i></span><span style="width:60px;height:60px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#F07A2B;font-size:26px"><i class="ph-fill ph-fire"></i></span><span style="width:48px;height:48px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#5B7FE0;font-size:20px"><i class="ph-bold ph-eye"></i></span><span style="width:60px;height:60px;border-radius:50%;background:#FFFBF3;border:2.5px solid #1D1811;box-shadow:0 4px 0 #1D1811;display:flex;align-items:center;justify-content:center;color:#2FA56B;font-size:26px"><i class="ph-fill ph-heart"></i></span>
+</div>
+</div>
+<div style="padding:24px;border-left:2px solid rgba(29,24,17,.1);display:flex;flex-direction:column;gap:16px;background:#FFFBF3">
+<div style="display:flex;align-items:center;gap:12px"><div style="width:76px;height:76px;border-radius:50%;background:#F2B53A;border:2.5px solid #1D1811;display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="herb" decoded="{{64}}" size="{{62}}" hint-size="62px,62px"></dc-import></div><div style="display:flex;flex-direction:column;gap:4px"><span style="font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6B6254">Live-Tendenz</span><b style="font:800 20px/1 'Bricolage Grotesque'">Der Herbe</b></div></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:grid;grid-template-columns:80px 1fr 36px;gap:8px;align-items:center;font:700 13px/1 'Bricolage Grotesque'"><span>Herb</span><div style="height:10px;border-radius:99px;border:1.5px solid #1D1811;background:#EDE5D5;overflow:hidden"><div style="height:100%;width:84%;background:#5FB25A"></div></div><span style="font:700 11px 'JetBrains Mono'">84</span></div>
+<div style="display:grid;grid-template-columns:80px 1fr 36px;gap:8px;align-items:center;font:700 13px/1 'Bricolage Grotesque'"><span>Hopfig</span><div style="height:10px;border-radius:99px;border:1.5px solid #1D1811;background:#EDE5D5;overflow:hidden"><div style="height:100%;width:66%;background:#8DB23A"></div></div><span style="font:700 11px 'JetBrains Mono'">66</span></div>
+<div style="display:grid;grid-template-columns:80px 1fr 36px;gap:8px;align-items:center;font:700 13px/1 'Bricolage Grotesque'"><span>Malzig</span><div style="height:10px;border-radius:99px;border:1.5px solid #1D1811;background:#EDE5D5;overflow:hidden"><div style="height:100%;width:31%;background:#C98A3C"></div></div><span style="font:700 11px 'JetBrains Mono'">31</span></div>
+<div style="display:grid;grid-template-columns:80px 1fr 36px;gap:8px;align-items:center;font:700 13px/1 'Bricolage Grotesque'"><span>Süffig</span><div style="height:10px;border-radius:99px;border:1.5px solid #1D1811;background:#EDE5D5;overflow:hidden"><div style="height:100%;width:58%;background:#4C9FD6"></div></div><span style="font:700 11px 'JetBrains Mono'">58</span></div>
+<div style="display:grid;grid-template-columns:80px 1fr 36px;gap:8px;align-items:center;font:700 13px/1 'Bricolage Grotesque'"><span>Charakter</span><div style="height:10px;border-radius:99px;border:1.5px solid #1D1811;background:#EDE5D5;overflow:hidden"><div style="height:100%;width:88%;background:#E5534B"></div></div><span style="font:700 11px 'JetBrains Mono'">88</span></div>
+</div>
+<div style="padding:14px;border-radius:18px;background:#1D1811;color:#FFF6E3;display:flex;flex-direction:column;gap:6px"><span style="font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#F2B53A">Dein nächstes Match</span><b style="font:800 24px/1 'Bricolage Grotesque'">Pilsner Urquell · 93 %</b><span style="font:500 13px/1.35 'Bricolage Grotesque';opacity:.85">„Verdächtig hohe Affinität zu herbem, charakterstarkem Bier.“</span></div>
+</div>
+</div>
+</div></div>
+</section>
+
+<section class="dv-turn" id="t7">
+<div class="dv-thd"><a class="dv-tid" href="#t7">7</a><span class="dv-tname">UX-Flow, Logik & Copy</span></div>
+<p class="dv-lead">Kern-Flow zuerst. Der Nutzer darf jederzeit abbrechen oder weitermachen – ab 6 Bewertungen erscheint „DNA auswerten“, der Stapel läuft trotzdem weiter.</p>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:28px">
+<span style="padding:12px 16px;border-radius:16px;background:#F2B53A;border:2px solid #1D1811;font:800 15px/1 'Bricolage Grotesque'">Welcome</span><i class="ph-bold ph-arrow-right"></i>
+<span style="padding:12px 16px;border-radius:16px;background:#FFFBF3;border:2px solid #1D1811;font:800 15px/1 'Bricolage Grotesque'">Onboarding + 18+</span><i class="ph-bold ph-arrow-right"></i>
+<span style="padding:12px 16px;border-radius:16px;background:#FFFBF3;border:2px solid #1D1811;font:800 15px/1 'Bricolage Grotesque'">Swipe ≥ 6</span><i class="ph-bold ph-arrow-right"></i>
+<span style="padding:12px 16px;border-radius:16px;background:#FFFBF3;border:2px solid #1D1811;font:800 15px/1 'Bricolage Grotesque'">Analyse (2,9 s)</span><i class="ph-bold ph-arrow-right"></i>
+<span style="padding:12px 16px;border-radius:16px;background:#FFFBF3;border:2px solid #1D1811;font:800 15px/1 'Bricolage Grotesque'">Bier-DNA</span><i class="ph-bold ph-arrow-right"></i>
+<span style="padding:12px 16px;border-radius:16px;background:#FFFBF3;border:2px solid #1D1811;font:800 15px/1 'Bricolage Grotesque'">Persönlichkeit + Avatar</span><i class="ph-bold ph-arrow-right"></i>
+<span style="padding:12px 16px;border-radius:16px;background:#1D1811;color:#FFF6E3;border:2px solid #1D1811;font:800 15px/1 'Bricolage Grotesque'">Bier-Match</span><i class="ph-bold ph-arrow-right"></i>
+<span style="padding:12px 16px;border-radius:16px;background:#FFFBF3;border:2px dashed #1D1811;font:800 15px/1 'Bricolage Grotesque'">Weiterswipen ↺ (Tabs)</span>
+</div>
+<div class="dv-opts">
+<div class="dv-card" style="width:460px;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;font:500 13.5px/1.5 'Bricolage Grotesque';color:#3d362c">
+<b style="font:800 18px/1 'Bricolage Grotesque';color:#1D1811">Profiling-Logik (Handoff)</b>
+<span><b>Bier</b> = { id, name, stil, abv, region, farbe, t: [herb, hopfig, malzig, süffig, charakter, trocken] 0–1, spruch, tags, nopeSpruch }. Liste liegt als austauschbares JSON vor.</span>
+<span><b>Gewichte:</b> Mag ich +1 · Probieren +0,6 · Kenne ich +0,2 · Nicht meins −0,8 · <b>Kenne ich nicht 0</b> (fließt nur in Neugier ein – nie als Ablehnung).</span>
+<span><b>Achse</b> = gewichteter Mittelwert positiver Biere − 0,4 × (Ø abgelehnt − 0,5), um 0,5 gespreizt (×1,7).</span>
+<span><b>Entschlüsselt</b> = Bewertungen / 14. <b>Kompatibilität</b> = 104 − Ø|DNA − Bier| × 150, geklemmt 48–99.</span>
+<span><b>Archetyp:</b> Regelbaum (Neugier → Hopfen → Herb+Trocken → Malz+Charakter → Kenn-Anteil → Süffig) – bewusst spielerisch, nicht wissenschaftlich.</span>
+<span><b>Social (später):</b> Personen-Match = Cosinus der DNA-Vektoren + Überschneidung „Mag ich“. Keine Fotos, kein Aussehen im Matching.</span>
+</div>
+<div class="dv-card" style="width:460px;padding:20px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;font:500 14px/1.45 'Bricolage Grotesque';color:#3d362c">
+<b style="font:800 18px/1 'Bricolage Grotesque';color:#1D1811">Copy-Bank · Ton: charmant, selbstironisch, nie gemein</b>
+<span><span style="font:700 10px 'JetBrains Mono';color:#2FA56B">MAG ICH</span> „Ein Herz für Rothaus. Süß.“ · „Das könnte was Ernstes werden.“</span>
+<span><span style="font:700 10px 'JetBrains Mono';color:#E5534B">NÖ</span> „Mutig.“ · „Es liegt nicht an dir. Doch.“ · „Du hast 17 Biere abgelehnt. Hohe Ansprüche.“</span>
+<span><span style="font:700 10px 'JetBrains Mono';color:#F07A2B">PROBIEREN</span> „Auf die Probierliste. Das wird ein Date.“</span>
+<span><span style="font:700 10px 'JetBrains Mono';color:#8A8173">KENN ICH NICHT</span> „Dieses Bier kennt dich noch nicht. Vielleicht ist das eure Chance.“</span>
+<span><span style="font:700 10px 'JetBrains Mono';color:#1D1811">EMPTY</span> „Du hast alle Biere gedatet. Die Brauereien kommen kaum hinterher.“ · „Noch keine Beziehungen. Du bist Single. Bier-technisch.“</span>
+<span><span style="font:700 10px 'JetBrains Mono';color:#1D1811">ERROR</span> „Die Leitung ist trocken.“ · CTA „Nochmal zapfen“</span>
+<span><span style="font:700 10px 'JetBrains Mono';color:#1D1811">LOADING</span> „Wir analysieren deinen Durst …“ · „Sequenziere Hopfen-Gene …“</span>
+<span><span style="font:700 10px 'JetBrains Mono';color:#1D1811">VERANTWORTUNG</span> 18+-Bestätigung im Onboarding; Humor nie über Menge/Rausch – „Wasser zwischendurch ist auch ein Match.“</span>
+</div>
+</div>
+<p class="dv-next">Try next: "Share-Card für die Bier-Persönlichkeit" · "Pils-Match Vergleichsscreen ausbauen" · "Achievements-System erweitern"</p>
+</section>
+</x-dc>
+</body>
+</html>

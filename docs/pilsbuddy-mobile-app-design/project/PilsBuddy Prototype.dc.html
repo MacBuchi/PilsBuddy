@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+body{margin:0;background:#E4DDCF;-webkit-font-smoothing:antialiased}
+a{color:#B07A12;text-decoration:none}a:hover{color:#1D1811;text-decoration:underline}
+button{font-family:inherit}
+@keyframes pbToast{0%{opacity:0;transform:translate(-50%,14px) scale(.94)}10%{opacity:1;transform:translate(-50%,0) scale(1)}85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-8px)}}
+@keyframes pbFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+@keyframes pbRise{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-760px);opacity:0}}
+@keyframes pbSpin{to{transform:rotate(360deg)}}
+@keyframes pbIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pbPop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes pbPulse{0%,100%{box-shadow:0 4px 0 #1D1811,0 0 0 0 rgba(242,181,58,.7)}50%{box-shadow:0 4px 0 #1D1811,0 0 0 12px rgba(242,181,58,0)}}
+@keyframes pbSlide{from{transform:translateX(-110%)}to{transform:translateX(260%)}}
+@keyframes pbBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+</style>
+</helmet>
+<div ref="{{rootRef}}" style="min-height:100vh;background:var(--page,#E4DDCF);display:flex;flex-wrap:wrap;gap:48px;justify-content:center;align-items:flex-start;padding:40px 24px;box-sizing:border-box;font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink,#1D1811);transition:background .3s">
+
+<div style="flex:none;width:414px;height:868px;border-radius:62px;background:#0E0B08;padding:12px;box-sizing:border-box;box-shadow:0 30px 60px -20px rgba(29,24,17,.45),inset 0 0 0 2px #3A3128">
+<div style="position:relative;width:390px;height:844px;border-radius:50px;overflow:hidden;background:var(--bg,#F4EEE2);transition:background .3s">
+
+<div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);width:122px;height:35px;border-radius:20px;background:#000;z-index:80"></div>
+<div style="position:absolute;top:0;left:0;right:0;height:52px;padding:0 34px 0 38px;display:flex;align-items:center;justify-content:space-between;z-index:70;font:700 16px/1 'Bricolage Grotesque',sans-serif;color:{{statusColor}};pointer-events:none"><span>17:30</span><span style="display:flex;gap:6px;font-size:15px"><i class="ph-bold ph-cell-signal-high"></i><i class="ph-bold ph-wifi-high"></i><i class="ph-fill ph-battery-high"></i></span></div>
+
+<sc-if value="{{on.welcome}}" hint-placeholder-val="{{true}}">
+<div style="position:absolute;inset:0;background:#F2B53A;display:flex;flex-direction:column;overflow:hidden">
+<div style="position:absolute;left:0;right:0;top:0;height:128px;background:#FFF6E3"></div>
+<div style="position:absolute;left:-8px;right:-8px;top:126px;height:24px;background:radial-gradient(circle at 20px 0,#FFF6E3 19px,transparent 20px) 0 0/40px 24px repeat-x"></div>
+<sc-for list="{{bubbles}}" as="bb" hint-placeholder-count="0"><div style="position:absolute;left:{{bb.x}};bottom:-20px;width:{{bb.s}};height:{{bb.s}};border-radius:50%;border:2px solid rgba(255,246,227,.8);animation:pbRise {{bb.d}} linear {{bb.dl}} infinite"></div></sc-for>
+<div style="position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:120px 28px 0;text-align:center">
+<div style="animation:pbFloat 4s ease-in-out infinite"><dc-import name="BuddyAvatar" archetype="logo" size="{{190}}" hint-size="190px,190px"></dc-import></div>
+<div style="font:800 58px/.9 'Bricolage Grotesque',sans-serif;letter-spacing:-.045em;color:#1D1811">PilsBuddy</div>
+<div style="font:600 22px/1.2 'Bricolage Grotesque',sans-serif;color:#1D1811;max-width:280px;text-wrap:balance">Erst Biere daten. Dann Buddies finden.</div>
+</div>
+<div style="position:relative;padding:0 24px 42px;display:flex;flex-direction:column;gap:14px;align-items:stretch">
+<button onClick="{{toHowto}}" style="height:62px;border-radius:999px;background:#1D1811;color:#FFF6E3;border:0;font:800 18px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 6px 0 #8A5E0E;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px" style-active="transform:translateY(5px);box-shadow:0 1px 0 #8A5E0E">Los geht's <i class="ph-bold ph-arrow-right"></i></button>
+<div style="font:500 14px/1.35 'Bricolage Grotesque',sans-serif;color:#1D1811;text-align:center;opacity:.85">Kein Formular. Kein Sommelier-Gelaber. Versprochen.</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{on.howto}}">
+<div style="position:absolute;inset:0;padding:62px 22px 30px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box;animation:pbIn .35s ease both">
+<button onClick="{{toWelcome}}" style="align-self:flex-start;width:44px;height:44px;border-radius:50%;border:2px solid var(--line,rgba(29,24,17,.12));background:var(--sf,#FFFBF3);color:var(--ink,#1D1811);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-arrow-left"></i></button>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut,#6B6254)">Schritt 1 von 1 · ehrlich</div>
+<div style="font:800 32px/1.02 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em;text-wrap:balance">Wir müssen kurz herausfinden, was dein Biergeschmack so treibt.</div>
+<div style="font:500 16px/1.4 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);text-wrap:pretty">Wir zeigen dir ein paar Biere. Du sagst, wie ihr zueinander steht. Mehr nicht.</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<sc-for list="{{gestures}}" as="gs" hint-placeholder-count="5">
+<div style="grid-column:{{gs.span}};background:var(--sf,#FFFBF3);border:2px solid var(--edge,#1D1811);border-radius:20px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 3px 0 var(--edge,#1D1811)">
+<div style="flex:none;width:38px;height:38px;border-radius:50%;background:{{gs.col}};color:#FFFBF3;display:flex;align-items:center;justify-content:center;font-size:18px"><i class="{{gs.icon}}"></i></div>
+<div style="display:flex;flex-direction:column;gap:3px;min-width:0"><div style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">{{gs.label}}</div><div style="font:500 12px/1.25 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">{{gs.sub}}</div></div>
+</div>
+</sc-for>
+</div>
+<div style="flex:1"></div>
+<button onClick="{{toggleAge}}" style="display:flex;align-items:center;gap:12px;background:transparent;border:0;padding:0;text-align:left;cursor:pointer;color:var(--ink,#1D1811)">
+<span style="flex:none;width:28px;height:28px;border-radius:9px;border:2.5px solid var(--edge,#1D1811);background:{{ageBg}};display:flex;align-items:center;justify-content:center;color:#1D1811;font-size:16px"><i class="{{ageIcon}}"></i></span>
+<span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 15px/1.2 'Bricolage Grotesque',sans-serif">Ich bin mindestens 18 Jahre alt.</span><span style="font:500 12.5px/1.2 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">Und Wasser zwischendurch ist auch ein Match.</span></span>
+</button>
+<button onClick="{{startSwipe}}" style="height:60px;border-radius:999px;background:#F2B53A;color:#1D1811;border:2.5px solid #1D1811;font:800 17px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 5px 0 #1D1811;cursor:pointer;opacity:{{ageOp}};display:flex;align-items:center;justify-content:center;gap:10px" style-active="transform:translateY(4px);box-shadow:0 1px 0 #1D1811">Erstes Date starten <i class="ph-bold ph-beer-bottle"></i></button>
+</div>
+</sc-if>
+
+<sc-if value="{{on.swipe}}">
+<div style="position:absolute;inset:0;padding-top:54px;display:flex;flex-direction:column;box-sizing:border-box">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 20px 10px">
+<div style="display:flex;align-items:center;gap:8px"><dc-import name="BuddyAvatar" archetype="logo" size="{{34}}" hint-size="34px,34px"></dc-import><span style="font:800 23px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em">PilsBuddy</span></div>
+<button onClick="{{toDna}}" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:999px;border:2px solid var(--edge,#1D1811);background:var(--sf,#FFFBF3);color:var(--ink,#1D1811);font:700 12px/1 'JetBrains Mono',monospace;cursor:pointer"><i class="ph-bold ph-dna"></i>{{dec}} %</button>
+</div>
+<div style="padding:0 20px 12px;display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;justify-content:space-between;font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mut,#6B6254)"><span>{{progMsg}}</span><span>{{queueLeft}} übrig</span></div>
+<div style="height:10px;border-radius:99px;background:var(--sf2,#EDE5D5);border:2px solid var(--edge,#1D1811);overflow:hidden"><div style="height:100%;width:{{decW}};background:#F2B53A;border-right:2px solid var(--edge,#1D1811);transition:width .5s cubic-bezier(.2,.9,.2,1)"></div></div>
+</div>
+<div style="position:relative;flex:1;min-height:0;margin:4px 22px 0">
+<sc-for list="{{stack}}" as="c" hint-placeholder-count="2">
+<div onPointerDown="{{c.down}}" onPointerMove="{{c.move}}" onPointerUp="{{c.up}}" onPointerCancel="{{c.up}}" style="position:absolute;inset:0 0 8px 0;z-index:{{c.z}};transform:{{c.tf}};transition:{{c.tr}};touch-action:none;cursor:{{c.cur}};user-select:none;-webkit-user-select:none;border-radius:30px;border:2.5px solid var(--edge,#1D1811);background:var(--sf,#FFFBF3);box-shadow:0 7px 0 var(--edge,#1D1811);overflow:hidden;display:flex;flex-direction:column">
+<div style="position:relative;flex:1;min-height:0;background:{{c.b.color}};overflow:hidden">
+<div style="position:absolute;left:0;right:0;top:0;height:34px;background:#FFF6E3"></div>
+<div style="position:absolute;left:-6px;right:-6px;top:33px;height:16px;background:radial-gradient(circle at 14px 0,#FFF6E3 13px,transparent 14px) 0 0/28px 16px repeat-x"></div>
+<div style="position:absolute;left:14%;bottom:22%;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55)"></div>
+<div style="position:absolute;left:22%;bottom:40%;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.55)"></div>
+<div style="position:absolute;right:16%;bottom:30%;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5)"></div>
+<div style="position:absolute;right:24%;bottom:58%;width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.5)"></div>
+<div style="position:absolute;left:16px;right:16px;top:11px;display:flex;justify-content:space-between;font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#1D1811"><span>{{c.b.style}} · {{c.b.abv}}</span><span>{{c.num}}</span></div>
+<div style="position:absolute;left:50%;top:62px;bottom:18px;width:96px;transform:translateX(-50%);border-radius:18px;border:2px dashed rgba(29,24,17,.38);background:repeating-linear-gradient(135deg,rgba(29,24,17,.09) 0 6px,transparent 6px 12px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;box-sizing:border-box"><span style="font:700 9px/1.3 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:rgba(29,24,17,.7);text-align:center">Flaschen-<br>foto</span></div>
+<div style="position:absolute;left:18px;top:66px;transform:rotate(-14deg);opacity:{{c.oLike}};padding:4px 12px;border:4px solid #2FA56B;border-radius:12px;color:#2FA56B;background:rgba(255,251,243,.92);font:800 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.02em">MAG ICH</div>
+<div style="position:absolute;right:18px;top:66px;transform:rotate(14deg);opacity:{{c.oNope}};padding:4px 14px;border:4px solid #E5534B;border-radius:12px;color:#E5534B;background:rgba(255,251,243,.92);font:800 34px/1 'Bricolage Grotesque',sans-serif">NÖ.</div>
+<div style="position:absolute;left:50%;bottom:34px;transform:translateX(-50%) rotate(-5deg);opacity:{{c.oTry}};padding:4px 12px;border:4px solid #F07A2B;border-radius:12px;color:#F07A2B;background:rgba(255,251,243,.92);font:800 28px/1 'Bricolage Grotesque',sans-serif;white-space:nowrap">PROBIEREN!</div>
+<div style="position:absolute;left:50%;top:110px;transform:translateX(-50%) rotate(4deg);opacity:{{c.oUnk}};padding:4px 12px;border:4px solid #6B6254;border-radius:12px;color:#6B6254;background:rgba(255,251,243,.92);font:800 24px/1 'Bricolage Grotesque',sans-serif;white-space:nowrap">KENN ICH NICHT</div>
+<div style="position:absolute;left:50%;top:110px;transform:translateX(-50%) rotate(-4deg);opacity:{{c.oKnow}};padding:4px 12px;border:4px solid #5B7FE0;border-radius:12px;color:#5B7FE0;background:rgba(255,251,243,.92);font:800 26px/1 'Bricolage Grotesque',sans-serif;white-space:nowrap">KENN ICH</div>
+</div>
+<div style="padding:14px 18px 16px;display:flex;flex-direction:column;gap:8px;background:var(--sf,#FFFBF3);border-top:2.5px solid var(--edge,#1D1811)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font:800 32px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">{{c.b.name}}</span><span style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mut,#6B6254);white-space:nowrap">{{c.b.region}}</span></div>
+<div style="font:500 15.5px/1.35 'Bricolage Grotesque',sans-serif;text-wrap:pretty">„{{c.b.line}}“</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{c.b.tags}}" as="tg" hint-placeholder-count="3"><span style="font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:99px;border:1.5px solid var(--line,rgba(29,24,17,.14));color:var(--mut,#6B6254)">{{tg}}</span></sc-for></div>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{isEmpty}}">
+<div style="position:absolute;inset:0 0 8px 0;border-radius:30px;border:2.5px dashed var(--line,rgba(29,24,17,.2));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:26px;text-align:center;animation:pbIn .4s ease both">
+<div style="animation:pbBob 3s ease-in-out infinite"><dc-import name="BuddyAvatar" archetype="{{pk}}" size="{{120}}" hint-size="120px,120px"></dc-import></div>
+<div style="font:800 28px/1.05 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em">Der Stapel ist leer.</div>
+<div style="font:500 15.5px/1.4 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);text-wrap:pretty">Du hast alle Biere gedatet. Die Brauereien kommen kaum hinterher.</div>
+<div style="display:flex;gap:10px;margin-top:6px">
+<button onClick="{{emptyPrimary}}" style="height:48px;padding:0 18px;border-radius:999px;background:#F2B53A;color:#1D1811;border:2.5px solid #1D1811;font:800 14px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 4px 0 #1D1811;cursor:pointer">{{emptyPrimaryLabel}}</button>
+<button onClick="{{restartDeck}}" style="height:48px;padding:0 16px;border-radius:999px;background:transparent;color:var(--ink,#1D1811);border:2px solid var(--edge,#1D1811);font:700 14px/1 'Bricolage Grotesque',sans-serif;cursor:pointer">Von vorn</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{showHint}}"><div style="position:absolute;left:50%;top:-4px;transform:translate(-50%,-50%);z-index:20;padding:6px 12px;border-radius:99px;background:#1D1811;color:#FFF6E3;font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap">Karte ziehen · oder Buttons</div></sc-if>
+<sc-if value="{{toast}}">
+<div style="position:absolute;left:50%;bottom:26px;z-index:40;max-width:300px;width:max-content;padding:12px 16px;border-radius:18px;background:#1D1811;color:#FFF6E3;border:2px solid {{toast.col}};font:700 15px/1.3 'Bricolage Grotesque',sans-serif;text-align:center;text-wrap:balance;animation:pbToast 2.4s ease both;pointer-events:none">{{toast.text}}</div>
+</sc-if>
+</div>
+<sc-if value="{{showAnalyze}}">
+<div style="display:flex;justify-content:center;padding:8px 0 0"><button onClick="{{analyze}}" style="height:42px;padding:0 18px;border-radius:999px;background:#F2B53A;color:#1D1811;border:2.5px solid #1D1811;font:800 13px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px;animation:pbPulse 1.8s ease-in-out infinite"><i class="ph-bold ph-dna"></i>Genug gedatet? DNA auswerten</button></div>
+</sc-if>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px {{actionPad}}">
+<sc-for list="{{actions}}" as="a" hint-placeholder-count="5">
+<button onClick="{{a.onClick}}" style="width:66px;display:flex;flex-direction:column;align-items:center;gap:6px;background:transparent;border:0;padding:0;cursor:pointer;color:var(--mut,#6B6254)">
+<span style="width:{{a.size}};height:{{a.size}};border-radius:50%;background:var(--sf,#FFFBF3);border:2.5px solid var(--edge,#1D1811);box-shadow:0 4px 0 var(--edge,#1D1811);display:flex;align-items:center;justify-content:center;color:{{a.col}};font-size:{{a.fs}};margin-top:{{a.mt}};transition:transform .1s" style-active="transform:translateY(3px)"><i class="{{a.icon}}"></i></span>
+<span style="font:700 9px/1.1 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;text-align:center">{{a.label}}</span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{on.analyzing}}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:40px;text-align:center;animation:pbIn .3s ease both">
+<div style="position:relative;width:220px;height:220px;display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:0;border-radius:50%;border:3px dashed #F2B53A;animation:pbSpin 6s linear infinite"></div>
+<div style="position:absolute;inset:18px;border-radius:50%;background:var(--sf2,#EDE5D5)"></div>
+<div style="position:relative;animation:pbBob 1.4s ease-in-out infinite"><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{0}}" size="{{150}}" hint-size="150px,150px"></dc-import></div>
+</div>
+<div style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut,#6B6254)">Bier-DNA wird sequenziert</div>
+<div style="font:800 26px/1.1 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em;min-height:58px;text-wrap:balance">{{loadingLine}}</div>
+<div style="width:200px;height:10px;border-radius:99px;border:2px solid var(--edge,#1D1811);background:var(--sf2,#EDE5D5);overflow:hidden"><div style="width:40%;height:100%;background:#F2B53A;animation:pbSlide 1.1s ease-in-out infinite"></div></div>
+</div>
+</sc-if>
+
+<sc-if value="{{on.dna}}">
+<div style="position:absolute;inset:0;overflow-y:auto;padding:62px 22px {{bottomPad}};box-sizing:border-box;display:flex;flex-direction:column;gap:16px;animation:pbIn .35s ease both">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mut,#6B6254)">Deine Bier-DNA</div>
+<div style="font:800 44px/.95 'Bricolage Grotesque',sans-serif;letter-spacing:-.045em">{{dec}} % entschlüsselt</div>
+<div style="font:500 16px/1.35 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">{{decMsgLong}}</div>
+</div>
+<div style="background:var(--sf,#FFFBF3);border:2.5px solid var(--edge,#1D1811);border-radius:26px;padding:18px 18px 20px;box-shadow:0 5px 0 var(--edge,#1D1811);display:flex;flex-direction:column;gap:15px">
+<sc-for list="{{bars}}" as="br" hint-placeholder-count="5">
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:28px;border-radius:50%;background:{{br.col}};color:#FFFBF3;display:flex;align-items:center;justify-content:center;font-size:15px"><i class="{{br.ic}}"></i></span><span style="flex:1;font:800 17px/1 'Bricolage Grotesque',sans-serif">{{br.label}}</span><span style="font:700 14px/1 'JetBrains Mono',monospace">{{br.pct}} %</span></div>
+<div style="height:14px;border-radius:99px;border:2px solid var(--edge,#1D1811);background:var(--sf2,#EDE5D5);overflow:hidden"><div style="height:100%;width:{{br.w}};background:{{br.col}};transition:width 1s cubic-bezier(.2,.9,.2,1) {{br.delay}}"></div></div>
+</div>
+</sc-for>
+<div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:2px dashed var(--line,rgba(29,24,17,.14))"><span style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mut,#6B6254)">Neugier-Faktor</span><span style="font:800 17px/1 'Bricolage Grotesque',sans-serif">{{neuPct}} % · {{neuLabel}}</span></div>
+</div>
+<div style="background:#F2B53A;color:#1D1811;border:2.5px solid #1D1811;border-radius:22px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start">
+<i class="ph-bold ph-magnifying-glass" style="font-size:22px;margin-top:2px"></i>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase">Auffällig</span><span style="font:700 16px/1.3 'Bricolage Grotesque',sans-serif;text-wrap:pretty">{{quip}}</span></div>
+</div>
+<button onClick="{{toAvatar}}" style="flex:none;height:60px;border-radius:999px;background:#1D1811;color:#FFF6E3;border:2.5px solid #1D1811;font:800 16px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.05em;text-transform:uppercase;box-shadow:0 5px 0 #F2B53A;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px" style-active="transform:translateY(4px);box-shadow:0 1px 0 #F2B53A">Wer bin ich eigentlich? <i class="ph-bold ph-arrow-right"></i></button>
+</div>
+</sc-if>
+
+<sc-if value="{{on.avatar}}">
+<div style="position:absolute;inset:0;overflow-y:auto;padding:60px 22px 30px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+<div style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--mut,#6B6254);animation:pbIn .4s ease both">Du bist …</div>
+<div style="font:800 38px/.98 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em;text-wrap:balance;animation:pbIn .5s .15s ease both">{{P.name}}</div>
+<div style="position:relative;width:270px;height:270px;flex:none;display:flex;align-items:center;justify-content:center;animation:pbPop .7s .25s cubic-bezier(.2,1.3,.4,1) both">
+<div style="position:absolute;inset:0;border-radius:50%;border:2.5px solid var(--edge,#1D1811);background:repeating-conic-gradient(#F2B53A 0deg 9deg,#F8CD6C 9deg 18deg);animation:pbSpin 40s linear infinite"></div>
+<div style="position:relative;animation:pbFloat 4s ease-in-out infinite"><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{dec}}" size="{{200}}" hint-size="200px,200px"></dc-import></div>
+</div>
+<div style="font:500 16.5px/1.4 'Bricolage Grotesque',sans-serif;text-wrap:pretty;max-width:330px">{{P.desc}}</div>
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px"><sc-for list="{{P.traits}}" as="tr" hint-placeholder-count="3"><span style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:var(--sf,#FFFBF3);border:2px solid var(--edge,#1D1811)">{{tr}}</span></sc-for></div>
+<div style="width:100%;box-sizing:border-box;margin-top:4px;padding:12px 14px;border-radius:20px;border:2px dashed var(--line,rgba(29,24,17,.2));display:flex;align-items:center;gap:12px;text-align:left">
+<div style="display:flex;align-items:flex-end;gap:2px"><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{10}}" size="{{34}}" hint-size="34px,34px"></dc-import><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{50}}" size="{{40}}" hint-size="40px,40px"></dc-import><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{100}}" size="{{48}}" hint-size="48px,48px"></dc-import></div>
+<div style="font:500 13.5px/1.3 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">{{evoText}}</div>
+</div>
+<div style="width:100%;display:flex;gap:10px;margin-top:4px">
+<button onClick="{{toMatch}}" style="flex:1;height:58px;border-radius:999px;background:#F2B53A;color:#1D1811;border:2.5px solid #1D1811;font:800 15px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.05em;text-transform:uppercase;box-shadow:0 5px 0 #1D1811;cursor:pointer" style-active="transform:translateY(4px);box-shadow:0 1px 0 #1D1811">Mein Bier-Match zeigen</button>
+<button onClick="{{share}}" style="flex:none;width:58px;height:58px;border-radius:50%;background:var(--sf,#FFFBF3);color:var(--ink,#1D1811);border:2.5px solid var(--edge,#1D1811);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-share-fat"></i></button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{on.match}}">
+<div style="position:absolute;inset:0;background:#1D1811;color:#FFF6E3;padding:66px 24px 34px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;overflow:hidden">
+<sc-for list="{{confetti}}" as="cf" hint-placeholder-count="0"><div style="position:absolute;left:{{cf.x}};top:{{cf.y}};width:{{cf.s}};height:{{cf.s}};background:{{cf.c}};transform:rotate(45deg);animation:pbFloat {{cf.d}} ease-in-out infinite;opacity:.9"></div></sc-for>
+<div style="font:700 12px/1 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#F2B53A;animation:pbIn .4s ease both">Dein nächstes Match</div>
+<div style="position:relative;display:flex;align-items:center;margin:14px 0 4px;animation:pbPop .6s .1s cubic-bezier(.2,1.3,.4,1) both">
+<div style="width:150px;height:150px;border-radius:50%;background:#F2B53A;border:3px solid #FFF6E3;display:flex;align-items:center;justify-content:center;transform:rotate(-6deg)"><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{dec}}" size="{{118}}" hint-size="118px,118px"></dc-import></div>
+<div style="width:150px;height:150px;border-radius:50%;background:{{match.color}};border:3px solid #FFF6E3;margin-left:-26px;position:relative;overflow:hidden;transform:rotate(6deg)">
+<div style="position:absolute;left:0;right:0;top:0;height:40px;background:#FFF6E3"></div>
+<div style="position:absolute;left:-4px;right:-4px;top:39px;height:12px;background:radial-gradient(circle at 10px 0,#FFF6E3 9px,transparent 10px) 0 0/20px 12px repeat-x"></div>
+<div style="position:absolute;left:50%;top:58px;transform:translateX(-50%);width:44px;height:74px;border-radius:10px;border:2px dashed rgba(29,24,17,.4);background:repeating-linear-gradient(135deg,rgba(29,24,17,.1) 0 5px,transparent 5px 10px)"></div>
+</div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:#E5534B;border:3px solid #FFF6E3;display:flex;align-items:center;justify-content:center;font-size:24px;color:#FFF6E3"><i class="ph-fill ph-heart"></i></div>
+</div>
+<div style="font:700 13px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;opacity:.75">Du + {{match.name}}</div>
+<div style="font:800 96px/.85 'Bricolage Grotesque',sans-serif;letter-spacing:-.06em;color:#F2B53A">{{pctShown}} %</div>
+<div style="font:700 12px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.75">Bier-Kompatibilität</div>
+<div style="font:600 17px/1.38 'Bricolage Grotesque',sans-serif;max-width:320px;text-wrap:pretty;margin-top:4px">„{{matchReason}}“</div>
+<div style="flex:1"></div>
+<button onClick="{{openMatchDetail}}" style="width:100%;height:60px;border-radius:999px;background:#F2B53A;color:#1D1811;border:0;font:800 17px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 5px 0 #8A5E0E;cursor:pointer" style-active="transform:translateY(4px);box-shadow:0 1px 0 #8A5E0E">Entdecken</button>
+<button onClick="{{toSwipe}}" style="width:100%;height:52px;border-radius:999px;background:transparent;color:#FFF6E3;border:2px solid rgba(255,246,227,.35);font:700 15px/1 'Bricolage Grotesque',sans-serif;cursor:pointer">Weiterswipen</button>
+</div>
+</sc-if>
+
+<sc-if value="{{on.detail}}">
+<div style="position:absolute;inset:0;overflow-y:auto;background:var(--bg,#F4EEE2);animation:pbIn .3s ease both">
+<div style="position:relative;height:300px;background:{{db.color}};border-bottom:2.5px solid var(--edge,#1D1811);overflow:hidden">
+<div style="position:absolute;left:0;right:0;top:0;height:92px;background:#FFF6E3"></div>
+<div style="position:absolute;left:-6px;right:-6px;top:91px;height:20px;background:radial-gradient(circle at 18px 0,#FFF6E3 17px,transparent 18px) 0 0/36px 20px repeat-x"></div>
+<div style="position:absolute;left:50%;top:112px;bottom:22px;width:84px;transform:translateX(-50%);border-radius:16px;border:2px dashed rgba(29,24,17,.4);background:repeating-linear-gradient(135deg,rgba(29,24,17,.1) 0 6px,transparent 6px 12px);display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;box-sizing:border-box"><span style="font:700 8.5px/1.2 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:rgba(29,24,17,.7);text-align:center">Flaschen-<br>foto</span></div>
+<button onClick="{{back}}" style="position:absolute;left:18px;top:56px;width:44px;height:44px;border-radius:50%;background:#FFFBF3;color:#1D1811;border:2px solid #1D1811;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="ph-bold ph-arrow-left"></i></button>
+<div style="position:absolute;right:18px;top:60px;height:36px;padding:0 12px;border-radius:99px;background:#1D1811;color:#F2B53A;display:flex;align-items:center;gap:6px;font:700 13px/1 'JetBrains Mono',monospace"><i class="ph-fill ph-heart"></i>{{dbPct}} % Match</div>
+</div>
+<div style="padding:18px 22px 36px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;flex-direction:column;gap:6px"><div style="font:800 40px/.95 'Bricolage Grotesque',sans-serif;letter-spacing:-.045em">{{db.full}}</div><div style="font:500 16px/1.38 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);text-wrap:pretty">„{{db.line}}“</div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+<sc-for list="{{dbFacts}}" as="fc" hint-placeholder-count="3"><div style="padding:10px 12px;border-radius:16px;background:var(--sf,#FFFBF3);border:2px solid var(--line,rgba(29,24,17,.14));display:flex;flex-direction:column;gap:5px"><span style="font:700 9.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mut,#6B6254)">{{fc.k}}</span><span style="font:800 15px/1.1 'Bricolage Grotesque',sans-serif">{{fc.v}}</span></div></sc-for>
+</div>
+<div style="background:var(--sf,#FFFBF3);border:2.5px solid var(--edge,#1D1811);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 4px 0 var(--edge,#1D1811)">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:800 18px/1 'Bricolage Grotesque',sans-serif">Ihr im Vergleich</span><span style="display:flex;gap:10px;font:700 10px/1 'JetBrains Mono',monospace;text-transform:uppercase;color:var(--mut,#6B6254)"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:{{db.color}};border:1.5px solid var(--edge,#1D1811)"></span>{{db.name}}</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:3px;background:var(--ink,#1D1811)"></span>Du</span></span></div>
+<sc-for list="{{compare}}" as="cp" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:78px 1fr;gap:10px;align-items:center"><span style="font:700 13px/1 'Bricolage Grotesque',sans-serif">{{cp.label}}</span><div style="display:flex;flex-direction:column;gap:3px"><div style="height:8px;border-radius:99px;background:var(--sf2,#EDE5D5);overflow:hidden"><div style="height:100%;width:{{cp.bw}};background:{{db.color}};border-radius:99px;box-shadow:inset 0 0 0 1.5px rgba(29,24,17,.35)"></div></div><div style="height:8px;border-radius:99px;background:var(--sf2,#EDE5D5);overflow:hidden"><div style="height:100%;width:{{cp.yw}};background:var(--ink,#1D1811);border-radius:99px"></div></div></div></div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font:800 18px/1 'Bricolage Grotesque',sans-serif">Wie steht ihr zueinander?</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{relation}}" as="rl" hint-placeholder-count="5"><button onClick="{{rl.onClick}}" style="height:40px;padding:0 13px;border-radius:99px;border:2px solid {{rl.bd}};background:{{rl.bg}};color:{{rl.fg}};font:700 13.5px/1 'Bricolage Grotesque',sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="{{rl.icon}}"></i>{{rl.label}}</button></sc-for></div>
+<span style="font:500 13.5px/1.35 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">{{relationQuip}}</span>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{on.matches}}">
+<div style="position:absolute;inset:0;overflow-y:auto;padding:62px 20px {{bottomPad}};box-sizing:border-box;display:flex;flex-direction:column;gap:16px;animation:pbIn .3s ease both">
+<div style="font:800 40px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.045em">Matches</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:99px;border:2px solid var(--edge,#1D1811);background:var(--sf,#FFFBF3)">
+<sc-for list="{{segs}}" as="sg" hint-placeholder-count="2"><button onClick="{{sg.onClick}}" style="height:40px;border-radius:99px;border:0;background:{{sg.bg}};color:{{sg.fg}};font:800 14px/1 'Bricolage Grotesque',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">{{sg.label}}<sc-if value="{{sg.beta}}"><span style="font:700 9px/1 'JetBrains Mono',monospace;padding:3px 5px;border-radius:5px;background:#E5534B;color:#FFFBF3">BETA</span></sc-if></button></sc-for>
+</div>
+<sc-if value="{{segBiere}}">
+<div style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mut,#6B6254)">Frisch empfohlen für {{P.short}}</div>
+<sc-for list="{{recos}}" as="rc" hint-placeholder-count="4">
+<button onClick="{{rc.open}}" style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:22px;background:var(--sf,#FFFBF3);border:2px solid var(--edge,#1D1811);box-shadow:0 3px 0 var(--edge,#1D1811);cursor:pointer;text-align:left;color:var(--ink,#1D1811)">
+<span style="flex:none;position:relative;width:44px;height:56px;border-radius:8px 8px 14px 14px;background:{{rc.b.color}};border:2.5px solid #1D1811;overflow:hidden"><span style="position:absolute;left:0;right:0;top:0;height:13px;background:#FFF6E3;border-bottom:2px solid rgba(29,24,17,.15)"></span></span>
+<span style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0"><span style="font:800 19px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.02em">{{rc.b.name}}</span><span style="font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--mut,#6B6254)">{{rc.b.style}} · {{rc.b.region}}</span></span>
+<span style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="font:800 24px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em">{{rc.pct}} %</span><span style="font:700 9px/1 'JetBrains Mono',monospace;text-transform:uppercase;color:var(--mut,#6B6254)">{{rc.tag}}</span></span>
+</button>
+</sc-for>
+<sc-if value="{{noRecos}}"><div style="padding:18px;border-radius:20px;border:2px dashed var(--line,rgba(29,24,17,.2));font:500 15px/1.4 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);text-align:center">Du hast alles gedatet, was wir haben. Wir brauen Nachschub.</div></sc-if>
+</sc-if>
+<sc-if value="{{segMenschen}}">
+<div style="padding:16px;border-radius:22px;border:2px dashed var(--edge,#1D1811);display:flex;gap:12px;align-items:flex-start">
+<i class="ph-bold ph-hourglass-medium" style="font-size:22px;margin-top:2px"></i>
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font:800 17px/1.15 'Bricolage Grotesque',sans-serif">Pils-Match kommt bald.</span><span style="font:500 14px/1.38 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);text-wrap:pretty">Sobald genug Buddies ihre DNA entschlüsselt haben, zeigen wir dir Menschen mit ähnlichem Geschmack. Nur Geschmack – keine Fotos, keine Bewertung.</span></div>
+</div>
+<div style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mut,#6B6254)">Vorschau · So wird's aussehen</div>
+<div style="background:var(--sf,#FFFBF3);border:2.5px solid var(--edge,#1D1811);border-radius:26px;box-shadow:0 5px 0 var(--edge,#1D1811);overflow:hidden">
+<div style="background:#F2B53A;padding:16px 16px 12px;display:flex;align-items:center;justify-content:center;gap:0;border-bottom:2.5px solid #1D1811">
+<div style="width:96px;height:96px;border-radius:50%;background:#FFF6E3;border:2.5px solid #1D1811;display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{dec}}" size="{{78}}" hint-size="78px,78px"></dc-import></div>
+<div style="width:40px;height:40px;margin:0 -10px;z-index:2;border-radius:50%;background:#1D1811;color:#F2B53A;display:flex;align-items:center;justify-content:center;font:800 20px/1 'Bricolage Grotesque',sans-serif">+</div>
+<div style="width:96px;height:96px;border-radius:50%;background:#FFF6E3;border:2.5px solid #1D1811;display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="herb" size="{{78}}" hint-size="78px,78px"></dc-import></div>
+</div>
+<div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:800 26px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em">Du + Alex</span><span style="font:800 22px/1 'Bricolage Grotesque',sans-serif;color:#B07A12">94 %</span></div>
+<div style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mut,#6B6254)">Bier-DNA-Match · Alex ist „Der Herbe“</div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:700 13px/1 'Bricolage Grotesque',sans-serif">Ihr mögt beide</span><div style="display:flex;flex-wrap:wrap;gap:6px"><span style="padding:6px 10px;border-radius:99px;background:rgba(47,165,107,.14);color:#1F7A4D;font:700 13px/1 'Bricolage Grotesque',sans-serif">Jever</span><span style="padding:6px 10px;border-radius:99px;background:rgba(47,165,107,.14);color:#1F7A4D;font:700 13px/1 'Bricolage Grotesque',sans-serif">Rothaus</span><span style="padding:6px 10px;border-radius:99px;background:rgba(47,165,107,.14);color:#1F7A4D;font:700 13px/1 'Bricolage Grotesque',sans-serif">Flensburger</span></div></div>
+<div style="display:flex;flex-direction:column;gap:6px"><span style="font:700 13px/1 'Bricolage Grotesque',sans-serif">Ihr seid euch uneinig bei</span><div style="display:flex;gap:6px"><span style="padding:6px 10px;border-radius:99px;border:1.5px solid #E5534B;color:#C13C35;font:700 13px/1 'Bricolage Grotesque',sans-serif">Beck's</span></div></div>
+<div style="font:500 14.5px/1.35 'Bricolage Grotesque',sans-serif;padding:10px 12px;border-radius:14px;background:var(--sf2,#EDE5D5)">Alex kennt <b>23 Biere</b>, die du noch nie probiert hast. Gefährlich.</div>
+<button onClick="{{compareToast}}" style="height:52px;border-radius:999px;background:#F2B53A;color:#1D1811;border:2.5px solid #1D1811;font:800 14px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.05em;text-transform:uppercase;box-shadow:0 4px 0 #1D1811;cursor:pointer">Biergeschmack vergleichen</button>
+</div>
+</div>
+<sc-for list="{{people}}" as="pp" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:20px;background:var(--sf,#FFFBF3);border:2px solid var(--line,rgba(29,24,17,.14))">
+<div style="width:52px;height:52px;border-radius:50%;background:#FFF6E3;border:2px solid #1D1811;display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="{{pp.a}}" size="{{42}}" hint-size="42px,42px"></dc-import></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font:800 17px/1 'Bricolage Grotesque',sans-serif">{{pp.name}}</span><span style="font:500 13px/1.2 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">{{pp.note}}</span></div>
+<span style="font:800 20px/1 'Bricolage Grotesque',sans-serif">{{pp.pct}} %</span>
+</div>
+</sc-for>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{on.profile}}">
+<div style="position:absolute;inset:0;overflow-y:auto;padding:58px 20px {{bottomPad}};box-sizing:border-box;display:flex;flex-direction:column;gap:16px;animation:pbIn .3s ease both">
+<div style="display:flex;align-items:center;gap:16px">
+<div style="flex:none;width:112px;height:112px;border-radius:50%;background:#F2B53A;border:2.5px solid var(--edge,#1D1811);display:flex;align-items:center;justify-content:center"><dc-import name="BuddyAvatar" archetype="{{pk}}" decoded="{{dec}}" size="{{92}}" hint-size="92px,92px"></dc-import></div>
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mut,#6B6254)">Buddy #0427</span><span style="font:800 26px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em;text-wrap:balance">{{P.name}}</span><span style="font:500 13.5px/1.25 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">{{progMsg}}</span></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+<sc-for list="{{statTiles}}" as="stt" hint-placeholder-count="4"><div style="padding:12px 6px;border-radius:18px;background:var(--sf,#FFFBF3);border:2px solid var(--edge,#1D1811);display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center"><span style="font:800 26px/1 'Bricolage Grotesque',sans-serif;color:{{stt.col}}">{{stt.v}}</span><span style="font:700 8.5px/1.15 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--mut,#6B6254)">{{stt.k}}</span></div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font:800 19px/1 'Bricolage Grotesque',sans-serif">Achievements</span>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+<sc-for list="{{achievements}}" as="ac" hint-placeholder-count="6"><div style="padding:12px 8px;border-radius:18px;background:{{ac.bg}};border:2px solid {{ac.bd}};display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;opacity:{{ac.op}}"><span style="width:38px;height:38px;border-radius:50%;background:{{ac.ibg}};color:{{ac.ifg}};border:2px solid {{ac.bd}};display:flex;align-items:center;justify-content:center;font-size:18px"><i class="{{ac.icon}}"></i></span><span style="font:800 13px/1.1 'Bricolage Grotesque',sans-serif;color:{{ac.fg}}">{{ac.title}}</span><span style="font:500 10.5px/1.2 'Bricolage Grotesque',sans-serif;color:{{ac.fg}};opacity:.8">{{ac.desc}}</span></div></sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font:800 19px/1 'Bricolage Grotesque',sans-serif">Deine Bier-Beziehungen</span>
+<sc-for list="{{history}}" as="hs" hint-placeholder-count="4"><button onClick="{{hs.open}}" style="display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:16px;background:var(--sf,#FFFBF3);border:2px solid var(--line,rgba(29,24,17,.14));cursor:pointer;color:var(--ink,#1D1811);text-align:left"><span style="flex:none;width:14px;height:22px;border-radius:3px 3px 6px 6px;background:{{hs.color}};border:2px solid #1D1811"></span><span style="flex:1;font:700 15px/1 'Bricolage Grotesque',sans-serif">{{hs.name}}</span><span style="display:flex;align-items:center;gap:5px;font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:{{hs.col}}"><i class="{{hs.icon}}"></i>{{hs.label}}</span></button></sc-for>
+<sc-if value="{{noHistory}}"><div style="padding:16px;border-radius:18px;border:2px dashed var(--line,rgba(29,24,17,.2));font:500 14.5px/1.4 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);text-align:center">Noch keine Beziehungen. Du bist Single. Bier-technisch.</div></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<button onClick="{{toggleDark}}" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--sf,#FFFBF3);border:2px solid var(--line,rgba(29,24,17,.14));cursor:pointer;color:var(--ink,#1D1811);text-align:left"><i class="ph-bold ph-moon-stars" style="font-size:20px"></i><span style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font:700 15px/1 'Bricolage Grotesque',sans-serif">Kneipen-Modus</span><span style="font:500 12.5px/1 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254)">Dark Mode. Für nach 22 Uhr.</span></span><span style="width:48px;height:28px;border-radius:99px;background:{{darkTrack}};border:2px solid var(--edge,#1D1811);position:relative;box-sizing:border-box"><span style="position:absolute;top:2px;left:{{darkKnob}};width:20px;height:20px;border-radius:50%;background:#FFFBF3;border:2px solid #1D1811;box-sizing:border-box;transition:left .2s"></span></span></button>
+<button onClick="{{resetAll}}" style="padding:12px 14px;border-radius:18px;background:transparent;border:2px dashed var(--line,rgba(29,24,17,.2));cursor:pointer;color:var(--mut,#6B6254);font:600 14px/1.3 'Bricolage Grotesque',sans-serif">Profil zurücksetzen – alles vergessen, wie nach dem Schützenfest.</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{on.error}}">
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px 30px;text-align:center;animation:pbIn .3s ease both">
+<div style="position:relative;width:170px;height:170px;border-radius:50%;background:var(--sf2,#EDE5D5);border:2.5px dashed var(--edge,#1D1811);display:flex;align-items:center;justify-content:center;font-size:64px;color:var(--ink,#1D1811)"><i class="ph-bold ph-plugs"></i></div>
+<div style="font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#E5534B">Fehler 0,0 %</div>
+<div style="font:800 34px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">Die Leitung ist trocken.</div>
+<div style="font:500 16px/1.4 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);text-wrap:pretty">Wir erreichen den Zapfhahn gerade nicht. Prüf deine Verbindung – oder trink kurz ein Wasser. Schadet nie.</div>
+<button onClick="{{toSwipe}}" style="margin-top:8px;height:56px;padding:0 26px;border-radius:999px;background:#F2B53A;color:#1D1811;border:2.5px solid #1D1811;font:800 15px/1 'Bricolage Grotesque',sans-serif;letter-spacing:.05em;text-transform:uppercase;box-shadow:0 4px 0 #1D1811;cursor:pointer;display:flex;align-items:center;gap:8px"><i class="ph-bold ph-arrow-clockwise"></i>Nochmal zapfen</button>
+</div>
+</sc-if>
+
+<sc-if value="{{showTabs}}">
+<div style="position:absolute;left:0;right:0;bottom:0;height:84px;padding:8px 14px 24px;box-sizing:border-box;background:var(--sf,#FFFBF3);border-top:2px solid var(--line,rgba(29,24,17,.12));display:grid;grid-template-columns:repeat(4,1fr);z-index:60">
+<sc-for list="{{tabs}}" as="tb" hint-placeholder-count="4"><button onClick="{{tb.onClick}}" style="display:flex;flex-direction:column;align-items:center;gap:4px;background:transparent;border:0;cursor:pointer;color:{{tb.fg}}"><span style="width:52px;height:30px;border-radius:99px;background:{{tb.bg}};display:flex;align-items:center;justify-content:center;font-size:19px;color:{{tb.ifg}}"><i class="{{tb.ic}}"></i></span><span style="font:700 11px/1 'Bricolage Grotesque',sans-serif">{{tb.label}}</span></button></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{globalToast}}"><div style="position:absolute;left:50%;top:64px;z-index:90;max-width:320px;width:max-content;padding:12px 16px;border-radius:18px;background:#1D1811;color:#FFF6E3;border:2px solid #F2B53A;font:700 14.5px/1.3 'Bricolage Grotesque',sans-serif;text-align:center;animation:pbToast 2.4s ease both;pointer-events:none">{{globalToast.text}}</div></sc-if>
+</div>
+</div>
+
+<sc-if value="{{showPanel}}" hint-placeholder-val="{{true}}">
+<div style="flex:none;width:290px;display:flex;flex-direction:column;gap:22px;padding-top:12px">
+<div style="display:flex;align-items:center;gap:10px"><dc-import name="BuddyAvatar" archetype="logo" size="{{44}}" hint-size="44px,44px"></dc-import><div style="display:flex;flex-direction:column;gap:3px"><span style="font:800 24px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.04em">PilsBuddy</span><span style="font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--mut,#6B6254)">Prototyp · v0.1 MVP</span></div></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mut,#6B6254)">Screens</span>
+<sc-for list="{{nav}}" as="nv" hint-placeholder-count="12"><button onClick="{{nv.onClick}}" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;border:2px solid {{nv.bd}};background:{{nv.bg}};color:var(--ink,#1D1811);cursor:pointer;text-align:left"><span style="font:700 10.5px/1 'JetBrains Mono',monospace;color:var(--mut,#6B6254);width:18px">{{nv.n}}</span><span style="flex:1;font:700 14px/1.1 'Bricolage Grotesque',sans-serif">{{nv.label}}</span><sc-if value="{{nv.core}}"><span style="width:7px;height:7px;border-radius:50%;background:#F2B53A;border:1.5px solid #1D1811"></span></sc-if></button></sc-for>
+<span style="font:500 12px/1.4 'Bricolage Grotesque',sans-serif;color:var(--mut,#6B6254);display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#F2B53A;border:1.5px solid #1D1811"></span>Kern-Flow. Screens ohne Daten werden mit Demo-Swipes gefüllt.</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:16px;background:var(--sf,#FFFBF3);border:2px solid var(--line,rgba(29,24,17,.12));font:500 13px/1.45 'Bricolage Grotesque',sans-serif">
+<span style="font:700 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--mut,#6B6254)">Steuerung</span>
+<span>Karte ziehen: → Mag ich · ← Nö · ↑ Probieren · ↓ Kenn ich nicht. Tippen öffnet Details.</span>
+<span>Tastatur: Pfeiltasten + <b>K</b> für „Kenne ich“.</span>
+</div>
+<div style="display:flex;gap:8px">
+<button onClick="{{toggleDark}}" style="flex:1;height:42px;border-radius:99px;border:2px solid var(--edge,#1D1811);background:var(--sf,#FFFBF3);color:var(--ink,#1D1811);font:700 13px/1 'Bricolage Grotesque',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="ph-bold ph-moon-stars"></i>{{darkLabel}}</button>
+<button onClick="{{resetAll}}" style="flex:1;height:42px;border-radius:99px;border:2px solid var(--edge,#1D1811);background:transparent;color:var(--ink,#1D1811);font:700 13px/1 'Bricolage Grotesque',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="ph-bold ph-arrow-counter-clockwise"></i>Reset</button>
+</div>
+<a href="PilsBuddy Designsystem.dc.html" style="font:700 14px/1 'Bricolage Grotesque',sans-serif">Designsystem & Specs öffnen →</a>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;dark&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;welcome&quot;,&quot;howto&quot;,&quot;swipe&quot;,&quot;dna&quot;,&quot;avatar&quot;,&quot;match&quot;,&quot;detail&quot;,&quot;matches&quot;,&quot;pilsmatch&quot;,&quot;profile&quot;,&quot;empty&quot;,&quot;error&quot;],&quot;default&quot;:&quot;welcome&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showPanel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const BEERS=[
+{id:'jever',name:'Jever',full:'Jever Pilsener',style:'Pils',abv:'4,9 %',region:'Friesland',color:'#E6C150',t:[.95,.7,.2,.5,.85,.95],line:'Herb. Trocken. Kein Bier für Leute, die ihr Bier gerne um Verzeihung bitten.',tags:['herb','trocken','friesisch direkt'],nope:'Du und Jever habt eine komplizierte Vergangenheit.'},
+{id:'augustiner',name:'Augustiner',full:'Augustiner Lagerbier Hell',style:'Helles',abv:'5,2 %',region:'München',color:'#F1C656',t:[.25,.3,.7,.95,.6,.3],line:'Braucht kein Marketing. Hat eine Warteschlange.',tags:['süffig','malzig','Kultstatus'],nope:'Mutig. In München würde man dich jetzt anschauen.'},
+{id:'becks',name:"Beck's",full:"Beck's Pils",style:'Pils',abv:'4,9 %',region:'Bremen',color:'#E9C75B',t:[.55,.45,.3,.65,.35,.6],line:'Der Kumpel, der auf jeder Party schon da ist. Irgendwie immer.',tags:['mild-herb','massentauglich','grüne Flasche'],nope:"Beck's wird darüber hinwegkommen. Es hat genug Freunde."},
+{id:'schlenkerla',name:'Schlenkerla',full:'Aecht Schlenkerla Rauchbier',style:'Märzen',abv:'5,1 %',region:'Bamberg',color:'#6B3316',t:[.4,.2,.9,.3,1,.4],line:'Schmeckt wie ein Lagerfeuer, das eine Meinung hat.',tags:['rauchig','malzig','polarisiert'],nope:'Verständlich. Ihr hattet nie eine echte Chance.'},
+{id:'rothaus',name:'Tannenzäpfle',full:'Rothaus Tannenzäpfle',style:'Pils',abv:'5,1 %',region:'Schwarzwald',color:'#EDC24E',t:[.55,.55,.5,.85,.7,.5],line:'Kleine Flasche, große Fangemeinde. Ausverkauft, wenn man es am meisten braucht.',tags:['ausgewogen','süffig','Schwarzwald']},
+{id:'krombacher',name:'Krombacher',full:'Krombacher Pils',style:'Pils',abv:'4,8 %',region:'Siegerland',color:'#EBC75C',t:[.45,.4,.35,.75,.3,.45],line:'Schmeckt nach Wochenende mit Grillgeruch. Für alle. Wirklich alle.',tags:['mild','süffig','Crowd-Pleaser']},
+{id:'ratsherrn',name:'Ratsherrn',full:'Ratsherrn Pale Ale',style:'Pale Ale',abv:'5,6 %',region:'Hamburg',color:'#D98E2E',t:[.6,.95,.5,.55,.8,.45],line:'Riecht nach Grapefruit und Selbstbewusstsein.',tags:['fruchtig','hopfig','Craft']},
+{id:'tegernseer',name:'Tegernseer',full:'Tegernseer Hell',style:'Helles',abv:'4,8 %',region:'Tegernsee',color:'#F3CD62',t:[.2,.25,.65,.9,.5,.25],line:'Weich wie ein Sonntagmorgen am See. Ohne Wecker.',tags:['weich','malzig','bayerisch']},
+{id:'astra',name:'Astra',full:'Astra Urtyp',style:'Pils',abv:'4,9 %',region:'Hamburg',color:'#EAC45A',t:[.45,.35,.35,.7,.55,.5],line:'Hafenkante, Herz, Anker. Kein Bier für Smalltalk.',tags:['kiezig','mild','ehrlich']},
+{id:'veltins',name:'Veltins',full:'Veltins Pilsener',style:'Pils',abv:'4,8 %',region:'Sauerland',color:'#EBC862',t:[.45,.4,.3,.8,.35,.55],line:'Frisch, klar, sauerländisch unkompliziert. Wie ein fester Handschlag.',tags:['frisch','süffig','klar']},
+{id:'stoertebeker',name:'Störtebeker',full:'Störtebeker Keller-Bier',style:'Kellerbier',abv:'4,8 %',region:'Stralsund',color:'#D8A13E',t:[.35,.4,.7,.75,.65,.3],line:'Naturtrüb. Hat nichts zu verbergen – außer Hefe.',tags:['naturtrüb','malzig','Ostsee']},
+{id:'bitburger',name:'Bitburger',full:'Bitburger Premium Pils',style:'Pils',abv:'4,8 %',region:'Eifel',color:'#EAC65A',t:[.6,.45,.3,.7,.4,.6],line:'Trägt Anzug. Auch am Wochenende.',tags:['feinherb','klassisch','Eifel']},
+{id:'radeberger',name:'Radeberger',full:'Radeberger Pilsner',style:'Pils',abv:'4,8 %',region:'Sachsen',color:'#E6C255',t:[.7,.55,.3,.65,.55,.7],line:'Feinherb und ein bisschen stolz auf die eigene Geschichte. Zu Recht.',tags:['feinherb','sächsisch','Tradition']},
+{id:'flensburger',name:'Flensburger',full:'Flensburger Pilsener',style:'Pils',abv:'4,8 %',region:'Flensburg',color:'#E3BC4A',t:[.85,.65,.25,.55,.9,.85],line:'Macht Plopp. Redet nicht viel. Meint es aber ernst.',tags:['herb','trocken','Bügelverschluss']},
+{id:'urquell',name:'Urquell',full:'Pilsner Urquell',style:'Pils',abv:'4,4 %',region:'Pilsen',color:'#E0AE3C',t:[.7,.75,.6,.7,.85,.5],line:'Das Original. Und es weiß das auch.',tags:['vollmundig','hopfig','Urgestein']}];
+const BY={};BEERS.forEach(b=>BY[b.id]=b);
+const ORDER=['jever','augustiner','becks','schlenkerla','rothaus','krombacher','ratsherrn','tegernseer','astra','veltins','stoertebeker','bitburger','radeberger','flensburger','urquell'];
+const AX=[{label:'Herb',ic:'ph-bold ph-leaf',col:'#5FB25A'},{label:'Hopfig',ic:'ph-bold ph-plant',col:'#8DB23A'},{label:'Malzig',ic:'ph-bold ph-grains',col:'#C98A3C'},{label:'Süffig',ic:'ph-bold ph-drop',col:'#4C9FD6'},{label:'Charakter',ic:'ph-bold ph-fire',col:'#E5534B'}];
+const ADJ=['herbem','hopfigem','malzigem','süffigem','charakterstarkem','trockenem'];
+const ST={like:{label:'Mag ich',col:'#2FA56B',icon:'ph-fill ph-heart'},nope:{label:'Nicht meins',col:'#E5534B',icon:'ph-bold ph-heart-break'},try:{label:'Will probieren',col:'#F07A2B',icon:'ph-fill ph-fire'},know:{label:'Kenne ich',col:'#5B7FE0',icon:'ph-bold ph-eye'},unknown:{label:'Kenne ich nicht',col:'#8A8173',icon:'ph-bold ph-question'}};
+const PERS={
+logo:{name:'Noch ein Rätsel',short:'dich',desc:'Swipe noch ein paar Biere. Wir sind kurz davor, dich zu durchschauen.',traits:['geheimnisvoll','unentschlossen']},
+herb:{name:'Der Herbe',short:'den Herben',desc:'Du magst es klar, trocken und ohne Umschweife. Süße Kompromisse? Nicht mit dir. Freunde nennen dich „ehrlich“. Manche auch „anstrengend“.',traits:['trocken','geradeaus','Norddeutsch im Herzen']},
+feierabend:{name:'Der Feierabend-Pilsner',short:'Feierabend-Pilsner',desc:'Bier ist für dich kein Hobby, sondern ein Gefühl: Laptop zu, Kronkorken ab. Du brauchst kein Drama im Glas.',traits:['entspannt','verlässlich','17:30 Uhr']},
+abenteurer:{name:'Der Hopfen-Abenteurer',short:'Hopfen-Abenteurer',desc:'Grapefruit? Harz? Kiefernnadeln? Du sagst ja. Du hast vermutlich schon mal „Mundgefühl“ gesagt. Unironisch.',traits:['hopfig','furchtlos','riecht am Glas']},
+geniesser:{name:'Der unkomplizierte Genießer',short:'Genießer',desc:'Kalt, lecker, fertig. Du verstehst nicht, warum andere so ein Theater machen – und hast damit ziemlich oft recht.',traits:['süffig','pragmatisch','kein Theater']},
+philosoph:{name:'Der Biergarten-Philosoph',short:'Philosophen',desc:'Malzig, vollmundig, gern mit Brezn. Unter Kastanien erklärst du die Welt. Und irgendwie stimmt es sogar.',traits:['malzig','tiefgründig','Brezn-affin']},
+probierer:{name:'Der neugierige Probierer',short:'Probierer',desc:'Du kennst vieles noch nicht – und findest das großartig. Deine Probierliste ist länger als deine Einkaufsliste.',traits:['neugierig','offen','Probierliste lang']},
+kasten:{name:'Der Kasten-Kenner',short:'Kasten-Kenner',desc:'Du erkennst ein Bier am Plopp. Du kennst sie alle. Persönlich. Meistens vom Grillabend.',traits:['erfahren','bodenständig','kennt jeden']}};
+const QUIPS={like:['Notiert. PilsBuddy lernt dich kennen.','Ein Herz für {name}. Süß.','Ihr würdet euch gut verstehen.','Das könnte was Ernstes werden.'],nope:['Mutig.','Hohe Ansprüche. Respekt.','{name} wird darüber hinwegkommen.','Es liegt nicht an dir. Doch.'],try:['Auf die Probierliste. Das wird ein Date.','Neugier +1.','{name} freut sich schon.'],know:['Man kennt sich. Vom Sehen.','Ok. Nicht mehr, nicht weniger.','Kennt man. Notiert.'],unknown:['Dieses Bier kennt dich noch nicht. Vielleicht ist das eure Chance.','Kein Problem. Zählt nicht gegen euch.','Ehrlich währt am längsten.']};
+const AXQ=['Bitterkeit schreckt dich nicht. Eher im Gegenteil.','Du riechst an Bier. Wir haben es gesehen.','Brot, aber flüssig: Du verstehst das.','Leicht, frisch, unkompliziert. Du willst Bier, keinen Vortrag.','Langweilige Biere erkennst du schon am Etikett.'];
+const THEMES={light:{page:'#E4DDCF',bg:'#F4EEE2',sf:'#FFFBF3',sf2:'#EDE5D5',ink:'#1D1811',mut:'#6B6254',line:'rgba(29,24,17,.13)',edge:'#1D1811'},dark:{page:'#0C0A07',bg:'#15120D',sf:'#231D15',sf2:'#2F281E',ink:'#F4EEE2',mut:'#ABA08E',line:'rgba(244,238,226,.14)',edge:'#050403'}};
+const LOADING=['Wir analysieren deinen Durst …','Der Schaum setzt sich …','Sequenziere Hopfen-Gene …','Vergleiche mit sehr vielen Kronkorken …'];
+const DEMO={jever:'like',augustiner:'know',becks:'nope',schlenkerla:'unknown',rothaus:'like',krombacher:'nope',ratsherrn:'try',tegernseer:'know',astra:'like'};
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const BUBBLES=Array.from({length:9},(_,i)=>({x:(8+i*11)%92+'%',s:(8+(i*7)%16)+'px',d:(6+(i%4)*1.7)+'s',dl:(i*0.9)+'s'}));
+const CONF=Array.from({length:12},(_,i)=>({x:(5+i*8.3)%95+'%',y:(8+(i*37)%80)+'%',s:(6+(i*5)%9)+'px',c:['#F2B53A','#E5534B','#FFF6E3','#6DBE5A'][i%4],d:(3+i%3)+'s'}));
+class Component extends DCLogic {
+  state={screen:'welcome',prev:'swipe',detailFrom:'swipe',ratings:{},drag:{x:0,y:0},dragging:false,exit:null,swapping:false,toast:null,gToast:null,onboarded:false,age:false,dark:!!this.props.dark,detailId:null,barsIn:false,pctShown:0,matchTab:'biere',loadIdx:0,forceEmpty:false};
+  rootRef=React.createRef();
+  componentDidMount(){this.applyTheme();window.addEventListener('keydown',this.onKey);const s=this.props.startScreen;if(s&&s!=='welcome')this.jump(s);}
+  componentDidUpdate(pp,ps){if(ps.dark!==this.state.dark)this.applyTheme();if(pp.dark!==this.props.dark)this.setState({dark:!!this.props.dark});}
+  componentWillUnmount(){window.removeEventListener('keydown',this.onKey);[this.exitT,this.toastT,this.gT,this.loadI,this.loadT,this.cntI,this.barT].forEach(t=>{clearTimeout(t);clearInterval(t);});}
+  applyTheme(){const el=this.rootRef.current;if(!el)return;const T=THEMES[this.state.dark?'dark':'light'];for(const k in T)el.style.setProperty('--'+k,T[k]);document.body.style.background=T.page;}
+  onKey=(e)=>{if(this.state.screen!=='swipe')return;const m={ArrowLeft:'nope',ArrowRight:'like',ArrowUp:'try',ArrowDown:'unknown',k:'know',K:'know'};if(m[e.key]){e.preventDefault();this.commit(m[e.key]);}};
+  queue(s=this.state){return s.forceEmpty?[]:ORDER.filter(id=>!s.ratings[id]);}
+  counts(r){const c={like:0,nope:0,try:0,know:0,unknown:0,total:0};for(const id in r){c[r[id]]++;c.total++;}return c;}
+  dna(r){const W={like:1,try:.6,know:.2,nope:-.8,unknown:0};return [0,1,2,3,4,5].map(i=>{let ps=0,pw=0,ns=0,nw=0;for(const id in r){const w=W[r[id]],v=BY[id].t[i];if(w>0){ps+=w*v;pw+=w;}else if(w<0){ns+=v;nw++;}}let v=pw?ps/pw:.5;if(nw)v-=(ns/nw-.5)*.4;return clamp(.5+(v-.5)*1.7,.06,.97);});}
+  neugier(c){return c.total?clamp(.12+(c.try+c.unknown*.7)/c.total*1.4,.05,.97):0;}
+  persona(d,n,c){const[h,hp,m,s,ch,t]=d;if(c.total<3)return'logo';if(n>.62)return hp>.62?'abenteurer':'probierer';if(hp>.72&&ch>.6)return'abenteurer';if(h>.66&&t>.6)return'herb';if(m>.64&&ch>.55)return'philosoph';if(c.know/c.total>.4&&c.know>=3)return'kasten';if(s>.7&&ch<.52)return'geniesser';return'feierabend';}
+  compat(b,d){let diff=0;for(let i=0;i<6;i++)diff+=Math.abs(d[i]-b.t[i]);diff/=6;return Math.round(clamp(104-diff*150,48,99));}
+  cands(d,r){let ids=ORDER.filter(id=>!r[id]);if(!ids.length)ids=ORDER.filter(id=>r[id]==='try'||r[id]==='unknown');if(!ids.length)ids=ORDER;return ids.map(id=>({b:BY[id],pct:this.compat(BY[id],d)})).sort((a,b)=>b.pct-a.pct);}
+  reason(b,d){const ax=[0,1,2,3,4,5].filter(i=>d[i]>.55&&b.t[i]>.6).sort((x,y)=>d[y]*b.t[y]-d[x]*b.t[x]).slice(0,2);if(!ax.length)return'Wir haben da so ein Gefühl. Vertrau uns einfach.';return'Du hast eine verdächtig hohe Affinität zu '+ax.map(i=>ADJ[i]).join(', ').replace(/em, /,'em, ')+' Bier.';}
+  toast(text,col){clearTimeout(this.toastT);this.setState({toast:null},()=>{this.setState({toast:{text,col,k:Date.now()}});this.toastT=setTimeout(()=>this.setState({toast:null}),2400);});}
+  gToast(text){clearTimeout(this.gT);this.setState({gToast:null},()=>{this.setState({gToast:{text}});this.gT=setTimeout(()=>this.setState({gToast:null}),2400);});}
+  quip(dir,id,prevTotal){const c=this.counts(this.state.ratings),b=BY[id];let t;const dec=Math.round(c.total/14*100),pdec=Math.round(prevTotal/14*100);
+    if(pdec<100&&dec>=100)t='BIER-DNA ENTSCHLÜSSELT. Wir kennen dich jetzt.';else if(dir==='nope'&&c.nope===5)t='Du hast 5 Biere abgelehnt. Hohe Ansprüche.';else if(dir==='nope'&&b.nope&&Math.random()<.65)t=b.nope;else if(pdec<50&&dec>=50)t=dec+' % – wir kennen dich langsam.';else t=rnd(QUIPS[dir]).replace('{name}',b.name);
+    this.toast(t,ST[dir].col);}
+  commit(dir,speed=0){const s=this.state;if(s.exit||s.screen!=='swipe')return;const id=this.queue()[0];if(!id)return;const V={like:[560,60],nope:[-560,60],try:[0,-820],unknown:[0,820],know:[420,-720]};const[x,y]=V[dir];try{navigator.vibrate&&navigator.vibrate(dir==='nope'?[8,40,8]:14);}catch(_){}const dur=clamp(.34-speed*.08,.18,.34);const prevTotal=this.counts(s.ratings).total;
+    this.setState({exit:{dir,x,y,dur},dragging:false});clearTimeout(this.exitT);
+    this.exitT=setTimeout(()=>{this.setState(st=>({ratings:{...st.ratings,[id]:dir},exit:null,drag:{x:0,y:0},swapping:true}),()=>{requestAnimationFrame(()=>requestAnimationFrame(()=>this.setState({swapping:false})));this.quip(dir,id,prevTotal);});},dur*1000);}
+  down=(e)=>{if(this.state.exit)return;this.sx=this.lx=e.clientX;this.sy=this.ly=e.clientY;this.lt=performance.now();this.vx=this.vy=0;try{e.currentTarget.setPointerCapture(e.pointerId);}catch(_){}this.setState({dragging:true,drag:{x:0,y:0}});};
+  move=(e)=>{if(!this.state.dragging)return;const now=performance.now(),dt=Math.max(1,now-this.lt);this.vx=(e.clientX-this.lx)/dt;this.vy=(e.clientY-this.ly)/dt;this.lx=e.clientX;this.ly=e.clientY;this.lt=now;this.setState({drag:{x:e.clientX-this.sx,y:e.clientY-this.sy}});};
+  up=()=>{if(!this.state.dragging)return;const{x,y}=this.state.drag,ax=Math.abs(x),ay=Math.abs(y);let dir=null;
+    if(ax<6&&ay<6){this.setState({dragging:false});const id=this.queue()[0];if(id)this.openDetail(id);return;}
+    if(ax>=ay){if(x>110||this.vx>.7)dir='like';else if(x<-110||this.vx<-.7)dir='nope';}else{if(y<-110||this.vy<-.7)dir='try';else if(y>120||this.vy>.8)dir='unknown';}
+    if(dir)this.commit(dir,Math.hypot(this.vx,this.vy));else this.setState({dragging:false,drag:{x:0,y:0}});};
+  noop=()=>{};
+  go(screen,extra={}){if(this.state.screen==='analyzing'){clearInterval(this.loadI);clearTimeout(this.loadT);}this.setState(s=>({screen,prev:s.screen,...extra}),()=>this.enter(screen));}
+  enter(screen){
+    if(screen==='dna'){this.setState({barsIn:false,onboarded:true});clearTimeout(this.barT);this.barT=setTimeout(()=>this.setState({barsIn:true}),80);}
+    if(screen==='analyzing'){this.setState({loadIdx:0});clearInterval(this.loadI);this.loadI=setInterval(()=>this.setState(s=>({loadIdx:(s.loadIdx+1)%LOADING.length})),700);this.loadT=setTimeout(()=>this.go('dna'),2900);}
+    if(screen==='match'){const d=this.dna(this.state.ratings);const m=this.cands(d,this.state.ratings)[0];this.setState({pctShown:0,detailId:m.b.id});clearInterval(this.cntI);const t0=performance.now();this.cntI=setInterval(()=>{const p=clamp((performance.now()-t0)/1100);const e=1-Math.pow(1-p,3);this.setState({pctShown:Math.round(m.pct*e)});if(p>=1)clearInterval(this.cntI);},30);}
+  }
+  openDetail(id){this.go('detail',{detailId:id,detailFrom:this.state.screen});}
+  setRating(id,k){this.setState(s=>({ratings:{...s.ratings,[id]:k}}));const b=BY[id];this.gToast(k==='nope'&&b.nope?b.nope:rnd(QUIPS[k]).replace('{name}',b.name));}
+  jump(k){const c=this.counts(this.state.ratings);const needs=['dna','avatar','match','detail','matches','pilsmatch','profile','empty'].includes(k);const seed=needs&&c.total<6?{ratings:{...DEMO}}:{};
+    const base={...seed,forceEmpty:false};
+    if(needs)base.onboarded=true;
+    if(k==='empty')return this.go('swipe',{...base,forceEmpty:true});
+    if(k==='pilsmatch')return this.go('matches',{...base,matchTab:'menschen'});
+    if(k==='matches')return this.go('matches',{...base,matchTab:'biere'});
+    if(k==='detail'){const r=seed.ratings||this.state.ratings;const m=this.cands(this.dna(r),r)[0];return this.go('detail',{...base,detailId:m.b.id,detailFrom:'matches'});}
+    if(k==='welcome'||k==='howto')base.onboarded=false;
+    this.go(k,base);}
+  reset=()=>{this.setState({ratings:{},onboarded:false,age:false,forceEmpty:false,exit:null,drag:{x:0,y:0},toast:null});this.go('welcome');};
+  renderVals(){
+    const s=this.state,r=s.ratings,c=this.counts(r),d=this.dna(r),neu=this.neugier(c),dec=Math.min(100,Math.round(c.total/14*100));
+    const pk=this.persona(d,neu,c),P=PERS[pk];const q=this.queue();
+    const on={};['welcome','howto','swipe','analyzing','dna','avatar','match','detail','matches','profile','error'].forEach(k=>on[k]=s.screen===k);
+    const{x:dx,y:dy}=s.drag;const p=s.exit?1:clamp((Math.abs(dx)+Math.abs(dy))/150);
+    const stack=q.slice(0,3).map((id,i)=>{const b=BY[id];let tf,tr,o={oLike:0,oNope:0,oTry:0,oUnk:0,oKnow:0};
+      if(i===0){if(s.exit){tf=`translate(${s.exit.x}px,${s.exit.y}px) rotate(${s.exit.x*.05}deg)`;tr=`transform ${s.exit.dur}s cubic-bezier(.4,0,1,1)`;o={oLike:+(s.exit.dir==='like'),oNope:+(s.exit.dir==='nope'),oTry:+(s.exit.dir==='try'),oUnk:+(s.exit.dir==='unknown'),oKnow:+(s.exit.dir==='know')};}
+        else{tf=`translate(${dx}px,${dy}px) rotate(${dx*.06}deg)`;tr=s.dragging||s.swapping?'none':'transform .5s cubic-bezier(.2,1.5,.4,1)';const hz=Math.abs(dx)>=Math.abs(dy);o={oLike:hz?clamp(dx/110):0,oNope:hz?clamp(-dx/110):0,oTry:hz?0:clamp(-dy/110),oUnk:hz?0:clamp(dy/120),oKnow:0};}}
+      else{const k=Math.max(0,i-p);tf=`translateY(${k*16}px) scale(${1-k*.05})`;tr=s.dragging||s.swapping?'none':'transform .3s ease';}
+      return{b,z:10-i,tf,tr,...o,num:String(ORDER.indexOf(id)+1).padStart(2,'0')+'/15',cur:i===0?(s.dragging?'grabbing':'grab'):'default',down:i===0?this.down:this.noop,move:i===0?this.move:this.noop,up:i===0?this.up:this.noop};});
+    const cands=this.cands(d,r),m=cands[0];
+    const db=BY[s.detailId]||m.b;
+    const progMsg=dec>=100?'Bier-DNA entschlüsselt':dec>=70?'Fast durchschaut':dec>=45?dec+' % – wir kennen dich langsam':dec>=20?'Erste Eindrücke gesammelt':'Wir kennen uns kaum';
+    const decMsgLong=dec>=100?'Wir kennen dich jetzt. Vielleicht besser als dein Späti.':dec>=70?'Ein paar Biere noch, dann haben wir dich komplett durchschaut.':'Ein guter Anfang. Jedes weitere Bier schärft das Bild.';
+    const top=[0,1,2,3,4].sort((a,b)=>d[b]-d[a])[0];
+    const quip=c.nope>=5?`Du hast ${c.nope} Biere abgelehnt. Hohe Ansprüche.`:c.unknown>=4?`${c.unknown} Biere kennst du noch nicht. Das ist keine Lücke, das ist Potenzial.`:AXQ[top];
+    const tabsDef=[['swipe','Swipen','ph-cards'],['dna','Bier-DNA','ph-dna'],['matches','Matches','ph-heart'],['profile','Profil','ph-user-circle']];
+    const tabs=tabsDef.map(([k,label,ic])=>{const a=s.screen===k;return{label,ic:(a?'ph-fill ':'ph-bold ')+ic,bg:a?'#F2B53A':'transparent',ifg:a?'#1D1811':'var(--mut,#6B6254)',fg:a?'var(--ink,#1D1811)':'var(--mut,#6B6254)',onClick:()=>this.go(k,{forceEmpty:false})};});
+    const showTabs=s.onboarded&&['swipe','dna','matches','profile'].includes(s.screen);
+    const acts=[['nope','Nö','ph-bold ph-x','#E5534B',60,'26px','0'],['unknown','Kenn ich nicht','ph-bold ph-question','#8A8173',48,'20px','6px'],['try','Probieren','ph-fill ph-fire','#F07A2B',60,'26px','0'],['know','Kenn ich','ph-bold ph-eye','#5B7FE0',48,'20px','6px'],['like','Mag ich','ph-fill ph-heart','#2FA56B',60,'26px','0']];
+    const actions=acts.map(([k,label,icon,col,size,fs,mt])=>({label,icon,col,size:size+'px',fs,mt,onClick:()=>this.commit(k)}));
+    const nav=[['welcome','Welcome',1],['howto','Onboarding',1],['swipe','Bier-Swipe',1],['analyzing','Loading / Analyse',1],['dna','Bier-DNA',1],['avatar','Persönlichkeit & Avatar',1],['match','Dein Bier-Match',1],['detail','Bier-Detail',0],['matches','Empfehlungen',0],['pilsmatch','Pils-Match (später)',0],['profile','Nutzerprofil',0],['empty','Empty State',0],['error','Error State',0]].map(([k,label,core],i)=>{const a=(k==='pilsmatch'?s.screen==='matches'&&s.matchTab==='menschen':k==='matches'?s.screen==='matches'&&s.matchTab==='biere':k==='empty'?s.screen==='swipe'&&s.forceEmpty:k==='swipe'?s.screen==='swipe'&&!s.forceEmpty:s.screen===k);return{n:String(i+1).padStart(2,'0'),label,core:!!core,bg:a?'var(--sf,#FFFBF3)':'transparent',bd:a?'var(--edge,#1D1811)':'transparent',onClick:()=>this.jump(k)};});
+    const achDef=[['Erstes Date','1 Bier gedatet',c.total>=1,'ph-fill ph-heart'],['Hohe Ansprüche','5 Körbe verteilt',c.nope>=5,'ph-fill ph-crown'],['Neugiernase','3× Probieren',c.try>=3,'ph-bold ph-binoculars'],['Stammgast','10 Biere gedatet',c.total>=10,'ph-fill ph-beer-stein'],['Ehrlich','3× „Kenn ich nicht“',c.unknown>=3,'ph-bold ph-hand-waving'],['Entschlüsselt','DNA zu 100 %',dec>=100,'ph-bold ph-dna']];
+    const achievements=achDef.map(([title,desc,ok,icon])=>({title,desc,icon,op:ok?1:.55,bg:ok?'#F2B53A':'transparent',bd:ok?'#1D1811':'var(--line,rgba(29,24,17,.2))',fg:ok?'#1D1811':'var(--ink,#1D1811)',ibg:ok?'#FFF6E3':'var(--sf2,#EDE5D5)',ifg:'#1D1811'}));
+    const hist=Object.keys(r).reverse().map(id=>({name:BY[id].full,color:BY[id].color,label:ST[r[id]].label,col:ST[r[id]].col,icon:ST[r[id]].icon,open:()=>this.openDetail(id)}));
+    const recos=cands.slice(0,4).map(x=>({...x,tag:r[x.b.id]?ST[r[x.b.id]].label:'neu für dich',open:()=>this.openDetail(x.b.id)}));
+    const rel=r[db.id];
+    return{
+      rootRef:this.rootRef,on,pk,P,dec,decW:dec+'%',progMsg,decMsgLong,queueLeft:q.length,bubbles:BUBBLES,confetti:CONF,
+      statusColor:on.welcome?'#1D1811':on.match?'#FFF6E3':'var(--ink,#1D1811)',
+      toHowto:()=>this.go('howto'),toWelcome:()=>this.go('welcome'),toDna:()=>this.go('dna'),toAvatar:()=>this.go('avatar'),toMatch:()=>this.go('match'),toSwipe:()=>this.go('swipe',{onboarded:true,forceEmpty:false}),
+      gestures:[{label:'Mag ich',sub:'Liebe auf den ersten Schluck.',icon:'ph-bold ph-arrow-right',col:'#2FA56B',span:'auto'},{label:'Nicht meins',sub:'Es liegt nicht an dir. Doch.',icon:'ph-bold ph-arrow-left',col:'#E5534B',span:'auto'},{label:'Will probieren',sub:'Erstes Date vereinbart.',icon:'ph-bold ph-arrow-up',col:'#F07A2B',span:'auto'},{label:'Kenn ich nicht',sub:'Zählt nicht gegen euch.',icon:'ph-bold ph-arrow-down',col:'#8A8173',span:'auto'},{label:'Kenn ich',sub:'Per Button. Man kennt sich, mehr nicht.',icon:'ph-bold ph-eye',col:'#5B7FE0',span:'1 / -1'}],
+      toggleAge:()=>this.setState(x=>({age:!x.age})),ageBg:s.age?'#F2B53A':'transparent',ageIcon:s.age?'ph-bold ph-check':'',ageOp:s.age?1:.45,
+      startSwipe:()=>{if(!s.age){this.gToast('Kurz das Häkchen – dann geht\'s los.');return;}this.go('swipe',{forceEmpty:false});},
+      stack,isEmpty:on.swipe&&q.length===0,showHint:c.total===0&&!s.dragging&&!s.exit&&q.length>0,toast:s.toast,globalToast:s.gToast,
+      showAnalyze:!s.onboarded&&c.total>=6&&q.length>0,analyze:()=>this.go('analyzing'),actions,actionPad:showTabs?'96px':'30px',
+      emptyPrimary:()=>this.go(s.onboarded?'dna':'analyzing',{forceEmpty:false}),emptyPrimaryLabel:s.onboarded?'Zur Bier-DNA':'DNA auswerten',
+      restartDeck:()=>this.setState({ratings:{},forceEmpty:false}),
+      loadingLine:LOADING[s.loadIdx],
+      bars:AX.map((a,i)=>({...a,pct:Math.round(d[i]*100),w:s.barsIn?Math.round(d[i]*100)+'%':'0%',delay:i*90+'ms'})),neuPct:Math.round(neu*100),neuLabel:neu>.6?'hoch':neu>.35?'solide':'gemütlich',quip,bottomPad:showTabs?'104px':'30px',
+      evoText:dec>=70?'Voll entfaltet. Dein Buddy verändert sich weiter, je mehr du swipest.':'Dein Buddy ist noch im Rohzustand. Mehr Swipes = mehr Persönlichkeit (und Accessoires).',
+      share:()=>this.gToast('Link kopiert. Zeig\'s deinen Buddies.'),
+      match:m.b,pctShown:s.pctShown,matchReason:this.reason(m.b,d),openMatchDetail:()=>this.openDetail(m.b.id),
+      db,dbPct:this.compat(db,d),dbFacts:[{k:'Stil',v:db.style},{k:'Alkohol',v:db.abv},{k:'Herkunft',v:db.region}],
+      compare:AX.map((a,i)=>({label:a.label,bw:Math.round(db.t[i]*100)+'%',yw:Math.round(d[i]*100)+'%'})),
+      relation:Object.keys(ST).map(k=>{const a=rel===k;return{label:ST[k].label,icon:ST[k].icon,bg:a?ST[k].col:'transparent',fg:a?'#FFFBF3':'var(--ink,#1D1811)',bd:a?ST[k].col:'var(--line,rgba(29,24,17,.2))',onClick:()=>this.setRating(db.id,k)};}),
+      relationQuip:!rel?'Dieses Bier kennt dich noch nicht. Vielleicht ist das eure Chance.':rel==='nope'?(db.nope||'Du hast dieses Bier abgelehnt. Mutig.'):rel==='like'?'Ihr seid offiziell ein Paar. Glückwunsch.':rel==='try'?'Steht auf deiner Probierliste. Nicht versetzen.':rel==='know'?'Ihr kennt euch. Mehr ist (noch) nicht passiert.':'Kein Urteil. Nur Ehrlichkeit.',
+      back:()=>this.go(s.detailFrom==='detail'?'swipe':s.detailFrom),
+      segs:[{label:'Biere',beta:false,k:'biere'},{label:'Menschen',beta:true,k:'menschen'}].map(x=>({...x,bg:s.matchTab===x.k?'#1D1811':'transparent',fg:s.matchTab===x.k?'#FFF6E3':'var(--ink,#1D1811)',onClick:()=>this.setState({matchTab:x.k})})),
+      segBiere:s.matchTab==='biere',segMenschen:s.matchTab==='menschen',recos,noRecos:recos.length===0,
+      people:[{a:'philosoph',name:'Kim',note:'Kennt jeden Biergarten in Franken.',pct:88},{a:'feierabend',name:'Jonas',note:'Ihr seid euch bei Hellem einig.',pct:81}],
+      compareToast:()=>this.gToast('Kommt mit Pils-Match. Wir sagen Bescheid.'),
+      statTiles:[{k:'gedatet',v:c.total,col:'var(--ink,#1D1811)'},{k:'Herzen',v:c.like,col:'#2FA56B'},{k:'Körbe',v:c.nope,col:'#E5534B'},{k:'Probier-liste',v:c.try,col:'#F07A2B'}],
+      achievements,history:hist,noHistory:hist.length===0,
+      toggleDark:()=>this.setState(x=>({dark:!x.dark})),darkTrack:s.dark?'#F2B53A':'var(--sf2,#EDE5D5)',darkKnob:s.dark?'22px':'2px',darkLabel:s.dark?'Hell':'Dunkel',
+      resetAll:this.reset,tabs,showTabs,nav,showPanel:this.props.showPanel??true
+    };
+  }
+}
+</script>
+</body>
+</html>

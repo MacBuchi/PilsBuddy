@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:relative;width:{{px}};height:{{px}};flex:none">
+<div style="position:absolute;left:0;top:0;width:120px;height:120px;transform:scale({{scale}});transform-origin:0 0">
+<sc-if value="{{g.handle}}" hint-placeholder-val="{{false}}"><div style="position:absolute;left:{{g.hx}}px;top:{{g.hy}}px;width:26px;height:40px;border:6px solid #1D1811;border-radius:14px;box-sizing:border-box"></div></sc-if>
+<div style="position:absolute;left:{{g.ox}}px;top:{{g.oy}}px;width:{{g.ow}}px;height:{{g.oh}}px;background:#1D1811;border-radius:{{g.r}}"></div>
+<sc-for list="{{g.bumps}}" as="b" hint-placeholder-count="3"><div style="position:absolute;left:{{b.ox}}px;top:{{b.oy}}px;width:{{b.od}}px;height:{{b.od}}px;border-radius:50%;background:#1D1811"></div></sc-for>
+<div style="position:absolute;left:{{g.l}}px;top:{{g.t}}px;width:{{g.w}}px;height:{{g.h}}px;background:{{g.beer}};border-radius:{{g.r}};overflow:hidden">
+<div style="position:absolute;left:6px;top:16px;width:6px;height:{{g.hl}}px;border-radius:3px;background:rgba(255,255,255,.42)"></div>
+<div style="position:absolute;right:9px;bottom:13px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.6)"></div>
+<div style="position:absolute;right:15px;bottom:24px;width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.6)"></div>
+</div>
+<sc-for list="{{g.bumps}}" as="b" hint-placeholder-count="3"><div style="position:absolute;left:{{b.x}}px;top:{{b.y}}px;width:{{b.d}}px;height:{{b.d}}px;border-radius:50%;background:#FFF6E3"></div></sc-for>
+<div style="position:absolute;left:{{g.l}}px;top:{{g.t}}px;width:{{g.w}}px;height:12px;background:#FFF6E3;border-radius:6px 6px 0 0"></div>
+<sc-if value="{{f.hidden}}"><div style="position:absolute;left:{{g.l}}px;top:{{g.ft}}px;width:{{g.w}}px;text-align:center;font:800 34px/1 'Bricolage Grotesque',sans-serif;color:#1D1811">?</div></sc-if>
+<sc-if value="{{f.aHop}}"><div style="position:absolute;left:{{g.cx8}}px;top:{{g.accT}}px;width:15px;height:15px;transform:rotate(45deg);background:#6DBE5A;border:2.5px solid #1D1811;border-radius:2px 9px 2px 9px"></div></sc-if>
+<sc-if value="{{f.aCap}}"><div style="position:absolute;left:{{g.capL}}px;top:{{g.capT}}px;width:{{g.capW}}px;height:17px;background:#E5534B;border:2.5px solid #1D1811;border-radius:16px 16px 3px 3px;box-sizing:border-box"></div><div style="position:absolute;left:{{g.brimL}}px;top:{{g.brimT}}px;width:{{g.brimW}}px;height:5px;background:#1D1811;border-radius:3px"></div></sc-if>
+<sc-if value="{{f.aStar}}"><div style="position:absolute;left:{{g.starL}}px;top:{{g.t}}px;width:10px;height:10px;transform:rotate(45deg);background:#FFD166;border:2px solid #1D1811"></div><div style="position:absolute;left:{{g.star2L}}px;top:{{g.star2T}}px;width:6px;height:6px;transform:rotate(45deg);background:#FFD166;border:2px solid #1D1811"></div></sc-if>
+<sc-if value="{{f.face}}">
+<div style="position:absolute;left:{{g.l}}px;top:{{g.ft}}px;width:{{g.w}}px;display:flex;flex-direction:column;align-items:center;gap:5px">
+<sc-if value="{{f.aBrow}}"><div style="display:flex;gap:4px;margin-bottom:-2px"><div style="width:14px;height:4.5px;background:#1D1811;border-radius:3px;transform:rotate(14deg)"></div><div style="width:14px;height:4.5px;background:#1D1811;border-radius:3px;transform:rotate(-14deg)"></div></div></sc-if>
+<sc-if value="{{f.eDot}}"><div style="display:flex;gap:{{g.eg}}px;align-items:center"><div style="width:7px;height:7px;border-radius:50%;background:#1D1811"></div><div style="width:7px;height:7px;border-radius:50%;background:#1D1811"></div></div></sc-if>
+<sc-if value="{{f.eFlat}}"><div style="display:flex;gap:{{g.eg}}px;align-items:center"><div style="width:10px;height:4px;border-radius:2px;background:#1D1811"></div><div style="width:10px;height:4px;border-radius:2px;background:#1D1811"></div></div></sc-if>
+<sc-if value="{{f.eHappy}}"><div style="display:flex;gap:{{g.eg}}px;align-items:center"><div style="width:12px;height:7px;border:3px solid #1D1811;border-bottom:0;border-radius:10px 10px 0 0;box-sizing:border-box"></div><div style="width:12px;height:7px;border:3px solid #1D1811;border-bottom:0;border-radius:10px 10px 0 0;box-sizing:border-box"></div></div></sc-if>
+<sc-if value="{{f.eWide}}"><div style="display:flex;gap:{{g.eg2}}px;align-items:center"><div style="width:14px;height:14px;border-radius:50%;background:#FFF6E3;border:2.5px solid #1D1811;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><div style="width:5px;height:5px;border-radius:50%;background:#1D1811"></div></div><div style="width:14px;height:14px;border-radius:50%;background:#FFF6E3;border:2.5px solid #1D1811;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><div style="width:5px;height:5px;border-radius:50%;background:#1D1811"></div></div></div></sc-if>
+<sc-if value="{{f.eShades}}"><div style="display:flex;gap:3px;align-items:center"><div style="width:19px;height:11px;border-radius:3px 3px 9px 9px;background:#1D1811"></div><div style="width:4px;height:3px;background:#1D1811"></div><div style="width:19px;height:11px;border-radius:3px 3px 9px 9px;background:#1D1811"></div></div></sc-if>
+<sc-if value="{{f.eWink}}"><div style="display:flex;gap:{{g.eg}}px;align-items:center"><div style="width:7px;height:7px;border-radius:50%;background:#1D1811"></div><div style="width:11px;height:4px;border-radius:2px;background:#1D1811"></div></div></sc-if>
+<sc-if value="{{f.eCurious}}"><div style="display:flex;gap:{{g.eg2}}px;align-items:center"><div style="width:7px;height:7px;border-radius:50%;background:#1D1811"></div><div style="width:15px;height:15px;border-radius:50%;background:#FFF6E3;border:2.5px solid #1D1811;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><div style="width:6px;height:6px;border-radius:50%;background:#1D1811"></div></div></div></sc-if>
+<sc-if value="{{f.eSpecs}}"><div style="display:flex;gap:2px;align-items:center"><div style="width:16px;height:16px;border-radius:50%;border:2.5px solid #1D1811;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><div style="width:4px;height:4px;border-radius:50%;background:#1D1811"></div></div><div style="width:4px;height:2.5px;background:#1D1811"></div><div style="width:16px;height:16px;border-radius:50%;border:2.5px solid #1D1811;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><div style="width:4px;height:4px;border-radius:50%;background:#1D1811"></div></div></div></sc-if>
+<sc-if value="{{f.aMust}}"><div style="display:flex;margin-top:-1px"><div style="width:17px;height:9px;border-radius:50%;background:#FFF6E3;border:2.5px solid #1D1811;box-sizing:border-box"></div><div style="width:17px;height:9px;border-radius:50%;background:#FFF6E3;border:2.5px solid #1D1811;box-sizing:border-box;margin-left:-3px"></div></div></sc-if>
+<sc-if value="{{f.mSmile}}"><div style="width:16px;height:8px;border:3px solid #1D1811;border-top:0;border-radius:0 0 10px 10px;box-sizing:border-box"></div></sc-if>
+<sc-if value="{{f.mLine}}"><div style="width:12px;height:3px;border-radius:2px;background:#1D1811"></div></sc-if>
+<sc-if value="{{f.mO}}"><div style="width:8px;height:10px;border-radius:50%;background:#1D1811"></div></sc-if>
+<sc-if value="{{f.mGrin}}"><div style="width:18px;height:9px;border-radius:0 0 10px 10px;background:#1D1811"></div></sc-if>
+<sc-if value="{{f.aBlush}}"><div style="display:flex;gap:{{g.blg}}px;margin-top:-12px"><div style="width:9px;height:5px;border-radius:50%;background:rgba(229,83,75,.55)"></div><div style="width:9px;height:5px;border-radius:50%;background:rgba(229,83,75,.55)"></div></div></sc-if>
+<sc-if value="{{f.aTie}}"><div style="width:9px;height:9px;transform:rotate(45deg) translate(2px,-1px);background:#E5534B;border:2px solid #1D1811;margin-top:1px"></div></sc-if>
+</div>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:160,&quot;height&quot;:160},&quot;archetype&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;logo&quot;,&quot;herb&quot;,&quot;feierabend&quot;,&quot;abenteurer&quot;,&quot;geniesser&quot;,&quot;philosoph&quot;,&quot;probierer&quot;,&quot;kasten&quot;],&quot;default&quot;:&quot;logo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;size&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:120,&quot;min&quot;:24,&quot;max&quot;:400,&quot;tsType&quot;:&quot;number&quot;},&quot;decoded&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:100,&quot;min&quot;:0,&quot;max&quot;:100,&quot;tsType&quot;:&quot;number&quot;}}">
+const ARCH={
+logo:{w:54,h:80,r:'6px 6px 13px 13px',beer:'#F2B53A',n:3,e:'Dot',m:'Smile',a:''},
+herb:{w:48,h:86,r:'5px 5px 9px 9px',beer:'#E9C552',n:3,e:'Flat',m:'Line',a:'Brow'},
+feierabend:{w:60,h:78,r:'4px 4px 18px 18px',beer:'#F0B23B',n:4,e:'Happy',m:'Grin',a:'Tie'},
+abenteurer:{w:58,h:80,r:'14px 14px 30px 30px',beer:'#DB8A2A',n:4,e:'Wide',m:'O',a:'Hop'},
+geniesser:{w:62,h:72,r:'6px 6px 14px 14px',beer:'#F4CB5E',n:4,e:'Shades',m:'Smile',a:'Blush'},
+philosoph:{w:62,h:76,r:'8px 8px 12px 12px',beer:'#B8651E',n:5,e:'Specs',m:'Line',a:'Must',handle:true},
+probierer:{w:46,h:66,r:'12px 12px 24px 24px',beer:'#E7A33A',n:3,e:'Curious',m:'O',a:'Star'},
+kasten:{w:60,h:76,r:'6px 6px 10px 10px',beer:'#EDB847',n:4,e:'Wink',m:'Grin',a:'Cap'}};
+class Component extends DCLogic {
+  renderVals() {
+    const A = ARCH[this.props.archetype] || ARCH.logo;
+    const size = this.props.size ?? 120;
+    const dec = this.props.decoded ?? 100;
+    const hidden = dec < 30, acc = dec >= 70;
+    const {w,h} = A;
+    const l = (120-w)/2 - (A.handle?7:0), t = 108-h;
+    const n = A.n, d = (w+4)/n*1.45;
+    const bumps = Array.from({length:n},(_,i)=>{const x=l-2+(w+4)*(i+.5)/n-d/2, y=t-d*.55;return {x,y,d,ox:x-3,oy:y-3,od:d+6};});
+    const foamTop = t-d*.55, cx = l+w/2;
+    const f = {hidden, face:!hidden};
+    ['Dot','Flat','Happy','Wide','Shades','Wink','Curious','Specs'].forEach(k=>f['e'+k]=!hidden&&A.e===k);
+    ['Smile','Line','O','Grin'].forEach(k=>f['m'+k]=!hidden&&A.m===k);
+    ['Brow','Must','Blush','Tie','Hop','Cap','Star'].forEach(k=>f['a'+k]=!hidden&&acc&&A.a===k);
+    if(A.a==='Must'&&!acc){f.aMust=false;}
+    const g = {l,t,w,h,r:A.r,beer:hidden?'#CFC5B3':A.beer,bumps,ox:l-3,oy:t-3,ow:w+6,oh:h+6,hl:Math.max(10,h-34),
+      handle:!!A.handle,hx:l+w-6,hy:t+16,ft:t+h*(hidden?.34:.3),eg:Math.max(8,Math.round(w*.2)),eg2:Math.max(5,Math.round(w*.12)),
+      cx8:cx-7.5,accT:foamTop-11,capL:l+w*.14,capT:foamTop-8,capW:w*.72,brimL:cx,brimT:foamTop+5,brimW:w*.46,
+      starL:l+w+5,star2L:l+w+14,star2T:t+16,blg:Math.round(w*.42)};
+    return {px:size+'px',scale:size/120,g,f};
+  }
+}
+</script>
+</body>
+</html>
