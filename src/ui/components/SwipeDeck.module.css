@@ -15,3 +15,13 @@
 .top {
   cursor: grab;
 }
+
+.top:focus {
+  outline: none;
+}
+
+.top:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: var(--r-card);
+}

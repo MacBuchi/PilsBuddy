@@ -68,6 +68,10 @@ npm run build
 npx wrangler deploy
 ```
 
+CI (`.github/workflows/ci.yml`) prüft jeden PR mit Lint, Tests, Build und dem E2E-Flow.
+Auf `main` deployt sie automatisch, sobald die Repo-Secrets `CLOUDFLARE_API_TOKEN` und
+`CLOUDFLARE_ACCOUNT_ID` gesetzt sind.
+
 ## Roadmap
 
 Das lokale MVP ist fertig. Der detaillierte Fahrplan mit Gap-Analyse und Arbeitspaketen steht in
