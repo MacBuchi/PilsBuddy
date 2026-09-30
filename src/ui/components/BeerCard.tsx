@@ -7,6 +7,12 @@ import styles from './BeerCard.module.css'
 
 export type StampOpacity = Partial<Record<Rating, number>>
 
+/** Sticker on the glass explaining why this card was picked ("Für dich · 91 %"). */
+export interface CardBadge {
+  text: string
+  color: string
+}
+
 interface Props {
   beer: Beer
   /** "07/42" */
@@ -14,13 +20,14 @@ interface Props {
   stamps?: StampOpacity
   /** Fade stamps smoothly (tutorial animation); during a real drag they follow 1:1. */
   smoothStamps?: boolean
+  badge?: CardBadge | null
 }
 
 /**
  * The beer as a Bierdeckel: upper half is "the glass" (beer colour + foam edge + bottle),
  * lower half the profile text. Stamps fade in proportionally to the drag.
  */
-export function BeerCard({ beer, position, stamps = {}, smoothStamps = false }: Props) {
+export function BeerCard({ beer, position, stamps = {}, smoothStamps = false, badge }: Props) {
   const fade = smoothStamps ? 'opacity .45s ease' : undefined
   const ink = textOnBeer(beer.color)
   return (
@@ -38,6 +45,11 @@ export function BeerCard({ beer, position, stamps = {}, smoothStamps = false }: 
           </span>
           <span>{position}</span>
         </div>
+        {badge && (
+          <span className={styles.badge} style={{ background: badge.color }}>
+            {badge.text}
+          </span>
+        )}
         {beer.image ? (
           <img className={styles.photo} src={beer.image} alt={beer.fullName} draggable={false} />
         ) : (

@@ -54,6 +54,23 @@
   color: var(--ink-fixed);
 }
 
+.badge {
+  position: absolute;
+  left: 14px;
+  top: 58px;
+  z-index: 1;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--ink-fixed);
+  box-shadow: 0 3px 0 var(--ink-fixed);
+  color: var(--cream-fixed);
+  font: 700 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+  white-space: nowrap;
+}
+
 .photo {
   position: absolute;
   left: 50%;

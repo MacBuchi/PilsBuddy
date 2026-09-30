@@ -18,11 +18,11 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | --- | --- | --- |
 | Spaß beim ersten Öffnen | Welcome, Onboarding, Swipe-Coach auf der ersten Karte, „?“-Hilfe | – |
 | Bier-Swipe | Touch/Maus/Tasten/Buttons, Stempel, Fly-out, Undo (1 Schritt) | – |
-| Bierdatenmodell | 42 Biere, 8 Achsen, illustrierte Flaschen, `image` optional | eigene Flaschen-Designs fehlen; Referenz-Set Pils-lastig |
-| DNA / Persona / Matching | deterministisch, getestet | Deck nach Onboarding unkuratiert; „nächstes Bier“ mobil nur im Matches-Tab |
+| Bierdatenmodell | 60 Biere, 8 Achsen, illustrierte Flaschen, `image` optional | eigene Flaschen-Designs fehlen |
+| DNA / Persona / Matching | deterministisch, getestet, kuratiertes Deck | „nächstes Bier“ mobil nur im Matches-Tab |
 | Avatar | 8 Archetypen, 3 Stufen | Entwicklung endet bei 70 % |
 | Gamification | 9 Achievements, Toast | kein Moment beim Freischalten |
-| Humor | Copy-Bank, Quips je Rating | 4 Biere mit `disLikeQuip`; Wiederholung nach ~15 Swipes |
+| Humor | Copy-Bank, Quips je Rating, `disLikeQuip` für alle Biere | Wiederholung nach ~15 Swipes |
 | WANT_TO_TRY | Interesse-Signal | keine Probierliste |
 | Persistenz | localStorage, versioniert | kein Export/Import, kein Offline |
 | Share | Text | keine Share-Card |
@@ -69,14 +69,14 @@ Akzeptanz: kein „Flaschenfoto“-Text mehr; dunkle Biere lesbar; Bundle < +1,5
 
 Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 
-### A3 · Kuratiertes Deck, breiteres Referenz-Set, mehr Biere (M)
+### A3 · Kuratiertes Deck, breiteres Referenz-Set, mehr Biere (M) ✅
 
-- [ ] Referenz-Set auf 14 Biere über alle Achsen (Weißbier, Dunkles, IPA, Leichtes, Belgier);
-      `DECODE_TARGET` an Set-Größe koppeln
-- [ ] Datensatz auf ~60 Biere (Alkoholfrei, Craft DE, International, Regional), alle mit `disLikeQuip`
-- [ ] `deckQueue`: nach Onboarding 2 × „Für dich“ : 1 × „Mal was anderes“, deterministisch; Badge auf der Karte
-
-Akzeptanz: Onboarding fragt alle Stilfamilien ab; 100 % nach dem Referenz-Set; Badges sichtbar.
+- [x] Referenz-Set auf 14 Biere über alle Stilfamilien (Pils, Helles, Weißbier, Schwarzbier, Pale Ale,
+      Lager, Rauchbier, IPA, Kölsch, Stout, Doppelbock, Belgier); Test koppelt es an `DECODE_TARGET`
+- [x] Datensatz auf 60 Biere (Alkoholfrei, Craft DE, International, Regional, Berliner Weisse),
+      alle mit `disLikeQuip`; Flaschen-Brief um die neuen Biere ergänzt
+- [x] `buildDeck`: nach dem Referenz-Set 2 × „Für dich · 94 %“ : 1 × „Mal was anderes“,
+      deterministisch; Badge als Sticker auf der Karte; Kartennummer zählt fortlaufend
 
 ### A4 · Probierliste + „Nächstes Match“ im Header (M)
 

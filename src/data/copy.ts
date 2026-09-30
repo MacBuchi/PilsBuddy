@@ -71,6 +71,10 @@ export const COPY = {
       UNKNOWN: 'Kenn ich nicht',
     },
   },
+  deck: {
+    forYou: 'Für dich · {pct} %',
+    horizon: 'Mal was anderes',
+  },
   undo: {
     label: 'Zurückholen',
     done: 'Zurückgeholt. Wir sagen nichts.',

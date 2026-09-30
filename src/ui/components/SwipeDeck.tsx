@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, Ref } from 'react'
-import { deckPosition } from '../../domain/deck'
 import type { Beer, Rating } from '../../domain/types'
 import { BeerCard } from './BeerCard'
-import type { StampOpacity } from './BeerCard'
+import type { CardBadge, StampOpacity } from './BeerCard'
 import styles from './SwipeDeck.module.css'
 
 export interface SwipeDeckHandle {
@@ -16,6 +15,10 @@ export interface SwipeDeckHandle {
 interface Props {
   /** Beers still in the deck, top card first. */
   queue: Beer[]
+  /** Already rated – the top card is number done + 1 of total. */
+  done: number
+  total: number
+  badges?: Readonly<Record<string, CardBadge>>
   onCommit: (beer: Beer, rating: Rating) => void
   onTap: (beer: Beer) => void
   onDragChange?: (dragging: boolean) => void
@@ -48,7 +51,7 @@ interface Exit {
   dur: number
 }
 
-export function SwipeDeck({ queue, onCommit, onTap, onDragChange, coachOffset, ref }: Props) {
+export function SwipeDeck({ queue, done, total, badges, onCommit, onTap, onDragChange, coachOffset, ref }: Props) {
   const [drag, setDrag] = useState({ x: 0, y: 0 })
   const [dragging, setDragging] = useState(false)
   const [exit, setExit] = useState<Exit | null>(null)
@@ -228,7 +231,13 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, coachOffset, r
                 : undefined
             }
           >
-            <BeerCard beer={beer} position={deckPosition(beer.id)} stamps={stamps} smoothStamps={top && coaching} />
+            <BeerCard
+              beer={beer}
+              position={`${String(done + i + 1).padStart(2, '0')}/${total}`}
+              stamps={stamps}
+              smoothStamps={top && coaching}
+              badge={badges?.[beer.id]}
+            />
           </div>
         )
       })}

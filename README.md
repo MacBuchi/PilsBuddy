@@ -39,7 +39,7 @@ Dev-Hilfen: `?screen=dna` springt direkt zu einem Screen, `?demo=1` füllt Demo-
 
 ```
 src/
-  data/beers.json     42 Biere, 8 Geschmacksachsen 0–100 – ohne Codeänderung erweiterbar
+  data/beers.json     60 Biere, 8 Geschmacksachsen 0–100 – ohne Codeänderung erweiterbar
   data/copy.ts        alle Texte & Sprüche (modular austauschbar)
   domain/             reine Logik, kein React, getestet
     dna.ts            Bewertungen → Geschmacksvektor + Neugier + Entschlüsselt-%

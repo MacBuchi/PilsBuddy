@@ -25,7 +25,7 @@ function setup(extra: Partial<Parameters<typeof SwipeDeck>[0]> = {}) {
   const onCommit = vi.fn()
   const onTap = vi.fn()
   const ref = createRef<SwipeDeckHandle>()
-  const utils = render(<SwipeDeck ref={ref} queue={queue} onCommit={onCommit} onTap={onTap} {...extra} />)
+  const utils = render(<SwipeDeck ref={ref} queue={queue} done={0} total={3} onCommit={onCommit} onTap={onTap} {...extra} />)
   const top = () => utils.container.querySelector<HTMLElement>('[aria-hidden="false"]')!
   return { onCommit, onTap, ref, top, ...utils }
 }
@@ -44,6 +44,12 @@ describe('SwipeDeck', () => {
     const { container, top } = setup()
     expect(container.querySelectorAll('[aria-hidden]')).toHaveLength(3)
     expect(top().textContent).toContain('Jever')
+  })
+
+  it('numbers the cards from the rated count and shows badges', () => {
+    const { top } = setup({ done: 9, total: 60, badges: { jever: { text: 'Für dich · 91 %', color: '#2FA56B' } } })
+    expect(top().textContent).toContain('10/60')
+    expect(top().textContent).toContain('Für dich · 91 %')
   })
 
   it('commits LIKE when dragged past the threshold to the right', () => {

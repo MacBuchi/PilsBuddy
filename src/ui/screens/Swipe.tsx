@@ -8,13 +8,13 @@ import {
   QuestionMarkIcon,
   XIcon,
 } from '@phosphor-icons/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { getBeer } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
 import { newlyUnlocked } from '../../domain/achievements'
 import { countRatings, decodedPercent } from '../../domain/dna'
-import { deckQueue } from '../../domain/deck'
+import { buildDeck } from '../../domain/deck'
 import { progressMessage, quipAfterRating } from '../../domain/quips'
 import type { Beer, Rating } from '../../domain/types'
 import { useApp } from '../../state/AppContext'
@@ -27,6 +27,7 @@ import { COACH_OFFSET, useCoachSteps } from '../coach'
 import { SwipeCoach } from '../components/SwipeCoach'
 import { SwipeDeck } from '../components/SwipeDeck'
 import type { SwipeDeckHandle } from '../components/SwipeDeck'
+import type { CardBadge } from '../components/BeerCard'
 import { Toast } from '../components/Toast'
 import { RATING_COLOR } from '../ratingStyle'
 import styles from './Swipe.module.css'
@@ -62,7 +63,16 @@ export function Swipe() {
   const { state, rate, go, openDetail, dispatch, withTabs, toast: globalToast } = useApp()
   const { ratings, onboarded } = state.profile
   const { counts, decoded, avatar } = useDerived()
-  const queue = deckQueue(ratings).map(getBeer)
+  const cards = useMemo(() => buildDeck(ratings), [ratings])
+  const queue = cards.map((c) => getBeer(c.id))
+  const badges = useMemo(() => {
+    const out: Record<string, CardBadge> = {}
+    for (const c of cards.slice(0, 3)) {
+      if (c.pick === 'forYou') out[c.id] = { text: fill(COPY.deck.forYou, { pct: c.pct ?? 0 }), color: RATING_COLOR.LIKE }
+      if (c.pick === 'horizon') out[c.id] = { text: COPY.deck.horizon, color: RATING_COLOR.WANT_TO_TRY }
+    }
+    return out
+  }, [cards])
   const deck = useRef<SwipeDeckHandle>(null)
   const [coachOff, setCoachOff] = useState(false)
   const [help, setHelp] = useState(false)
@@ -157,6 +167,9 @@ export function Swipe() {
           <SwipeDeck
             ref={deck}
             queue={queue}
+            done={counts.total}
+            total={cards.length + counts.total}
+            badges={badges}
             onCommit={onCommit}
             onTap={(b) => openDetail(b.id)}
             coachOffset={coachActive && coach.direction ? COACH_OFFSET[coach.direction] : null}

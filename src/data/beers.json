@@ -34,6 +34,23 @@
     "reference": true
   },
   {
+    "id": "paulaner-weisse",
+    "name": "Paulaner Weißbier",
+    "fullName": "Paulaner Hefe-Weißbier Naturtrüb",
+    "brewery": "Paulaner Brauerei",
+    "country": "Deutschland",
+    "region": "München",
+    "abv": 5.5,
+    "style": "Weißbier",
+    "taste": { "bitterness": 15, "hopIntensity": 20, "maltiness": 60, "sweetness": 60, "dryness": 20, "body": 65, "drinkability": 75, "character": 65 },
+    "description": "Naturtrübes Hefeweizen mit Banane, Nelke und cremiger Schaumkrone.",
+    "humorousBio": "Schmeckt nach Banane, ohne je eine gesehen zu haben.",
+    "tags": ["fruchtig", "hefig", "Biergarten"],
+    "color": "#E8B84A",
+    "disLikeQuip": "Keine Banane für dich. Mehr für den Biergarten.",
+    "reference": true
+  },
+  {
     "id": "becks",
     "name": "Beck's",
     "fullName": "Beck's Pils",
@@ -48,6 +65,57 @@
     "disLikeQuip": "Beck's wird darüber hinwegkommen. Es hat genug Freunde.",
     "tags": ["mild-herb", "massentauglich", "grüne Flasche"],
     "color": "#E9C75B",
+    "reference": true
+  },
+  {
+    "id": "koestritzer",
+    "name": "Köstritzer",
+    "fullName": "Köstritzer Schwarzbier",
+    "brewery": "Köstritzer Schwarzbierbrauerei",
+    "country": "Deutschland",
+    "region": "Thüringen",
+    "abv": 4.8,
+    "style": "Schwarzbier",
+    "taste": { "bitterness": 40, "hopIntensity": 30, "maltiness": 85, "sweetness": 45, "dryness": 45, "body": 60, "drinkability": 70, "character": 75 },
+    "description": "Thüringer Schwarzbier mit Röstmalz, Kaffee- und Schokoladennoten – dabei überraschend leicht.",
+    "humorousBio": "Sieht aus wie Guinness, trinkt sich wie Pils. Ein Doppelagent.",
+    "tags": ["röstig", "dunkel", "leichter als gedacht"],
+    "color": "#2B1A12",
+    "disLikeQuip": "Der Doppelagent ist enttarnt. Mission abgebrochen.",
+    "reference": true
+  },
+  {
+    "id": "ratsherrn",
+    "name": "Ratsherrn",
+    "fullName": "Ratsherrn Pale Ale",
+    "brewery": "Ratsherrn Brauerei",
+    "country": "Deutschland",
+    "region": "Hamburg",
+    "abv": 5.6,
+    "style": "Pale Ale",
+    "taste": { "bitterness": 60, "hopIntensity": 95, "maltiness": 50, "sweetness": 40, "dryness": 55, "body": 55, "drinkability": 55, "character": 80 },
+    "description": "Hamburger Pale Ale mit Citrus- und Grapefruitaromen aus amerikanischen Hopfensorten.",
+    "humorousBio": "Riecht nach Grapefruit und Selbstbewusstsein.",
+    "tags": ["fruchtig", "hopfig", "Craft"],
+    "color": "#D98E2E",
+    "disLikeQuip": "Zu viel Grapefruit? Verstehen wir. Hamburg nicht.",
+    "reference": true
+  },
+  {
+    "id": "corona",
+    "name": "Corona",
+    "fullName": "Corona Extra",
+    "brewery": "Grupo Modelo",
+    "country": "Mexiko",
+    "region": "Mexiko-Stadt",
+    "abv": 4.5,
+    "style": "Lager",
+    "taste": { "bitterness": 15, "hopIntensity": 15, "maltiness": 25, "sweetness": 45, "dryness": 40, "body": 20, "drinkability": 85, "character": 20 },
+    "description": "Leichtes mexikanisches Lager, traditionell mit Limettenspalte im Flaschenhals.",
+    "humorousBio": "Ohne Limette nur ein Bier. Mit Limette immer noch nur ein Bier.",
+    "tags": ["leicht", "Limette", "Strand"],
+    "color": "#F4D970",
+    "disLikeQuip": "Auch mit Limette nicht. Konsequent.",
     "reference": true
   },
   {
@@ -81,6 +149,92 @@
     "humorousBio": "Kleine Flasche, große Fangemeinde. Ausverkauft, wenn man es am meisten braucht.",
     "tags": ["ausgewogen", "süffig", "Schwarzwald"],
     "color": "#EDC24E",
+    "disLikeQuip": "Tannenzäpfle ist jetzt traurig. Irgendwo im Schwarzwald fällt ein Zapfen.",
+    "reference": true
+  },
+  {
+    "id": "punk-ipa",
+    "name": "Punk IPA",
+    "fullName": "BrewDog Punk IPA",
+    "brewery": "BrewDog",
+    "country": "Schottland",
+    "region": "Ellon",
+    "abv": 5.4,
+    "style": "IPA",
+    "taste": { "bitterness": 70, "hopIntensity": 100, "maltiness": 40, "sweetness": 35, "dryness": 60, "body": 50, "drinkability": 50, "character": 85 },
+    "description": "Das IPA, das den Craft-Beer-Boom nach Europa gebracht hat. Tropische Früchte, Harz, Bittere.",
+    "humorousBio": "Hat 2007 Krawall gemacht und ist jetzt im Supermarkt. Wie wir alle.",
+    "tags": ["hopfig", "tropisch", "Craft-Klassiker"],
+    "color": "#E3A63A",
+    "disLikeQuip": "Punk ist tot. Zumindest für dich.",
+    "reference": true
+  },
+  {
+    "id": "frueh",
+    "name": "Früh",
+    "fullName": "Früh Kölsch",
+    "brewery": "Cölner Hofbräu Früh",
+    "country": "Deutschland",
+    "region": "Köln",
+    "abv": 4.8,
+    "style": "Kölsch",
+    "taste": { "bitterness": 30, "hopIntensity": 35, "maltiness": 40, "sweetness": 40, "dryness": 45, "body": 30, "drinkability": 95, "character": 45 },
+    "description": "Obergäriges Kölsch aus der Stange. Leicht, frisch, kommt ungefragt nach.",
+    "humorousBio": "Kommt in 0,2 l. Kommt aber oft.",
+    "tags": ["leicht", "Stange", "Köln"],
+    "color": "#F0CB5A",
+    "disLikeQuip": "Deckel drauf. Der Köbes hat verstanden.",
+    "reference": true
+  },
+  {
+    "id": "guinness",
+    "name": "Guinness",
+    "fullName": "Guinness Draught",
+    "brewery": "St. James's Gate Brewery",
+    "country": "Irland",
+    "region": "Dublin",
+    "abv": 4.2,
+    "style": "Stout",
+    "taste": { "bitterness": 50, "hopIntensity": 25, "maltiness": 90, "sweetness": 30, "dryness": 65, "body": 75, "drinkability": 50, "character": 90 },
+    "description": "Irisches Dry Stout mit Röstaromen, cremiger Stickstoff-Schaumkrone und trockenem Abgang.",
+    "humorousBio": "Braucht 119,5 Sekunden zum Zapfen. Und du sollst warten. Frechheit.",
+    "tags": ["röstig", "cremig", "Pub"],
+    "color": "#1E120C",
+    "disLikeQuip": "119,5 Sekunden gewartet – für einen Korb.",
+    "reference": true
+  },
+  {
+    "id": "salvator",
+    "name": "Salvator",
+    "fullName": "Paulaner Salvator",
+    "brewery": "Paulaner Brauerei",
+    "country": "Deutschland",
+    "region": "München",
+    "abv": 7.9,
+    "style": "Doppelbock",
+    "taste": { "bitterness": 30, "hopIntensity": 25, "maltiness": 95, "sweetness": 75, "dryness": 20, "body": 90, "drinkability": 35, "character": 90 },
+    "description": "Der Ur-Doppelbock. Malzig, süß, stark – seit dem 17. Jahrhundert Fastenbier der Mönche.",
+    "humorousBio": "Flüssiges Brot. Von Mönchen erfunden, die beim Fasten geschummelt haben.",
+    "tags": ["malzig", "stark", "Starkbierzeit"],
+    "color": "#9E5A22",
+    "disLikeQuip": "Die Mönche fasten jetzt ohne dich.",
+    "reference": true
+  },
+  {
+    "id": "duvel",
+    "name": "Duvel",
+    "fullName": "Duvel",
+    "brewery": "Duvel Moortgat",
+    "country": "Belgien",
+    "region": "Breendonk",
+    "abv": 8.5,
+    "style": "Belgian Strong Ale",
+    "taste": { "bitterness": 55, "hopIntensity": 55, "maltiness": 55, "sweetness": 45, "dryness": 75, "body": 70, "drinkability": 35, "character": 95 },
+    "description": "Belgisches Strong Golden Ale. Sieht aus wie Pils, hat aber 8,5 % und eine riesige Schaumkrone.",
+    "humorousBio": "Heißt „Teufel“. Und das steht da nicht aus Spaß.",
+    "tags": ["stark", "spritzig", "Teufelszeug"],
+    "color": "#F1CE5C",
+    "disLikeQuip": "Der Teufel nimmt's persönlich. Er hat Zeit.",
     "reference": true
   },
   {
@@ -97,23 +251,7 @@
     "humorousBio": "Schmeckt nach Wochenende mit Grillgeruch. Für alle. Wirklich alle.",
     "tags": ["mild", "süffig", "Crowd-Pleaser"],
     "color": "#EBC75C",
-    "reference": true
-  },
-  {
-    "id": "ratsherrn",
-    "name": "Ratsherrn",
-    "fullName": "Ratsherrn Pale Ale",
-    "brewery": "Ratsherrn Brauerei",
-    "country": "Deutschland",
-    "region": "Hamburg",
-    "abv": 5.6,
-    "style": "Pale Ale",
-    "taste": { "bitterness": 60, "hopIntensity": 95, "maltiness": 50, "sweetness": 40, "dryness": 55, "body": 55, "drinkability": 55, "character": 80 },
-    "description": "Hamburger Pale Ale mit Citrus- und Grapefruitaromen aus amerikanischen Hopfensorten.",
-    "humorousBio": "Riecht nach Grapefruit und Selbstbewusstsein.",
-    "tags": ["fruchtig", "hopfig", "Craft"],
-    "color": "#D98E2E",
-    "reference": true
+    "disLikeQuip": "Krombacher wird's verkraften. Es hat noch ein paar Millionen andere Fans."
   },
   {
     "id": "tegernseer",
@@ -129,7 +267,7 @@
     "humorousBio": "Weich wie ein Sonntagmorgen am See. Ohne Wecker.",
     "tags": ["weich", "malzig", "bayerisch"],
     "color": "#F3CD62",
-    "reference": true
+    "disLikeQuip": "Ein Korb an den Tegernsee. Die Enten sind entsetzt."
   },
   {
     "id": "astra",
@@ -145,7 +283,7 @@
     "humorousBio": "Hafenkante, Herz, Anker. Kein Bier für Smalltalk.",
     "tags": ["kiezig", "mild", "ehrlich"],
     "color": "#EAC45A",
-    "reference": true
+    "disLikeQuip": "Astra nimmt's sportlich. Kiezregel: nicht nachtreten."
   },
   {
     "id": "veltins",
@@ -161,7 +299,7 @@
     "humorousBio": "Frisch, klar, sauerländisch unkompliziert. Wie ein fester Handschlag.",
     "tags": ["frisch", "süffig", "klar"],
     "color": "#EBC862",
-    "reference": true
+    "disLikeQuip": "Kein Handschlag heute. Das Sauerland schweigt."
   },
   {
     "id": "stoertebeker",
@@ -177,7 +315,7 @@
     "humorousBio": "Naturtrüb. Hat nichts zu verbergen – außer Hefe.",
     "tags": ["naturtrüb", "malzig", "Ostsee"],
     "color": "#D8A13E",
-    "reference": true
+    "disLikeQuip": "Störtebeker kapert jetzt jemand anderen."
   },
   {
     "id": "bitburger",
@@ -193,7 +331,7 @@
     "humorousBio": "Trägt Anzug. Auch am Wochenende.",
     "tags": ["feinherb", "klassisch", "Eifel"],
     "color": "#EAC65A",
-    "reference": true
+    "disLikeQuip": "Bitte kein Bit. Notiert."
   },
   {
     "id": "radeberger",
@@ -209,7 +347,7 @@
     "humorousBio": "Feinherb und ein bisschen stolz auf die eigene Geschichte. Zu Recht.",
     "tags": ["feinherb", "sächsisch", "Tradition"],
     "color": "#E6C255",
-    "reference": true
+    "disLikeQuip": "Radeberger zieht sich höflich zurück. Sächsisch gefasst."
   },
   {
     "id": "flensburger",
@@ -225,7 +363,7 @@
     "humorousBio": "Macht Plopp. Redet nicht viel. Meint es aber ernst.",
     "tags": ["herb", "trocken", "Bügelverschluss"],
     "color": "#E3BC4A",
-    "reference": true
+    "disLikeQuip": "Kein Plopp für dich. Flensburg zuckt nur mit den Schultern."
   },
   {
     "id": "urquell",
@@ -241,7 +379,7 @@
     "humorousBio": "Das Original. Und es weiß das auch.",
     "tags": ["vollmundig", "hopfig", "Urgestein"],
     "color": "#E0AE3C",
-    "reference": true
+    "disLikeQuip": "Das Original ist unbeeindruckt. Es hat schon ganz andere überlebt."
   },
   {
     "id": "warsteiner",
@@ -256,22 +394,8 @@
     "description": "Mildes Sauerland-Pils in der Tulpe. Eine Königin unter den Bieren, sagt die Werbung.",
     "humorousBio": "Hat eine Krone im Logo und trotzdem keine Allüren.",
     "tags": ["mild", "klar", "Tulpe"],
-    "color": "#EBC95E"
-  },
-  {
-    "id": "paulaner-weisse",
-    "name": "Paulaner Weißbier",
-    "fullName": "Paulaner Hefe-Weißbier Naturtrüb",
-    "brewery": "Paulaner Brauerei",
-    "country": "Deutschland",
-    "region": "München",
-    "abv": 5.5,
-    "style": "Weißbier",
-    "taste": { "bitterness": 15, "hopIntensity": 20, "maltiness": 60, "sweetness": 60, "dryness": 20, "body": 65, "drinkability": 75, "character": 65 },
-    "description": "Naturtrübes Hefeweizen mit Banane, Nelke und cremiger Schaumkrone.",
-    "humorousBio": "Schmeckt nach Banane, ohne je eine gesehen zu haben.",
-    "tags": ["fruchtig", "hefig", "Biergarten"],
-    "color": "#E8B84A"
+    "color": "#EBC95E",
+    "disLikeQuip": "Die Krone sitzt schief. Aber sie sitzt."
   },
   {
     "id": "erdinger",
@@ -286,7 +410,8 @@
     "description": "Die größte Weißbierbrauerei der Welt. Mild, spritzig, mit feiner Hefenote.",
     "humorousBio": "Das Weißbier, das auch deine Tante kennt. Aus dem Fernsehen.",
     "tags": ["mild", "spritzig", "Weizen-Einstieg"],
-    "color": "#EABD4F"
+    "color": "#EABD4F",
+    "disLikeQuip": "Deine Tante wird enttäuscht sein."
   },
   {
     "id": "weihenstephaner",
@@ -301,22 +426,8 @@
     "description": "Aus der ältesten Brauerei der Welt. Vollmundiges Hefeweizen mit Banane und Nelke, vielfach prämiert.",
     "humorousBio": "Seit 1040 im Geschäft. Hat mehr Erfahrung als du und ich zusammen.",
     "tags": ["vollmundig", "prämiert", "Klosterbier"],
-    "color": "#E5B448"
-  },
-  {
-    "id": "frueh",
-    "name": "Früh",
-    "fullName": "Früh Kölsch",
-    "brewery": "Cölner Hofbräu Früh",
-    "country": "Deutschland",
-    "region": "Köln",
-    "abv": 4.8,
-    "style": "Kölsch",
-    "taste": { "bitterness": 30, "hopIntensity": 35, "maltiness": 40, "sweetness": 40, "dryness": 45, "body": 30, "drinkability": 95, "character": 45 },
-    "description": "Obergäriges Kölsch aus der Stange. Leicht, frisch, kommt ungefragt nach.",
-    "humorousBio": "Kommt in 0,2 l. Kommt aber oft.",
-    "tags": ["leicht", "Stange", "Köln"],
-    "color": "#F0CB5A"
+    "color": "#E5B448",
+    "disLikeQuip": "Seit 1040 der erste Korb. Das Klosterarchiv ist informiert."
   },
   {
     "id": "gaffel",
@@ -331,7 +442,8 @@
     "description": "Etwas hopfenbetonteres Kölsch mit trockenem Abgang.",
     "humorousBio": "Das Kölsch für Leute, die beim Karneval noch wissen, was sie trinken.",
     "tags": ["frisch", "hopfenbetont", "Karneval"],
-    "color": "#EEC855"
+    "color": "#EEC855",
+    "disLikeQuip": "Gaffel geht ohne dich zum Karneval. Alaaf trotzdem."
   },
   {
     "id": "uerige",
@@ -346,7 +458,8 @@
     "description": "Das herbste Altbier Düsseldorfs. Kupferfarben, kräftig gehopft, malzbetont.",
     "humorousBio": "Das dat lecker Dröppke. Sagt Düsseldorf. Köln widerspricht.",
     "tags": ["herb", "kupferfarben", "Altstadt"],
-    "color": "#8B4A1E"
+    "color": "#8B4A1E",
+    "disLikeQuip": "Kein lecker Dröppke. Köln applaudiert leise."
   },
   {
     "id": "diebels",
@@ -361,52 +474,8 @@
     "description": "Milder Altbier-Klassiker vom Niederrhein mit rundem Malzkörper.",
     "humorousBio": "Das Alt, das sich mit allen versteht. Sogar mit Kölsch-Trinkern.",
     "tags": ["mild", "malzig", "Niederrhein"],
-    "color": "#9C5424"
-  },
-  {
-    "id": "koestritzer",
-    "name": "Köstritzer",
-    "fullName": "Köstritzer Schwarzbier",
-    "brewery": "Köstritzer Schwarzbierbrauerei",
-    "country": "Deutschland",
-    "region": "Thüringen",
-    "abv": 4.8,
-    "style": "Schwarzbier",
-    "taste": { "bitterness": 40, "hopIntensity": 30, "maltiness": 85, "sweetness": 45, "dryness": 45, "body": 60, "drinkability": 70, "character": 75 },
-    "description": "Thüringer Schwarzbier mit Röstmalz, Kaffee- und Schokoladennoten – dabei überraschend leicht.",
-    "humorousBio": "Sieht aus wie Guinness, trinkt sich wie Pils. Ein Doppelagent.",
-    "tags": ["röstig", "dunkel", "leichter als gedacht"],
-    "color": "#2B1A12"
-  },
-  {
-    "id": "guinness",
-    "name": "Guinness",
-    "fullName": "Guinness Draught",
-    "brewery": "St. James's Gate Brewery",
-    "country": "Irland",
-    "region": "Dublin",
-    "abv": 4.2,
-    "style": "Stout",
-    "taste": { "bitterness": 50, "hopIntensity": 25, "maltiness": 90, "sweetness": 30, "dryness": 65, "body": 75, "drinkability": 50, "character": 90 },
-    "description": "Irisches Dry Stout mit Röstaromen, cremiger Stickstoff-Schaumkrone und trockenem Abgang.",
-    "humorousBio": "Braucht 119,5 Sekunden zum Zapfen. Und du sollst warten. Frechheit.",
-    "tags": ["röstig", "cremig", "Pub"],
-    "color": "#1E120C"
-  },
-  {
-    "id": "corona",
-    "name": "Corona",
-    "fullName": "Corona Extra",
-    "brewery": "Grupo Modelo",
-    "country": "Mexiko",
-    "region": "Mexiko-Stadt",
-    "abv": 4.5,
-    "style": "Lager",
-    "taste": { "bitterness": 15, "hopIntensity": 15, "maltiness": 25, "sweetness": 45, "dryness": 40, "body": 20, "drinkability": 85, "character": 20 },
-    "description": "Leichtes mexikanisches Lager, traditionell mit Limettenspalte im Flaschenhals.",
-    "humorousBio": "Ohne Limette nur ein Bier. Mit Limette immer noch nur ein Bier.",
-    "tags": ["leicht", "Limette", "Strand"],
-    "color": "#F4D970"
+    "color": "#9C5424",
+    "disLikeQuip": "Selbst Diebels kann nicht mit allen. Überraschung."
   },
   {
     "id": "heineken",
@@ -421,7 +490,8 @@
     "description": "Niederländisches Lager mit leicht süßlicher Note. Weltweit in derselben grünen Flasche.",
     "humorousBio": "Ist überall. Schmeckt überall gleich. Das ist der Plan.",
     "tags": ["international", "mild", "grüne Flasche"],
-    "color": "#EFC94C"
+    "color": "#EFC94C",
+    "disLikeQuip": "Heineken gibt es überall. Nur nicht bei dir."
   },
   {
     "id": "stella",
@@ -436,22 +506,8 @@
     "description": "Belgisches Premium-Lager mit leichter Malzsüße, im Kelchglas serviert.",
     "humorousBio": "Kommt im Kelch. Fühlt sich wie ein Sektempfang an, ist aber Lager.",
     "tags": ["Kelchglas", "mild", "Belgien"],
-    "color": "#EDC44F"
-  },
-  {
-    "id": "duvel",
-    "name": "Duvel",
-    "fullName": "Duvel",
-    "brewery": "Duvel Moortgat",
-    "country": "Belgien",
-    "region": "Breendonk",
-    "abv": 8.5,
-    "style": "Belgian Strong Ale",
-    "taste": { "bitterness": 55, "hopIntensity": 55, "maltiness": 55, "sweetness": 45, "dryness": 75, "body": 70, "drinkability": 35, "character": 95 },
-    "description": "Belgisches Strong Golden Ale. Sieht aus wie Pils, hat aber 8,5 % und eine riesige Schaumkrone.",
-    "humorousBio": "Heißt „Teufel“. Und das steht da nicht aus Spaß.",
-    "tags": ["stark", "spritzig", "Teufelszeug"],
-    "color": "#F1CE5C"
+    "color": "#EDC44F",
+    "disLikeQuip": "Kein Sektempfang heute. Der Kelch bleibt leer."
   },
   {
     "id": "leffe",
@@ -466,22 +522,8 @@
     "description": "Belgisches Abteibier, süßlich, malzig, mit Gewürznelke und Vanille.",
     "humorousBio": "Schmeckt wie ein Dessert, das sich als Bier verkleidet hat.",
     "tags": ["süß", "Abteibier", "Vanille"],
-    "color": "#E5A93A"
-  },
-  {
-    "id": "salvator",
-    "name": "Salvator",
-    "fullName": "Paulaner Salvator",
-    "brewery": "Paulaner Brauerei",
-    "country": "Deutschland",
-    "region": "München",
-    "abv": 7.9,
-    "style": "Doppelbock",
-    "taste": { "bitterness": 30, "hopIntensity": 25, "maltiness": 95, "sweetness": 75, "dryness": 20, "body": 90, "drinkability": 35, "character": 90 },
-    "description": "Der Ur-Doppelbock. Malzig, süß, stark – seit dem 17. Jahrhundert Fastenbier der Mönche.",
-    "humorousBio": "Flüssiges Brot. Von Mönchen erfunden, die beim Fasten geschummelt haben.",
-    "tags": ["malzig", "stark", "Starkbierzeit"],
-    "color": "#9E5A22"
+    "color": "#E5A93A",
+    "disLikeQuip": "Dessert abgelehnt. Diszipliniert."
   },
   {
     "id": "celebrator",
@@ -496,22 +538,8 @@
     "description": "Dunkler Doppelbock mit Schokolade, Dörrobst und Röstmalz. Mit Plastik-Ziege am Flaschenhals.",
     "humorousBio": "Hat eine kleine Ziege an der Flasche. Braucht keine weiteren Argumente.",
     "tags": ["dunkel", "Schokolade", "Ziege inklusive"],
-    "color": "#4A2412"
-  },
-  {
-    "id": "punk-ipa",
-    "name": "Punk IPA",
-    "fullName": "BrewDog Punk IPA",
-    "brewery": "BrewDog",
-    "country": "Schottland",
-    "region": "Ellon",
-    "abv": 5.4,
-    "style": "IPA",
-    "taste": { "bitterness": 70, "hopIntensity": 100, "maltiness": 40, "sweetness": 35, "dryness": 60, "body": 50, "drinkability": 50, "character": 85 },
-    "description": "Das IPA, das den Craft-Beer-Boom nach Europa gebracht hat. Tropische Früchte, Harz, Bittere.",
-    "humorousBio": "Hat 2007 Krawall gemacht und ist jetzt im Supermarkt. Wie wir alle.",
-    "tags": ["hopfig", "tropisch", "Craft-Klassiker"],
-    "color": "#E3A63A"
+    "color": "#4A2412",
+    "disLikeQuip": "Die Ziege hat es gesehen. Die Ziege vergisst nicht."
   },
   {
     "id": "drunken-sailor",
@@ -526,7 +554,8 @@
     "description": "Münchner IPA mit Mango, Grapefruit und ordentlich Bittere. Craft aus Bayern, ohne Reinheitsgebot-Debatte.",
     "humorousBio": "Bayerisches Craft Beer. Ja, das gibt's. Und es ist laut.",
     "tags": ["hopfig", "Mango", "Craft aus Bayern"],
-    "color": "#DA9331"
+    "color": "#DA9331",
+    "disLikeQuip": "Der Matrose segelt weiter. Ohne dich an Bord."
   },
   {
     "id": "sternburg",
@@ -541,7 +570,8 @@
     "description": "Leipziger Export mit leichter Malzsüße. Das Späti-Bier schlechthin.",
     "humorousBio": "Kostet weniger als der Pfand drumherum. Und ist trotzdem stolz.",
     "tags": ["günstig", "Späti", "Leipzig"],
-    "color": "#ECC757"
+    "color": "#ECC757",
+    "disLikeQuip": "Du lehnst ein Bier ab, das weniger kostet als sein Pfand. Respekt."
   },
   {
     "id": "oettinger",
@@ -556,7 +586,8 @@
     "description": "Bayerisches Discounter-Pils, mild und unkompliziert. Ohne Werbung, dafür billig.",
     "humorousBio": "Macht keine Werbung. Muss es auch nicht. Kennt eh jeder vom Studium.",
     "tags": ["günstig", "mild", "Studentenbier"],
-    "color": "#EBC85C"
+    "color": "#EBC85C",
+    "disLikeQuip": "Oettinger ist Ablehnung gewohnt. Nur nicht beim Preis."
   },
   {
     "id": "hasseroeder",
@@ -571,7 +602,8 @@
     "description": "Harzer Pils mit sechseckiger Flasche und kerniger Hopfennote.",
     "humorousBio": "Sechseckige Flasche. Weil rund kann jeder.",
     "tags": ["kernig", "Harz", "Sechskant"],
-    "color": "#E9C556"
+    "color": "#E9C556",
+    "disLikeQuip": "Sechs Ecken, null Chancen."
   },
   {
     "id": "wernesgruener",
@@ -586,7 +618,8 @@
     "description": "Vogtländisches Pils mit ausgeprägter, aber weicher Hopfenbittere.",
     "humorousBio": "Nennt sich selbst Legende. Und wer will da schon widersprechen.",
     "tags": ["hopfenbetont", "Vogtland", "Legende"],
-    "color": "#E8C34F"
+    "color": "#E8C34F",
+    "disLikeQuip": "Du hast einer Legende widersprochen. Mutig."
   },
   {
     "id": "hofbraeu",
@@ -601,7 +634,8 @@
     "description": "Das Helle aus dem Hofbräuhaus – etwas hopfiger als andere Münchner Helle.",
     "humorousBio": "Wird pro Tag von mehr Touristen fotografiert als der Eiffelturm. Gefühlt.",
     "tags": ["Maßkrug", "Touristen", "München"],
-    "color": "#F1C858"
+    "color": "#F1C858",
+    "disLikeQuip": "Ein Prosit weniger. Die Touristen trinken's schon."
   },
   {
     "id": "andechser-doppelbock",
@@ -616,7 +650,8 @@
     "description": "Dunkler Klosterdoppelbock vom Heiligen Berg. Malzig, warm, mit Karamell und Pflaume.",
     "humorousBio": "Wird von Mönchen gebraut. Man merkt, die haben Zeit.",
     "tags": ["Kloster", "malzig", "Karamell"],
-    "color": "#5A2E14"
+    "color": "#5A2E14",
+    "disLikeQuip": "Die Mönche beten für dich. Sie haben ja Zeit."
   },
   {
     "id": "moenchshof-keller",
@@ -631,7 +666,8 @@
     "description": "Fränkisches Kellerbier, ungefiltert, bernsteinfarben, mit kräftigem Malzkörper.",
     "humorousBio": "Ungefiltert und stolz drauf. Wie ein guter Freund nach dem dritten Bier.",
     "tags": ["ungefiltert", "fränkisch", "bernstein"],
-    "color": "#D9A43C"
+    "color": "#D9A43C",
+    "disLikeQuip": "Ungefiltert und ungeliebt. Hart."
   },
   {
     "id": "einbecker-urbock",
@@ -646,6 +682,295 @@
     "description": "Aus der Stadt, die dem Bockbier den Namen gab. Dunkel, malzig, mit feiner Hopfenbittere.",
     "humorousBio": "Hat das Bockbier erfunden. Erwähnt das gelegentlich.",
     "tags": ["Bock-Erfinder", "malzig", "Niedersachsen"],
-    "color": "#6E3A18"
+    "color": "#6E3A18",
+    "disLikeQuip": "Der Bock-Erfinder ist beleidigt. Zum ersten Mal seit 1378."
+  },
+  {
+    "id": "jever-fun",
+    "name": "Jever Fun",
+    "fullName": "Jever Fun Alkoholfrei",
+    "brewery": "Friesisches Brauhaus zu Jever",
+    "country": "Deutschland",
+    "region": "Friesland",
+    "abv": 0.5,
+    "style": "Alkoholfrei",
+    "taste": { "bitterness": 62, "hopIntensity": 45, "maltiness": 20, "sweetness": 18, "dryness": 72, "body": 15, "drinkability": 62, "character": 40 },
+    "description": "Alkoholfreies Pils mit der typischen Jever-Herbe – nur ohne Ausrede.",
+    "humorousBio": "Herb wie der große Bruder, aber fährt dich hinterher nach Hause.",
+    "disLikeQuip": "Nicht mal ohne Promille? Das ist ehrlich.",
+    "tags": ["alkoholfrei", "herb", "Fahrer-Bier"],
+    "color": "#E9CC6A"
+  },
+  {
+    "id": "erdinger-af",
+    "name": "Erdinger Alkoholfrei",
+    "fullName": "Erdinger Alkoholfrei",
+    "brewery": "Erdinger Weißbräu",
+    "country": "Deutschland",
+    "region": "Erding",
+    "abv": 0.4,
+    "style": "Alkoholfreies Weißbier",
+    "taste": { "bitterness": 15, "hopIntensity": 15, "maltiness": 45, "sweetness": 58, "dryness": 20, "body": 35, "drinkability": 68, "character": 35 },
+    "description": "Alkoholfreies Weißbier, spritzig und leicht süß. Beliebt bei Menschen mit Laufschuhen.",
+    "humorousBio": "Wird nach dem Marathon getrunken. Von Leuten, die das erwähnen.",
+    "disLikeQuip": "Kein isotonisches Durstlöschen heute. Die Laufgruppe ist informiert.",
+    "tags": ["alkoholfrei", "spritzig", "Sportler"],
+    "color": "#E8B24A"
+  },
+  {
+    "id": "clausthaler",
+    "name": "Clausthaler",
+    "fullName": "Clausthaler Original",
+    "brewery": "Radeberger Gruppe",
+    "country": "Deutschland",
+    "region": "Hessen",
+    "abv": 0.4,
+    "style": "Alkoholfrei",
+    "taste": { "bitterness": 45, "hopIntensity": 35, "maltiness": 30, "sweetness": 30, "dryness": 55, "body": 20, "drinkability": 60, "character": 30 },
+    "description": "Einer der Klassiker unter den Alkoholfreien – mild-herb und unaufgeregt.",
+    "humorousBio": "Nicht immer, aber immer öfter. Du weißt schon.",
+    "disLikeQuip": "Nicht immer. Und bei dir offenbar nie.",
+    "tags": ["alkoholfrei", "mild", "Klassiker"],
+    "color": "#E8C860"
+  },
+  {
+    "id": "schneider-tap7",
+    "name": "Schneider TAP7",
+    "fullName": "Schneider Weisse TAP7 Unser Original",
+    "brewery": "Weisses Bräuhaus G. Schneider & Sohn",
+    "country": "Deutschland",
+    "region": "Kelheim",
+    "abv": 5.4,
+    "style": "Weißbier",
+    "taste": { "bitterness": 22, "hopIntensity": 20, "maltiness": 75, "sweetness": 50, "dryness": 30, "body": 70, "drinkability": 55, "character": 80 },
+    "description": "Bernsteinfarbenes Weißbier mit Nelke, Karamell und Brotkruste. Das Original unter den Dunkleren.",
+    "humorousBio": "Weißbier, aber mit Lebenserfahrung.",
+    "disLikeQuip": "Zu dunkel für ein Weißbier? Schneider nimmt es mit Würde.",
+    "tags": ["bernstein", "würzig", "Karamell"],
+    "color": "#8A4A1E"
+  },
+  {
+    "id": "franziskaner",
+    "name": "Franziskaner",
+    "fullName": "Franziskaner Hefe-Weissbier Naturtrüb",
+    "brewery": "Spaten-Franziskaner-Bräu",
+    "country": "Deutschland",
+    "region": "München",
+    "abv": 5.0,
+    "style": "Weißbier",
+    "taste": { "bitterness": 15, "hopIntensity": 15, "maltiness": 50, "sweetness": 50, "dryness": 30, "body": 55, "drinkability": 75, "character": 55 },
+    "description": "Mildes Münchner Hefeweizen, fruchtig und cremig.",
+    "humorousBio": "Trägt Kutte, macht aber gute Laune.",
+    "disLikeQuip": "Der Mönch auf dem Etikett schaut kurz weg.",
+    "tags": ["mild", "fruchtig", "Biergarten"],
+    "color": "#E6B24A"
+  },
+  {
+    "id": "augustiner-edelstoff",
+    "name": "Edelstoff",
+    "fullName": "Augustiner Edelstoff",
+    "brewery": "Augustiner-Bräu",
+    "country": "Deutschland",
+    "region": "München",
+    "abv": 5.6,
+    "style": "Export",
+    "taste": { "bitterness": 30, "hopIntensity": 30, "maltiness": 60, "sweetness": 50, "dryness": 40, "body": 55, "drinkability": 85, "character": 55 },
+    "description": "Das Export von Augustiner: vollmundig, weich, gefährlich süffig.",
+    "humorousBio": "Heißt Edelstoff und nimmt den Namen ernst.",
+    "disLikeQuip": "Den Edelstoff abgelehnt. München wird darüber reden.",
+    "tags": ["vollmundig", "süffig", "Kultstatus"],
+    "color": "#EDC04E"
+  },
+  {
+    "id": "schoenramer-pils",
+    "name": "Schönramer Pils",
+    "fullName": "Schönramer Pils",
+    "brewery": "Private Landbrauerei Schönram",
+    "country": "Deutschland",
+    "region": "Oberbayern",
+    "abv": 5.0,
+    "style": "Pils",
+    "taste": { "bitterness": 80, "hopIntensity": 65, "maltiness": 35, "sweetness": 15, "dryness": 80, "body": 40, "drinkability": 72, "character": 75 },
+    "description": "Oberbayerisches Pils mit ordentlich Hopfen – Liebling der Bier-Nerds.",
+    "humorousBio": "Bayerisch, aber herb. Das gibt es wirklich.",
+    "disLikeQuip": "Das Lieblingsbier der Bier-Nerds. Die schreiben jetzt einen Blogpost.",
+    "tags": ["herb", "hopfig", "Geheimtipp"],
+    "color": "#E7C150"
+  },
+  {
+    "id": "brlo-pale-ale",
+    "name": "BRLO Pale Ale",
+    "fullName": "BRLO Pale Ale",
+    "brewery": "BRLO Brwhouse",
+    "country": "Deutschland",
+    "region": "Berlin",
+    "abv": 5.5,
+    "style": "Pale Ale",
+    "taste": { "bitterness": 60, "hopIntensity": 80, "maltiness": 40, "sweetness": 25, "dryness": 55, "body": 50, "drinkability": 60, "character": 75 },
+    "description": "Berliner Pale Ale mit Zitrus und Harz, gebraut in einer Brauerei aus Schiffscontainern.",
+    "humorousBio": "Aus Berlin. Hat einen Podcast. Wahrscheinlich.",
+    "disLikeQuip": "Berlin hat dich gehört. Berlin ist das egal.",
+    "tags": ["Craft", "zitrusfrisch", "Berlin"],
+    "color": "#D9923A"
+  },
+  {
+    "id": "maisel-pale-ale",
+    "name": "Maisel Pale Ale",
+    "fullName": "Maisel & Friends Pale Ale",
+    "brewery": "Brauerei Gebr. Maisel",
+    "country": "Deutschland",
+    "region": "Bayreuth",
+    "abv": 5.2,
+    "style": "Pale Ale",
+    "taste": { "bitterness": 55, "hopIntensity": 80, "maltiness": 45, "sweetness": 35, "dryness": 45, "body": 55, "drinkability": 65, "character": 70 },
+    "description": "Fruchtiges Pale Ale aus Bayreuth mit Aprikose, Mango und Karamell.",
+    "humorousBio": "Craft aus Franken. Mit Freunden, sagt es selbst.",
+    "disLikeQuip": "Maisel hat noch genug Friends. Keine Sorge.",
+    "tags": ["Craft", "fruchtig", "Franken"],
+    "color": "#D8913A"
+  },
+  {
+    "id": "sierra-nevada",
+    "name": "Sierra Nevada",
+    "fullName": "Sierra Nevada Pale Ale",
+    "brewery": "Sierra Nevada Brewing Co.",
+    "country": "USA",
+    "region": "Kalifornien",
+    "abv": 5.6,
+    "style": "Pale Ale",
+    "taste": { "bitterness": 70, "hopIntensity": 85, "maltiness": 45, "sweetness": 25, "dryness": 55, "body": 55, "drinkability": 60, "character": 80 },
+    "description": "Der Urvater des American Pale Ale: Cascade-Hopfen, Kiefer, Grapefruit.",
+    "humorousBio": "Hat Craft Beer erfunden, bevor es cool war.",
+    "disLikeQuip": "Du hast den Craft-Opa abgelehnt. Er erzählt es niemandem.",
+    "tags": ["hopfig", "Cascade", "Craft-Pionier"],
+    "color": "#D88A30"
+  },
+  {
+    "id": "peroni",
+    "name": "Peroni",
+    "fullName": "Peroni Nastro Azzurro",
+    "brewery": "Birra Peroni",
+    "country": "Italien",
+    "region": "Rom",
+    "abv": 5.1,
+    "style": "Lager",
+    "taste": { "bitterness": 30, "hopIntensity": 25, "maltiness": 25, "sweetness": 30, "dryness": 55, "body": 25, "drinkability": 85, "character": 30 },
+    "description": "Leichtes italienisches Lager, frisch und unkompliziert.",
+    "humorousBio": "Trägt Sonnenbrille. Auch drinnen.",
+    "disLikeQuip": "Kein Dolce Vita heute. Ciao.",
+    "tags": ["leicht", "frisch", "Italien"],
+    "color": "#F1D46A"
+  },
+  {
+    "id": "budvar",
+    "name": "Budvar",
+    "fullName": "Budweiser Budvar Original",
+    "brewery": "Budějovický Budvar",
+    "country": "Tschechien",
+    "region": "Budweis",
+    "abv": 5.0,
+    "style": "Lager",
+    "taste": { "bitterness": 50, "hopIntensity": 45, "maltiness": 50, "sweetness": 35, "dryness": 45, "body": 55, "drinkability": 75, "character": 65 },
+    "description": "Böhmisches Lager mit Saazer Hopfen und langer Reifung. Das echte Budweiser.",
+    "humorousBio": "Hat seit Jahrzehnten Streit mit einem Amerikaner um den eigenen Namen.",
+    "disLikeQuip": "Budvar hat Schlimmeres erlebt. Anwälte zum Beispiel.",
+    "tags": ["böhmisch", "rund", "Namensstreit"],
+    "color": "#E2B03E"
+  },
+  {
+    "id": "kozel-dark",
+    "name": "Kozel Dunkel",
+    "fullName": "Velkopopovický Kozel Černý",
+    "brewery": "Pivovar Velké Popovice",
+    "country": "Tschechien",
+    "region": "Velké Popovice",
+    "abv": 3.8,
+    "style": "Dunkles",
+    "taste": { "bitterness": 15, "hopIntensity": 15, "maltiness": 65, "sweetness": 65, "dryness": 25, "body": 45, "drinkability": 75, "character": 50 },
+    "description": "Tschechisches dunkles Lager: Karamell, Kaffee, wenig Alkohol.",
+    "humorousBio": "Dunkel, süß, leicht. Und eine Ziege ist auch dabei.",
+    "disLikeQuip": "Schon wieder eine Ziege, die dich nicht vergisst.",
+    "tags": ["dunkel", "Karamell", "leicht"],
+    "color": "#3A2012"
+  },
+  {
+    "id": "chimay-blue",
+    "name": "Chimay Blau",
+    "fullName": "Chimay Grande Réserve (Blau)",
+    "brewery": "Abbaye de Scourmont",
+    "country": "Belgien",
+    "region": "Chimay",
+    "abv": 9.0,
+    "style": "Trappist",
+    "taste": { "bitterness": 30, "hopIntensity": 25, "maltiness": 90, "sweetness": 70, "dryness": 30, "body": 95, "drinkability": 30, "character": 95 },
+    "description": "Dunkles Trappistenbier mit Pflaume, Karamell und Pfeffer. Wird mit dem Alter besser.",
+    "humorousBio": "Wird von Mönchen gebraut und reift wie Wein. Du eher nicht.",
+    "disLikeQuip": "Die Trappisten schweigen. Das tun sie aber immer.",
+    "tags": ["Trappist", "stark", "Pflaume"],
+    "color": "#4B2414"
+  },
+  {
+    "id": "licher",
+    "name": "Licher",
+    "fullName": "Licher Pilsner",
+    "brewery": "Licher Privatbrauerei",
+    "country": "Deutschland",
+    "region": "Hessen",
+    "abv": 4.9,
+    "style": "Pils",
+    "taste": { "bitterness": 55, "hopIntensity": 45, "maltiness": 30, "sweetness": 20, "dryness": 65, "body": 35, "drinkability": 75, "character": 45 },
+    "description": "Hessisches Pils aus dem Herzen der Natur, sagt die Werbung.",
+    "humorousBio": "Kommt aus dem Herzen der Natur. Die Natur hat nicht widersprochen.",
+    "disLikeQuip": "Die Natur hat Herz. Du offenbar weniger.",
+    "tags": ["mild-herb", "Hessen", "Natur"],
+    "color": "#EAC55A"
+  },
+  {
+    "id": "luebzer",
+    "name": "Lübzer",
+    "fullName": "Lübzer Pils",
+    "brewery": "Mecklenburgische Brauerei Lübz",
+    "country": "Deutschland",
+    "region": "Mecklenburg",
+    "abv": 4.9,
+    "style": "Pils",
+    "taste": { "bitterness": 60, "hopIntensity": 45, "maltiness": 30, "sweetness": 20, "dryness": 65, "body": 35, "drinkability": 70, "character": 45 },
+    "description": "Norddeutsches Pils aus Mecklenburg, frisch und klar.",
+    "humorousBio": "Mecklenburg in der Flasche. Wortkarg, aber verlässlich.",
+    "disLikeQuip": "Lübzer sagt nichts dazu. Wie immer.",
+    "tags": ["frisch", "Mecklenburg", "Ostsee"],
+    "color": "#E8C458"
+  },
+  {
+    "id": "ur-krostitzer",
+    "name": "Ur-Krostitzer",
+    "fullName": "Ur-Krostitzer Feinherbes Pilsner",
+    "brewery": "Krostitzer Brauerei",
+    "country": "Deutschland",
+    "region": "Sachsen",
+    "abv": 4.9,
+    "style": "Pils",
+    "taste": { "bitterness": 70, "hopIntensity": 55, "maltiness": 35, "sweetness": 20, "dryness": 70, "body": 40, "drinkability": 70, "character": 55 },
+    "description": "Feinherbes Pils aus Nordsachsen mit Tradition seit dem 16. Jahrhundert.",
+    "humorousBio": "Hat einen Schwedenkönig auf dem Etikett. Warum, fragt man besser nicht.",
+    "disLikeQuip": "Der Schwedenkönig ist enttäuscht. Er zieht weiter.",
+    "tags": ["feinherb", "Sachsen", "Tradition"],
+    "color": "#E6C050"
+  },
+  {
+    "id": "berliner-weisse",
+    "name": "Berliner Weisse",
+    "fullName": "Berliner Kindl Weisse",
+    "brewery": "Berliner Kindl Schultheiss Brauerei",
+    "country": "Deutschland",
+    "region": "Berlin",
+    "abv": 2.5,
+    "style": "Berliner Weisse",
+    "taste": { "bitterness": 10, "hopIntensity": 10, "maltiness": 20, "sweetness": 40, "dryness": 40, "body": 15, "drinkability": 70, "character": 70 },
+    "description": "Säuerliches Leichtbier – traditionell mit Schuss (rot oder grün) und Strohhalm.",
+    "humorousBio": "Kommt mit Strohhalm und Sirup. Und schämt sich kein bisschen.",
+    "disLikeQuip": "Nicht mal mit Schuss? Rot und Grün sind beide beleidigt.",
+    "tags": ["sauer", "mit Schuss", "Strohhalm"],
+    "color": "#F0DC8A"
   }
 ]
