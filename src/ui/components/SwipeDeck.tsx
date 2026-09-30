@@ -17,6 +17,8 @@ interface Props {
   onCommit: (beer: Beer, rating: Rating) => void
   onTap: (beer: Beer) => void
   onDragChange?: (dragging: boolean) => void
+  /** Tutorial: tilts the top card as if dragged (while the user isn't touching it). */
+  coachOffset?: { x: number; y: number } | null
   ref?: Ref<SwipeDeckHandle>
 }
 
@@ -44,7 +46,7 @@ interface Exit {
   dur: number
 }
 
-export function SwipeDeck({ queue, onCommit, onTap, onDragChange, ref }: Props) {
+export function SwipeDeck({ queue, onCommit, onTap, onDragChange, coachOffset, ref }: Props) {
   const [drag, setDrag] = useState({ x: 0, y: 0 })
   const [dragging, setDragging] = useState(false)
   const [exit, setExit] = useState<Exit | null>(null)
@@ -136,7 +138,9 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, ref }: Props) 
     }
   }
 
-  const progress = exit ? 1 : clamp((Math.abs(drag.x) + Math.abs(drag.y)) / 150)
+  const coaching = !!coachOffset && !dragging && !exit
+  const view = coaching ? coachOffset : drag
+  const progress = exit ? 1 : clamp((Math.abs(view.x) + Math.abs(view.y)) / 150)
   const noTransition = dragging || swapping
 
   return (
@@ -151,12 +155,16 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, ref }: Props) 
             transition = `transform ${exit.dur}s cubic-bezier(.4,0,1,1)`
             stamps = { [exit.rating]: 1 }
           } else {
-            transform = `translate(${drag.x}px, ${drag.y}px) rotate(${drag.x * 0.06}deg)`
-            transition = noTransition ? 'none' : 'transform .5s cubic-bezier(.2,1.5,.4,1)'
-            const horizontal = Math.abs(drag.x) >= Math.abs(drag.y)
+            transform = `translate(${view.x}px, ${view.y}px) rotate(${view.x * 0.06}deg)`
+            transition = noTransition
+              ? 'none'
+              : coaching
+                ? 'transform .6s cubic-bezier(.3,.7,.3,1)'
+                : 'transform .5s cubic-bezier(.2,1.5,.4,1)'
+            const horizontal = Math.abs(view.x) >= Math.abs(view.y)
             stamps = horizontal
-              ? { LIKE: clamp(drag.x / THRESHOLD_X), DISLIKE: clamp(-drag.x / THRESHOLD_X) }
-              : { WANT_TO_TRY: clamp(-drag.y / THRESHOLD_UP), UNKNOWN: clamp(drag.y / THRESHOLD_DOWN) }
+              ? { LIKE: clamp(view.x / THRESHOLD_X), DISLIKE: clamp(-view.x / THRESHOLD_X) }
+              : { WANT_TO_TRY: clamp(-view.y / THRESHOLD_UP), UNKNOWN: clamp(view.y / THRESHOLD_DOWN) }
           }
         } else {
           const k = Math.max(0, i - progress)
@@ -175,7 +183,7 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, ref }: Props) 
             onPointerCancel={top ? onUp : undefined}
             aria-hidden={!top}
           >
-            <BeerCard beer={beer} position={deckPosition(beer.id)} stamps={stamps} />
+            <BeerCard beer={beer} position={deckPosition(beer.id)} stamps={stamps} smoothStamps={top && coaching} />
           </div>
         )
       })}

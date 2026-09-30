@@ -11,13 +11,16 @@ interface Props {
   /** "07/42" */
   position: string
   stamps?: StampOpacity
+  /** Fade stamps smoothly (tutorial animation); during a real drag they follow 1:1. */
+  smoothStamps?: boolean
 }
 
 /**
  * The beer as a Bierdeckel: upper half is "the glass" (beer colour + foam edge + bottle),
  * lower half the profile text. Stamps fade in proportionally to the drag.
  */
-export function BeerCard({ beer, position, stamps = {} }: Props) {
+export function BeerCard({ beer, position, stamps = {}, smoothStamps = false }: Props) {
+  const fade = smoothStamps ? 'opacity .45s ease' : undefined
   const ink = textOnBeer(beer.color)
   const dark = isDarkBeer(beer.color)
   return (
@@ -43,19 +46,19 @@ export function BeerCard({ beer, position, stamps = {} }: Props) {
           </div>
         )}
 
-        <div className={`${styles.stamp} ${styles.stampLike}`} style={{ opacity: stamps.LIKE ?? 0 }}>
+        <div className={`${styles.stamp} ${styles.stampLike}`} style={{ opacity: stamps.LIKE ?? 0, transition: fade }}>
           {COPY.rating.LIKE.stamp}
         </div>
-        <div className={`${styles.stamp} ${styles.stampNope}`} style={{ opacity: stamps.DISLIKE ?? 0 }}>
+        <div className={`${styles.stamp} ${styles.stampNope}`} style={{ opacity: stamps.DISLIKE ?? 0, transition: fade }}>
           {COPY.rating.DISLIKE.stamp}
         </div>
-        <div className={`${styles.stamp} ${styles.stampTry}`} style={{ opacity: stamps.WANT_TO_TRY ?? 0 }}>
+        <div className={`${styles.stamp} ${styles.stampTry}`} style={{ opacity: stamps.WANT_TO_TRY ?? 0, transition: fade }}>
           {COPY.rating.WANT_TO_TRY.stamp}
         </div>
-        <div className={`${styles.stamp} ${styles.stampUnknown}`} style={{ opacity: stamps.UNKNOWN ?? 0 }}>
+        <div className={`${styles.stamp} ${styles.stampUnknown}`} style={{ opacity: stamps.UNKNOWN ?? 0, transition: fade }}>
           {COPY.rating.UNKNOWN.stamp}
         </div>
-        <div className={`${styles.stamp} ${styles.stampKnow}`} style={{ opacity: stamps.KNOW ?? 0 }}>
+        <div className={`${styles.stamp} ${styles.stampKnow}`} style={{ opacity: stamps.KNOW ?? 0, transition: fade }}>
           {COPY.rating.KNOW.stamp}
         </div>
       </div>

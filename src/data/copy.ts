@@ -57,8 +57,21 @@ export const COPY = {
     half: '{pct} % – wir kennen dich langsam.',
     fiveNopes: 'Du hast 5 Biere abgelehnt. Hohe Ansprüche.',
   },
+  coach: {
+    caption: 'Karte ziehen – oder Buttons unten',
+    captionKeys: 'Tasten: ← → ↑ ↓ · K = Kenn ich',
+    help: 'Wie war das nochmal?',
+    sheetTitle: 'So swipst du',
+    sheetSub: 'Tippen auf die Karte zeigt Details. Kenn ich nicht zählt nie gegen euch.',
+    close: 'Verstanden',
+    chips: {
+      LIKE: 'Mag ich',
+      DISLIKE: 'Nö',
+      WANT_TO_TRY: 'Probieren',
+      UNKNOWN: 'Kenn ich nicht',
+    },
+  },
   swipe: {
-    hint: 'Karte ziehen · oder Buttons',
     left: '{n} übrig',
     analyzeCta: 'Genug gedatet? DNA auswerten',
     photoPlaceholder: 'Flaschen-\nfoto',

@@ -26,3 +26,5 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
 - Work follows `docs/ROADMAP.md`: keep its order (A0 → A1 → A2 → A9 → …), tick the checkbox of a
   package when it is live, and run the gate (build, test, lint, `e2e/flow.mjs`, screenshots,
   `npm run deploy`) before ticking.
+- One package = one branch + PR. Merge it yourself once the gate is green, deploy from `main`,
+  then smoke-test https://pilsbuddy.mcbuchi.de (E2E against production) before moving on.

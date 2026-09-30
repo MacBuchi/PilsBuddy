@@ -1,0 +1,87 @@
+.coach {
+  position: absolute;
+  inset: 0 0 8px 0;
+  z-index: 20;
+  pointer-events: none;
+  animation: pbFade 0.4s ease both;
+}
+
+.chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 99px;
+  border: 2px solid var(--ink-fixed);
+  box-shadow: 0 3px 0 var(--ink-fixed);
+  color: var(--cream-fixed);
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform 0.25s cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+
+.chip svg {
+  font-size: 13px;
+}
+
+/* Chips sit on the card edges, pointing where the card has to go. */
+.LIKE {
+  right: -8px;
+  top: 34%;
+  transform: translateY(-50%);
+}
+
+.DISLIKE {
+  left: -8px;
+  top: 34%;
+  transform: translateY(-50%);
+}
+
+.WANT_TO_TRY {
+  left: 50%;
+  top: 24px;
+  transform: translateX(-50%);
+}
+
+.UNKNOWN {
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+}
+
+.LIKE.active,
+.DISLIKE.active {
+  transform: translateY(-50%) scale(1.14);
+}
+
+.WANT_TO_TRY.active,
+.UNKNOWN.active {
+  transform: translateX(-50%) scale(1.14);
+}
+
+.hand {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 246, 227, 0.55);
+  border: 2px solid var(--ink-fixed);
+  color: var(--ink-fixed);
+  font-size: 32px;
+  transition:
+    transform 0.6s cubic-bezier(0.3, 0.7, 0.3, 1),
+    opacity 0.4s ease;
+}
+
+.handGone {
+  opacity: 0;
+}

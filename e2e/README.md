@@ -5,8 +5,11 @@ DNA → avatar → match → detail → tabs → reload resumes → reset. Playw
 project dependency; run it ad hoc:
 
 ```sh
-npm run dev                      # in one terminal
-npx -y -p playwright@1.56.1 node e2e/flow.mjs http://localhost:5173/ /tmp/pilsbuddy
+npm run dev                                   # in one terminal
+mkdir -p /tmp/pw && npm i --prefix /tmp/pw playwright@1.56.1
+npx --prefix /tmp/pw playwright install chromium
+cp e2e/flow.mjs /tmp/pw/ && node /tmp/pw/flow.mjs http://localhost:5173/ /tmp/pilsbuddy
 ```
 
-Screenshots land at `/tmp/pilsbuddy-*.png`. Browsers: `npx -y playwright@1.56.1 install chromium`.
+The script has to sit next to a `node_modules/playwright` because ES module imports ignore
+`npx -p` and `NODE_PATH`. Screenshots land at `/tmp/pilsbuddy-*.png`.

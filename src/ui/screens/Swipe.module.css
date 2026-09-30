@@ -24,6 +24,42 @@
   letter-spacing: -0.04em;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.helpBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sheetSub {
+  margin: -4px 0 0;
+  font: 500 15px/1.4 var(--font-display);
+  color: var(--mut);
+  text-wrap: pretty;
+}
+
+.sheetKeys {
+  margin: 0;
+  text-align: center;
+  font: 700 10.5px/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
 .dnaPill {
   display: flex;
   align-items: center;
@@ -123,6 +159,7 @@
   padding: 6px 12px;
   border-radius: 99px;
   background: var(--ink-fixed);
+  border: 1.5px solid var(--line-strong);
   color: var(--foam);
   font: 700 10.5px/1 var(--font-mono);
   letter-spacing: 0.08em;

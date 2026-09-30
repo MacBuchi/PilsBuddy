@@ -32,6 +32,12 @@ await step('confirm age + start', async () => {
   await m.getByText('Erstes Date starten').click()
   await see('Karte ziehen')
 })
+await step('help sheet opens and closes', async () => {
+  await m.getByLabel('Wie war das nochmal?').click()
+  await see('So swipst du')
+  await m.getByText('Verstanden').click()
+  await m.getByText('So swipst du').waitFor({ state: 'detached', timeout: 2000 })
+})
 await step('tap opens detail and back', async () => {
   const card = m.locator('[class*="slot"]').first()
   await card.click()
