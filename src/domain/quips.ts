@@ -1,6 +1,6 @@
 import { BEER_BY_ID } from '../data/beers'
 import { COPY, fill, pick } from '../data/copy'
-import { countRatings, decodedPercent } from './dna'
+import { countRatings, DECODE_TARGET, decodedPercent } from './dna'
 import type { ArchetypeId, Beer, Rating, Ratings } from './types'
 
 /** Small stable hash so the same beer always gets the same line. */
@@ -42,6 +42,7 @@ export function quipAfterRating({ rating, beer, before, archetype = 'logo', look
   const weizen = (b: Beer) => b.style.includes('Weißbier')
 
   if (prev < 100 && dec >= 100) return m.decoded
+  if (isNew && counts.total === 1) return fill(m.first, { n: DECODE_TARGET - 1 })
   if (isNew && m.total[counts.total]) return m.total[counts.total]
   if (weizen(beer) && rating === 'LIKE' && firstOf((b, r) => weizen(b) && r === 'LIKE')) return m.firstWeizenLike
   if (weizen(beer) && rating === 'DISLIKE' && firstOf((b, r) => weizen(b) && r === 'DISLIKE')) return m.firstWeizenNope

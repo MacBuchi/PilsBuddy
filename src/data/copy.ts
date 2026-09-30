@@ -120,6 +120,7 @@ export const COPY = {
     kasten: ['Kennt der Kasten-Kenner natürlich.', 'Routiniert bewertet.', 'Du kennst sie alle. Fast.'],
   } satisfies Record<ArchetypeId, string[]>,
   milestones: {
+    first: "So geht's. Noch {n}, dann kennen wir dich.",
     decoded: 'BIER-DNA ENTSCHLÜSSELT. Wir kennen dich jetzt.',
     half: '{pct} % – wir kennen dich langsam.',
     fiveNopes: 'Du hast 5 Biere abgelehnt. Hohe Ansprüche.',
@@ -169,6 +170,15 @@ export const COPY = {
   },
   nextMatch: {
     aria: 'Nächstes Match: {name}, {pct} Prozent',
+  },
+  moment: {
+    label: 'Freigeschaltet',
+    cta: 'Prost!',
+    sticker: 'Neuer Sticker für deinen Buddy.',
+    dnaTitle: 'Bier-DNA entschlüsselt!',
+    dnaSub: 'Wir kennen dich jetzt. Vielleicht besser als dein Späti.',
+    dnaCta: 'Zur Bier-DNA',
+    later: 'Weiterswipen',
   },
   undo: {
     label: 'Zurückholen',

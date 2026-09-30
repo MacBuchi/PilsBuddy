@@ -1,20 +1,6 @@
-import {
-  BeerSteinIcon,
-  BinocularsIcon,
-  CrownIcon,
-  DnaIcon,
-  FireIcon,
-  HandWavingIcon,
-  HandshakeIcon,
-  HeartIcon,
-  MedalIcon,
-  MoonStarsIcon,
-  PackageIcon,
-} from '@phosphor-icons/react'
-import type { ReactNode } from 'react'
+import { MoonStarsIcon } from '@phosphor-icons/react'
 import { BEER_BY_ID } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
-import type { AchievementDef } from '../../domain/achievements'
 import { progressMessage } from '../../domain/quips'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
@@ -22,20 +8,8 @@ import { BuddyAvatar } from '../components/BuddyAvatar'
 import { RATING_COLOR, RATING_ICON } from '../ratingStyle'
 import page from './page.module.css'
 import { BottleArt } from '../components/BottleArt'
+import { ACH_ICON } from '../achievementIcons'
 import styles from './Profile.module.css'
-
-const ACH_ICON: Record<AchievementDef['icon'], ReactNode> = {
-  heart: <HeartIcon weight="fill" />,
-  crown: <CrownIcon weight="fill" />,
-  binoculars: <BinocularsIcon weight="bold" />,
-  'beer-stein': <BeerSteinIcon weight="fill" />,
-  'hand-waving': <HandWavingIcon weight="bold" />,
-  dna: <DnaIcon weight="bold" />,
-  fire: <FireIcon weight="fill" />,
-  medal: <MedalIcon weight="fill" />,
-  package: <PackageIcon weight="bold" />,
-  handshake: <HandshakeIcon weight="bold" />,
-}
 
 export function Profile() {
   const { state, dispatch, openDetail, withTabs } = useApp()

@@ -108,7 +108,9 @@ export function AppProvider({ children, initial, store = profileStore }: { child
         const next = { ...before, [id]: { rating, at: 0, previous: old && old.rating !== rating ? old.rating : old?.previous } }
         dispatch({ type: 'RATE', id, rating, at: Date.now() })
         const unlocked = newlyUnlocked(progressOf(before), progressOf(next))
-        if (unlocked.length) toast(`🏅 ${unlocked[0].title} – ${unlocked[0].desc}`)
+        // big achievements get a full-screen moment (MomentHost), the small ones a toast
+        const small = unlocked.find((a) => !a.moment)
+        if (small) toast(`🏅 ${small.title} – ${small.desc}`)
         return unlocked
       },
       toast,

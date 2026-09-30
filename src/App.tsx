@@ -1,5 +1,8 @@
 import { AppProvider, useApp } from './state/AppContext'
+import { useCallback } from 'react'
+import { useDerived } from './state/useDerived'
 import { AppShell } from './ui/AppShell'
+import { MomentOverlay } from './ui/components/MomentOverlay'
 import { TabBar } from './ui/components/TabBar'
 import { Toast } from './ui/components/Toast'
 import { Analyzing } from './ui/screens/Analyzing'
@@ -13,6 +16,26 @@ import { Matches } from './ui/screens/Matches'
 import { Profile } from './ui/screens/Profile'
 import { Swipe } from './ui/screens/Swipe'
 import { Welcome } from './ui/screens/Welcome'
+
+/** Shows the one-time moment for the first big achievement that hasn't been celebrated yet. */
+function MomentHost() {
+  const { state, dispatch, go } = useApp()
+  const { achievements, avatar } = useDerived()
+  const pending = achievements.find((a) => a.unlocked && a.moment && !state.profile.seen.includes(a.id))
+  const id = pending?.id
+  const close = useCallback(() => {
+    if (id) dispatch({ type: 'MARK_SEEN', id })
+  }, [dispatch, id])
+  if (!pending || ['welcome', 'howto', 'analyzing'].includes(state.screen)) return null
+  const onDna =
+    pending.id === 'entschluesselt'
+      ? () => {
+          close()
+          go(state.profile.onboarded ? 'dna' : 'analyzing')
+        }
+      : undefined
+  return <MomentOverlay achievement={pending} avatar={avatar} onClose={close} onDna={onDna} />
+}
 
 function Screens() {
   const { state, globalToast, withTabs } = useApp()
@@ -32,6 +55,7 @@ function Screens() {
         {s === 'profile' && <Profile />}
       </ErrorBoundary>
       {withTabs && <TabBar />}
+      <MomentHost />
       {globalToast && <Toast text={globalToast.text} color={globalToast.color} animKey={globalToast.key} />}
     </AppShell>
   )
