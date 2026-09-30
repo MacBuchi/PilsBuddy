@@ -23,7 +23,7 @@ const step = async (name, fn) => {
 const m = page.locator('main')
 const see = (t) => m.getByText(t, { exact: false }).first().waitFor({ timeout: 4000 })
 
-await page.goto(base, { waitUntil: 'networkidle' })
+await page.goto(base, { waitUntil: 'load' })
 await step('welcome', () => see('Erst Biere daten'))
 await step('to howto', async () => { await m.getByText("Los geht's").click(); await see('Schritt 1 von 1') })
 await step('age gate blocks', async () => { await m.getByText('Erstes Date starten').click(); await see('Kurz das Häkchen') })
@@ -82,7 +82,7 @@ await step('profile shows history + achievement', async () => {
   await page.screenshot({ path: `${out}-profile.png` })
 })
 await step('reload resumes on deck with tabs', async () => {
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'load' })
   await see('übrig'); await see('Swipen')
   await m.getByText('Bier-DNA', { exact: true }).click()
   await see('entschlüsselt')
@@ -92,7 +92,7 @@ await step('reset clears everything', async () => {
   page.once('dialog', (d) => d.accept())
   await m.getByText('Profil zurücksetzen').click()
   await see('Erst Biere daten')
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'load' })
   await see('Erst Biere daten')
 })
 if (errors.length) console.log('PAGE ERRORS:\n' + errors.join('\n'))
