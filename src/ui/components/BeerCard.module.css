@@ -1,0 +1,212 @@
+.card {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-card);
+  border: 2.5px solid var(--edge);
+  background: var(--sf);
+  box-shadow: 0 7px 0 var(--edge);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.glass {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.foam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 34px;
+  background: var(--foam);
+}
+
+.scallop {
+  position: absolute;
+  left: -6px;
+  right: -6px;
+  top: 33px;
+  height: 16px;
+  background: radial-gradient(circle at 14px 0, var(--foam) 13px, transparent 14px) 0 0 / 28px 16px repeat-x;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.meta {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 11px;
+  display: flex;
+  justify-content: space-between;
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-fixed);
+}
+
+.photo {
+  position: absolute;
+  left: 50%;
+  top: 62px;
+  bottom: 18px;
+  height: calc(100% - 80px);
+  transform: translateX(-50%);
+  object-fit: contain;
+  filter: drop-shadow(0 6px 0 rgba(29, 24, 17, 0.25));
+  pointer-events: none;
+}
+
+.placeholder {
+  position: absolute;
+  left: 50%;
+  top: 62px;
+  bottom: 18px;
+  width: 96px;
+  transform: translateX(-50%);
+  border-radius: 18px;
+  border: 2px dashed rgba(29, 24, 17, 0.38);
+  background: repeating-linear-gradient(135deg, rgba(29, 24, 17, 0.09) 0 6px, transparent 6px 12px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+
+.placeholder span {
+  font: 700 9px/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(29, 24, 17, 0.7);
+  text-align: center;
+  white-space: pre-line;
+}
+
+.placeholderDark {
+  border-color: rgba(255, 246, 227, 0.4);
+  background: repeating-linear-gradient(135deg, rgba(255, 246, 227, 0.1) 0 6px, transparent 6px 12px);
+}
+.placeholderDark span {
+  color: rgba(255, 246, 227, 0.75);
+}
+
+.stamp {
+  position: absolute;
+  padding: 4px 12px;
+  border: 4px solid;
+  border-radius: 12px;
+  background: rgba(255, 251, 243, 0.92);
+  font: 800 30px/1 var(--font-display);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.stampLike {
+  left: 18px;
+  top: 66px;
+  transform: rotate(-14deg);
+  color: var(--like);
+  border-color: var(--like);
+}
+
+.stampNope {
+  right: 18px;
+  top: 66px;
+  transform: rotate(14deg);
+  color: var(--nope);
+  border-color: var(--nope);
+  font-size: 34px;
+  padding: 4px 14px;
+}
+
+.stampTry {
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%) rotate(-5deg);
+  color: var(--try);
+  border-color: var(--try);
+  font-size: 28px;
+}
+
+.stampUnknown {
+  left: 50%;
+  top: 110px;
+  transform: translateX(-50%) rotate(4deg);
+  color: var(--unknown);
+  border-color: var(--unknown);
+  font-size: 24px;
+}
+
+.stampKnow {
+  left: 50%;
+  top: 110px;
+  transform: translateX(-50%) rotate(-4deg);
+  color: var(--know);
+  border-color: var(--know);
+  font-size: 26px;
+}
+
+.body {
+  padding: 14px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--sf);
+  border-top: 2.5px solid var(--edge);
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.name {
+  font: 800 32px/1 var(--font-display);
+  letter-spacing: -0.035em;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.region {
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+  white-space: nowrap;
+}
+
+.line {
+  margin: 0;
+  font: 500 15.5px/1.35 var(--font-display);
+  text-wrap: pretty;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font: 700 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  border-radius: 99px;
+  border: 1.5px solid var(--line);
+  color: var(--mut);
+}

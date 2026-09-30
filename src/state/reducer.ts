@@ -14,6 +14,9 @@ export type Screen =
 
 export type MatchTab = 'biere' | 'menschen'
 
+/** Screens that show the bottom tab bar once the user is onboarded. */
+export const TAB_SCREENS = ['swipe', 'dna', 'matches', 'profile'] as const satisfies readonly Screen[]
+
 /** The part of the state that survives a reload. */
 export interface Profile {
   ratings: Ratings

@@ -1,0 +1,216 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  padding-top: var(--safe-top);
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wordmark {
+  font: 800 23px/1 var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+.dnaPill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font: 700 12px/1 var(--font-mono);
+  cursor: pointer;
+}
+
+.progress {
+  padding: 0 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.progressRow {
+  display: flex;
+  justify-content: space-between;
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.bar {
+  height: 10px;
+  border-radius: 99px;
+  background: var(--sf2);
+  border: 2px solid var(--edge);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--gold);
+  border-right: 2px solid var(--edge);
+  transition: width 0.5s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin: 4px 22px 0;
+}
+
+.empty {
+  position: absolute;
+  inset: 0 0 8px 0;
+  border-radius: var(--r-card);
+  border: 2.5px dashed var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 26px;
+  text-align: center;
+  animation: pbIn 0.4s ease both;
+}
+
+.bob {
+  animation: pbBob 3s ease-in-out infinite;
+}
+
+.emptyTitle {
+  margin: 0;
+  font: 800 28px/1.05 var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.emptySub {
+  margin: 0;
+  font: 500 15.5px/1.4 var(--font-display);
+  color: var(--mut);
+  text-wrap: pretty;
+}
+
+.emptyActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: var(--ink-fixed);
+  color: var(--foam);
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.analyzeRow {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 0;
+}
+
+.analyze {
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--ink-fixed);
+  border: 2.5px solid var(--ink-fixed);
+  font: 800 13px/1 var(--font-display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: pbPulse 1.8s ease-in-out infinite;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 16px 30px;
+}
+
+.action {
+  width: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--mut);
+}
+
+.action:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.circle {
+  border-radius: 50%;
+  background: var(--sf);
+  border: 2.5px solid var(--edge);
+  box-shadow: 0 4px 0 var(--edge);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.action:active:not(:disabled) .circle {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--edge);
+}
+
+.big {
+  width: 60px;
+  height: 60px;
+  font-size: 26px;
+}
+
+.small {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+  margin-top: 6px;
+}
+
+.actionLabel {
+  font: 700 9px/1.1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+}
