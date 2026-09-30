@@ -1,19 +1,36 @@
 import { ShareFatIcon } from '@phosphor-icons/react'
-import { COPY } from '../../data/copy'
+import { useState } from 'react'
+import { COPY, fill } from '../../data/copy'
+import { shareCardData } from '../../domain/shareCard'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
 import page from './page.module.css'
+import { renderShareCard, shareImage } from '../share/renderShareCard'
 import styles from './AvatarScreen.module.css'
 
 export function AvatarScreen() {
-  const { go, toast } = useApp()
-  const { archetype, avatar, decoded } = useDerived()
+  const { go, toast, state } = useApp()
+  const { archetype, avatar, decoded, dna, candidates } = useDerived()
   const P = COPY.personas[archetype]
+  const [busy, setBusy] = useState(false)
 
   const share = async () => {
     const text = `Ich bin „${P.name}“ – sagt meine Bier-DNA. ${COPY.app.tagline}`
+    setBusy(true)
+    try {
+      const data = shareCardData(dna, archetype, avatar, state.profile.ratings, candidates.slice(0, 3))
+      const blob = await renderShareCard(data, window.location.origin)
+      const how = await shareImage(blob, `pilsbuddy-${archetype}.png`, `${fill(COPY.share.text, { name: P.name })} ${window.location.origin}`)
+      if (how === 'downloaded') toast(COPY.share.downloaded)
+      return
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return
+      // image path failed – fall back to a text share below
+    } finally {
+      setBusy(false)
+    }
     try {
       if (navigator.share) {
         await navigator.share({ title: COPY.app.name, text, url: window.location.origin })
@@ -60,7 +77,7 @@ export function AvatarScreen() {
         <Button onClick={() => go('match')} style={{ flex: 1, height: 58, fontSize: 15 }}>
           {COPY.avatar.cta}
         </Button>
-        <Button variant="icon" onClick={share} aria-label="Teilen" style={{ width: 58, height: 58, borderWidth: 2.5, fontSize: 22 }}>
+        <Button variant="icon" onClick={share} disabled={busy} aria-label={COPY.share.button} style={{ width: 58, height: 58, borderWidth: 2.5, fontSize: 22 }}>
           <ShareFatIcon weight="bold" />
         </Button>
       </div>

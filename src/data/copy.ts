@@ -180,6 +180,17 @@ export const COPY = {
     dnaCta: 'Zur Bier-DNA',
     later: 'Weiterswipen',
   },
+  share: {
+    kicker: 'Meine Bier-DNA',
+    iAm: 'Ich bin',
+    topLiked: 'Meine Herzbiere',
+    topNext: 'Als Nächstes probiere ich',
+    decoded: '{pct} % entschlüsselt',
+    footer: 'Finde deinen Bier-Typ auf',
+    text: 'Ich bin „{name}“ – sagt meine Bier-DNA. Und du?',
+    downloaded: 'Bild gespeichert. Ab damit in die Story.',
+    button: 'Als Bild teilen',
+  },
   undo: {
     label: 'Zurückholen',
     done: 'Zurückgeholt. Wir sagen nichts.',

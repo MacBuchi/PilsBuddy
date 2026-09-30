@@ -70,6 +70,11 @@ await step('analyze → dna', async () => {
   await see('Neugier-Faktor')
 })
 await step('dna → avatar', async () => { await m.getByText('Wer bin ich').click(); await see('Du bist') })
+await step('share card downloads as PNG', async () => {
+  const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 10000 }), m.getByLabel('Als Bild teilen').click()])
+  if (!dl.suggestedFilename().endsWith('.png')) throw new Error('unexpected file ' + dl.suggestedFilename())
+  await dl.saveAs(`${out}-sharecard.png`)
+})
 await step('avatar → match', async () => {
   await m.getByText('Mein Bier-Match zeigen').click()
   await see('Bier-Kompatibilität'); await page.waitForTimeout(1300)
