@@ -55,13 +55,15 @@ Nicht meins −0,8 · Kenn ich nicht 0 (fließt nur in den Neugier-Faktor ein).
 
 **Kompatibilität:** `104 − Ø|DNA − Bier| × 150`, geklemmt auf 48–99 %. Reproduzierbar.
 
-## Deployment (Cloudflare Pages)
+## Deployment (Cloudflare)
 
-Statischer Build, kein Server nötig:
+Live: **https://pilsbuddy.marcus-bucher.workers.dev**
+
+Statischer Build als Workers Static Assets (`wrangler.jsonc`), kein Server-Code:
 
 ```sh
 npm run build
-npx wrangler pages deploy dist --project-name pilsbuddy
+npx wrangler deploy
 ```
 
 ## Roadmap
