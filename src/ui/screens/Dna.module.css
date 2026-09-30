@@ -100,3 +100,39 @@
   font: 700 16px/1.3 var(--font-display);
   text-wrap: pretty;
 }
+
+.install {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--sf);
+  border: 2px solid var(--edge);
+  box-shadow: 0 3px 0 var(--edge);
+  animation: pbIn 0.4s 0.3s ease both;
+}
+
+.installText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font: 500 14px/1.35 var(--font-display);
+}
+
+.installText b {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.installClose {
+  align-self: flex-start;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 99px;
+  border: 2px solid var(--ink-fixed);
+  background: var(--gold);
+  color: var(--ink-fixed);
+  font: 800 13px/1 var(--font-display);
+  cursor: pointer;
+}

@@ -3,6 +3,7 @@ import { COPY } from '../../data/copy'
 import { useApp } from '../../state/AppContext'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
+import { useProfileImport } from '../useProfileImport'
 import styles from './Welcome.module.css'
 
 const BUBBLES = Array.from({ length: 9 }, (_, i) => ({
@@ -14,6 +15,7 @@ const BUBBLES = Array.from({ length: 9 }, (_, i) => ({
 
 export function Welcome() {
   const { go } = useApp()
+  const importer = useProfileImport((p) => go(p.ageConfirmed ? 'swipe' : 'howto'))
   return (
     <div className={styles.screen}>
       <div className={styles.foam} />
@@ -37,6 +39,10 @@ export function Welcome() {
           {COPY.welcome.cta} <ArrowRightIcon weight="bold" />
         </Button>
         <p className={styles.promise}>{COPY.welcome.promise}</p>
+        <button type="button" className={styles.restore} onClick={importer.open}>
+          {COPY.welcome.restore}
+        </button>
+        {importer.input}
       </div>
     </div>
   )

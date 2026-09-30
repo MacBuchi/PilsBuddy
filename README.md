@@ -8,6 +8,8 @@ berechnet daraus deine **Bier-DNA**, gibt dir eine **Bier-Persönlichkeit** und 
 ähnlichem Geschmack zusammen.
 
 Kein Account, kein Backend, kein LLM: alles läuft lokal im Browser und ist deterministisch.
+Die App funktioniert offline (Service Worker) und lässt sich als Datei sichern und auf einem
+anderen Gerät wiederherstellen (Profil → Sichern & umziehen).
 
 ## Loslegen
 

@@ -53,6 +53,7 @@ export type Action =
   | { type: 'SET_MATCH_TAB'; tab: MatchTab }
   | { type: 'RESTART_DECK' }
   | { type: 'MARK_SEEN'; id: string }
+  | { type: 'IMPORT'; profile: Profile }
   | { type: 'RESET' }
 
 export function newBuddyNo(): number {
@@ -126,6 +127,9 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'MARK_SEEN':
       if (state.profile.seen.includes(action.id)) return state
       return { ...state, profile: { ...state.profile, seen: [...state.profile.seen, action.id] } }
+    case 'IMPORT':
+      // a restored profile is by definition past the age gate and onboarding it had
+      return { ...state, profile: action.profile, lastRated: null }
     case 'RESET':
       return initialState({ ...initialProfile(), dark: state.profile.dark })
   }

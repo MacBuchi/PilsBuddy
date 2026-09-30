@@ -9,6 +9,15 @@ import App from './App.tsx'
 const BottleGallery = import.meta.env.DEV ? lazy(() => import('./ui/dev/BottleGallery')) : null
 const gallery = BottleGallery && new URLSearchParams(location.search).get('gallery') === 'bottles'
 
+// Offline support: production only, so dev never serves stale modules.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      /* no SW (private mode, old browser) – the app works online as before */
+    })
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {gallery && BottleGallery ? (
