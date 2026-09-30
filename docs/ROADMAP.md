@@ -45,15 +45,15 @@ Akzeptanz: erste Karte zeigt Chips + Hand, danach weg; „?“ öffnet Legende; 
 
 ### A1 · Bier-Visuals: Flaschenfotos + Illustrations-Fallback (M–L)
 
-Teil 1 – Recherche & Extraktion
+Teil 1 – Flaschen-Designs (Nutzer gestaltet in Claude Design)
 
-- [ ] `tools/bottles/fetch.mjs` prüft je Bier Wikimedia Commons (Lizenz via `extmetadata`) und
-      Presse-/Mediabereiche; Ergebnis in `tools/bottles/sources.json` (id, url, lizenz, urheber, geprüft am)
-- [ ] Fotos freistellen (`rembg`), 600 px, → `public/bottles/<id>.png`; `docs/BILDNACHWEIS.md`
-- [ ] `beers.json`: `image` + `imageCredit`; Credit im Detail-Screen
+- [x] `docs/FLASCHEN.md`: Design-Brief je Bier (Form, Farben, Charakter, Tags) + Export-Spec,
+      generiert aus `beers.json` via `node tools/bottles/build-brief.mjs`
+- [ ] Designs als `public/bottles/<id>.png` (600 × 1200, transparent, gleiche Bodenlinie) ablegen
+- [ ] `beers.json`: `image: "/bottles/<id>.png"` eintragen; Rendering in BeerCard/Detail/Match
+      prüfen (Objektgröße, Schatten, dunkle Biere)
 
-Rechtlicher Rahmen: Markenrecht erlaubt die Abbildung eines Produkts zur Beschreibung ebendieses
-Produkts; das Foto selbst braucht eine Lizenz → nur CC-/Pressefotos, keine Shop-Bilder.
+Hinweis: Eigene, stilisierte Designs statt Fotos – keine 1:1-Kopien realer Etiketten (Markenrecht).
 
 Teil 2 – Illustrations-Fallback
 
