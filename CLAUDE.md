@@ -23,3 +23,6 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
 - Screens are absolute-positioned inside `AppShell`; use `var(--safe-top)` / `var(--safe-bottom)`.
 - Persistence is `src/state/storage.ts` only (versioned localStorage). Navigation is not persisted.
 - No backend, no accounts, no analytics in the MVP. Supabase is the planned backend later; ask first.
+- Work follows `docs/ROADMAP.md`: keep its order (A0 → A1 → A2 → A9 → …), tick the checkbox of a
+  package when it is live, and run the gate (build, test, lint, `e2e/flow.mjs`, screenshots,
+  `npm run deploy`) before ticking.

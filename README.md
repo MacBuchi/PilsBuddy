@@ -68,7 +68,6 @@ npx wrangler deploy
 
 ## Roadmap
 
-1. ✅ Lokales MVP (Swipe, DNA, Persönlichkeit, Avatar, Matching, Achievements, Persistenz)
-2. Backend (Supabase, Free Tier) für Profile-Sync
-3. Pils-Match: Menschen mit ähnlicher Bier-DNA (`buddyMatch()` ist vorbereitet)
-4. Optionale KI-Schicht (`AIProvider`: Ollama / Cloud / aus) für Bier-Bios und Roasts
+Das lokale MVP ist fertig. Der detaillierte Fahrplan mit Gap-Analyse und Arbeitspaketen steht in
+[docs/ROADMAP.md](docs/ROADMAP.md): Stufe A Spaß & Nutzbarkeit → B Backend (Supabase) →
+C Pils-Match → D optionale KI.
