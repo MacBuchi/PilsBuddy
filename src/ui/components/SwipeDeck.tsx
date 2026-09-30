@@ -9,6 +9,8 @@ import styles from './SwipeDeck.module.css'
 export interface SwipeDeckHandle {
   /** Fly the top card out as if swiped – used by the action buttons and keyboard. */
   commit: (rating: Rating) => void
+  /** Undo: the card with this id flies back in from where it left (call right before un-rating). */
+  rewind: (id: string, rating: Rating) => void
 }
 
 interface Props {
@@ -52,6 +54,8 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, coachOffset, r
   const [exit, setExit] = useState<Exit | null>(null)
   /** One frame without transitions so the next card snaps into the top slot. */
   const [swapping, setSwapping] = useState(false)
+  /** Undo in progress: the returning card starts at its exit position for one frame. */
+  const [entering, setEntering] = useState<{ id: string; x: number; y: number } | null>(null)
 
   const start = useRef({ x: 0, y: 0 })
   const last = useRef({ x: 0, y: 0, t: 0 })
@@ -87,7 +91,33 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, coachOffset, r
     [exit, onCommit, top],
   )
 
-  useImperativeHandle(ref, () => ({ commit: (r) => commit(r) }), [commit])
+  const rewind = useCallback(
+    (id: string, rating: Rating) => {
+      if (exit) return
+      const [x, y] = EXIT_VECTOR[rating]
+      setDrag({ x: 0, y: 0 })
+      setSwapping(true)
+      setEntering({ id, x, y })
+    },
+    [exit],
+  )
+
+  useEffect(() => {
+    if (!entering) return
+    let inner = 0
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => {
+        setEntering(null)
+        setSwapping(false)
+      })
+    })
+    return () => {
+      cancelAnimationFrame(outer)
+      cancelAnimationFrame(inner)
+    }
+  }, [entering])
+
+  useImperativeHandle(ref, () => ({ commit: (r) => commit(r), rewind }), [commit, rewind])
 
   const onDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (exit) return
@@ -150,7 +180,10 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, coachOffset, r
         let transition: string
         let stamps: StampOpacity = {}
         if (i === 0) {
-          if (exit) {
+          if (entering && entering.id === beer.id) {
+            transform = `translate(${entering.x}px, ${entering.y}px) rotate(${entering.x * 0.05}deg)`
+            transition = 'none'
+          } else if (exit) {
             transform = `translate(${exit.x}px, ${exit.y}px) rotate(${exit.x * 0.05}deg)`
             transition = `transform ${exit.dur}s cubic-bezier(.4,0,1,1)`
             stamps = { [exit.rating]: 1 }

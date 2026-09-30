@@ -1,4 +1,13 @@
-import { DnaIcon, EyeIcon, FireIcon, HeartIcon, QuestionIcon, QuestionMarkIcon, XIcon } from '@phosphor-icons/react'
+import {
+  ArrowCounterClockwiseIcon,
+  DnaIcon,
+  EyeIcon,
+  FireIcon,
+  HeartIcon,
+  QuestionIcon,
+  QuestionMarkIcon,
+  XIcon,
+} from '@phosphor-icons/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { getBeer } from '../../data/beers'
@@ -76,9 +85,25 @@ export function Swipe() {
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])
 
+  const lastRated = state.lastRated
+  const undo = useCallback(() => {
+    if (!lastRated) return
+    setCoachOff(true)
+    deck.current?.rewind(lastRated.id, lastRated.rating)
+    dispatch({ type: 'UNRATE' })
+    clearTimeout(toastTimer.current)
+    setToast({ text: COPY.undo.done, color: 'var(--gold)', key: Date.now() })
+    toastTimer.current = setTimeout(() => setToast(null), 2400)
+  }, [lastRated, dispatch, setCoachOff])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (help) return
+      if (e.key === 'Backspace' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault()
+        undo()
+        return
+      }
       const r = KEYMAP[e.key]
       if (!r || e.metaKey || e.ctrlKey || e.altKey) return
       e.preventDefault()
@@ -87,7 +112,7 @@ export function Swipe() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [help])
+  }, [help, undo])
 
   const empty = queue.length === 0
   const coachActive = counts.total === 0 && !coachOff && !empty && !help
@@ -103,6 +128,11 @@ export function Swipe() {
           <span className={styles.wordmark}>{COPY.app.name}</span>
         </div>
         <div className={styles.headerRight}>
+          {lastRated && (
+            <button type="button" className={styles.helpBtn} onClick={undo} aria-label={COPY.undo.label}>
+              <ArrowCounterClockwiseIcon weight="bold" />
+            </button>
+          )}
           <button type="button" className={styles.helpBtn} onClick={() => setHelp(true)} aria-label={COPY.coach.help}>
             <QuestionMarkIcon weight="bold" />
           </button>

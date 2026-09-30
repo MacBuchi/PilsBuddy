@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, HeartIcon } from '@phosphor-icons/react'
+import { ArrowCounterClockwiseIcon, ArrowLeftIcon, HeartIcon } from '@phosphor-icons/react'
 import { BEER_BY_ID, formatAbv } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
 import { DISPLAY_AXES } from '../../domain/dna'
@@ -13,7 +13,7 @@ import { BottleArt } from '../components/BottleArt'
 import styles from './Detail.module.css'
 
 export function Detail() {
-  const { state, go, rate, toast } = useApp()
+  const { state, go, rate, toast, dispatch } = useApp()
   const { dna, candidates } = useDerived()
   const beer = (state.detailId && BEER_BY_ID[state.detailId]) || candidates[0]?.beer
   if (!beer) return null
@@ -123,6 +123,18 @@ export function Detail() {
             })}
           </div>
           <span className={styles.relQuip}>{relationQuip(current, beer)}</span>
+          {state.lastRated?.id === beer.id && (
+            <button
+              type="button"
+              className={styles.undo}
+              onClick={() => {
+                dispatch({ type: 'UNRATE' })
+                toast(COPY.undo.done)
+              }}
+            >
+              <ArrowCounterClockwiseIcon weight="bold" /> {COPY.undo.label}
+            </button>
+          )}
         </div>
       </div>
     </div>

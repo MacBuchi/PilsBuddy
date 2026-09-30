@@ -52,6 +52,16 @@ await step('6 swipes via keyboard + buttons', async () => {
   await see('DNA auswerten')
   await see('36 übrig')
 })
+await step('undo via button and Backspace', async () => {
+  await m.getByLabel('Zurückholen').click()
+  await see('Zurückgeholt'); await see('37 übrig')
+  await page.keyboard.press('ArrowRight'); await page.waitForTimeout(450)
+  await see('36 übrig')
+  await page.keyboard.press('Backspace'); await page.waitForTimeout(450)
+  await see('37 übrig')
+  await page.keyboard.press('ArrowRight'); await page.waitForTimeout(450)
+  await see('36 übrig')
+})
 await step('analyze → dna', async () => {
   await m.getByText('DNA auswerten').click()
   await see('Bier-DNA wird sequenziert')
@@ -70,6 +80,9 @@ await step('match → detail → rate there', async () => {
   await see('Wie steht ihr zueinander')
   await m.getByRole('button', { name: 'Will probieren' }).click()
   await see('Probierliste')
+  await m.getByText('Zurückholen').click()
+  await see('Zurückgeholt')
+  await m.getByRole('button', { name: 'Will probieren' }).click()
 })
 await step('back to match, weiterswipen shows tabs', async () => {
   await m.getByLabel('Zurück').click()
