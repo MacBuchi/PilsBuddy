@@ -1,0 +1,102 @@
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font: 800 44px/0.95 var(--font-display);
+  letter-spacing: -0.045em;
+}
+
+.sub {
+  margin: 0;
+  font: 500 16px/1.35 var(--font-display);
+  color: var(--mut);
+}
+
+.axis {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.axisRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.axisIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--cream-fixed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.axisLabel {
+  flex: 1;
+  font: 800 17px/1 var(--font-display);
+}
+
+.axisPct {
+  font: 700 14px/1 var(--font-mono);
+}
+
+.track {
+  height: 14px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf2);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  transition: width 1s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.curiosity {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 2px dashed var(--line);
+}
+
+.curiosityVal {
+  font: 800 17px/1 var(--font-display);
+}
+
+.notable {
+  background: var(--gold);
+  color: var(--ink-fixed);
+  border: 2.5px solid var(--ink-fixed);
+  border-radius: 22px;
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.notableText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notableLabel {
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.notableQuip {
+  font: 700 16px/1.3 var(--font-display);
+  text-wrap: pretty;
+}

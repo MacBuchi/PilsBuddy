@@ -1,0 +1,143 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-fixed);
+  color: var(--foam);
+  padding: calc(var(--safe-top) + 12px) 24px calc(var(--safe-bottom) + 34px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  transform: rotate(45deg);
+  animation: pbFloat ease-in-out infinite;
+  opacity: 0.9;
+}
+
+.label {
+  font: 700 12px/1 var(--font-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  animation: pbIn 0.4s ease both;
+}
+
+.pair {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 14px 0 4px;
+  animation: pbPop 0.6s 0.1s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.you {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 3px solid var(--foam);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-6deg);
+}
+
+.beer {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 3px solid var(--foam);
+  margin-left: -26px;
+  position: relative;
+  overflow: hidden;
+  transform: rotate(6deg);
+}
+
+.foam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 40px;
+  background: var(--foam);
+}
+
+.scallop {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  top: 39px;
+  height: 12px;
+  background: radial-gradient(circle at 10px 0, var(--foam) 9px, transparent 10px) 0 0 / 20px 12px repeat-x;
+}
+
+.placeholder {
+  position: absolute;
+  left: 50%;
+  top: 58px;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 74px;
+  border-radius: 10px;
+  border: 2px dashed rgba(29, 24, 17, 0.4);
+  background: repeating-linear-gradient(135deg, rgba(29, 24, 17, 0.1) 0 5px, transparent 5px 10px);
+}
+
+.bottle {
+  position: absolute;
+  left: 50%;
+  top: 54px;
+  transform: translateX(-50%);
+  height: 84px;
+  object-fit: contain;
+}
+
+.heart {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--nope);
+  border: 3px solid var(--foam);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--foam);
+}
+
+.names {
+  font: 700 13px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.pct {
+  font: 800 96px/0.85 var(--font-display);
+  letter-spacing: -0.06em;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.compat {
+  font: 700 12px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.reason {
+  margin: 4px 0 0;
+  font: 600 17px/1.38 var(--font-display);
+  max-width: 320px;
+  text-wrap: pretty;
+}

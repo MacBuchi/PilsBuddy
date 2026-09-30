@@ -1,0 +1,242 @@
+.segments {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+}
+
+.segment {
+  height: 40px;
+  border-radius: 99px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 800 14px/1 var(--font-display);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.segmentActive {
+  background: var(--ink-fixed);
+  color: var(--foam);
+}
+
+.beta {
+  font: 700 9px/1 var(--font-mono);
+  padding: 3px 5px;
+  border-radius: 5px;
+  background: var(--nope);
+  color: var(--cream-fixed);
+}
+
+.reco {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 22px;
+  background: var(--sf);
+  border: 2px solid var(--edge);
+  box-shadow: 0 3px 0 var(--edge);
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.reco:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--edge);
+}
+
+.bottle {
+  flex: none;
+  position: relative;
+  width: 44px;
+  height: 56px;
+  border-radius: 8px 8px 14px 14px;
+  border: 2.5px solid var(--ink-fixed);
+  overflow: hidden;
+}
+
+.bottleFoam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 13px;
+  background: var(--foam);
+  border-bottom: 2px solid rgba(29, 24, 17, 0.15);
+}
+
+.recoText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.recoName {
+  font: 800 19px/1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.recoMeta {
+  font: 700 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.recoRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.recoPct {
+  font: 800 24px/1 var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.recoTag {
+  font: 700 9px/1 var(--font-mono);
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.soon {
+  padding: 16px;
+  border-radius: 22px;
+  border: 2px dashed var(--edge);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.soonText {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.soonTitle {
+  font: 800 17px/1.15 var(--font-display);
+}
+
+.soonSub {
+  font: 500 14px/1.38 var(--font-display);
+  color: var(--mut);
+  text-wrap: pretty;
+}
+
+.preview {
+  background: var(--sf);
+  border: 2.5px solid var(--edge);
+  border-radius: 26px;
+  box-shadow: 0 5px 0 var(--edge);
+  overflow: hidden;
+}
+
+.previewHead {
+  background: var(--gold);
+  padding: 16px 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2.5px solid var(--ink-fixed);
+}
+
+.previewAvatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--foam);
+  border: 2.5px solid var(--ink-fixed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plus {
+  width: 40px;
+  height: 40px;
+  margin: 0 -10px;
+  z-index: 2;
+  border-radius: 50%;
+  background: var(--ink-fixed);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 800 20px/1 var(--font-display);
+}
+
+.previewBody {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.previewRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.previewNames {
+  font: 800 26px/1 var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.previewPct {
+  font: 800 22px/1 var(--font-display);
+  color: var(--gold-text);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.groupLabel {
+  font: 700 13px/1 var(--font-display);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pillLike {
+  padding: 6px 10px;
+  border-radius: 99px;
+  background: rgba(47, 165, 107, 0.14);
+  color: var(--like-dark);
+  font: 700 13px/1 var(--font-display);
+}
+
+.pillNope {
+  padding: 6px 10px;
+  border-radius: 99px;
+  border: 1.5px solid var(--nope);
+  color: var(--nope-dark);
+  font: 700 13px/1 var(--font-display);
+}
+
+.note {
+  font: 500 14.5px/1.35 var(--font-display);
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--sf2);
+}

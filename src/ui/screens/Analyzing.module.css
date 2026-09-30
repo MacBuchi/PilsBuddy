@@ -1,0 +1,64 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  padding: 40px;
+  text-align: center;
+  animation: pbIn 0.3s ease both;
+}
+
+.orb {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px dashed var(--gold);
+  animation: pbSpin 6s linear infinite;
+}
+
+.disc {
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  background: var(--sf2);
+}
+
+.bob {
+  position: relative;
+  animation: pbBob 1.4s ease-in-out infinite;
+}
+
+.line {
+  font: 800 26px/1.1 var(--font-display);
+  letter-spacing: -0.02em;
+  min-height: 58px;
+  text-wrap: balance;
+}
+
+.bar {
+  width: 200px;
+  height: 10px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf2);
+  overflow: hidden;
+}
+
+.slider {
+  width: 40%;
+  height: 100%;
+  background: var(--gold);
+  animation: pbSlide 1.1s ease-in-out infinite;
+}

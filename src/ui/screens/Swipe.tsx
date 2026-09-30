@@ -44,10 +44,10 @@ interface LocalToast {
   key: number
 }
 
-export function Swipe({ withTabs }: { withTabs: boolean }) {
-  const { state, rate, go, openDetail, dispatch } = useApp()
+export function Swipe() {
+  const { state, rate, go, openDetail, dispatch, withTabs } = useApp()
   const { ratings, onboarded } = state.profile
-  const { counts, decoded, archetype } = useDerived()
+  const { counts, decoded, avatar } = useDerived()
   const queue = deckQueue(ratings).map(getBeer)
   const deck = useRef<SwipeDeckHandle>(null)
   const [dragging, setDragging] = useState(false)
@@ -118,7 +118,7 @@ export function Swipe({ withTabs }: { withTabs: boolean }) {
         {empty && (
           <div className={styles.empty}>
             <div className={styles.bob}>
-              <BuddyAvatar archetype={archetype} decoded={decoded} size={120} />
+              <BuddyAvatar spec={avatar} size={120} />
             </div>
             <h2 className={styles.emptyTitle}>{COPY.swipe.emptyTitle}</h2>
             <p className={styles.emptySub}>{COPY.swipe.emptySub}</p>

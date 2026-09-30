@@ -1,0 +1,57 @@
+/* Shared scroll-page layout for DNA, Matches, Profile … */
+.page {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: calc(var(--safe-top) + 8px) 22px calc(var(--safe-bottom) + 30px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: pbIn 0.35s ease both;
+}
+
+.withTabs {
+  padding-bottom: calc(var(--safe-bottom) + 104px);
+}
+
+.h1 {
+  margin: 0;
+  font: 800 40px/1 var(--font-display);
+  letter-spacing: -0.045em;
+}
+
+.h3 {
+  margin: 0;
+  font: 800 18px/1 var(--font-display);
+}
+
+.panel {
+  background: var(--sf);
+  border: 2.5px solid var(--edge);
+  border-radius: 26px;
+  padding: 18px;
+  box-shadow: 0 5px 0 var(--edge);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dashed {
+  padding: 18px;
+  border-radius: 20px;
+  border: 2px dashed var(--line-strong);
+  font: 500 15px/1.4 var(--font-display);
+  color: var(--mut);
+  text-align: center;
+}
+
+.chip {
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 99px;
+  background: var(--sf);
+  border: 2px solid var(--edge);
+}

@@ -70,9 +70,12 @@ export function initialState(profile: Profile = initialProfile()): AppState {
 
 export function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
-    case 'GO':
+    case 'GO': {
       if (action.screen === state.screen) return state
-      return { ...state, screen: action.screen, prevScreen: state.screen }
+      // Seeing the DNA is the moment the user is "onboarded": tabs appear from here on.
+      const profile = action.screen === 'dna' && !state.profile.onboarded ? { ...state.profile, onboarded: true } : state.profile
+      return { ...state, profile, screen: action.screen, prevScreen: state.screen }
+    }
     case 'OPEN_DETAIL':
       return {
         ...state,

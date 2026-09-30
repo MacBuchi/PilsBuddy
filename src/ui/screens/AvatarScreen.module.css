@@ -1,0 +1,90 @@
+.screen {
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  animation: none;
+}
+
+.in1 {
+  animation: pbIn 0.4s ease both;
+}
+
+.in2 {
+  animation: pbIn 0.5s 0.15s ease both;
+}
+
+.name {
+  margin: 0;
+  font: 800 38px/0.98 var(--font-display);
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.stage {
+  position: relative;
+  width: 270px;
+  height: 270px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pbPop 0.7s 0.25s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.sun {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid var(--edge);
+  background: repeating-conic-gradient(var(--gold) 0deg 9deg, var(--gold-2) 9deg 18deg);
+  animation: pbSpin 40s linear infinite;
+}
+
+.float {
+  position: relative;
+  animation: pbFloat 4s ease-in-out infinite;
+}
+
+.desc {
+  margin: 0;
+  font: 500 16.5px/1.4 var(--font-display);
+  text-wrap: pretty;
+  max-width: 330px;
+}
+
+.traits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.evo {
+  width: 100%;
+  margin-top: 4px;
+  padding: 12px 14px;
+  border-radius: 20px;
+  border: 2px dashed var(--line-strong);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.evoAvatars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.evoText {
+  font: 500 13.5px/1.3 var(--font-display);
+  color: var(--mut);
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
