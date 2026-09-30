@@ -57,7 +57,7 @@ Nicht meins −0,8 · Kenn ich nicht 0 (fließt nur in den Neugier-Faktor ein).
 
 ## Deployment (Cloudflare)
 
-Live: **https://pilsbuddy.marcus-bucher.workers.dev**
+Live: **https://pilsbuddy.mcbuchi.de**
 
 Statischer Build als Workers Static Assets (`wrangler.jsonc`), kein Server-Code:
 
