@@ -1,0 +1,45 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 30px;
+  text-align: center;
+  animation: pbIn 0.3s ease both;
+}
+
+.orb {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: var(--sf2);
+  border: 2.5px dashed var(--edge);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  color: var(--ink);
+}
+
+.label {
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nope);
+}
+
+.title {
+  margin: 0;
+  font: 800 34px/1 var(--font-display);
+  letter-spacing: -0.035em;
+}
+
+.text {
+  margin: 0;
+  font: 500 16px/1.4 var(--font-display);
+  color: var(--mut);
+  text-wrap: pretty;
+}

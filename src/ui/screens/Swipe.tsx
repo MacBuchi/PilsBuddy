@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { getBeer } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
-import { countRatings } from '../../domain/dna'
+import { newlyUnlocked } from '../../domain/achievements'
+import { countRatings, decodedPercent } from '../../domain/dna'
 import { deckQueue } from '../../domain/deck'
 import { progressMessage, quipAfterRating } from '../../domain/quips'
 import type { Beer, Rating } from '../../domain/types'
@@ -45,7 +46,7 @@ interface LocalToast {
 }
 
 export function Swipe() {
-  const { state, rate, go, openDetail, dispatch, withTabs } = useApp()
+  const { state, rate, go, openDetail, dispatch, withTabs, toast: globalToast } = useApp()
   const { ratings, onboarded } = state.profile
   const { counts, decoded, avatar } = useDerived()
   const queue = deckQueue(ratings).map(getBeer)
@@ -56,14 +57,16 @@ export function Swipe() {
 
   const onCommit = useCallback(
     (beer: Beer, rating: Rating) => {
-      const prevTotal = countRatings(ratings).total
+      const before = countRatings(ratings)
       rate(beer.id, rating)
-      const next = countRatings({ ...ratings, [beer.id]: { rating, at: 0 } })
+      const after = countRatings({ ...ratings, [beer.id]: { rating, at: 0 } })
       clearTimeout(toastTimer.current)
-      setToast({ text: quipAfterRating(rating, beer, next, prevTotal), color: RATING_COLOR[rating], key: Date.now() })
+      setToast({ text: quipAfterRating(rating, beer, after, before.total), color: RATING_COLOR[rating], key: Date.now() })
       toastTimer.current = setTimeout(() => setToast(null), 2400)
+      const unlocked = newlyUnlocked(before, after, decodedPercent(before.total), decodedPercent(after.total))
+      if (unlocked.length) globalToast(`🏅 ${unlocked[0].title} – ${unlocked[0].desc}`)
     },
-    [ratings, rate],
+    [ratings, rate, globalToast],
   )
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])

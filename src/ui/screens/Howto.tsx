@@ -79,7 +79,7 @@ export function Howto() {
         </span>
       </button>
 
-      <Button block onClick={start} style={{ opacity: age ? 1 : 0.45 }} aria-disabled={!age}>
+      <Button block onClick={start} style={{ opacity: age ? 1 : 0.45 }}>
         {COPY.howto.cta} <BeerBottleIcon weight="bold" />
       </Button>
     </div>

@@ -1,0 +1,187 @@
+.left,
+.right {
+  display: none;
+}
+
+@media (min-width: 1024px) and (min-height: 700px) {
+  .left,
+  .right {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    width: 280px;
+    flex: none;
+    padding-top: 12px;
+    animation: pbIn 0.4s ease both;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wordmark {
+  font: 800 24px/1 var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: var(--ink);
+  font: 700 14px/1.1 var(--font-display);
+  cursor: pointer;
+  text-align: left;
+  font-size: 15px;
+}
+
+.navItem svg {
+  font-size: 18px;
+}
+
+.navActive {
+  background: var(--sf);
+  border-color: var(--edge);
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--sf);
+  border: 2px solid var(--line);
+}
+
+.keys {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 600 13px/1 var(--font-display);
+}
+
+.keyCap {
+  width: 28px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1.5px solid var(--edge);
+  background: var(--sf2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  box-shadow: 0 2px 0 var(--edge);
+}
+
+.keyLetter {
+  font: 700 11px/1 var(--font-mono);
+}
+
+.hint {
+  font: 500 12.5px/1.4 var(--font-display);
+  color: var(--mut);
+}
+
+.tendency {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.persona {
+  font: 800 18px/1.1 var(--font-display);
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 64px 1fr 28px;
+  gap: 8px;
+  align-items: center;
+}
+
+.barLabel {
+  font: 700 12px/1 var(--font-display);
+}
+
+.track {
+  height: 10px;
+  border-radius: 99px;
+  border: 1.5px solid var(--edge);
+  background: var(--sf2);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  transition: width 0.5s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.barVal {
+  font: 700 11px/1 var(--font-mono);
+  text-align: right;
+}
+
+.next {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.nextBottle {
+  flex: none;
+  width: 16px;
+  height: 26px;
+  border-radius: 3px 3px 7px 7px;
+  border: 2px solid var(--ink-fixed);
+  margin-top: 2px;
+}
+
+.nextText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nextName {
+  font: 800 14px/1.2 var(--font-display);
+}
+
+.nextReason {
+  font: 500 12.5px/1.35 var(--font-display);
+  color: var(--mut);
+}

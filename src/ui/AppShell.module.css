@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   align-items: stretch;
+  gap: 48px;
   background: var(--page);
 }
 
@@ -27,6 +28,7 @@
   .shell {
     --safe-top: 18px;
     --safe-bottom: 0px;
+    flex: none;
     width: var(--shell-w);
     height: min(844px, calc(100dvh - 48px));
     border-radius: 44px;
@@ -34,5 +36,13 @@
       0 30px 60px -20px rgba(29, 24, 17, 0.45),
       0 0 0 10px #0e0b08,
       0 0 0 12px #3a3128;
+  }
+}
+
+/* desktop: side companions need the stage to start at the top of the columns */
+@media (min-width: 1024px) and (min-height: 700px) {
+  .stage {
+    align-items: flex-start;
+    padding: 40px 24px;
   }
 }

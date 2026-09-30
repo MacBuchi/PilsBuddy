@@ -16,6 +16,7 @@
   },
   "ignorePatterns": [
     "docs/**",
-    "dist/**"
+    "dist/**",
+    "e2e/**"
   ]
 }
