@@ -125,6 +125,20 @@ await step('reload resumes on deck with tabs', async () => {
   await m.getByText('Bier-DNA', { exact: true }).click()
   await see('entschlüsselt')
 })
+await step('export → reset → import on welcome restores the profile', async () => {
+  await m.getByText('Profil', { exact: true }).click()
+  const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 10000 }), m.getByText('Profil exportieren').click()])
+  const file = `${out}-profile.json`
+  await dl.saveAs(file)
+  page.once('dialog', (d) => d.accept())
+  await m.getByText('Profil zurücksetzen').click()
+  await see('Erst Biere daten')
+  await m.getByLabel('Profil importieren').setInputFiles(file)
+  await see('Willkommen zurück')
+  await see('übrig')
+  await m.getByText('Profil', { exact: true }).click()
+  await see('Jever Pilsener')
+})
 await step('reset clears everything', async () => {
   await m.getByText('Profil', { exact: true }).click()
   page.once('dialog', (d) => d.accept())

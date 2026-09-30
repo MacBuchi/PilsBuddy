@@ -72,6 +72,14 @@ describe('reducer', () => {
     expect(reducer(s, { type: 'RESET' }).profile.seen).toEqual([])
   })
 
+  it('IMPORT replaces the profile and clears undo', () => {
+    const rated = run(fresh(), { type: 'RATE', id: 'jever', rating: 'LIKE', at: 1 })
+    const other = { ...fresh().profile, ratings: { becks: { rating: 'DISLIKE' as const, at: 5 } }, buddyNo: 42 }
+    const s = reducer(rated, { type: 'IMPORT', profile: other })
+    expect(s.profile).toBe(other)
+    expect(s.lastRated).toBeNull()
+  })
+
   it('RESTART_DECK and RESET clear undo; RESET keeps dark mode', () => {
     const rated = run(fresh(), { type: 'TOGGLE_DARK' }, { type: 'RATE', id: 'jever', rating: 'LIKE', at: 1 })
     expect(run(rated, { type: 'RESTART_DECK' }).lastRated).toBeNull()

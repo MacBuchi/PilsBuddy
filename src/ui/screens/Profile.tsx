@@ -1,4 +1,6 @@
-import { MoonStarsIcon } from '@phosphor-icons/react'
+import { DownloadSimpleIcon, MoonStarsIcon, UploadSimpleIcon } from '@phosphor-icons/react'
+import { serializeProfile } from '../../state/storage'
+import { useProfileImport } from '../useProfileImport'
 import { BEER_BY_ID } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
 import { progressMessage } from '../../domain/quips'
@@ -12,7 +14,7 @@ import { ACH_ICON } from '../achievementIcons'
 import styles from './Profile.module.css'
 
 export function Profile() {
-  const { state, dispatch, openDetail, withTabs } = useApp()
+  const { state, dispatch, openDetail, withTabs, toast } = useApp()
   const { counts, decoded, archetype, avatar, achievements } = useDerived()
   const { ratings, dark, buddyNo } = state.profile
   const P = COPY.personas[archetype]
@@ -28,6 +30,21 @@ export function Profile() {
     { k: COPY.profile.stats.nopes, v: counts.DISLIKE, col: RATING_COLOR.DISLIKE },
     { k: COPY.profile.stats.tries, v: counts.WANT_TO_TRY, col: RATING_COLOR.WANT_TO_TRY },
   ]
+
+  const importer = useProfileImport()
+
+  const exportProfile = () => {
+    const blob = new Blob([serializeProfile(state.profile)], { type: 'application/json' })
+    const href = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = href
+    a.download = `pilsbuddy-profil-${new Date().toISOString().slice(0, 10)}.json`
+    document.body.append(a)
+    a.click()
+    a.remove()
+    setTimeout(() => URL.revokeObjectURL(href), 10_000)
+    toast(COPY.profile.exported)
+  }
 
   const reset = () => {
     if (window.confirm(COPY.profile.resetConfirm)) dispatch({ type: 'RESET' })
@@ -96,6 +113,22 @@ export function Profile() {
             <span className={styles.knob} style={{ left: dark ? 22 : 2 }} />
           </span>
         </button>
+        <h2 className={styles.h2}>{COPY.profile.backup}</h2>
+        <button type="button" className={styles.setting} onClick={exportProfile}>
+          <DownloadSimpleIcon weight="bold" size={20} />
+          <span className={styles.settingText}>
+            <span className={styles.settingLabel}>{COPY.profile.exportLabel}</span>
+            <span className={styles.settingSub}>{COPY.profile.exportSub}</span>
+          </span>
+        </button>
+        <button type="button" className={styles.setting} onClick={importer.open}>
+          <UploadSimpleIcon weight="bold" size={20} />
+          <span className={styles.settingText}>
+            <span className={styles.settingLabel}>{COPY.profile.importLabel}</span>
+            <span className={styles.settingSub}>{COPY.profile.importSub}</span>
+          </span>
+        </button>
+        {importer.input}
         <button type="button" className={styles.reset} onClick={reset}>
           {COPY.profile.reset}
         </button>

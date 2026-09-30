@@ -12,6 +12,7 @@ export const COPY = {
   welcome: {
     cta: "Los geht's",
     promise: 'Kein Formular. Kein Sommelier-Gelaber. Versprochen.',
+    restore: 'Schon mal hier gewesen? Profil importieren'
   },
   howto: {
     step: 'Schritt 1 von 1 · ehrlich',
@@ -309,6 +310,20 @@ export const COPY = {
     darkSub: 'Dark Mode. Für nach 22 Uhr.',
     reset: 'Profil zurücksetzen – alles vergessen, wie nach dem Schützenfest.',
     resetConfirm: 'Wirklich alles vergessen? Deine Bier-DNA, Matches, alles.',
+    backup: 'Sichern & umziehen',
+    exportLabel: 'Profil exportieren',
+    exportSub: 'Als Datei – für ein neues Handy oder nach dem Browser-Putz.',
+    importLabel: 'Profil importieren',
+    importSub: 'Datei von einem Export wählen.',
+    imported: 'Willkommen zurück. Deine Bier-DNA ist wieder da.',
+    importFailed: 'Die Datei sieht nicht nach einem PilsBuddy-Profil aus.',
+    importConfirm: 'Aktuelles Profil durch die Datei ersetzen?',
+    exported: 'Profil gespeichert. Gut aufheben!',
+  },
+  installHint: {
+    title: 'Tipp: PilsBuddy als App',
+    text: 'Teilen-Symbol → „Zum Home-Bildschirm“. Dann startet PilsBuddy wie eine App – auch offline.',
+    close: 'Verstanden',
   },
   tabs: { swipe: 'Swipen', dna: 'Bier-DNA', matches: 'Matches', profile: 'Profil' },
   personas: {

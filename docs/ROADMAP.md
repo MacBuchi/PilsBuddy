@@ -24,7 +24,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | Gamification | 10 Achievements, Toast + Vollbild-Momente | – |
 | Humor | 12 Quips je Rating, Meilensteine, Persona-Zeilen, `disLikeQuip` für alle | – |
 | WANT_TO_TRY | Interesse-Signal, Probierliste mit Nachbewertung | – |
-| Persistenz | localStorage, versioniert | kein Export/Import, kein Offline |
+| Persistenz | localStorage, versioniert, Export/Import, offline-fähig | geräteübergreifend erst mit Stufe B |
 | Share | Bild-Karte (Story-Format) + Text-Fallback | – |
 | Social | `buddyMatch()` vorbereitet | keine UI, kein Backend |
 | Qualität | Domain-, Reducer-, Komponententests, E2E in CI | Auto-Deploy wartet auf Secrets |
@@ -106,10 +106,12 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
       Eigenschaften, DNA-Balken, Herzbiere (Fallback: nächste Matches); Web Share mit Datei, sonst Download
 - [x] Daten pur in `domain/shareCard.ts` (getestet); E2E prüft den PNG-Download
 
-### A8 · PWA/Offline + Export/Import (S)
+### A8 · PWA/Offline + Export/Import (S) ✅
 
-- [ ] `public/sw.js` (Precache aus Vite-Manifest, Network-first für `/`), nur in PROD registriert
-- [ ] iOS-Install-Hinweis einmalig; Profil-Export/Import (JSON) im Profil
+- [x] `public/sw.js` (handgeschrieben): HTML network-first mit Offline-Kopie, `/assets`, `/bottles`,
+      Fonts/Icons cache-first; nur in PROD registriert; geprüft: Offline-Reload + Swipen
+- [x] iOS-Install-Hinweis einmalig im DNA-Screen (`seen: hint-ios-install`); Profil-Export/Import (JSON)
+      im Profil und „Profil importieren“ auf dem Welcome-Screen (Neugerät); E2E: Export → Reset → Import
 
 ### A9 · Qualität & Auslieferung (S) ✅
 

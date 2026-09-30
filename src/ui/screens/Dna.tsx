@@ -10,8 +10,16 @@ import styles from './Dna.module.css'
 
 const AXIS_ICON = [LeafIcon, PlantIcon, GrainsIcon, DropIcon, FireIcon]
 
+/** iOS Safari outside the home-screen app: the only place that needs a manual install hint. */
+const IOS_BROWSER =
+  typeof navigator !== 'undefined' &&
+  /iPhone|iPad|iPod/.test(navigator.userAgent) &&
+  !(navigator as Navigator & { standalone?: boolean }).standalone
+export const INSTALL_HINT_ID = 'hint-ios-install'
+
 export function Dna() {
-  const { go, withTabs } = useApp()
+  const { go, withTabs, state, dispatch } = useApp()
+  const showInstall = IOS_BROWSER && !state.profile.seen.includes(INSTALL_HINT_ID)
   const { dna, counts, decoded } = useDerived()
   const [barsIn, setBarsIn] = useState(false)
 
@@ -40,6 +48,18 @@ export function Dna() {
         <h1 className={styles.title}>{fill(COPY.dna.title, { pct: decoded })}</h1>
         <p className={styles.sub}>{longMsg}</p>
       </div>
+
+      {showInstall && (
+        <div className={styles.install} role="note">
+          <span className={styles.installText}>
+            <b>{COPY.installHint.title}</b>
+            <span>{COPY.installHint.text}</span>
+          </span>
+          <button type="button" className={styles.installClose} onClick={() => dispatch({ type: 'MARK_SEEN', id: INSTALL_HINT_ID })}>
+            {COPY.installHint.close}
+          </button>
+        </div>
+      )}
 
       <div className={page.panel}>
         {DISPLAY_AXES.map((a, i) => {
