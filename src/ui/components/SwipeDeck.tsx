@@ -215,6 +215,18 @@ export function SwipeDeck({ queue, onCommit, onTap, onDragChange, coachOffset, r
             onPointerUp={top ? onUp : undefined}
             onPointerCancel={top ? onUp : undefined}
             aria-hidden={!top}
+            tabIndex={top ? 0 : -1}
+            role={top ? 'button' : undefined}
+            aria-label={top ? `${beer.fullName} – Details` : undefined}
+            onKeyDown={
+              top
+                ? (e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return
+                    e.preventDefault()
+                    onTap(beer)
+                  }
+                : undefined
+            }
           >
             <BeerCard beer={beer} position={deckPosition(beer.id)} stamps={stamps} smoothStamps={top && coaching} />
           </div>

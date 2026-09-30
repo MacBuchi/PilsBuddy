@@ -27,7 +27,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | Persistenz | localStorage, versioniert | kein Export/Import, kein Offline |
 | Share | Text | keine Share-Card |
 | Social | `buddyMatch()` vorbereitet | keine UI, kein Backend |
-| Qualität | Domain-/Storage-Tests, E2E ad hoc | keine Reducer-/Komponententests, kein CI |
+| Qualität | Domain-, Reducer-, Komponententests, E2E in CI | Auto-Deploy wartet auf Secrets |
 
 ## Stufe A – Spaß & Nutzbarkeit (kein Backend)
 
@@ -107,12 +107,13 @@ Akzeptanz: Nachbewertung entfernt aus Liste und aktualisiert DNA; Chip öffnet D
 - [ ] `public/sw.js` (Precache aus Vite-Manifest, Network-first für `/`), nur in PROD registriert
 - [ ] iOS-Install-Hinweis einmalig; Profil-Export/Import (JSON) im Profil
 
-### A9 · Qualität & Auslieferung (S)
+### A9 · Qualität & Auslieferung (S) ✅
 
-- [ ] `SwipeDeck.test.tsx` (`reducer.test.ts` kam mit A2)
-- [ ] GitHub Actions: `ci.yml` (lint/test/build), `deploy.yml` (main → `wrangler deploy`;
-      Secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`)
-- [ ] Dark-Mode-Kanten gesperrter Achievements, `aria-live` am Bottom-Toast, Fokus-Ring auf der Karte
+- [x] `reducer.test.ts`, `SwipeDeck.test.tsx` (64 Tests gesamt)
+- [x] GitHub Actions `ci.yml`: Lint · Test · Build → E2E-Flow gegen `vite preview` → Deploy (nur `main`)
+- [ ] Auto-Deploy aktivieren: Repo-Secrets `CLOUDFLARE_API_TOKEN` (Vorlage „Edit Cloudflare Workers“)
+      und `CLOUDFLARE_ACCOUNT_ID` setzen – bis dahin überspringt der Job und `npm run deploy` gilt
+- [x] Dark-Mode-Kanten gesperrter Achievements, `aria-live` am Bottom-Toast, Fokus-Ring + Enter auf der Karte
 
 ## Stufe B – Backend (Supabase, Free Tier) – nach A0–A4
 

@@ -56,7 +56,7 @@
   --ink: #f4eee2;
   --mut: #aba08e;
   --line: rgba(244, 238, 226, 0.14);
-  --line-strong: rgba(244, 238, 226, 0.22);
+  --line-strong: rgba(244, 238, 226, 0.28);
   --edge: #050403;
   color-scheme: dark;
 }
