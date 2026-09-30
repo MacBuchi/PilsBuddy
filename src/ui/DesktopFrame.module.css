@@ -164,11 +164,7 @@
 
 .nextBottle {
   flex: none;
-  width: 16px;
-  height: 26px;
-  border-radius: 3px 3px 7px 7px;
-  border: 2px solid var(--ink-fixed);
-  margin-top: 2px;
+  margin-top: -4px;
 }
 
 .nextText {

@@ -95,6 +95,8 @@ erkennbar sein.
   Bei dunklen Bieren (Guinness, Köstritzer, Schlenkerla, Doppelbock) ist der Hintergrund fast schwarz.
 - Optional zusätzlich \`<id>-mini.png\` 120 × 240 px für Listen (sonst wird skaliert)
 - In \`beers.json\` wird dann \`"image": "/bottles/<id>.png"\` eingetragen
+- Vergleich mit den Illustrationen: \`npm run dev\`, dann \`http://localhost:5173/?gallery=bottles\`
+  (zeigt jedes Bier auf seiner Bierfarbe – dein PNG, sobald eingetragen, sonst die Illustration)
 
 ## Sorten (Bier-Stile) und Formvorschlag
 

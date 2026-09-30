@@ -6,6 +6,7 @@ import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
 import page from './page.module.css'
+import { BottleArt } from '../components/BottleArt'
 import styles from './Matches.module.css'
 
 const SEGMENTS: { k: MatchTab; label: string; beta: boolean }[] = [
@@ -49,7 +50,7 @@ export function Matches() {
           {recos.map(({ beer, pct }) => (
             <button key={beer.id} type="button" className={styles.reco} onClick={() => openDetail(beer.id)}>
               <span className={styles.bottle} style={{ background: beer.color }}>
-                <span className={styles.bottleFoam} />
+                <BottleArt beer={beer} size={50} />
               </span>
               <span className={styles.recoText}>
                 <span className={styles.recoName}>{beer.name}</span>

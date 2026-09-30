@@ -8,8 +8,8 @@ import { RATINGS } from '../../domain/types'
 import type { Rating } from '../../domain/types'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
-import { isDarkBeer } from '../color'
 import { RATING_COLOR, RATING_ICON } from '../ratingStyle'
+import { BottleArt } from '../components/BottleArt'
 import styles from './Detail.module.css'
 
 export function Detail() {
@@ -20,7 +20,6 @@ export function Detail() {
 
   const pct = compatibility(dna.taste, beer.taste)
   const current = state.profile.ratings[beer.id]?.rating
-  const dark = isDarkBeer(beer.color)
 
   const setRelation = (r: Rating) => {
     rate(beer.id, r)
@@ -39,9 +38,7 @@ export function Detail() {
         {beer.image ? (
           <img className={styles.photo} src={beer.image} alt={beer.fullName} />
         ) : (
-          <div className={`${styles.placeholder} ${dark ? styles.placeholderDark : ''}`}>
-            <span>{COPY.swipe.photoPlaceholder}</span>
-          </div>
+          <BottleArt beer={beer} className={styles.art} />
         )}
         <button type="button" className={styles.back} onClick={back} aria-label="Zurück">
           <ArrowLeftIcon weight="bold" />

@@ -59,20 +59,14 @@
   position: relative;
   width: 44px;
   height: 56px;
-  border-radius: 8px 8px 14px 14px;
+  border-radius: 14px;
   border: 2.5px solid var(--ink-fixed);
   overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
-.bottleFoam {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 13px;
-  background: var(--foam);
-  border-bottom: 2px solid rgba(29, 24, 17, 0.15);
-}
 
 .recoText {
   flex: 1;

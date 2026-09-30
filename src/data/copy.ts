@@ -74,7 +74,6 @@ export const COPY = {
   swipe: {
     left: '{n} übrig',
     analyzeCta: 'Genug gedatet? DNA auswerten',
-    photoPlaceholder: 'Flaschen-\nfoto',
     emptyTitle: 'Der Stapel ist leer.',
     emptySub: 'Du hast alle Biere gedatet. Die Brauereien kommen kaum hinterher.',
     emptyToDna: 'Zur Bier-DNA',

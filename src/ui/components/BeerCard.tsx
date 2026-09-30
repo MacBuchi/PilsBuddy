@@ -1,7 +1,8 @@
 import { COPY } from '../../data/copy'
 import { formatAbv } from '../../data/beers'
 import type { Beer, Rating } from '../../domain/types'
-import { isDarkBeer, textOnBeer } from '../color'
+import { textOnBeer } from '../color'
+import { BottleArt } from './BottleArt'
 import styles from './BeerCard.module.css'
 
 export type StampOpacity = Partial<Record<Rating, number>>
@@ -22,7 +23,6 @@ interface Props {
 export function BeerCard({ beer, position, stamps = {}, smoothStamps = false }: Props) {
   const fade = smoothStamps ? 'opacity .45s ease' : undefined
   const ink = textOnBeer(beer.color)
-  const dark = isDarkBeer(beer.color)
   return (
     <div className={styles.card}>
       <div className={styles.glass} style={{ background: beer.color, color: ink }}>
@@ -41,9 +41,7 @@ export function BeerCard({ beer, position, stamps = {}, smoothStamps = false }: 
         {beer.image ? (
           <img className={styles.photo} src={beer.image} alt={beer.fullName} draggable={false} />
         ) : (
-          <div className={`${styles.placeholder} ${dark ? styles.placeholderDark : ''}`}>
-            <span>{COPY.swipe.photoPlaceholder}</span>
-          </div>
+          <BottleArt beer={beer} className={styles.art} />
         )}
 
         <div className={`${styles.stamp} ${styles.stampLike}`} style={{ opacity: stamps.LIKE ?? 0, transition: fade }}>

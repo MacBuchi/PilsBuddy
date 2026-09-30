@@ -143,10 +143,7 @@
 
 .relBottle {
   flex: none;
-  width: 14px;
-  height: 22px;
-  border-radius: 3px 3px 6px 6px;
-  border: 2px solid var(--ink-fixed);
+  margin: -4px 0;
 }
 
 .relName {

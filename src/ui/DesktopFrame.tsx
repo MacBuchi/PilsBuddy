@@ -6,6 +6,7 @@ import { TAB_SCREENS } from '../state/reducer'
 import { useApp } from '../state/AppContext'
 import { useDerived } from '../state/useDerived'
 import { BuddyAvatar } from './components/BuddyAvatar'
+import { BottleArt } from './components/BottleArt'
 import styles from './DesktopFrame.module.css'
 
 const ICONS = { swipe: CardsIcon, dna: DnaIcon, matches: HeartIcon, profile: UserCircleIcon }
@@ -100,7 +101,7 @@ export function DesktopRight() {
         <div className={styles.box}>
           <span className="t-label">{COPY.match.label}</span>
           <div className={styles.next}>
-            <span className={styles.nextBottle} style={{ background: top.beer.color }} />
+            <BottleArt beer={top.beer} size={44} outline="var(--edge)" className={styles.nextBottle} />
             <div className={styles.nextText}>
               <span className={styles.nextName}>
                 {top.beer.fullName} · {top.pct} %
