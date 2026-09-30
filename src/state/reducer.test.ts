@@ -3,7 +3,7 @@ import { initialState, reducer } from './reducer'
 import type { Action, AppState } from './reducer'
 
 const run = (s: AppState, ...actions: Action[]) => actions.reduce(reducer, s)
-const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234 })
+const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [] })
 
 describe('reducer', () => {
   it('GO to dna marks the user as onboarded, other screens do not', () => {
@@ -63,6 +63,13 @@ describe('reducer', () => {
     )
     expect(Object.keys(once.profile.ratings)).toEqual(['jever'])
     expect(reducer(once, { type: 'UNRATE' })).toBe(once)
+  })
+
+  it('MARK_SEEN remembers a moment once; RESET forgets them', () => {
+    const s = run(fresh(), { type: 'MARK_SEEN', id: 'entschluesselt' })
+    expect(s.profile.seen).toEqual(['entschluesselt'])
+    expect(reducer(s, { type: 'MARK_SEEN', id: 'entschluesselt' })).toBe(s)
+    expect(reducer(s, { type: 'RESET' }).profile.seen).toEqual([])
   })
 
   it('RESTART_DECK and RESET clear undo; RESET keeps dark mode', () => {

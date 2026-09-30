@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import { buildAvatar } from '../../domain/avatar'
 import type { AvatarSpec, Eyes, Mouth } from '../../domain/avatar'
 import type { ArchetypeId } from '../../domain/types'
+import { ACH_BY_ID, ACH_COLOR, ACH_ICON } from '../achievementIcons'
 
 /**
  * Renders an AvatarSpec (domain/avatar.ts) as the parametric "Glas-Charakter":
@@ -38,7 +39,8 @@ export function BuddyAvatar({ spec, archetype = 'logo', decoded = 100, size = 12
   const l = (120 - w) / 2 - (A.handle ? 7 : 0)
   const t = 108 - h
   const n = A.foamBumps
-  const d = ((w + 4) / n) * 1.45
+  // foam grows with recent activity (up to +22 %)
+  const d = ((w + 4) / n) * 1.45 * (1 + 0.22 * (A.foam ?? 0))
   const bumps = Array.from({ length: n }, (_, i) => ({
     x: l - 2 + ((w + 4) * (i + 0.5)) / n - d / 2,
     y: t - d * 0.55,
@@ -58,6 +60,16 @@ export function BuddyAvatar({ spec, archetype = 'logo', decoded = 100, size = 12
       aria-label={`Bier-Buddy ${A.archetype}`}
     >
       <div style={abs(0, 0, 120, 120, { transform: `scale(${size / 120})`, transformOrigin: '0 0' })}>
+        {A.stage === 'stammgast' && (
+          <div
+            style={abs(cx - (w + 34) / 2, 102, w + 34, 13, {
+              borderRadius: '50%',
+              background: FOAM,
+              border: `2.5px solid ${INK}`,
+              boxShadow: `0 3px 0 ${INK}`,
+            })}
+          />
+        )}
         {A.handle && <div style={abs(l + w - 6, t + 16, 26, 40, { border: `6px solid ${INK}`, borderRadius: 14 })} />}
         {/* outline */}
         <div style={abs(l - 3, t - 3, w + 6, h + 6, { background: INK, borderRadius: A.radius })} />
@@ -124,6 +136,30 @@ export function BuddyAvatar({ spec, archetype = 'logo', decoded = 100, size = 12
             )}
           </div>
         )}
+
+        {(A.stickers ?? []).map((id, i) => {
+          const def = ACH_BY_ID[id]
+          if (!def) return null
+          const pos = i === 0 ? { x: l - 9, y: t + h - 30, r: -12 } : { x: l + w - 13, y: t + h - 22, r: 10 }
+          return (
+            <div
+              key={id}
+              style={abs(pos.x, pos.y, 22, 22, {
+                borderRadius: '50%',
+                background: ACH_COLOR[def.icon],
+                border: `2px solid ${INK}`,
+                color: FOAM,
+                fontSize: 12,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: `rotate(${pos.r}deg)`,
+              })}
+            >
+              {ACH_ICON[def.icon]}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

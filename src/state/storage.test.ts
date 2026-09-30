@@ -13,6 +13,14 @@ function memoryStorage() {
 }
 
 describe('storage', () => {
+  it('old profiles without "seen" treat already unlocked achievements as seen', () => {
+    const ratings = Object.fromEntries(['a', 'b', 'c'].map((id, i) => [id, { rating: 'LIKE', at: i }]))
+    const p = parseProfile(JSON.stringify({ v: 1, profile: { ratings } }))!
+    expect(p.seen).toContain('first-date')
+    const q = parseProfile(JSON.stringify({ v: 1, profile: { ratings, seen: ['x', 3] } }))!
+    expect(q.seen).toEqual(['x'])
+  })
+
   it('keeps a valid previous rating and drops junk', () => {
     const json = JSON.stringify({
       v: 1,

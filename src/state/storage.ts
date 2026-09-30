@@ -1,3 +1,4 @@
+import { progressOf, unlockedIds } from '../domain/achievements'
 import { RATINGS } from '../domain/types'
 import type { Rating, Ratings } from '../domain/types'
 import { initialProfile } from './reducer'
@@ -45,12 +46,16 @@ export function parseProfile(json: string | null): Profile | null {
     if (!env || typeof env !== 'object' || !env.profile || typeof env.profile !== 'object') return null
     const p = env.profile as Partial<Profile>
     const base = initialProfile()
+    const ratings = sanitizeRatings(p.ratings)
     return {
-      ratings: sanitizeRatings(p.ratings),
+      ratings,
       ageConfirmed: p.ageConfirmed === true,
       onboarded: p.onboarded === true,
       dark: p.dark === true,
       buddyNo: typeof p.buddyNo === 'number' ? p.buddyNo : base.buddyNo,
+      // Profiles from before moments existed: everything already unlocked counts as seen,
+      // so nobody gets a burst of old overlays after an update.
+      seen: Array.isArray(p.seen) ? p.seen.filter((x): x is string => typeof x === 'string') : unlockedIds(progressOf(ratings)),
     }
   } catch {
     return null

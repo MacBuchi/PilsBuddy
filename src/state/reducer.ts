@@ -26,6 +26,8 @@ export interface Profile {
   dark: boolean
   /** Stable pseudo-id shown as "Buddy #0427"; later replaced by a real account id. */
   buddyNo: number
+  /** Achievement moments already shown (full-screen overlay appears once per id). */
+  seen: string[]
 }
 
 export interface AppState {
@@ -50,6 +52,7 @@ export type Action =
   | { type: 'TOGGLE_DARK' }
   | { type: 'SET_MATCH_TAB'; tab: MatchTab }
   | { type: 'RESTART_DECK' }
+  | { type: 'MARK_SEEN'; id: string }
   | { type: 'RESET' }
 
 export function newBuddyNo(): number {
@@ -57,7 +60,7 @@ export function newBuddyNo(): number {
 }
 
 export function initialProfile(): Profile {
-  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo() }
+  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [] }
 }
 
 export function initialState(profile: Profile = initialProfile()): AppState {
@@ -120,6 +123,9 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, matchTab: action.tab }
     case 'RESTART_DECK':
       return { ...state, profile: { ...state.profile, ratings: {} }, lastRated: null }
+    case 'MARK_SEEN':
+      if (state.profile.seen.includes(action.id)) return state
+      return { ...state, profile: { ...state.profile, seen: [...state.profile.seen, action.id] } }
     case 'RESET':
       return initialState({ ...initialProfile(), dark: state.profile.dark })
   }

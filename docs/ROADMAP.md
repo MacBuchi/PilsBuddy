@@ -20,8 +20,8 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | Bier-Swipe | Touch/Maus/Tasten/Buttons, Stempel, Fly-out, Undo (1 Schritt) | – |
 | Bierdatenmodell | 60 Biere, 8 Achsen, illustrierte Flaschen, `image` optional | eigene Flaschen-Designs fehlen |
 | DNA / Persona / Matching | deterministisch, getestet, kuratiertes Deck, Nächstes-Match-Chip | – |
-| Avatar | 8 Archetypen, 3 Stufen | Entwicklung endet bei 70 % |
-| Gamification | 10 Achievements, Toast | kein Moment beim Freischalten |
+| Avatar | 8 Archetypen, 4 Stufen, Sticker, Schaum, Lieblingsfarbe | – |
+| Gamification | 10 Achievements, Toast + Vollbild-Momente | – |
 | Humor | 12 Quips je Rating, Meilensteine, Persona-Zeilen, `disLikeQuip` für alle | – |
 | WANT_TO_TRY | Interesse-Signal, Probierliste mit Nachbewertung | – |
 | Persistenz | localStorage, versioniert | kein Export/Import, kein Offline |
@@ -92,11 +92,13 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 - [x] Detail: „Warum passt es zu dir?“ deterministisch aus `matchReason` + zwei größten Achsen-Abweichungen (`whyItFits`)
 - [x] Tests: `quips.test.ts`, `whyItFits` in `matching.test.ts`
 
-### A6 · Avatar-Entwicklung & Momente (M)
+### A6 · Avatar-Entwicklung & Momente (M) ✅
 
-- [ ] Sticker aus Achievements, Schaumhöhe = Aktivität 7 Tage, Stufe „Stammgast“ (Untersetzer)
-- [ ] `MomentOverlay` für Achievement und DNA-100 % (einmalig, `seenAchievements` persistiert)
-- [ ] Hinweis nach der ersten Karte („Noch 13, dann kennen wir dich.“)
+- [x] Sticker aus großen Achievements (max. 2), Schaumhöhe = Aktivität 7 Tage, Stufe „Stammgast“ ab 25
+      (Bierdeckel), Glasfarbe = bestes Lieblingsbier (`avatarExtras`, deterministisch bei gegebenem `now`)
+- [x] `MomentOverlay` für Entschlüsselt (DNA 100 %), Wort gehalten, Hopfen-Herz, Pils-Flüsterer,
+      Kasten-Kenner – einmalig, `Profile.seen` persistiert; Altprofile gelten beim Laden als „gesehen“
+- [x] Hinweis nach der ersten Karte („So geht's. Noch 13, dann kennen wir dich.“)
 
 ### A7 · Share-Card (S)
 

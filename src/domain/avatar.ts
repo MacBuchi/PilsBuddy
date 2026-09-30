@@ -1,4 +1,6 @@
-import type { ArchetypeId } from './types'
+import { BEER_BY_ID } from '../data/beers'
+import { compatibility } from './matching'
+import type { ArchetypeId, Beer, Ratings, TasteVector } from './types'
 
 /**
  * Avatar = a bundle of visual attributes derived from the Bier-DNA, not an image.
@@ -11,11 +13,30 @@ export type GlassForm = 'stange' | 'becher' | 'tulpe' | 'seidel' | 'probierglas'
 export type Eyes = 'Dot' | 'Flat' | 'Happy' | 'Wide' | 'Shades' | 'Wink' | 'Curious' | 'Specs'
 export type Mouth = 'Smile' | 'Line' | 'O' | 'Grin'
 export type Accessory = 'none' | 'Brow' | 'Must' | 'Blush' | 'Tie' | 'Hop' | 'Cap' | 'Star'
-export type Stage = 'hidden' | 'raw' | 'full'
+export type Stage = 'hidden' | 'raw' | 'full' | 'stammgast'
+
+/** Achievement ids that earn a sticker on the glass, most prestigious first. */
+export const STICKER_ORDER = [
+  'kasten-kenner',
+  'pils-fluesterer',
+  'entschluesselt',
+  'wort-gehalten',
+  'hopfen-herz',
+  'hohe-ansprueche',
+  'neugiernase',
+  'ehrlich',
+] as const
+export type StickerId = (typeof STICKER_ORDER)[number]
+export const MAX_STICKERS = 2
+/** Ratings needed for the "Stammgast" stage (glass stands on a Bierdeckel). */
+export const STAMMGAST_AT = 25
+/** Ratings within this window count as recent activity (foam height). */
+export const ACTIVITY_WINDOW_MS = 7 * 24 * 60 * 60 * 1000
+export const ACTIVITY_FULL = 10
 
 export interface AvatarSpec {
   archetype: ArchetypeId
-  /** hidden: silhouette with "?" · raw: face · full: face + accessory */
+  /** hidden: silhouette with "?" · raw: face · full: face + accessory · stammgast: + Bierdeckel */
   stage: Stage
   glass: GlassForm
   /** glass geometry on the 120×120 canvas */
@@ -28,6 +49,20 @@ export interface AvatarSpec {
   eyes: Eyes
   mouth: Mouth
   accessory: Accessory
+  /** Up to two achievement stickers on the glass. */
+  stickers: StickerId[]
+  /** 0–1 activity in the last 7 days → foam height. */
+  foam: number
+}
+
+/** Everything beyond archetype + decoded that shapes the avatar. All optional. */
+export interface AvatarExtras {
+  total?: number
+  unlocked?: readonly string[]
+  /** 0–1, see avatarExtras(). */
+  activity?: number
+  /** Colour of the favourite liked beer – the glass takes it once fully decoded. */
+  favoriteColor?: string
 }
 
 interface Shape {
@@ -57,15 +92,45 @@ const SHAPES: Record<ArchetypeId, Shape> = {
 
 export const HIDDEN_BEER_COLOR = '#CFC5B3'
 
-export function stageFor(decoded: number): Stage {
+export function stageFor(decoded: number, total = 0): Stage {
   if (decoded < 30) return 'hidden'
   if (decoded < 70) return 'raw'
-  return 'full'
+  return total >= STAMMGAST_AT ? 'stammgast' : 'full'
 }
 
-export function buildAvatar(archetype: ArchetypeId, decoded = 100): AvatarSpec {
+/**
+ * Derives the avatar extras from ratings. `now` is passed in so the result is reproducible;
+ * the favourite is the liked beer closest to the current taste (ties: dataset order).
+ */
+export function avatarExtras(
+  ratings: Ratings,
+  taste: TasteVector,
+  unlocked: readonly string[],
+  now: number,
+  lookup: Readonly<Record<string, Beer>> = BEER_BY_ID,
+): AvatarExtras {
+  const entries = Object.entries(ratings)
+  const recent = entries.filter(([, e]) => e.at > now - ACTIVITY_WINDOW_MS && e.at <= now).length
+  let favorite: { color: string; pct: number } | null = null
+  for (const [id, e] of entries) {
+    const beer = lookup[id]
+    if (!beer || e.rating !== 'LIKE') continue
+    const pct = compatibility(taste, beer.taste)
+    if (!favorite || pct > favorite.pct) favorite = { color: beer.color, pct }
+  }
+  return {
+    total: entries.length,
+    unlocked,
+    activity: Math.min(1, recent / ACTIVITY_FULL),
+    favoriteColor: favorite?.color,
+  }
+}
+
+export function buildAvatar(archetype: ArchetypeId, decoded = 100, extras: AvatarExtras = {}): AvatarSpec {
   const s = SHAPES[archetype] ?? SHAPES.logo
-  const stage = stageFor(decoded)
+  const stage = stageFor(decoded, extras.total ?? 0)
+  const grown = stage === 'full' || stage === 'stammgast'
+  const unlocked = new Set(extras.unlocked ?? [])
   return {
     archetype,
     stage,
@@ -74,10 +139,12 @@ export function buildAvatar(archetype: ArchetypeId, decoded = 100): AvatarSpec {
     height: s.h,
     radius: s.r,
     handle: !!s.handle,
-    beerColor: stage === 'hidden' ? HIDDEN_BEER_COLOR : s.beer,
+    beerColor: stage === 'hidden' ? HIDDEN_BEER_COLOR : grown && extras.favoriteColor ? extras.favoriteColor : s.beer,
     foamBumps: s.n,
     eyes: s.e,
     mouth: s.m,
-    accessory: stage === 'full' ? s.a : 'none',
+    accessory: grown ? s.a : 'none',
+    stickers: stage === 'hidden' ? [] : STICKER_ORDER.filter((id) => unlocked.has(id)).slice(0, MAX_STICKERS),
+    foam: extras.activity ?? 0,
   }
 }
