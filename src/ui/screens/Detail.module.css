@@ -43,37 +43,18 @@
   filter: drop-shadow(0 6px 0 rgba(29, 24, 17, 0.25));
 }
 
-.placeholder {
+
+
+
+.art {
   position: absolute;
   left: 50%;
-  top: calc(var(--safe-top) + 98px);
-  bottom: 22px;
-  width: 84px;
+  top: calc(var(--safe-top) + 92px);
+  bottom: 16px;
+  height: calc(100% - var(--safe-top) - 108px);
+  width: auto;
+  aspect-ratio: 1 / 2;
   transform: translateX(-50%);
-  border-radius: 16px;
-  border: 2px dashed rgba(29, 24, 17, 0.4);
-  background: repeating-linear-gradient(135deg, rgba(29, 24, 17, 0.1) 0 6px, transparent 6px 12px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 8px;
-}
-
-.placeholder span {
-  font: 700 8.5px/1.2 var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(29, 24, 17, 0.7);
-  text-align: center;
-  white-space: pre-line;
-}
-
-.placeholderDark {
-  border-color: rgba(255, 246, 227, 0.4);
-  background: repeating-linear-gradient(135deg, rgba(255, 246, 227, 0.1) 0 6px, transparent 6px 12px);
-}
-.placeholderDark span {
-  color: rgba(255, 246, 227, 0.75);
 }
 
 .back {

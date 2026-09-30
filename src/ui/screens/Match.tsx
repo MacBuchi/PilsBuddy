@@ -6,6 +6,7 @@ import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
+import { BottleArt } from '../components/BottleArt'
 import styles from './Match.module.css'
 
 const CONFETTI = Array.from({ length: 12 }, (_, i) => ({
@@ -59,7 +60,7 @@ export function Match() {
           {beer.image ? (
             <img className={styles.bottle} src={beer.image} alt="" />
           ) : (
-            <div className={styles.placeholder} />
+            <BottleArt beer={beer} className={styles.bottle} />
           )}
         </div>
         <div className={styles.heart}>

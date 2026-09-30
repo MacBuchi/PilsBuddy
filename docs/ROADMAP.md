@@ -18,7 +18,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | --- | --- | --- |
 | Spaß beim ersten Öffnen | Welcome, Onboarding, Swipe-Coach auf der ersten Karte, „?“-Hilfe | – |
 | Bier-Swipe | Touch/Maus/Tasten/Buttons, Stempel, Fly-out | kein Undo |
-| Bierdatenmodell | 42 Biere, 8 Achsen, `image` optional | keine Bilder; Referenz-Set Pils-lastig |
+| Bierdatenmodell | 42 Biere, 8 Achsen, illustrierte Flaschen, `image` optional | eigene Flaschen-Designs fehlen; Referenz-Set Pils-lastig |
 | DNA / Persona / Matching | deterministisch, getestet | Deck nach Onboarding unkuratiert; „nächstes Bier“ mobil nur im Matches-Tab |
 | Avatar | 8 Archetypen, 3 Stufen | Entwicklung endet bei 70 % |
 | Gamification | 9 Achievements, Toast | kein Moment beim Freischalten |
@@ -55,12 +55,12 @@ Teil 1 – Flaschen-Designs (Nutzer gestaltet in Claude Design)
 
 Hinweis: Eigene, stilisierte Designs statt Fotos – keine 1:1-Kopien realer Etiketten (Markenrecht).
 
-Teil 2 – Illustrations-Fallback
+Teil 2 – Illustrations-Fallback ✅ (Dev-Galerie: `/?gallery=bottles`)
 
-- [ ] `domain/bottle.ts`: `buildBottle(beer) → BottleSpec` (Form je Stil, Etikettfarbe aus `color`)
-- [ ] `BottleArt.tsx` (SVG) in BeerCard, Detail, Match, Matches, Profile, DesktopFrame; Platzhalter raus
+- [x] `domain/bottle.ts`: `buildBottle(beer) → BottleSpec` (Form je Stil, Etikettfarbe aus `color`)
+- [x] `BottleArt.tsx` (SVG) in BeerCard, Detail, Match, Matches, Profile, DesktopFrame; Platzhalter raus
 
-Akzeptanz: kein „Flaschenfoto“-Text mehr; `sources.json` vollständig; dunkle Biere lesbar; Bundle < +1,5 MB.
+Akzeptanz: kein „Flaschenfoto“-Text mehr; dunkle Biere lesbar; Bundle < +1,5 MB (PNG ggf. als WebP).
 
 ### A2 · Undo („Zurückholen“) (S)
 

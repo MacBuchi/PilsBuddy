@@ -76,17 +76,6 @@
   background: radial-gradient(circle at 10px 0, var(--foam) 9px, transparent 10px) 0 0 / 20px 12px repeat-x;
 }
 
-.placeholder {
-  position: absolute;
-  left: 50%;
-  top: 58px;
-  transform: translateX(-50%);
-  width: 44px;
-  height: 74px;
-  border-radius: 10px;
-  border: 2px dashed rgba(29, 24, 17, 0.4);
-  background: repeating-linear-gradient(135deg, rgba(29, 24, 17, 0.1) 0 5px, transparent 5px 10px);
-}
 
 .bottle {
   position: absolute;
@@ -94,6 +83,7 @@
   top: 54px;
   transform: translateX(-50%);
   height: 84px;
+  width: 42px;
   object-fit: contain;
 }
 
