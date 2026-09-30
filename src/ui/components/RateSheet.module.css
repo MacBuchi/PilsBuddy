@@ -1,0 +1,70 @@
+.sub {
+  margin: -4px 0 0;
+  font: 500 15px/1.4 var(--font-display);
+  color: var(--mut);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  box-shadow: 0 3px 0 var(--edge);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.option:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--edge);
+}
+
+.icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream-fixed);
+  font-size: 19px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.label {
+  font: 800 16px/1.1 var(--font-display);
+}
+
+.optSub {
+  font: 500 12.5px/1.2 var(--font-display);
+  color: var(--mut);
+}
+
+.later {
+  align-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--mut);
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px;
+  cursor: pointer;
+}

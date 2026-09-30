@@ -12,8 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { getBeer } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
-import { newlyUnlocked } from '../../domain/achievements'
-import { countRatings, decodedPercent } from '../../domain/dna'
+import { countRatings } from '../../domain/dna'
 import { buildDeck } from '../../domain/deck'
 import { progressMessage, quipAfterRating } from '../../domain/quips'
 import type { Beer, Rating } from '../../domain/types'
@@ -60,9 +59,9 @@ interface LocalToast {
 }
 
 export function Swipe() {
-  const { state, rate, go, openDetail, dispatch, withTabs, toast: globalToast } = useApp()
+  const { state, rate, go, openDetail, dispatch, withTabs } = useApp()
   const { ratings, onboarded } = state.profile
-  const { counts, decoded, avatar } = useDerived()
+  const { counts, decoded, avatar, candidates } = useDerived()
   const cards = useMemo(() => buildDeck(ratings), [ratings])
   const queue = cards.map((c) => getBeer(c.id))
   const badges = useMemo(() => {
@@ -87,10 +86,8 @@ export function Swipe() {
       clearTimeout(toastTimer.current)
       setToast({ text: quipAfterRating(rating, beer, after, before.total), color: RATING_COLOR[rating], key: Date.now() })
       toastTimer.current = setTimeout(() => setToast(null), 2400)
-      const unlocked = newlyUnlocked(before, after, decodedPercent(before.total), decodedPercent(after.total))
-      if (unlocked.length) globalToast(`🏅 ${unlocked[0].title} – ${unlocked[0].desc}`)
     },
-    [ratings, rate, globalToast],
+    [ratings, rate],
   )
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])
@@ -125,6 +122,8 @@ export function Swipe() {
   }, [help, undo])
 
   const empty = queue.length === 0
+  /** After onboarding the header shows the next recommended beer instead of the DNA % (that lives in the DNA tab). */
+  const next = onboarded ? (candidates.find((c) => !ratings[c.beer.id]) ?? null) : null
   const coachActive = counts.total === 0 && !coachOff && !empty && !help
   const coach = useCoachSteps(coachActive)
   const closeHelp = useCallback(() => setHelp(false), [])
@@ -135,7 +134,7 @@ export function Swipe() {
       <header className={styles.header}>
         <div className={styles.brand}>
           <BuddyAvatar archetype="logo" size={34} />
-          <span className={styles.wordmark}>{COPY.app.name}</span>
+          {!next && <span className={styles.wordmark}>{COPY.app.name}</span>}
         </div>
         <div className={styles.headerRight}>
           {lastRated && (
@@ -146,9 +145,22 @@ export function Swipe() {
           <button type="button" className={styles.helpBtn} onClick={() => setHelp(true)} aria-label={COPY.coach.help}>
             <QuestionMarkIcon weight="bold" />
           </button>
-          <button type="button" className={styles.dnaPill} onClick={() => go(onboarded ? 'dna' : 'analyzing')}>
-            <DnaIcon weight="bold" /> {decoded} %
-          </button>
+          {next ? (
+            <button
+              type="button"
+              className={`${styles.dnaPill} ${styles.nextChip}`}
+              onClick={() => openDetail(next.beer.id)}
+              aria-label={fill(COPY.nextMatch.aria, { name: next.beer.name, pct: next.pct })}
+            >
+              <HeartIcon weight="fill" className={styles.nextHeart} />
+              <span className={styles.nextName}>{next.beer.name}</span>
+              <span>{next.pct} %</span>
+            </button>
+          ) : (
+            <button type="button" className={styles.dnaPill} onClick={() => go(onboarded ? 'dna' : 'analyzing')}>
+              <DnaIcon weight="bold" /> {decoded} %
+            </button>
+          )}
         </div>
       </header>
 

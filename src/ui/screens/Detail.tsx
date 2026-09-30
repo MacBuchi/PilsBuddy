@@ -22,7 +22,7 @@ export function Detail() {
   const current = state.profile.ratings[beer.id]?.rating
 
   const setRelation = (r: Rating) => {
-    rate(beer.id, r)
+    if (rate(beer.id, r).length) return
     const line =
       r === 'DISLIKE' && beer.disLikeQuip ? beer.disLikeQuip : fill(pick(COPY.quips[r], hashId(beer.id)), { name: beer.name })
     toast(line, RATING_COLOR[r])

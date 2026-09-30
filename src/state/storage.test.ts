@@ -13,6 +13,23 @@ function memoryStorage() {
 }
 
 describe('storage', () => {
+  it('keeps a valid previous rating and drops junk', () => {
+    const json = JSON.stringify({
+      v: 1,
+      profile: {
+        ratings: {
+          a: { rating: 'LIKE', at: 1, previous: 'WANT_TO_TRY' },
+          b: { rating: 'LIKE', at: 2, previous: 'MAYBE' },
+          c: { rating: 'LIKE', at: 3, previous: 'LIKE' },
+        },
+      },
+    })
+    const r = parseProfile(json)!.ratings
+    expect(r.a.previous).toBe('WANT_TO_TRY')
+    expect(r.b).toEqual({ rating: 'LIKE', at: 2 })
+    expect(r.c).toEqual({ rating: 'LIKE', at: 3 })
+  })
+
   it('round-trips a profile', () => {
     const p = { ...initialProfile(), ratings: { jever: { rating: 'LIKE' as const, at: 5 } }, onboarded: true }
     expect(parseProfile(serializeProfile(p))).toEqual(p)

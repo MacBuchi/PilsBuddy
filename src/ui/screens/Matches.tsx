@@ -1,5 +1,9 @@
 import { HourglassMediumIcon } from '@phosphor-icons/react'
-import { COPY, fill } from '../../data/copy'
+import { useState } from 'react'
+import { getBeer } from '../../data/beers'
+import { COPY, fill, pick } from '../../data/copy'
+import { hashId } from '../../domain/quips'
+import type { Beer, Rating } from '../../domain/types'
 import type { MatchTab } from '../../state/reducer'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
@@ -7,19 +11,33 @@ import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
 import page from './page.module.css'
 import { BottleArt } from '../components/BottleArt'
+import { RateSheet } from '../components/RateSheet'
+import { RATING_COLOR } from '../ratingStyle'
 import styles from './Matches.module.css'
 
 const SEGMENTS: { k: MatchTab; label: string; beta: boolean }[] = [
   { k: 'biere', label: COPY.matches.tabBeers, beta: false },
+  { k: 'probieren', label: COPY.matches.tabTry, beta: false },
   { k: 'menschen', label: COPY.matches.tabPeople, beta: true },
 ]
 
 export function Matches() {
-  const { state, dispatch, openDetail, toast, withTabs } = useApp()
+  const { state, dispatch, openDetail, toast, withTabs, rate } = useApp()
+  const [tried, setTried] = useState<Beer | null>(null)
   const { candidates, archetype, avatar } = useDerived()
   const tab = state.matchTab
   const recos = candidates.slice(0, 4)
   const ratings = state.profile.ratings
+  const tryList = Object.entries(ratings)
+    .filter(([, e]) => e.rating === 'WANT_TO_TRY')
+    .sort((a, b) => b[1].at - a[1].at)
+    .map(([id]) => getBeer(id))
+
+  const verdict = (beer: Beer, r: Rating) => {
+    setTried(null)
+    if (rate(beer.id, r).length) return
+    toast(fill(pick(COPY.quips[r], hashId(beer.id)), { name: beer.name }), RATING_COLOR[r])
+  }
 
   return (
     <div className={`${page.page} ${withTabs ? page.withTabs : ''}`} style={{ paddingLeft: 20, paddingRight: 20 }}>
@@ -69,6 +87,33 @@ export function Matches() {
           {recos.length === 0 && <div className={page.dashed}>{COPY.matches.none}</div>}
         </>
       )}
+
+      {tab === 'probieren' && (
+        <>
+          <div className="t-label">{fill(COPY.tryList.label, { n: tryList.length })}</div>
+          {tryList.map((beer) => (
+            <div key={beer.id} className={styles.reco}>
+              <button type="button" className={styles.tryOpen} onClick={() => openDetail(beer.id)}>
+                <span className={styles.bottle} style={{ background: beer.color }}>
+                  <BottleArt beer={beer} size={50} />
+                </span>
+                <span className={styles.recoText}>
+                  <span className={styles.recoName}>{beer.name}</span>
+                  <span className={styles.recoMeta}>
+                    {beer.style} · {beer.region}
+                  </span>
+                </span>
+              </button>
+              <button type="button" className={styles.tryBtn} onClick={() => setTried(beer)}>
+                {COPY.tryList.cta}
+              </button>
+            </div>
+          ))}
+          {tryList.length === 0 && <div className={page.dashed}>{COPY.tryList.empty}</div>}
+        </>
+      )}
+
+      {tried && <RateSheet beer={tried} onRate={(r) => verdict(tried, r)} onClose={() => setTried(null)} />}
 
       {tab === 'menschen' && (
         <>

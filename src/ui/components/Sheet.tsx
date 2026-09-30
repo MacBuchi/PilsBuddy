@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import type { ReactNode } from 'react'
 import styles from './Sheet.module.css'
 
@@ -8,7 +9,7 @@ interface Props {
   children: ReactNode
 }
 
-/** Bottom sheet inside the AppShell: backdrop tap or Escape closes it. */
+/** Bottom sheet over the whole AppShell (portal into <main>, so scrolling pages don't clip it). Backdrop tap or Escape closes it. */
 export function Sheet({ title, onClose, children }: Props) {
   const titleId = useId()
   const panel = useRef<HTMLDivElement>(null)
@@ -24,7 +25,8 @@ export function Sheet({ title, onClose, children }: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [onClose])
 
-  return (
+  const host = typeof document !== 'undefined' ? document.querySelector('main') : null
+  const sheet = (
     <div className={styles.backdrop} onClick={onClose}>
       <div
         ref={panel}
@@ -43,4 +45,5 @@ export function Sheet({ title, onClose, children }: Props) {
       </div>
     </div>
   )
+  return host ? createPortal(sheet, host) : sheet
 }

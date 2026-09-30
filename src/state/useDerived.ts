@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { evaluateAchievements } from '../domain/achievements'
+import { evaluateAchievements, keptPromises } from '../domain/achievements'
 import type { Achievement } from '../domain/achievements'
 import { buildAvatar } from '../domain/avatar'
 import type { AvatarSpec } from '../domain/avatar'
@@ -34,7 +34,7 @@ export function useDerived(): Derived {
       archetype,
       avatar: buildAvatar(archetype, dna.decoded),
       candidates: rankCandidates(dna.taste, ratings),
-      achievements: evaluateAchievements(dna.counts, dna.decoded),
+      achievements: evaluateAchievements({ counts: dna.counts, decoded: dna.decoded, kept: keptPromises(ratings) }),
     }
   }, [ratings])
 }

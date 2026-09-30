@@ -1,20 +1,38 @@
 import { DECK_ORDER } from '../data/beers'
-import type { RatingCounts } from './types'
+import { countRatings, decodedPercent } from './dna'
+import type { RatingCounts, Ratings } from './types'
+
+/** What achievements are judged on. */
+export interface Progress {
+  counts: RatingCounts
+  decoded: number
+  /** Beers that were on the Probierliste and got a real verdict later. */
+  kept: number
+}
+
+export function keptPromises(ratings: Ratings): number {
+  return Object.values(ratings).filter((e) => e.previous === 'WANT_TO_TRY' && e.rating !== 'WANT_TO_TRY').length
+}
+
+export function progressOf(ratings: Ratings): Progress {
+  const counts = countRatings(ratings)
+  return { counts, decoded: decodedPercent(counts.total), kept: keptPromises(ratings) }
+}
 
 export interface AchievementDef {
   id: string
   title: string
   desc: string
   /** Phosphor icon name, resolved in the UI. */
-  icon: 'heart' | 'crown' | 'binoculars' | 'beer-stein' | 'hand-waving' | 'dna' | 'fire' | 'medal' | 'package'
-  test: (c: RatingCounts, decoded: number) => boolean
+  icon: 'heart' | 'crown' | 'binoculars' | 'beer-stein' | 'hand-waving' | 'dna' | 'fire' | 'medal' | 'package' | 'handshake'
+  test: (c: RatingCounts, decoded: number, p: Progress) => boolean
 }
 
 export interface Achievement extends AchievementDef {
   unlocked: boolean
 }
 
-/** Light gamification only – nine badges, none of them nagging. */
+/** Light gamification only – ten badges, none of them nagging. */
 export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'first-date', title: 'Erstes Date', desc: '1 Bier gedatet', icon: 'heart', test: (c) => c.total >= 1 },
   { id: 'pils-neuling', title: 'Pils-Neuling', desc: '10 Biere gedatet', icon: 'beer-stein', test: (c) => c.total >= 10 },
@@ -22,6 +40,13 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: 'neugiernase', title: 'Neugiernase', desc: '3× Probieren', icon: 'binoculars', test: (c) => c.WANT_TO_TRY >= 3 },
   { id: 'ehrlich', title: 'Ehrlich', desc: '3× „Kenn ich nicht“', icon: 'hand-waving', test: (c) => c.UNKNOWN >= 3 },
   { id: 'entschluesselt', title: 'Entschlüsselt', desc: 'DNA zu 100 %', icon: 'dna', test: (_c, dec) => dec >= 100 },
+  {
+    id: 'wort-gehalten',
+    title: 'Wort gehalten',
+    desc: '3 von der Probierliste probiert',
+    icon: 'handshake',
+    test: (_c, _d, p) => p.kept >= 3,
+  },
   { id: 'hopfen-herz', title: 'Hopfen-Herz', desc: '15 Herzen vergeben', icon: 'fire', test: (c) => c.LIKE >= 15 },
   { id: 'pils-fluesterer', title: 'Pils-Flüsterer', desc: '25 Biere gedatet', icon: 'medal', test: (c) => c.total >= 25 },
   {
@@ -33,11 +58,13 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   },
 ]
 
-export function evaluateAchievements(c: RatingCounts, decoded: number): Achievement[] {
-  return ACHIEVEMENTS.map((a) => ({ ...a, unlocked: a.test(c, decoded) }))
+const passes = (a: AchievementDef, p: Progress) => a.test(p.counts, p.decoded, p)
+
+export function evaluateAchievements(p: Progress): Achievement[] {
+  return ACHIEVEMENTS.map((a) => ({ ...a, unlocked: passes(a, p) }))
 }
 
-/** Ids newly unlocked between two states – for a toast when one pops. */
-export function newlyUnlocked(before: RatingCounts, after: RatingCounts, decBefore: number, decAfter: number): AchievementDef[] {
-  return ACHIEVEMENTS.filter((a) => !a.test(before, decBefore) && a.test(after, decAfter))
+/** Achievements newly unlocked between two states – for a toast when one pops. */
+export function newlyUnlocked(before: Progress, after: Progress): AchievementDef[] {
+  return ACHIEVEMENTS.filter((a) => !passes(a, before) && passes(a, after))
 }

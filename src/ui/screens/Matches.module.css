@@ -1,6 +1,6 @@
 .segments {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 4px;
   border-radius: 99px;
   border: 2px solid var(--edge);
@@ -13,7 +13,8 @@
   border: 0;
   background: transparent;
   color: var(--ink);
-  font: 800 14px/1 var(--font-display);
+  font: 800 13.5px/1 var(--font-display);
+  letter-spacing: -0.01em;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -233,4 +234,36 @@
   padding: 10px 12px;
   border-radius: 14px;
   background: var(--sf2);
+}
+
+.tryOpen {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tryBtn {
+  flex: none;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 99px;
+  border: 2px solid var(--ink-fixed);
+  background: var(--gold);
+  color: var(--ink-fixed);
+  box-shadow: 0 3px 0 var(--ink-fixed);
+  font: 800 13px/1 var(--font-display);
+  cursor: pointer;
+}
+
+.tryBtn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink-fixed);
 }
