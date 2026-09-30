@@ -1,0 +1,80 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  color: var(--ink-fixed);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.foam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--safe-top) + 114px);
+  background: var(--foam);
+}
+
+/* the wavy foam edge – the brand's recognisable detail */
+.scallop {
+  position: absolute;
+  left: -8px;
+  right: -8px;
+  top: calc(var(--safe-top) + 112px);
+  height: 24px;
+  background: radial-gradient(circle at 20px 0, var(--foam) 19px, transparent 20px) 0 0 / 40px 24px repeat-x;
+}
+
+.bubble {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 246, 227, 0.8);
+  animation: pbRise linear infinite;
+}
+
+.hero {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: calc(var(--safe-top) + 100px) 28px 0;
+  text-align: center;
+}
+
+.float {
+  animation: pbFloat 4s ease-in-out infinite;
+}
+
+.title {
+  margin: 0;
+  font: 800 58px/0.9 var(--font-display);
+  letter-spacing: -0.045em;
+}
+
+.tagline {
+  margin: 0;
+  font: 600 22px/1.2 var(--font-display);
+  max-width: 280px;
+  text-wrap: balance;
+}
+
+.footer {
+  position: relative;
+  padding: 0 24px calc(var(--safe-bottom) + 42px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.promise {
+  margin: 0;
+  font: 500 14px/1.35 var(--font-display);
+  text-align: center;
+  opacity: 0.85;
+}
