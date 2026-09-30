@@ -274,3 +274,43 @@
   text-transform: uppercase;
   cursor: pointer;
 }
+
+.why {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.whyList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.whyLine {
+  margin: 0;
+  position: relative;
+  padding-left: 18px;
+  font: 500 15px/1.4 var(--font-display);
+  color: var(--ink);
+}
+
+.whyList .whyLine::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.5em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 1.5px solid var(--edge);
+}
+
+p.whyLine {
+  padding-left: 0;
+  color: var(--mut);
+}

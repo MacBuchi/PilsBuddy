@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { BEER_BY_ID, DECK_ORDER, getBeer } from '../data/beers'
 import { NEUTRAL_VECTOR } from './dna'
-import { buddyMatch, compatibility, matchReason, rankCandidates, tasteSimilarity } from './matching'
+import { buddyMatch, compatibility, matchReason, rankCandidates, tasteSimilarity, whyItFits } from './matching'
 import type { Ratings, TasteVector } from './types'
 
 const vec = (v: Partial<TasteVector>): TasteVector => ({ ...NEUTRAL_VECTOR, ...v })
+const NEUTRAL = NEUTRAL_VECTOR
 
 describe('compatibility', () => {
   it('is 99 for an identical vector and never below 48', () => {
@@ -68,5 +69,21 @@ describe('social matching (prepared)', () => {
     expect(m.disagree).toEqual(['becks'])
     expect(m.pct).toBeGreaterThan(50)
     expect(m.pct).toBeLessThanOrEqual(99)
+  })
+})
+
+describe('whyItFits', () => {
+  it('names the two biggest gaps with direction and size', () => {
+    const user = { ...NEUTRAL, sweetness: 20, bitterness: 90 }
+    const beer = { ...getBeer('leffe'), taste: { ...NEUTRAL, sweetness: 60, bitterness: 40, body: 55 } }
+    const lines = whyItFits(user, beer)
+    expect(lines[1]).toBe('Weniger Bitterkeit, als du magst – 50 Punkte drunter.')
+    expect(lines[2]).toBe('Mehr Süße, als du gewohnt bist – 40 Punkte drüber.')
+    expect(lines).toHaveLength(3)
+  })
+
+  it('says so when nothing is far off', () => {
+    const lines = whyItFits(NEUTRAL, { ...getBeer('jever'), taste: { ...NEUTRAL, body: 60 } })
+    expect(lines).toContain('Auf allen Achsen ziemlich genau dein Ding.')
   })
 })
