@@ -71,6 +71,10 @@ export const COPY = {
       UNKNOWN: 'Kenn ich nicht',
     },
   },
+  undo: {
+    label: 'Zurückholen',
+    done: 'Zurückgeholt. Wir sagen nichts.',
+  },
   swipe: {
     left: '{n} übrig',
     analyzeCta: 'Genug gedatet? DNA auswerten',

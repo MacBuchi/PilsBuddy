@@ -257,3 +257,20 @@
   font: 500 13.5px/1.35 var(--font-display);
   color: var(--mut);
 }
+
+.undo {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}

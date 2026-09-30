@@ -1,4 +1,4 @@
-import type { Rating, Ratings } from '../domain/types'
+import type { Rating, RatingEntry, Ratings } from '../domain/types'
 
 export type Screen =
   | 'welcome'
@@ -36,12 +36,15 @@ export interface AppState {
   detailFrom: Screen
   detailId: string | null
   matchTab: MatchTab
+  /** One-step undo: the last rated beer and what it was before (null = unrated). Not persisted. */
+  lastRated: { id: string; rating: Rating; previous: RatingEntry | null } | null
 }
 
 export type Action =
   | { type: 'GO'; screen: Screen }
   | { type: 'OPEN_DETAIL'; id: string }
   | { type: 'RATE'; id: string; rating: Rating; at: number }
+  | { type: 'UNRATE' }
   | { type: 'SET_AGE'; value: boolean }
   | { type: 'SET_ONBOARDED' }
   | { type: 'TOGGLE_DARK' }
@@ -65,6 +68,7 @@ export function initialState(profile: Profile = initialProfile()): AppState {
     detailFrom: 'swipe',
     detailId: null,
     matchTab: 'biere',
+    lastRated: null,
   }
 }
 
@@ -91,7 +95,16 @@ export function reducer(state: AppState, action: Action): AppState {
           ...state.profile,
           ratings: { ...state.profile.ratings, [action.id]: { rating: action.rating, at: action.at } },
         },
+        lastRated: { id: action.id, rating: action.rating, previous: state.profile.ratings[action.id] ?? null },
       }
+    case 'UNRATE': {
+      const last = state.lastRated
+      if (!last) return state
+      const ratings = { ...state.profile.ratings }
+      if (last.previous) ratings[last.id] = last.previous
+      else delete ratings[last.id]
+      return { ...state, profile: { ...state.profile, ratings }, lastRated: null }
+    }
     case 'SET_AGE':
       return { ...state, profile: { ...state.profile, ageConfirmed: action.value } }
     case 'SET_ONBOARDED':
@@ -102,7 +115,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'SET_MATCH_TAB':
       return { ...state, matchTab: action.tab }
     case 'RESTART_DECK':
-      return { ...state, profile: { ...state.profile, ratings: {} } }
+      return { ...state, profile: { ...state.profile, ratings: {} }, lastRated: null }
     case 'RESET':
       return initialState({ ...initialProfile(), dark: state.profile.dark })
   }

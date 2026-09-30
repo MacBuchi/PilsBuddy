@@ -32,6 +32,8 @@ Dev-Hilfen: `?screen=dna` springt direkt zu einem Screen, `?demo=1` füllt Demo-
 | ↓ oder ? | Kenn ich nicht (zählt nie negativ) |
 | K oder Auge | Kenne ich (neutral) |
 | Tippen auf die Karte | Bier-Detail |
+| Rücktaste oder ↺ | Letzte Bewertung zurückholen |
+| ? im Swipe-Header | Gesten-Hilfe |
 
 ## Architektur
 

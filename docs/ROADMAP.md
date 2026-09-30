@@ -17,7 +17,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | Konzeptpunkt | Stand | Lücke |
 | --- | --- | --- |
 | Spaß beim ersten Öffnen | Welcome, Onboarding, Swipe-Coach auf der ersten Karte, „?“-Hilfe | – |
-| Bier-Swipe | Touch/Maus/Tasten/Buttons, Stempel, Fly-out | kein Undo |
+| Bier-Swipe | Touch/Maus/Tasten/Buttons, Stempel, Fly-out, Undo (1 Schritt) | – |
 | Bierdatenmodell | 42 Biere, 8 Achsen, illustrierte Flaschen, `image` optional | eigene Flaschen-Designs fehlen; Referenz-Set Pils-lastig |
 | DNA / Persona / Matching | deterministisch, getestet | Deck nach Onboarding unkuratiert; „nächstes Bier“ mobil nur im Matches-Tab |
 | Avatar | 8 Archetypen, 3 Stufen | Entwicklung endet bei 70 % |
@@ -62,10 +62,10 @@ Teil 2 – Illustrations-Fallback ✅ (Dev-Galerie: `/?gallery=bottles`)
 
 Akzeptanz: kein „Flaschenfoto“-Text mehr; dunkle Biere lesbar; Bundle < +1,5 MB (PNG ggf. als WebP).
 
-### A2 · Undo („Zurückholen“) (S)
+### A2 · Undo („Zurückholen“) (S) ✅
 
-- [ ] Reducer `UNRATE` + `lastRated`; Rewind-Button + `Backspace`; Rückflug-Animation im `SwipeDeck`
-- [ ] Copy „Zurückgeholt. Wir sagen nichts.“; `reducer.test.ts`
+- [x] Reducer `UNRATE` + `lastRated`; Rewind-Button + `Backspace`; Rückflug-Animation im `SwipeDeck`
+- [x] Copy „Zurückgeholt. Wir sagen nichts.“; `reducer.test.ts`
 
 Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 
@@ -109,7 +109,7 @@ Akzeptanz: Nachbewertung entfernt aus Liste und aktualisiert DNA; Chip öffnet D
 
 ### A9 · Qualität & Auslieferung (S)
 
-- [ ] `reducer.test.ts`, `SwipeDeck.test.tsx`
+- [ ] `SwipeDeck.test.tsx` (`reducer.test.ts` kam mit A2)
 - [ ] GitHub Actions: `ci.yml` (lint/test/build), `deploy.yml` (main → `wrangler deploy`;
       Secrets `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`)
 - [ ] Dark-Mode-Kanten gesperrter Achievements, `aria-live` am Bottom-Toast, Fokus-Ring auf der Karte
