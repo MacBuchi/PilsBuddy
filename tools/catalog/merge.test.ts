@@ -6,8 +6,10 @@ import {
   mainBeers,
   mergeBreweries,
   normName,
+  parseOpenbeer,
   parsePlaces,
   pickMainBeers,
+  stableHash,
 } from './merge'
 import type { Brewery, OffRow, OsmRow, WikidataRow } from './merge'
 
@@ -95,6 +97,48 @@ describe('breweryMatcher', () => {
     expect(match({ brands: 'Adler', owner: null, places: 'Bonndorf im Schwarzwald' })?.id).toBe('osm-n3')
   })
 
+  it('accepts a shortened brewery name only at the brewery\'s place', () => {
+    const m = breweryMatcher([brewery({ id: 'osm-n9', name: 'Augustiner-Bräu Wagner KG', city: 'München' })])
+    expect(m({ brands: 'Augustiner Bräu', owner: null, places: 'München' })?.id).toBe('osm-n9')
+    expect(m({ brands: 'Augustiner Bräu', owner: null, places: 'Salzburg' })).toBeNull()
+    expect(m({ brands: 'Augustiner Bräu', owner: null, places: null })).toBeNull()
+  })
+
+  it('knows a brewery by its Wikidata label too and by the „-er“ adjective of its place', () => {
+    const [b] = mergeBreweries(
+      { DE: [], AT: [osm({ id: 'osm:n1', name: 'Augustiner Bräustübl', lat: 47.8, lon: 13.03, wikidata: 'Q5' })], CH: [] },
+      { DE: [], AT: [wd({ id: 'wd:Q5', name: 'Augustiner Bräu Kloster Mülln', lat: 47.8, lon: 13.03 })], CH: [] },
+    )
+    expect(b.aliases).toEqual(['Augustiner Bräu Kloster Mülln'])
+    expect(breweryMatcher([b])({ brands: 'Augustiner Bräu Kloster Mülln', owner: null, places: null })?.id).toBe('osm-n1')
+    const zwettl = brewery({ id: 'osm-n7', name: 'Privatbrauerei Zwettl', city: 'Zwettl' })
+    expect(breweryMatcher([zwettl])({ brands: 'Zwettler Brauerei', owner: null, places: null })?.id).toBe('osm-n7')
+  })
+
+  it('is strict with full brewery names from lists', () => {
+    const m = breweryMatcher([
+      brewery({ id: 'osm-n1', name: 'Hofbräu', city: 'Abensberg' }),
+      brewery({ id: 'osm-n2', name: 'Rieder Bier GmbH', city: 'Kerzers', country: 'CH' }),
+      brewery({ id: 'osm-n3', name: 'Trumer Privatbrauerei' }),
+    ])
+    expect(m({ brands: 'Hofbräu Kaltenhausen', owner: null, places: 'Kaltenhausen' }, true)).toBeNull()
+    expect(m({ brands: 'Brauerei Ried', owner: null, places: 'Ried im Innkreis' }, true)).toBeNull()
+    expect(m({ brands: 'Trumer Privatbrauerei', owner: null, places: 'Obertrum' }, true)?.id).toBe('osm-n3')
+    expect(m({ brands: 'Hofbräu', owner: null, places: 'Abensberg' }, true)?.id).toBe('osm-n1')
+  })
+
+  it('needs the place for generic brewery names and more than the place for short brands', () => {
+    const m = breweryMatcher([
+      brewery({ id: 'osm-n1', name: 'Hofbräu', city: 'Abensberg' }),
+      brewery({ id: 'osm-n2', name: 'Die Weisse', city: 'Salzburg' }),
+      brewery({ id: 'osm-n3', name: 'Craftzentrum Berlin', city: 'Berlin' }),
+    ])
+    expect(m({ brands: 'Hofbräu München', owner: null, places: 'München' })).toBeNull()
+    expect(m({ brands: 'Hofbräu', owner: null, places: 'Abensberg' })?.id).toBe('osm-n1')
+    expect(m({ brands: 'Schneider Weisse', owner: null, places: null })).toBeNull()
+    expect(m({ brands: 'Berliner', owner: null, places: 'Berlin' })).toBeNull()
+  })
+
   it('ignores products without brand', () => {
     expect(match({ brands: null, owner: null, places: 'Kreuztal' })).toBeNull()
   })
@@ -180,6 +224,62 @@ describe('mainBeers', () => {
       ['r-q3', 'Weißbier', 2, 'Q3'],
       ['r-q2', 'Dunkles', 2, 'Q2'],
     ])
+  })
+})
+
+describe('parseOpenbeer', () => {
+  const ref = 'oberbayern/blob/master/1--muenchen/beers.txt'
+  it('reads headers, beer lines, tables and skips brewery lists and comments', () => {
+    const txt = [
+      '# Big Six',
+      '_________________________________',
+      '- Augustiner Bräu |  München',
+      '',
+      'Augustiner Lagerbier Hell,  5.2%,  helles',
+      'Augustiner Oktoberfestbier, 6.0%,  maerzen|oktoberfest|festbier',
+      'Augustiner Heller Bock, bock      ## exits ?? check',
+      '- Trumer Privatbrauerei, Obertrum',
+      'Trumer Pils,   4.9%, 11.5°, lager|pils',
+      'Austrian Amber Ale|AAA, 5.6%, 12.8°',
+      '    Trumer Herbstbier',
+      'Ottakringer Null Komma Josef {Alkoholfrei},      < 0.5 %,  6.2°, by:ottakringer',
+      'Brauerei Reder, Pfeffenhausen // ',
+      '6-Korn Bier                 | Pyraser Landbrauerei   | Pyras (Thalmässing), Mittelfranken',
+    ].join('\n')
+    expect(parseOpenbeer(txt, ref).map((r) => [r.brewery, r.city, r.name, r.abv, r.styles])).toEqual([
+      ['Augustiner Bräu', 'München', 'Augustiner Lagerbier Hell', 5.2, 'helles'],
+      ['Augustiner Bräu', 'München', 'Augustiner Oktoberfestbier', 6, 'maerzen|oktoberfest|festbier'],
+      ['Augustiner Bräu', 'München', 'Augustiner Heller Bock', null, 'bock'],
+      ['Trumer Privatbrauerei', 'Obertrum', 'Trumer Pils', 4.9, 'lager|pils'],
+      ['Trumer Privatbrauerei', 'Obertrum', 'Austrian Amber Ale', 5.6, ''],
+      ['Trumer Privatbrauerei', 'Obertrum', 'Trumer Herbstbier', null, ''],
+      ['Trumer Privatbrauerei', 'Obertrum', 'Ottakringer Null Komma Josef', 0.5, 'Alkoholfrei'],
+      ['Pyraser Landbrauerei', 'Pyras', '6-Korn Bier', null, ''],
+    ])
+  })
+
+  it('needs a brewery for a beer', () => {
+    expect(parseOpenbeer("Beck's Pilsner\nVormann Pils, 5.0%, 11.3°, by:vormann, pils", ref)).toEqual([])
+  })
+
+  it('gives openbeer beers stable ids and lets current sources win a style', () => {
+    expect(stableHash('a')).toBe(stableHash('a'))
+    expect(stableHash('a')).toMatch(/^[0-9a-f]{16}$/)
+    expect(stableHash('a')).not.toBe(stableHash('b'))
+    const b = brewery({ id: 'osm-n9', name: 'Augustiner-Bräu Wagner KG', city: 'München' })
+    const rows = parseOpenbeer('- Augustiner Bräu | München\nAugustiner Edelstoff, 5.6%, export\nAugustiner Pils, 5.6%, pils', ref)
+    const beers = mainBeers(
+      [off({ code: '4001', name: 'Augustiner Pils', brands: 'Augustiner', places: 'München', abv: 5.6 })],
+      [b],
+      [],
+      rows,
+    )
+    expect(beers.map((x) => [x.name, x.style, x.source])).toEqual([
+      ['Augustiner Pils', 'Pils', 1],
+      ['Augustiner Edelstoff', 'Export', 4],
+    ])
+    expect(beers[1].id).toMatch(/^r-o[0-9a-f]{16}$/)
+    expect(beers[1].sourceRef).toBe(ref)
   })
 })
 
