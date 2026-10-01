@@ -1,5 +1,5 @@
 import { AppProvider, useApp } from './state/AppContext'
-import { useCallback } from 'react'
+import { lazy, Suspense, useCallback } from 'react'
 import { useDerived } from './state/useDerived'
 import { AppShell } from './ui/AppShell'
 import { MomentOverlay } from './ui/components/MomentOverlay'
@@ -16,6 +16,9 @@ import { Matches } from './ui/screens/Matches'
 import { Profile } from './ui/screens/Profile'
 import { Swipe } from './ui/screens/Swipe'
 import { Welcome } from './ui/screens/Welcome'
+
+/** Impressum & Datenschutz: rarely opened, so it stays out of the main bundle. */
+const Legal = lazy(() => import('./ui/screens/Legal').catch(() => import('./ui/screens/LegalOffline')))
 
 /** Shows the one-time moment for the first big achievement that hasn't been celebrated yet. */
 function MomentHost() {
@@ -53,6 +56,11 @@ function Screens() {
         {s === 'detail' && <Detail />}
         {s === 'matches' && <Matches />}
         {s === 'profile' && <Profile />}
+        {s === 'legal' && (
+          <Suspense fallback={null}>
+            <Legal />
+          </Suspense>
+        )}
       </ErrorBoundary>
       {withTabs && <TabBar />}
       <MomentHost />

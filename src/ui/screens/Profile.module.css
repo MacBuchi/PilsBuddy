@@ -277,3 +277,20 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.legalLink {
+  align-self: center;
+  padding: 6px;
+  border: 0;
+  background: none;
+  color: var(--mut);
+  font: 700 12px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.eraseBtn {
+  margin: -4px 0 4px 4px;
+}

@@ -77,6 +77,11 @@ export function withIncomingBuddy(s: AppState, param: string | null): AppState {
   return s.profile.onboarded ? { ...next, screen: 'matches', prevScreen: 'matches', matchTab: 'menschen' } : next
 }
 
+/** `#impressum` / `#datenschutz` open the legal page directly (back leads to where the user would land). */
+export function withLegalHash(s: AppState, hash: string): AppState {
+  return hash === '#impressum' || hash === '#datenschutz' ? { ...s, screen: 'legal', prevScreen: s.screen } : s
+}
+
 function buddyParam(): string | null {
   try {
     return new URLSearchParams(window.location.search).get('buddy')
@@ -95,7 +100,7 @@ export function bootState(store: ProfileStore): AppState {
 }
 
 export function AppProvider({ children, initial, store = profileStore }: { children: ReactNode; initial?: AppState; store?: ProfileStore }) {
-  const [state, dispatch] = useReducer(reducer, initial, (i) => i ?? devInitialState() ?? withIncomingBuddy(bootState(store), buddyParam()))
+  const [state, dispatch] = useReducer(reducer, initial, (i) => i ?? devInitialState() ?? withLegalHash(withIncomingBuddy(bootState(store), buddyParam()), window.location.hash))
 
   // the buddy payload is in the profile now – keep the address bar clean (and reload-safe)
   useEffect(() => {

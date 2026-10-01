@@ -1,6 +1,6 @@
 -- B2: tombstones are private like ratings; sync codes are invisible to the API roles.
 begin;
-select plan(7);
+select plan(8);
 
 insert into auth.users (id, aud, role, email) values
   ('11111111-1111-1111-1111-111111111111', 'authenticated', 'authenticated', 'a@test.local'),
@@ -25,7 +25,12 @@ set local role anon;
 select throws_ok('select * from public.sync_codes', '42501', null, 'anon cannot read sync codes');
 
 set local role service_role;
-select results_eq('select count(*)::int from public.sync_codes', array[1], 'the edge function (service_role) can read sync codes');
+select results_eq('select count(*)::int from public.sync_codes where user_id = ''22222222-2222-2222-2222-222222222222''', array[1], 'the edge function (service_role) can read sync codes');
+
+-- B4 „Alles löschen“: the edge function deletes the auth user, the Sync-Code goes with it
+reset role;
+delete from auth.users where id = '22222222-2222-2222-2222-222222222222';
+select is_empty($$select 1 from public.sync_codes where user_id = '22222222-2222-2222-2222-222222222222'$$, 'sync code cascades with the account');
 
 select * from finish();
 rollback;

@@ -99,6 +99,13 @@ await step('profile shows history + achievement', async () => {
   await see('Erstes Date'); await see('Jever Pilsener')
   await page.screenshot({ path: `${out}-profile.png` })
 })
+await step('impressum & datenschutz from profile, back', async () => {
+  await m.getByRole('button', { name: 'Impressum & Datenschutz' }).click()
+  await see('Kurz gesagt'); await see('Geräte-Sync (nur wenn du ihn einschaltest)')
+  await page.screenshot({ path: `${out}-legal.png` })
+  await m.getByLabel('Zurück').click()
+  await see('Erstes Date')
+})
 await step('probierliste: tried → verdict removes it', async () => {
   await m.getByText('Matches', { exact: true }).click()
   await m.getByRole('tab', { name: 'Probierliste' }).click()

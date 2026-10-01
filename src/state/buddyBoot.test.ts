@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { encodeBuddy } from '../domain/buddyLink'
-import { withIncomingBuddy } from './AppContext'
+import { withIncomingBuddy, withLegalHash } from './AppContext'
 import { initialState } from './reducer'
 import { parseProfile, serializeProfile } from './storage'
 
@@ -32,5 +32,18 @@ describe('incoming buddy link', () => {
   it('the buddy survives a reload', () => {
     const s = withIncomingBuddy(base(true), link)
     expect(parseProfile(serializeProfile(s.profile))?.buddy?.no).toBe(4242)
+  })
+})
+
+describe('legal deep link', () => {
+  it('#impressum and #datenschutz open the legal page; back leads where the app would start', () => {
+    const resumed = { ...base(true), screen: 'swipe' as const }
+    for (const hash of ['#impressum', '#datenschutz']) {
+      const s = withLegalHash(resumed, hash)
+      expect(s.screen).toBe('legal')
+      expect(s.prevScreen).toBe('swipe')
+    }
+    expect(withLegalHash(resumed, '#nope')).toBe(resumed)
+    expect(withLegalHash(resumed, '')).toBe(resumed)
   })
 })
