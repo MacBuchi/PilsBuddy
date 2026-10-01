@@ -42,7 +42,7 @@ jobs:
       - run: supabase test db
 
   sync-e2e:
-    name: Backend E2E (sync · catalogue · regional, local Supabase)
+    name: Backend E2E (sync · catalogue, local Supabase)
     needs: check
     runs-on: ubuntu-latest
     steps:
