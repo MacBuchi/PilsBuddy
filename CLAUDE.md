@@ -27,4 +27,5 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   package when it is live, and run the gate (build, test, lint, `e2e/flow.mjs`, screenshots,
   `npm run deploy`) before ticking.
 - One package = one branch + PR. Merge it yourself once the gate is green, deploy from `main`,
-  then smoke-test https://pilsbuddy.mcbuchi.de (E2E against production) before moving on.
+  then smoke-test https://pilsbuddy.mcbuchi.de (E2E against production) before moving on –
+  locally or with `gh workflow run prod-smoke.yml` (runs the same flow from GitHub Actions).
