@@ -5,6 +5,7 @@ import '@fontsource/jetbrains-mono/500.css'
 import '@fontsource/jetbrains-mono/700.css'
 import './index.css'
 import App from './App.tsx'
+import { refreshCatalog } from './data/catalog'
 
 const BottleGallery = import.meta.env.DEV ? lazy(() => import('./ui/dev/BottleGallery')) : null
 const gallery = BottleGallery && new URLSearchParams(location.search).get('gallery') === 'bottles'
@@ -17,6 +18,9 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     })
   })
 }
+
+// Beer catalogue (B3): fetch new rows in the background; they apply on the next start.
+window.addEventListener('load', () => setTimeout(() => void refreshCatalog(), 2000))
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import type { Beer } from '../../domain/types'
 import { BottleArt } from './BottleArt'
@@ -14,10 +15,11 @@ interface Props {
 
 /**
  * The bottle of a beer: the designed SVG from `public/bottles/` (face + animations, same 1:2 canvas)
- * when `beer.image` is set, otherwise the parametric `BottleArt`.
+ * when `beer.image` is set, otherwise (or if the file can't be loaded) the parametric `BottleArt`.
  */
 export function BeerBottle({ beer, size, className, style, outline }: Props) {
-  if (!beer.image) return <BottleArt beer={beer} size={size} className={className} style={style} outline={outline} />
+  const [broken, setBroken] = useState<string | null>(null)
+  if (!beer.image || broken === beer.image) return <BottleArt beer={beer} size={size} className={className} style={style} outline={outline} />
   return (
     <img
       src={beer.image}
@@ -28,6 +30,7 @@ export function BeerBottle({ beer, size, className, style, outline }: Props) {
       style={style}
       draggable={false}
       decoding="async"
+      onError={() => setBroken(beer.image ?? null)}
     />
   )
 }

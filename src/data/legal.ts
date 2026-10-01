@@ -44,6 +44,13 @@ export const PRIVACY: LegalSection[] = [
     ],
   },
   {
+    title: 'Bierkatalog',
+    paragraphs: [
+      'Kurz nach dem Start fragt die App bei Supabase (Supabase, Inc., USA; Server in Frankfurt am Main, EU) nach neuen Bieren. Dabei wird nichts über dich oder deine Bewertungen gesendet – nur die technisch nötigen Verbindungsdaten wie IP-Adresse und Zeitpunkt fallen beim Server an.',
+      'Rechtsgrundlage ist unser berechtigtes Interesse, den Katalog ohne App-Update aktuell zu halten (Art. 6 Abs. 1 lit. f DSGVO). Ohne Netz nimmt die App einfach den Katalog, den sie schon hat.',
+    ],
+  },
+  {
     title: 'Geräte-Sync (nur wenn du ihn einschaltest)',
     paragraphs: [
       'Der Sync ist standardmäßig aus. Schaltest du ihn im Profil ein, legen wir bei Supabase (Supabase, Inc., USA; Server in Frankfurt am Main, EU) ein anonymes Konto an – mit einer zufälligen ID, ohne Name und ohne E-Mail.',

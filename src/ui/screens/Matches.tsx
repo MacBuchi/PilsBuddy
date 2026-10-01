@@ -1,6 +1,6 @@
 import { HourglassMediumIcon } from '@phosphor-icons/react'
 import { useMemo, useState } from 'react'
-import { getBeer } from '../../data/beers'
+import { BEER_BY_ID, getBeer } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
 import { compareWithBuddy } from '../../domain/buddyLink'
 import { hashId } from '../../domain/quips'
@@ -37,6 +37,7 @@ export function Matches() {
   const tryList = Object.entries(ratings)
     .filter(([, e]) => e.rating === 'WANT_TO_TRY')
     .sort((a, b) => b[1].at - a[1].at)
+    .filter(([id]) => BEER_BY_ID[id]) // ratings can name beers this device's catalogue doesn't know (yet)
     .map(([id]) => getBeer(id))
 
   const verdict = (beer: Beer, r: Rating) => {

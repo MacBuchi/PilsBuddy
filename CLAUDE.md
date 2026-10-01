@@ -16,7 +16,9 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
 - `UNKNOWN` never influences the taste vector; `DISLIKE` is negative; `WANT_TO_TRY` is interest,
   not preference. Don't "fix" that.
 - Copy lives in `src/data/copy.ts`; beers in `src/data/beers.json` (8 axes, 0–100, `reference: true`
-  marks the onboarding deck). Adding beers needs no code change.
+  marks the onboarding deck). Adding beers needs no code change. Rows in the DB table `beers` add/replace
+  beers at runtime (`src/data/catalog.ts`, cached, applied on the next start) – so never assume a beer id from
+  ratings, sync or a buddy link exists in `BEER_BY_ID`.
 - Styling: CSS Modules + tokens from `src/index.css`. Keyframes are global (Vite uses the
   lightningcss transformer with `cssModules.animation: false` – keep that).
 - Semantic action colours (like/nope/try/know/unknown) are identical in light and dark mode.
