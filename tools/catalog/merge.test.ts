@@ -21,7 +21,7 @@ const off = (p: Partial<OffRow> & Pick<OffRow, 'code' | 'name'>): OffRow => ({
   brands: null, owner: null, places: null, abv: null, categories: [], labels: [], quantity: null, ...p,
 })
 const brewery = (b: Partial<Brewery> & Pick<Brewery, 'id' | 'name'>): Brewery => ({
-  lat: 49, lon: 9, city: null, postcode: null, country: 'DE', website: null, founded: null, sources: ['osm'], ...b,
+  lat: 49, lon: 9, city: null, postcode: null, country: 'DE', website: null, founded: null, sources: ['osm'], qid: null, ...b,
 })
 
 describe('normName', () => {
@@ -60,11 +60,11 @@ describe('mergeBreweries', () => {
     )
     expect(merged.map((b) => b.id)).toEqual(['osm-n1', 'osm-n3', 'osm-n4', 'wd-q13'])
     const [hohenlohe, adler, adler2, kloster] = merged
-    expect(hohenlohe).toMatchObject({ sources: ['osm', 'wikidata'], founded: 1849, city: 'Hohenlohe', country: 'DE' })
+    expect(hohenlohe).toMatchObject({ sources: ['osm', 'wikidata'], founded: 1849, city: 'Hohenlohe', country: 'DE', qid: 'Q10' })
     // own website wins, a bare domain becomes a URL
     expect(adler).toMatchObject({ sources: ['osm', 'wikidata'], website: 'https://adler-bier.de' })
     expect(adler2.sources).toEqual(['osm'])
-    expect(kloster).toMatchObject({ sources: ['wikidata'], founded: 1100 })
+    expect(kloster).toMatchObject({ sources: ['wikidata'], founded: 1100, qid: 'Q13' })
   })
 
   it('takes the country from the file when the address has none or a strange one', () => {
@@ -153,8 +153,30 @@ describe('mainBeers', () => {
       [brewery({ id: 'osm-n4', name: 'Krombacher Brauerei' })],
     )
     expect(beers).toEqual([
-      { id: 'r-4001', breweryId: 'osm-n4', name: 'Krombacher Pils', style: 'Pils', abv: 4.8, pack: { ml: 500 }, rank: 0 },
-      { id: 'r-4002', breweryId: 'osm-n4', name: 'Krombacher Weizen', style: 'Weißbier', abv: null, pack: { ml: 330, can: true }, rank: 1 },
+      { id: 'r-4001', breweryId: 'osm-n4', name: 'Krombacher Pils', style: 'Pils', abv: 4.8, pack: { ml: 500 }, rank: 0, source: 1, sourceRef: '4001' },
+      { id: 'r-4002', breweryId: 'osm-n4', name: 'Krombacher Weizen', style: 'Weißbier', abv: null, pack: { ml: 330, can: true }, rank: 1, source: 1, sourceRef: '4002' },
+    ])
+  })
+
+  it('adds Wikidata beers of the brewery item, with style from the name or the item kind', () => {
+    const b = brewery({ id: 'osm-n4', name: 'Krombacher Brauerei', qid: 'Q100' })
+    const beers = mainBeers(
+      [off({ code: '4001', name: 'Krombacher Pils', brands: 'Krombacher', abv: 4.8, quantity: '0,5 l' })],
+      [b],
+      [
+        { id: 'wd:Q1', name: 'Krombacher Pils', brewery: 'wd:Q100', abv: 4.8, kinds: ['Pils'] },
+        { id: 'wd:Q2', name: 'Krombacher Dunkel', brewery: 'wd:Q100', abv: 4.3, kinds: [] },
+        { id: 'wd:Q3', name: 'Rotes Ross', brewery: 'wd:Q100', abv: null, kinds: ['Weizenbier'] },
+        { id: 'wd:Q4', name: 'Q4', brewery: 'wd:Q100', abv: null, kinds: ['Bockbier'] },
+        { id: 'wd:Q5', name: 'Fremdes Bier', brewery: 'wd:Q999', abv: null, kinds: [] },
+        { id: 'wd:Q6', name: 'Krombacher', brewery: 'wd:Q100', abv: null, kinds: ['Biermarke'] },
+        { id: 'wd:Q7', name: 'Krombacher Export', brewery: 'wd:Q100', abv: null, kinds: ['Brauerei', 'Markenzeichen'] },
+      ],
+    )
+    expect(beers.map((x) => [x.id, x.style, x.source, x.sourceRef])).toEqual([
+      ['r-4001', 'Pils', 1, '4001'],
+      ['r-q3', 'Weißbier', 2, 'Q3'],
+      ['r-q2', 'Dunkles', 2, 'Q2'],
     ])
   })
 })
@@ -178,7 +200,7 @@ describe('parsePlaces', () => {
 describe('importSql', () => {
   const files = importSql(
     [brewery({ id: 'osm-n1', name: "O'Brien's Bräu", sources: ['osm', 'wikidata'] })],
-    [{ id: 'r-4001', breweryId: 'osm-n1', name: 'Pils', style: 'Pils', abv: 4.9, pack: { ml: 500 }, rank: 0 }],
+    [{ id: 'r-4001', breweryId: 'osm-n1', name: 'Pils', style: 'Pils', abv: 4.9, pack: { ml: 500 }, rank: 0, source: 1, sourceRef: '4001' }],
     [{ country: 'DE', postcode: '74906', name: 'Bad Rappenau', lat: 49.2, lon: 9.1 }],
   )
 
@@ -188,7 +210,7 @@ describe('importSql', () => {
     expect(files[0].sql).toContain("'O''Brien''s Bräu'")
     expect(files[0].sql).toContain("'{\"osm\",\"wikidata\"}'::text[]")
     expect(files[0].sql).toContain('on conflict (id) do update set name = excluded.name')
-    expect(files[1].sql).toContain(`'{"ml":500}'::jsonb`)
+    expect(files[1].sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', true)`)
     expect(files[2].sql).toContain(`id <> all('{"r-4001"}'::text[])`)
     expect(files[3].sql).toContain('on conflict (country, postcode, name)')
   })

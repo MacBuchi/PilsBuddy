@@ -31,6 +31,7 @@ jobs:
         run: |
           node tools/catalog/fetch-wikidata.mjs
           for c in DE AT CH; do node tools/catalog/fetch-wikidata.mjs --country $c; sleep 2; done
+          node tools/catalog/fetch-wikidata.mjs --beers
       - name: Open Food Facts (daily export, DE/AT/CH)
         if: ${{ !cancelled() }}
         run: node tools/catalog/fetch-off.mjs

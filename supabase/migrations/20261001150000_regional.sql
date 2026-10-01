@@ -34,12 +34,33 @@ create trigger breweries_touch before update on public.breweries
   for each row execute function public.touch_updated_at();
 
 -- ---------------------------------------------------------------------------------------------
--- regional_beers: up to five main beers per brewery (Open Food Facts, one per style)
+-- beer_sources: where a beer comes from – a few rows, beers point here with a smallint + short ref
+-- ---------------------------------------------------------------------------------------------
+
+create table public.beer_sources (
+  id smallint primary key,
+  key text not null unique check (key ~ '^[a-z0-9-]{1,20}$'),
+  name text not null,
+  licence text not null,
+  -- link to the record: {ref} = regional_beers.source_ref; null = ref is a path on the brewery website
+  url_template text check (url_template like 'https://%{ref}%')
+);
+
+comment on table public.beer_sources is 'Sources of regional beers; regional_beers.source_ref is relative to url_template.';
+
+insert into public.beer_sources (id, key, name, licence, url_template) values
+  (1, 'off', 'Open Food Facts', 'ODbL', 'https://world.openfoodfacts.org/product/{ref}'),
+  (2, 'wikidata', 'Wikidata', 'CC0', 'https://www.wikidata.org/wiki/{ref}'),
+  (3, 'web', 'Website der Brauerei', 'Fakten (Name, Stil, Alkohol)', null),
+  (4, 'openbeer', 'beer.db (openbeer)', 'Public Domain', 'https://github.com/openbeer/{ref}');
+
+-- ---------------------------------------------------------------------------------------------
+-- regional_beers: up to five main beers per brewery (one per style)
 -- ---------------------------------------------------------------------------------------------
 
 create table public.regional_beers (
-  -- r-<EAN>; same charset as ratings.beer_id so the app can rate them
-  id text primary key check (id ~ '^r-[0-9]{4,20}$'),
+  -- r-<EAN> (Open Food Facts), r-q<n> (Wikidata), r-w<hash> (website); charset of ratings.beer_id
+  id text primary key check (id ~ '^r-[a-z0-9]{2,40}$'),
   brewery_id text not null references public.breweries (id) on delete cascade,
   name text not null check (length(name) between 1 and 200),
   -- canonical style of src/domain/styleProfile.ts, null = unknown
@@ -49,6 +70,9 @@ create table public.regional_beers (
   pack jsonb check (pack is null or jsonb_typeof(pack) = 'object'),
   -- order within the brewery: 0 = its most typical beer
   rank smallint not null default 0 check (rank between 0 and 99),
+  source smallint not null references public.beer_sources (id),
+  -- EAN, Q-id or website path – short on purpose, the full link comes from beer_sources.url_template
+  source_ref text check (length(source_ref) <= 300),
   published boolean not null default true,
   updated_at timestamptz not null default now()
 );
@@ -56,6 +80,7 @@ create table public.regional_beers (
 comment on table public.regional_beers is 'Main beers of regional breweries (Open Food Facts ODbL), imported by tools/catalog.';
 
 create index regional_beers_brewery on public.regional_beers (brewery_id);
+create index regional_beers_source on public.regional_beers (source);
 
 create trigger regional_beers_touch before update on public.regional_beers
   for each row execute function public.touch_updated_at();
@@ -86,6 +111,7 @@ create index places_name on public.places (lower(name) text_pattern_ops);
 alter table public.breweries enable row level security;
 alter table public.regional_beers enable row level security;
 alter table public.places enable row level security;
+alter table public.beer_sources enable row level security;
 
 create policy "published breweries are public"
   on public.breweries for select
@@ -102,4 +128,9 @@ create policy "places are public"
   to anon, authenticated
   using (true);
 
-grant select on public.breweries, public.regional_beers, public.places to anon, authenticated;
+create policy "beer sources are public"
+  on public.beer_sources for select
+  to anon, authenticated
+  using (true);
+
+grant select on public.breweries, public.regional_beers, public.places, public.beer_sources to anon, authenticated;

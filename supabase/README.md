@@ -9,7 +9,8 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 | `ratings` | eine Zeile je Nutzer und Bier, `at` entscheidet beim Sync; `deleted` = Tombstone | nur eigene |
 | `sync_codes` | Hash des Sync-Codes je Nutzer | keine – nur die Edge Function (service_role) |
 | `breweries` | Brauereien DE/AT/CH aus OpenStreetMap + Wikidata, `id` = Quell-ID (`osm-n123`, `wd-q123`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
-| `regional_beers` | bis zu 5 Hauptbiere je Brauerei aus Open Food Facts (`id` = `r-<EAN>`, Stil, ABV, Gebinde) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
+| `regional_beers` | bis zu 5 Hauptbiere je Brauerei (`id` = `r-<EAN>` / `r-q<n>`, Stil, ABV, Gebinde, `source` + kurze `source_ref`) |
+| `beer_sources` | die wenigen Quellen (Open Food Facts, Wikidata, Website, openbeer) mit Lizenz und Link-Vorlage | öffentlich lesbar, nur per Migration | veröffentlichte öffentlich lesbar, schreiben nur der Import |
 | `places` | Postleitzahlen DE/AT/CH mit Ort und Mittelpunkt (GeoNames) | öffentlich lesbar, schreiben nur der Import |
 
 **Bierkatalog (B3):** Die Tabelle enthält *nur* Biere, die neu sind oder ein gebündeltes Bier ersetzen sollen

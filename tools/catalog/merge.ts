@@ -34,6 +34,16 @@ export interface WikidataRow {
   city?: string | null
 }
 
+/** raw/wikidata-beers.json (fetch-wikidata.mjs --beers): beers whose manufacturer is a brewery item */
+export interface WikidataBeerRow {
+  id: string
+  name: string | null
+  brewery: string
+  abv: number | null
+  /** labels of „instance of“ (e.g. „Pils“, „Weizenbier“) – style hints */
+  kinds: string[]
+}
+
 /** raw/off-XX.json (fetch-off.mjs) */
 export interface OffRow {
   code: string
@@ -59,7 +69,12 @@ export interface Brewery {
   website: string | null
   founded: number | null
   sources: string[]
+  /** Wikidata item (Q…) – links Wikidata beers; not stored */
+  qid: string | null
 }
+
+/** beer_sources.id */
+export const SOURCE = { off: 1, wikidata: 2, web: 3, openbeer: 4 } as const
 
 export interface RegionalBeer {
   id: string
@@ -69,6 +84,9 @@ export interface RegionalBeer {
   abv: number | null
   pack: Pack | null
   rank: number
+  source: number
+  /** EAN, Q-id or website path */
+  sourceRef: string
 }
 
 export interface Place {
@@ -135,7 +153,7 @@ export const breweryId = (sourceId: string) => sourceId.toLowerCase().replace(':
 // ---------------------------------------------------------------------------------------------
 
 export function mergeBreweries(osm: Record<Country, OsmRow[]>, wikidata: Record<Country, WikidataRow[]>): Brewery[] {
-  const out: (Brewery & { key: string; qid: string | null })[] = []
+  const out: (Brewery & { key: string })[] = []
   const byKey = new Map<string, (typeof out)[number][]>()
   const add = (b: (typeof out)[number]) => {
     out.push(b)
@@ -177,6 +195,7 @@ export function mergeBreweries(osm: Record<Country, OsmRow[]>, wikidata: Record<
       const hit = byQid.get(w.id.replace(/^wd:/, '')) ?? near(key, w, 0.5)
       if (hit) {
         if (!hit.sources.includes('wikidata')) hit.sources.push('wikidata')
+        hit.qid ??= w.id.replace(/^wd:/, '')
         hit.website ??= website(w.website)
         hit.founded ??= founded
         hit.city ??= text(w.city, 120)
@@ -194,11 +213,11 @@ export function mergeBreweries(osm: Record<Country, OsmRow[]>, wikidata: Record<
         founded,
         sources: ['wikidata'],
         key,
-        qid: null,
+        qid: w.id.replace(/^wd:/, ''),
       })
     }
   }
-  return out.map(({ key: _key, qid: _qid, ...b }) => b).sort((a, b) => a.id.localeCompare(b.id))
+  return out.map(({ key: _key, ...b }) => b).sort((a, b) => a.id.localeCompare(b.id))
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -255,11 +274,14 @@ export function cleanBeerName(name: string): string {
 }
 
 interface Candidate {
+  /** row id without the „r-“ */
   code: string
   name: string
   style: string | null
   abv: number | null
   pack: Pack | null
+  source?: number
+  sourceRef?: string
 }
 
 const completeness = (c: Candidate) => (c.abv != null ? 1 : 0) + (c.pack ? 1 : 0)
@@ -300,10 +322,17 @@ export function pickMainBeers(cands: Candidate[], max = MAX_BEERS_PER_BREWERY): 
   return out
 }
 
-/** Open Food Facts products → main beers of the matched breweries (unmatched products are dropped). */
-export function mainBeers(off: OffRow[], breweries: Brewery[]): RegionalBeer[] {
+const NOT_A_BEER = /brauerei|unternehmen|gewerbebetrieb|marke(nzeichen)?$/i
+
+/**
+ * Open Food Facts products and Wikidata beers → main beers of the matched breweries (unmatched products
+ * are dropped). Both sources compete per style; Open Food Facts usually wins on completeness (pack).
+ */
+export function mainBeers(off: OffRow[], breweries: Brewery[], wdBeers: WikidataBeerRow[] = []): RegionalBeer[] {
   const match = breweryMatcher(breweries)
   const perBrewery = new Map<string, Candidate[]>()
+  const add = (breweryId: string, c: Candidate) => perBrewery.set(breweryId, [...(perBrewery.get(breweryId) ?? []), c])
+  const byQid = new Map(breweries.filter((b) => b.qid).map((b) => [b.qid!, b]))
   const seen = new Set<string>()
   for (const p of off) {
     const name = text(p.name, 200)
@@ -312,19 +341,48 @@ export function mainBeers(off: OffRow[], breweries: Brewery[]): RegionalBeer[] {
     const b = match(p)
     if (!b) continue
     const abv = p.abv != null && p.abv >= 0 && p.abv <= 20 ? Math.round(p.abv * 10) / 10 : null
-    const cand: Candidate = {
+    add(b.id, {
       code: p.code,
       name: cleanBeerName(name),
       style: normalizeStyle([name, p.categories.join(' '), p.labels.join(' ')], abv),
       abv,
       pack: parsePack(p.quantity, p.packaging) ?? null,
-    }
-    perBrewery.set(b.id, [...(perBrewery.get(b.id) ?? []), cand])
+      source: SOURCE.off,
+      sourceRef: p.code,
+    })
+  }
+  for (const w of wdBeers) {
+    const qid = w.id.replace(/^wd:/, '')
+    const name = text(w.name, 200)
+    const b = byQid.get(w.brewery.replace(/^wd:/, ''))
+    if (!name || !b || !/^Q\d+$/.test(qid) || /^Q\d+$/.test(name)) continue
+    // brand and company items („Biermarke“, „Brauerei“) are not a single beer
+    if (w.kinds.some((k) => NOT_A_BEER.test(k))) continue
+    const abv = w.abv != null && w.abv >= 0 && w.abv <= 20 ? Math.round(w.abv * 10) / 10 : null
+    add(b.id, {
+      code: qid.toLowerCase(),
+      name,
+      style: normalizeStyle([name, ...w.kinds], abv),
+      abv,
+      pack: null,
+      source: SOURCE.wikidata,
+      sourceRef: qid,
+    })
   }
   const out: RegionalBeer[] = []
   for (const [breweryId, cands] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0])))
     pickMainBeers(cands).forEach((c, rank) =>
-      out.push({ id: `r-${c.code}`, breweryId, name: c.name, style: c.style, abv: c.abv, pack: c.pack, rank }),
+      out.push({
+        id: `r-${c.code}`,
+        breweryId,
+        name: c.name,
+        style: c.style,
+        abv: c.abv,
+        pack: c.pack,
+        rank,
+        source: c.source ?? SOURCE.off,
+        sourceRef: c.sourceRef ?? c.code,
+      }),
     )
   return out
 }
@@ -407,11 +465,11 @@ export function importSql(breweries: Brewery[], beers: RegionalBeer[], places: P
       sql: tx(
         upsert(
           'regional_beers',
-          ['id', 'brewery_id', 'name', 'style', 'abv', 'pack', 'rank', 'published'],
+          ['id', 'brewery_id', 'name', 'style', 'abv', 'pack', 'rank', 'source', 'source_ref', 'published'],
           ['id'],
           rows.map((b) => [
             lit(b.id), lit(b.breweryId), lit(b.name), lit(b.style), lit(b.abv),
-            b.pack ? `${lit(JSON.stringify(b.pack))}::jsonb` : 'null', lit(b.rank), 'true',
+            b.pack ? `${lit(JSON.stringify(b.pack))}::jsonb` : 'null', lit(b.rank), lit(b.source), lit(b.sourceRef), 'true',
           ]),
         ),
       ),

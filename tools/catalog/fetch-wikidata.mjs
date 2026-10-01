@@ -3,8 +3,36 @@
 //   node tools/catalog/fetch-wikidata.mjs --country DE → whole country
 import { args, bboxAround, COUNTRIES, getJson, PROBE, writeRaw } from './lib.mjs'
 
-const { country } = args()
+const { country, beers } = args()
 const ENDPOINT = 'https://query.wikidata.org/sparql'
+
+// --beers: beers whose manufacturer (P176) is a brewery in DE/AT/CH → raw/wikidata-beers.json
+if (beers) {
+  const q = `SELECT ?beer ?beerLabel ?brewery ?abv (GROUP_CONCAT(DISTINCT ?kindLabel; separator="|") AS ?kinds) WHERE {
+    VALUES ?c { ${Object.values(COUNTRIES).map((c) => `wd:${c}`).join(' ')} }
+    ?brewery wdt:P17 ?c ; wdt:P31/wdt:P279* wd:Q131734 .
+    ?beer wdt:P176 ?brewery .
+    OPTIONAL { ?beer wdt:P2665 ?abv }
+    OPTIONAL { ?beer wdt:P31 ?kind . ?kind rdfs:label ?kindLabel . FILTER(LANG(?kindLabel) = "de") }
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "de,mul,en,fr,it" . ?beer rdfs:label ?beerLabel . }
+  } GROUP BY ?beer ?beerLabel ?brewery ?abv`
+  const data = await getJson(`${ENDPOINT}?query=${encodeURIComponent(q)}`, { headers: { Accept: 'application/sparql-results+json' } })
+  const byId = new Map()
+  for (const b of data.results.bindings) {
+    const id = b.beer.value.split('/').pop()
+    if (byId.has(id)) continue
+    const abv = Number(b.abv?.value)
+    byId.set(id, {
+      id: `wd:${id}`,
+      name: b.beerLabel?.value && b.beerLabel.value !== id ? b.beerLabel.value : null,
+      brewery: `wd:${b.brewery.value.split('/').pop()}`,
+      abv: Number.isFinite(abv) ? abv : null,
+      kinds: b.kinds?.value ? b.kinds.value.split('|') : [],
+    })
+  }
+  writeRaw('wikidata-beers.json', [...byId.values()])
+  process.exit(0)
+}
 
 let where
 if (country) {

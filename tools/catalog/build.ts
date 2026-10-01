@@ -8,7 +8,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { COUNTRIES, importSql, mainBeers, mergeBreweries, parsePlaces } from './merge'
-import type { Country, OffRow, OsmRow, WikidataRow } from './merge'
+import type { Country, OffRow, OsmRow, WikidataBeerRow, WikidataRow } from './merge'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const arg = (k: string) => {
@@ -33,7 +33,8 @@ if (breweries.length < MIN_BREWERIES) throw new Error(`only ${breweries.length} 
 
 const offSeen = new Set<string>()
 const off = COUNTRIES.flatMap((c) => read<OffRow[]>(`off-${c}.json`)).filter((p) => !offSeen.has(p.code) && offSeen.add(p.code))
-const beers = mainBeers(off, breweries)
+const wdBeers = existsSync(join(RAW, 'wikidata-beers.json')) ? read<WikidataBeerRow[]>('wikidata-beers.json') : []
+const beers = mainBeers(off, breweries, wdBeers)
 
 const places = COUNTRIES.flatMap((c) => {
   const p = join(RAW, `geonames-${c}.txt`)
@@ -53,8 +54,9 @@ const withBeers = new Set(beers.map((b) => b.breweryId)).size
 const report = [
   `Brauereien: ${breweries.length} (${count(breweries, (b) => b.country)}) · Quellen: ${count(breweries, (b) => b.sources.join('+'))}`,
   `  mit Gründungsjahr ${breweries.filter((b) => b.founded).length} · mit Ort ${breweries.filter((b) => b.city).length} · mit Website ${breweries.filter((b) => b.website).length}`,
-  `Open-Food-Facts-Biere: ${off.length} → Hauptbiere: ${beers.length} bei ${withBeers} Brauereien (${Math.round((withBeers / breweries.length) * 100)} %)`,
+  `Open-Food-Facts-Biere: ${off.length} · Wikidata-Biere: ${wdBeers.length} → Hauptbiere: ${beers.length} bei ${withBeers} Brauereien (${Math.round((withBeers / breweries.length) * 100)} %)`,
   `  Stile: ${count(beers, (b) => b.style ?? '—')}`,
+  `  Quellen: ${count(beers, (b) => String(b.source))} (1 = OFF, 2 = Wikidata)`,
   `  mit ABV ${beers.filter((b) => b.abv != null).length} · mit Gebinde ${beers.filter((b) => b.pack).length}`,
   `Postleitzahlen: ${places.length} (${count(places, (p) => p.country)})`,
   `SQL: ${readdirSync(OUT).length} Dateien in ${OUT}`,
