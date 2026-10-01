@@ -39,6 +39,11 @@ gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = 
    mit Spiegel-Servern), Wikidata (Brauereien + `--beers`), den Open-Food-Facts-Export, die openbeer-Repos
    (beer.db, gemeinfrei, Stand ~2014) und die GeoNames-Postleitzahlen; Artefakt `catalog-raw` nach
    `tools/catalog/raw/` entpacken.
+   Website-Biere: Workflow „Regional catalogue (brewery websites)“ (`gh workflow run catalog-web.yml`)
+   besucht die Websites der veröffentlichten Brauereien (`tools/catalog/crawl.ts`: robots.txt, eigener
+   User-Agent `PilsBuddyBot`, ≤ 4 Seiten je Site, 1 s Pause) und liefert `web-<n>.json` (Artefakte
+   `catalog-web-<n>`) – ebenfalls nach `tools/catalog/raw/`. Übernommen werden nur Name + Alkohol aus
+   schema.org-Produkten oder Überschriften mit Bierstil; `source_ref` ist der Pfad auf der Brauerei-Website.
 2. `npm run catalog:build` → `tools/catalog/out/*.sql` + `report.txt`: Brauereien dedupliziert (gleicher Name
    < 300 m, Wikidata per Tag oder Name < 500 m), Biere einer Brauerei zugeordnet (alle Namensteile der Brauerei
    in Marke/Hersteller, gleichnamige nur mit passendem Herstellungsort), davon die **Hauptbiere**: je Stil eines

@@ -78,7 +78,7 @@ export const PRIVACY: LegalSection[] = [
   {
     title: 'Quellen der Brauerei-Daten',
     paragraphs: [
-      'Brauereien und ihre Biere aus deiner Region stammen aus offenen Datenbanken: © OpenStreetMap-Mitwirkende (ODbL), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (gemeinfrei) und GeoNames (Postleitzahlen, CC BY 4.0). Unsere daraus abgeleitete Datenbank steht ebenfalls unter der ODbL. Der Geschmack dieser Biere ist eine Schätzung aus dem Bierstil, keine Verkostung.',
+      'Brauereien und ihre Biere aus deiner Region stammen aus offenen Datenbanken: © OpenStreetMap-Mitwirkende (ODbL), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (gemeinfrei) und GeoNames (Postleitzahlen, CC BY 4.0). Einige Biere (Name, Alkoholgehalt) haben wir den Websites der Brauereien entnommen; die Quelle ist bei jedem Bier verlinkt. Unsere daraus abgeleitete Datenbank steht ebenfalls unter der ODbL. Der Geschmack dieser Biere ist eine Schätzung aus dem Bierstil, keine Verkostung.',
     ],
   },
   {

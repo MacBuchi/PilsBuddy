@@ -1,0 +1,38 @@
+name: Regional catalogue (brewery websites)
+
+# R1b: crawls the websites of the published breweries for their beers (crawl.ts) and uploads
+# raw/web-<shard>.json as the artifact catalog-web. Nothing is written to the database here.
+# Manual only: gh workflow run catalog-web.yml
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Sites per shard (empty = all)
+        required: false
+
+concurrency:
+  group: catalog-web
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Crawl shard ${{ matrix.shard }} of 4
+        run: npx tsx tools/catalog/crawl.ts --shard ${{ matrix.shard }} --shards 4 ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-web-${{ matrix.shard }}
+          path: tools/catalog/raw/web-${{ matrix.shard }}.json
+          retention-days: 14

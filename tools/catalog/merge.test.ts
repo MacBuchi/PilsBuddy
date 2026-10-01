@@ -283,6 +283,28 @@ describe('parseOpenbeer', () => {
   })
 })
 
+describe('website beers', () => {
+  it('belong to their crawled brewery, keep the page path and lose to more complete entries', () => {
+    const b = brewery({ id: 'osm-n4', name: 'Krombacher Brauerei' })
+    const beers = mainBeers(
+      [off({ code: '4001', name: 'Krombacher Pils', brands: 'Krombacher', abv: 4.8, quantity: '0,5 l' })],
+      [b],
+      [],
+      [],
+      [
+        { breweryId: 'osm-n4', path: '/biere/pils', name: 'Krombacher Pils', abv: 4.8 },
+        { breweryId: 'osm-n4', path: '/biere/weizen', name: 'Krombacher Weizen', abv: 5.3 },
+        { breweryId: 'osm-n404', path: '/x', name: 'Fremdes Helles', abv: null },
+      ],
+    )
+    expect(beers.map((x) => [x.name, x.source, x.sourceRef])).toEqual([
+      ['Krombacher Pils', 1, '4001'],
+      ['Krombacher Weizen', 3, '/biere/weizen'],
+    ])
+    expect(beers[1].id).toMatch(/^r-w[0-9a-f]{16}$/)
+  })
+})
+
 describe('parsePlaces', () => {
   it('reads GeoNames postcodes and skips duplicates and other countries', () => {
     const tsv = [
