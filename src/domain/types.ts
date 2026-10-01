@@ -26,6 +26,15 @@ export type TasteAxis = (typeof TASTE_AXES)[number]
 
 export type TasteVector = Record<TasteAxis, number>
 
+/** Container facts from product data (Open Food Facts quantity/packaging). */
+export interface Pack {
+  /** Fill volume in ml. */
+  ml?: number
+  can?: boolean
+  /** Swing-top (Bügelverschluss). */
+  swing?: boolean
+}
+
 export interface Beer {
   id: string
   name: string
@@ -49,6 +58,10 @@ export interface Beer {
   image?: string
   /** Hand-tuned bottle design; without it one is derived from style, colour and taste (`designFor`). */
   bottle?: BottleDesign
+  /** How it is sold, if known from open data – steers the derived bottle (size, can, swing top). */
+  pack?: Pack
+  /** Founding year of the brewery, if known – shown as „SEIT …“ on derived labels. */
+  founded?: number
   /** Reference beers form the onboarding deck; they should cover diverse taste profiles. */
   reference?: boolean
 }

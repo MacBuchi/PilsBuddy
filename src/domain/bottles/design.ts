@@ -71,6 +71,7 @@ const STYLES: Record<string, StyleRule> = {
   Kellerbier: { word: 'KELLER', shapes: ['euro', 'nrw'], font: 'serif', motifs: ['fachwerk', 'monk', 'gable', 'tree'] },
   Zwickel: { word: 'ZWICKEL', shapes: ['euro', 'nrw'], font: 'serif', motifs: ['fachwerk', 'gable', 'tree'] },
   Weißbier: { word: 'WEISSE', shapes: ['longneck'], font: 'serif', motifs: ['monk', 'bubbles', 'lozenge', 'shield'] },
+  'Dunkles Weißbier': { word: 'WEISSE', shapes: ['longneck'], font: 'serif', motifs: ['monk', 'monastery', 'lozenge'], glass: 'dark' },
   'Alkoholfreies Weißbier': { word: 'WEISSE', shapes: ['longneck'], font: 'sans', motifs: ['bubbles', 'swoosh'] },
   Dunkles: { word: 'DUNKEL', shapes: ['euro'], font: 'serif', motifs: ['monastery', 'monk', 'castle'], glass: 'dark' },
   Schwarzbier: { word: 'SCHWARZ', shapes: ['longneck', 'euro'], font: 'serif', motifs: ['shield', 'castle', 'star'], glass: 'black' },
@@ -79,7 +80,9 @@ const STYLES: Record<string, StyleRule> = {
   Rauchbier: { word: 'Rauchbier', shapes: ['euro'], font: 'gothic', motifs: ['fachwerk', 'gable'] },
   Kölsch: { word: 'KÖLSCH', shapes: ['longneck33'], font: 'sans', motifs: ['dom', 'confetti', 'gable'] },
   Altbier: { word: 'ALT', shapes: ['euro', 'nrw'], font: 'serif', motifs: ['gable', 'seal', 'castle'] },
+  Bier: { word: 'BIER', shapes: ['euro', 'nrw', 'longneck33'], font: 'serif', motifs: ['shield', 'star', 'seal', 'crown', 'gable'] },
   Lager: { word: 'LAGER', shapes: ['longneck33', 'longneck'], font: 'sans', motifs: ['star', 'crown', 'horn', 'swoosh'] },
+  Amber: { word: 'AMBER', shapes: ['euro', 'longneck33'], font: 'serif', motifs: ['star', 'seal', 'horn'] },
   'Pale Ale': { word: 'PALE ALE', shapes: ['can', 'longneck33'], font: 'sans', motifs: ['grapefruit', 'bolt', 'anchor'] },
   IPA: { word: 'IPA', shapes: ['can'], font: 'sans', motifs: ['bolt', 'grapefruit'] },
   Stout: { word: 'STOUT', shapes: ['euro', 'can'], font: 'serif', motifs: ['harp', 'anchor'], glass: 'black' },
@@ -113,6 +116,7 @@ export function styleRule(style: string): StyleRule {
   if (/doppelbock|eisbock/.test(s)) return STYLES.Doppelbock
   if (/bock/.test(s)) return STYLES.Bock
   if (/ipa/.test(s)) return STYLES.IPA
+  if (/amber|wiener/.test(s)) return STYLES.Amber
   if (/ale/.test(s)) return STYLES['Pale Ale']
   if (/stout/.test(s)) return STYLES.Stout
   if (/porter/.test(s)) return STYLES.Porter
@@ -163,11 +167,28 @@ function labelKind(rule: StyleRule, shape: ShapeKey, h: number): LabelDesign['ki
   return pick(['rect', 'rect', 'oval', 'shield'] as const, h, 4)
 }
 
+/** Shapes that hold 0.33 l; the others are half-litre bottles. */
+const SMALL: readonly ShapeKey[] = ['longneck33', 'vichy33', 'steinie', 'can']
+
+/** The style's shapes, narrowed by what the product data knows about the container. */
+function shapeFor(rule: StyleRule, beer: Beer, h: number): ShapeKey {
+  const p = beer.pack
+  if (!p) return pick(rule.shapes, h, 0)
+  if (p.can) return 'can'
+  let shapes = rule.shapes.filter((s) => s !== 'can')
+  if (p.ml) {
+    const small = p.ml <= 400
+    shapes = shapes.filter((s) => SMALL.includes(s) === small)
+    if (!shapes.length) shapes = [small ? 'longneck33' : 'euro']
+  }
+  return pick(shapes.length ? shapes : ['longneck33'], h, 0)
+}
+
 export function designFor(beer: Beer): BottleDesign {
   const h = hashId(beer.id)
   const rule = styleRule(beer.style)
   const tags = beer.tags.join(' ').toLowerCase()
-  const shape = pick(rule.shapes, h, 0)
+  const shape = shapeFor(rule, beer, h)
   const glassKey = /limette|klarglas/.test(tags)
     ? 'clear'
     : (rule.glass ?? (/grüne flasche/.test(tags) || ((rule.word === 'PILS' || rule.word === 'LAGER') && h % 3 === 0) ? 'green' : luminance(beer.color) < 0.04 ? 'black' : 'brown'))
@@ -179,7 +200,7 @@ export function designFor(beer: Beer): BottleDesign {
   const place = PLACE_MOTIFS.find(([re]) => re.test(beer.region) || re.test(tags))
   const motifs = (place ? place[1] : rule.motifs).filter((m) => MOTIFS[m])
   const closure: BottleDesign['closure'] =
-    shape === 'can' ? 'can' : /bügel/.test(tags) || (rule.word === 'KELLER' && h % 2 === 0) ? 'swing' : clear && /limette/.test(tags) ? 'lime' : 'crown'
+    shape === 'can' ? 'can' : beer.pack?.swing || /bügel/.test(tags) || (rule.word === 'KELLER' && h % 2 === 0) ? 'swing' : clear && /limette/.test(tags) ? 'lime' : 'crown'
   // Fraktur only in mixed case; half of the old-school styles get the serif instead
   const font: LabelDesign['font'] = rule.font === 'gothic' && h % 2 === 0 ? 'serif' : rule.font
   const face = faceFor(beer, h)
@@ -200,6 +221,7 @@ export function designFor(beer: Beer): BottleDesign {
       ...(h % 4 === 0 ? { frame: true } : {}),
       word: rule.word,
       region: beer.region.toUpperCase().slice(0, 18),
+      ...(beer.founded && beer.founded >= 1000 && beer.founded <= 2100 ? { badge: `SEIT ${beer.founded}` } : {}),
     },
     ...(shape === 'longneck' || shape === 'longneck33' ? { neckLabel: { bg, a: h % 2 ? a : ink } } : {}),
     motif: pick(motifs.length ? motifs : ['shield'], h, 3),
