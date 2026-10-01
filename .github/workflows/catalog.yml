@@ -30,12 +30,8 @@ jobs:
         run: |
           node tools/catalog/fetch-wikidata.mjs
           for c in DE AT CH; do node tools/catalog/fetch-wikidata.mjs --country $c; sleep 2; done
-      - name: Open Food Facts (DE/AT/CH)
-        # resumable per page; a second pass picks up pages a 503 interrupted
-        run: |
-          for c in DE AT CH; do
-            node tools/catalog/fetch-off.mjs --country $c || (sleep 90 && node tools/catalog/fetch-off.mjs --country $c)
-          done
+      - name: Open Food Facts (daily export, DE/AT/CH)
+        run: node tools/catalog/fetch-off.mjs
       - name: Coverage report
         run: node tools/catalog/probe-report.mjs | tee tools/catalog/raw/report.txt >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4

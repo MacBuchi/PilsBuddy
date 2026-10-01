@@ -1,52 +1,48 @@
-// Beers from Open Food Facts (ODbL) via the search API v2 (100 per page, ≤ 10 req/min → 7 s between pages).
-//   node tools/catalog/fetch-off.mjs --country DE   (DE | AT | CH)
-import { args, getJson, hasRaw, readRaw, sleep, writeRaw } from './lib.mjs'
+// Beers from Open Food Facts (ODbL), streamed from the daily full export (~1.3 GB gzip, TSV).
+// The search API stops at page 10 for anonymous clients, the export has everything.
+// Run on a runner (see .github/workflows/catalog.yml) – it downloads the whole file once.
+//   node tools/catalog/fetch-off.mjs   → raw/off-DE.json, raw/off-AT.json, raw/off-CH.json
+import { createInterface } from 'node:readline'
+import { Readable } from 'node:stream'
+import { createGunzip } from 'node:zlib'
+import { UA, writeRaw } from './lib.mjs'
 
-const NAMES = { DE: 'en:germany', AT: 'en:austria', CH: 'en:switzerland' }
-const { country = 'DE' } = args()
-const FIELDS = [
-  'code',
-  'product_name',
-  'product_name_de',
-  'brands',
-  'brand_owner',
-  'manufacturing_places',
-  'origins',
-  'emb_codes',
-  'categories_tags',
-  'labels_tags',
-  'nutriments',
-  'quantity',
-  'countries_tags',
-  'last_modified_t',
-].join(',')
+const URL = 'https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv.gz'
+const COUNTRIES = { DE: 'en:germany', AT: 'en:austria', CH: 'en:switzerland' }
 
-const rows = []
-for (let page = 1; ; page++) {
-  const url = `https://world.openfoodfacts.org/api/v2/search?categories_tags=en:beers&countries_tags=${NAMES[country]}&fields=${FIELDS}&page_size=100&page=${page}`
-  // pages are kept, so a rerun after a 503 continues where it stopped
-  const pageFile = `off-${country}-p${page}.json`
-  const data = hasRaw(pageFile) ? readRaw(pageFile) : await getJson(url)
-  if (!hasRaw(pageFile)) writeRaw(pageFile, data)
-  for (const p of data.products) {
-    const n = p.nutriments ?? {}
-    rows.push({
-      code: p.code,
-      name: (p.product_name_de || p.product_name || '').trim() || null,
-      brands: p.brands ?? null,
-      owner: p.brand_owner ?? null,
-      places: p.manufacturing_places ?? null,
-      origins: p.origins ?? null,
-      emb: p.emb_codes ?? null,
-      abv: n.alcohol_100g ?? n.alcohol ?? null,
-      categories: (p.categories_tags ?? []).filter((c) => c !== 'en:beverages' && c !== 'en:alcoholic-beverages'),
-      labels: p.labels_tags ?? [],
-      quantity: p.quantity ?? null,
-      modified: p.last_modified_t ?? null,
-    })
+const res = await fetch(URL, { headers: { 'User-Agent': UA } })
+if (!res.ok) throw new Error(`${res.status} ${URL}`)
+const lines = createInterface({ input: Readable.fromWeb(res.body).pipe(createGunzip()), crlfDelay: Infinity })
+
+let col = null
+let seen = 0
+const out = { DE: [], AT: [], CH: [] }
+for await (const line of lines) {
+  const f = line.split('\t')
+  if (!col) {
+    col = Object.fromEntries(f.map((name, i) => [name, i]))
+    continue
   }
-  console.log(`page ${page}: ${rows.length}/${data.count}`)
-  if (page * 100 >= data.count || data.products.length === 0) break
-  if (!hasRaw(`off-${country}-p${page + 1}.json`)) await sleep(7000)
+  if (++seen % 500000 === 0) console.log(`${seen} products scanned`)
+  const cats = f[col.categories_tags] ?? ''
+  if (!cats.split(',').includes('en:beers')) continue
+  const countries = (f[col.countries_tags] ?? '').split(',')
+  const abv = parseFloat(f[col.alcohol_100g])
+  const row = {
+    code: f[col.code],
+    name: (f[col.product_name] || '').trim() || null,
+    brands: f[col.brands] || null,
+    owner: f[col.brand_owner] || null,
+    places: f[col.manufacturing_places] || null,
+    origins: f[col.origins] || null,
+    emb: f[col.emb_codes] || null,
+    abv: Number.isFinite(abv) ? abv : null,
+    categories: cats.split(',').filter((c) => c !== 'en:beverages' && c !== 'en:alcoholic-beverages'),
+    labels: (f[col.labels_tags] || '').split(',').filter(Boolean),
+    quantity: f[col.quantity] || null,
+    modified: Number(f[col.last_modified_t]) || null,
+  }
+  for (const [c, tag] of Object.entries(COUNTRIES)) if (countries.includes(tag)) out[c].push(row)
 }
-writeRaw(`off-${country}.json`, rows)
+console.log(`${seen} products scanned`)
+for (const [c, rows] of Object.entries(out)) writeRaw(`off-${c}.json`, rows)
