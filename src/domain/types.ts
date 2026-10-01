@@ -64,6 +64,16 @@ export interface Beer {
   founded?: number
   /** Reference beers form the onboarding deck; they should cover diverse taste profiles. */
   reference?: boolean
+  /** Beer of a regional brewery from open data (Stufe R): its taste is a style estimate, not a tasting. */
+  regional?: RegionalInfo
+}
+
+export interface RegionalInfo {
+  breweryId: string
+  /** Where the facts come from, e.g. „Open Food Facts“. */
+  source: string
+  /** Link to the record (or the brewery page the beer was read from). */
+  sourceUrl?: string
 }
 
 export interface RatingEntry {

@@ -42,7 +42,7 @@ jobs:
       - run: supabase test db
 
   sync-e2e:
-    name: Backend E2E (sync · catalogue, local Supabase)
+    name: Backend E2E (sync · catalogue · regional, local Supabase)
     needs: check
     runs-on: ubuntu-latest
     steps:
@@ -67,7 +67,7 @@ jobs:
           mkdir -p /tmp/pw
           npm i --prefix /tmp/pw playwright@1.56.1
           npx --prefix /tmp/pw playwright install --with-deps chromium
-          cp e2e/sync.mjs e2e/catalog.mjs /tmp/pw/
+          cp e2e/sync.mjs e2e/catalog.mjs e2e/regional.mjs /tmp/pw/
       - name: Dev server against the local stack, run sync flow
         run: |
           eval "$(supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=')"
@@ -81,6 +81,8 @@ jobs:
           eval "$(supabase status -o env | grep -E '^DB_URL=')"
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f e2e/catalog-seed.sql
           node /tmp/pw/catalog.mjs http://localhost:5179/ /tmp/catalog
+      - name: Regional finder (fixture catalogue, geolocation)
+        run: node /tmp/pw/regional.mjs http://localhost:5179/ /tmp/regional
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -88,6 +90,7 @@ jobs:
           path: |
             /tmp/sync-*.png
             /tmp/catalog-*.png
+            /tmp/regional-*.png
 
   e2e:
     name: E2E flow

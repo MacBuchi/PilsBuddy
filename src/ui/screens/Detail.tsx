@@ -55,6 +55,7 @@ export function Detail() {
             [COPY.detail.style, beer.style],
             [COPY.detail.abv, formatAbv(beer.abv)],
             [COPY.detail.origin, beer.region],
+            ...(beer.regional ? [[COPY.regional.brewery, beer.brewery]] : []),
           ].map(([k, v]) => (
             <div key={k} className={styles.fact}>
               <span className={styles.factKey}>{k}</span>
@@ -64,6 +65,19 @@ export function Detail() {
         </div>
 
         <p className={styles.description}>{beer.description}</p>
+
+        {beer.regional && (
+          <p className={styles.estimate}>
+            <b>{COPY.regional.estimate}.</b> {COPY.regional.estimateNote}{' '}
+            {beer.regional.sourceUrl ? (
+              <a href={beer.regional.sourceUrl} target="_blank" rel="noopener noreferrer">
+                {fill(COPY.regional.source, { source: beer.regional.source })}
+              </a>
+            ) : (
+              fill(COPY.regional.source, { source: beer.regional.source })
+            )}
+          </p>
+        )}
 
         <div className={styles.compare}>
           <div className={styles.compareHead}>

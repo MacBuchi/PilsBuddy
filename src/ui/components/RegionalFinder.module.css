@@ -1,0 +1,277 @@
+.finder {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.where {
+  display: flex;
+  gap: 10px;
+}
+
+.locate {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  border-radius: 99px;
+  border: 2.5px solid var(--ink-fixed);
+  background: var(--gold);
+  color: var(--ink-fixed);
+  box-shadow: 0 3px 0 var(--ink-fixed);
+  font: 800 15px/1 var(--font-display);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.locate:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ink-fixed);
+}
+
+.locate:disabled {
+  opacity: 0.7;
+}
+
+.plz {
+  flex: none;
+  display: flex;
+  height: 50px;
+  border-radius: 99px;
+  border: 2.5px solid var(--edge);
+  background: var(--sf);
+  overflow: hidden;
+}
+
+.plzInput {
+  width: 82px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 0 0 0 16px;
+  font: 700 16px/1 var(--font-mono);
+  outline: none;
+}
+
+.plzInput::placeholder {
+  color: var(--mut);
+}
+
+.plzGo {
+  border: 0;
+  border-left: 2px solid var(--edge);
+  background: var(--ink-fixed);
+  color: var(--foam);
+  padding: 0 14px;
+  font: 800 14px/1 var(--font-display);
+  cursor: pointer;
+}
+
+.plzGo:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.radii {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.radius {
+  height: 38px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font: 700 12px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.radiusOn {
+  background: var(--ink-fixed);
+  border-color: var(--ink-fixed);
+  color: var(--foam);
+}
+
+.origin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 14px/1.2 var(--font-display);
+}
+
+.origin svg {
+  flex: none;
+  color: var(--try);
+}
+
+.error {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--nope);
+  background: var(--sf);
+  font: 600 14px/1.35 var(--font-display);
+}
+
+.start,
+.loading {
+  padding: 18px;
+  border-radius: 20px;
+  border: 2px dashed var(--line-strong);
+  font: 500 15px/1.4 var(--font-display);
+  color: var(--mut);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.loading {
+  animation: pbPulse 1.2s ease-in-out infinite;
+}
+
+.note {
+  margin: -8px 0 0;
+  font: 500 13px/1.35 var(--font-display);
+  color: var(--mut);
+  text-wrap: pretty;
+}
+
+/* long regional names („Kurpfälzer Naturradler“) must not push the match % off the card */
+.name {
+  font-size: 17px;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.more {
+  align-self: center;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font: 800 14px/1 var(--font-display);
+  cursor: pointer;
+}
+
+.plain {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  overflow: hidden;
+}
+
+.plainRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 0;
+  border-top: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.plainRow:first-child {
+  border-top: 0;
+}
+
+.plainName {
+  font: 700 15px/1.2 var(--font-display);
+  min-width: 0;
+}
+
+.plainMeta {
+  flex: none;
+  font: 700 10px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.sheetMeta {
+  margin-top: -8px;
+  font: 700 11px/1.3 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.links {
+  display: flex;
+  gap: 10px;
+}
+
+.link {
+  flex: 1;
+  height: 46px;
+  border-radius: 99px;
+  border: 2.5px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  box-shadow: 0 3px 0 var(--edge);
+  font: 800 15px/1 var(--font-display);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.sheetBeer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 20px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+}
+
+.sheetOpen {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.tryBtn {
+  flex: none;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 99px;
+  border: 2px solid var(--ink-fixed);
+  background: var(--try);
+  color: var(--cream-fixed);
+  font: 800 13px/1 var(--font-display);
+  cursor: pointer;
+}
+
+.tryOn {
+  background: transparent;
+  border-color: var(--try);
+  color: var(--try);
+  cursor: default;
+}
+
+.sheetPct {
+  font: 800 14px/1 var(--font-display);
+  color: var(--gold-text);
+}

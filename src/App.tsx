@@ -16,6 +16,7 @@ import { Match } from './ui/screens/Match'
 import { Matches } from './ui/screens/Matches'
 import { Profile } from './ui/screens/Profile'
 import { Quartett } from './ui/screens/Quartett'
+import { Regional } from './ui/screens/Regional'
 import { Swipe } from './ui/screens/Swipe'
 import { Welcome } from './ui/screens/Welcome'
 
@@ -60,6 +61,7 @@ function Screens() {
         {s === 'profile' && <Profile />}
         {s === 'games' && <Games />}
         {s === 'quartett' && <Quartett />}
+        {s === 'regional' && <Regional />}
         {s === 'legal' && (
           <Suspense fallback={null}>
             <Legal />
