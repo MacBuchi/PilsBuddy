@@ -15,12 +15,14 @@ if (country) {
       bd:serviceParam wikibase:cornerSouthWest "Point(${b.w} ${b.s})"^^geo:wktLiteral .
       bd:serviceParam wikibase:cornerNorthEast "Point(${b.e} ${b.n})"^^geo:wktLiteral . }`
 }
-const query = `SELECT ?item ?itemLabel ?coord ?website ?dissolved ?countryCode WHERE {
+const query = `SELECT ?item ?itemLabel ?coord ?website ?dissolved ?countryCode ?inception ?placeLabel WHERE {
   ${where}
   ?item wdt:P31/wdt:P279* wd:Q131734 .
   OPTIONAL { ?item wdt:P856 ?website }
   OPTIONAL { ?item wdt:P576 ?dissolved }
   OPTIONAL { ?item wdt:P17/wdt:P297 ?countryCode }
+  OPTIONAL { ?item wdt:P571 ?inception }
+  OPTIONAL { ?item wdt:P131 ?place }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "de,en" . }
 }`
 
@@ -38,6 +40,9 @@ for (const b of data.results.bindings) {
     country: b.countryCode?.value ?? country ?? null,
     website: b.website?.value ?? null,
     dissolved: Boolean(b.dissolved),
+    // founding year → „SEIT …“ on the derived label; place = municipality (OSM often has no addr:city)
+    founded: b.inception ? Number(b.inception.value.slice(0, 4)) || null : null,
+    city: b.placeLabel?.value && !/^Q\d+$/.test(b.placeLabel.value) ? b.placeLabel.value : null,
   })
 }
 writeRaw(`wikidata-${country ?? 'probe'}.json`, [...byId.values()])

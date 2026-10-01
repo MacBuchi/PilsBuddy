@@ -40,6 +40,8 @@ for await (const line of lines) {
     categories: cats.split(',').filter((c) => c !== 'en:beverages' && c !== 'en:alcoholic-beverages'),
     labels: (f[col.labels_tags] || '').split(',').filter(Boolean),
     quantity: f[col.quantity] || null,
+    // container (can / swing top) for the derived bottle
+    packaging: f[col.packaging_tags] || f[col.packaging] || null,
     modified: Number(f[col.last_modified_t]) || null,
   }
   for (const [c, tag] of Object.entries(COUNTRIES)) if (countries.includes(tag)) out[c].push(row)
