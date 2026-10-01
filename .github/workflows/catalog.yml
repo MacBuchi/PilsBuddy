@@ -43,6 +43,13 @@ jobs:
             unzip -p /tmp/$c.zip $c.txt > tools/catalog/raw/geonames-$c.txt
             wc -l tools/catalog/raw/geonames-$c.txt
           done
+      - name: openbeer / beer.db (Public Domain, DE + AT beer lists)
+        if: ${{ !cancelled() }}
+        run: |
+          for r in by-bayern oberfranken oberbayern at-austria de-deutschland; do
+            git clone -q --depth 1 https://github.com/openbeer/$r tools/catalog/raw/openbeer/$r
+          done
+          find tools/catalog/raw/openbeer -name '*.txt' | wc -l
       - name: Coverage report
         if: ${{ !cancelled() }}
         run: node tools/catalog/probe-report.mjs | tee tools/catalog/raw/report.txt >> "$GITHUB_STEP_SUMMARY"
@@ -53,5 +60,6 @@ jobs:
           path: |
             tools/catalog/raw/*.json
             tools/catalog/raw/geonames-*.txt
+            tools/catalog/raw/openbeer/**/*.txt
             tools/catalog/raw/report.txt
           retention-days: 14

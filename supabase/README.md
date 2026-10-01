@@ -36,13 +36,18 @@ gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = 
 **Regionalkatalog (Stufe R):** befüllt nur von `tools/catalog` – nie von der App. Ablauf:
 
 1. Workflow „Regional catalogue (fetch)“ (`gh workflow run catalog.yml --ref <branch>`) lädt OSM (Overpass,
-   mit Spiegel-Servern), Wikidata, den Open-Food-Facts-Export und die GeoNames-Postleitzahlen; Artefakt
-   `catalog-raw` nach `tools/catalog/raw/` entpacken.
+   mit Spiegel-Servern), Wikidata (Brauereien + `--beers`), den Open-Food-Facts-Export, die openbeer-Repos
+   (beer.db, gemeinfrei, Stand ~2014) und die GeoNames-Postleitzahlen; Artefakt `catalog-raw` nach
+   `tools/catalog/raw/` entpacken.
 2. `npm run catalog:build` → `tools/catalog/out/*.sql` + `report.txt`: Brauereien dedupliziert (gleicher Name
    < 300 m, Wikidata per Tag oder Name < 500 m), Biere einer Brauerei zugeordnet (alle Namensteile der Brauerei
    in Marke/Hersteller, gleichnamige nur mit passendem Herstellungsort), davon die **Hauptbiere**: je Stil eines
    (Größen/Gebinde fallen zusammen), höchstens 5, Radler/Alkoholfreies zuletzt, unbekannter Stil nur ohne
-   Alternative. Bricht ab bei < 1000 Brauereien (unvollständiger Download).
+   Alternative; bei Gleichstand gewinnt die aktuellere Quelle (OFF > Wikidata > Website > openbeer).
+   Zuordnung auch über einen abweichenden Wikidata-Namen und ohne Adjektiv-„-er“ („Zwettler“ = „Zwettl“);
+   allgemeine Namen („Hofbräu“, „Die Weisse“) nur mit passendem Ort; Listen mit vollen Brauereinamen
+   (openbeer) streng: Ort passt, oder gleicher Name und Brauerei ohne bekannten Ort.
+   Bricht ab bei < 1000 Brauereien (unvollständiger Download).
 3. Lokal prüfen: `for f in tools/catalog/out/*.sql; do psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$f"; done`
 4. Live (nur nach OK): dieselbe Schleife mit `supabase db query --linked -f "$f"`. Jede Datei ist eine
    Transaktion; Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
