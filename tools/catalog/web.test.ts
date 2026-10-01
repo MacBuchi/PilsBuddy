@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beerLinks, cleanName, extractBeers, robotsAllows, textOf } from './web'
+import { beerLinks, beerName, cleanName, extractBeers, robotsAllows, textOf } from './web'
 
 describe('robotsAllows', () => {
   it('follows the * group and our own group, wildcards included', () => {
@@ -71,6 +71,15 @@ describe('extractBeers', () => {
       'Alkoholfreie Alternativen',
       'Bitte alkoholfrei genießen.',
       'hopfenblumiges, feinherbes, untergäriges Vollbier',
+      'Lagermitarbeiter (w/m/d)',
+      'Domhof Bockbierbrand',
+      'Wiener Schnitzel',
+      'Gator Events',
+      'Durstgenerator',
+      'Gastronomie in Bamberg',
+      'Festbier Steckbrief',
+      'Biersiphon Pils oder Weizen naturtrüb',
+      'HOP SWISS Hoppy Lager 24x33cl',
     ]
     expect(extractBeers(heads.map((h) => `<h2>${h}</h2>`).join(''))).toEqual([])
     expect(extractBeers('<h2>Festbier</h2><h2>Kellerbier</h2>').map((b) => b.name)).toEqual(['Festbier', 'Kellerbier'])
@@ -83,7 +92,18 @@ describe('extractBeers', () => {
     expect(cleanName('HADERNER WEIßBIER')).toBe('Haderner Weißbier')
     expect(cleanName('INDIA PALE ALE')).toBe('India Pale Ale')
     expect(cleanName('BRLO IPA')).toBe('Brlo IPA')
+    expect(cleanName('Lindenbräu&#x27;s Herbstbock')).toBe("Lindenbräu's Herbstbock")
+    expect(cleanName('Jetzt neu: Distel Helles Lager')).toBe('Distel Helles Lager')
+    expect(cleanName('Urhell – Kellerpils (SOLD OUT)')).toBe('Urhell – Kellerpils')
+    expect(cleanName('Pils: unser Klassiker')).toBe('Pils: unser Klassiker')
+    expect(cleanName('renegade ipa')).toBe('Renegade IPA')
     expect(cleanName('Kel\u00adler Pils')).toBe('Keller Pils')
+  })
+
+  it('takes the ABV out of the name', () => {
+    expect(beerName('West Coast IPA 6.4% ABV')).toEqual({ name: 'West Coast IPA', abv: 6.4 })
+    expect(beerName('Märzen (5,6 % vol.)', 5.8)).toEqual({ name: 'Märzen', abv: 5.8 })
+    expect(beerName('Sommerfest')).toBeNull()
   })
 
   it('decodes entities', () => {
