@@ -34,6 +34,8 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   Edge functions in `supabase/functions/`; the two-device flow `e2e/sync.mjs` runs in CI against a local stack.
 - No analytics. No new cloud projects or paid services without asking. Anything that sends data off the device
   must be described in the privacy text `src/data/legal.ts` in the same PR.
+- Regional beers (Stufe R): taste only via `tasteFromStyle` (shown as „Stil-Schätzung“), never hand-invented;
+  the user's location never leaves the device – query only coarse grid cells (or the typed postcode).
 - Work follows `docs/ROADMAP.md`: keep its order (A0 → A1 → A2 → A9 → …), tick the checkbox of a
   package when it is live, and run the gate (build, test, lint, `e2e/flow.mjs`, screenshots,
   `npm run deploy`) before ticking.
