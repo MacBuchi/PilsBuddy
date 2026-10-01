@@ -25,3 +25,4 @@ dist-ssr
 
 # catalog pipeline raw downloads (large, re-fetchable)
 tools/catalog/raw/
+tools/catalog/out/

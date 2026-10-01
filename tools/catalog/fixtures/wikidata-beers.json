@@ -1,0 +1,5 @@
+[
+ {"id":"wd:Q501","name":"Andechser Weissbier Hefetrüb","brewery":"wd:Q3","abv":5.5,"kinds":["Weizenbier"]},
+ {"id":"wd:Q502","name":"Andechser","brewery":"wd:Q3","abv":null,"kinds":["Biermarke"]},
+ {"id":"wd:Q503","name":"Eichbaum Ureich Pils","brewery":"wd:Q1","abv":4.9,"kinds":["Pilsner Bier"]}
+]

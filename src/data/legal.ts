@@ -76,6 +76,12 @@ export const PRIVACY: LegalSection[] = [
     ],
   },
   {
+    title: 'Quellen der Brauerei-Daten',
+    paragraphs: [
+      'Brauereien und ihre Biere aus deiner Region stammen aus offenen Datenbanken: © OpenStreetMap-Mitwirkende (ODbL), Open Food Facts (ODbL), Wikidata (CC0) und GeoNames (Postleitzahlen, CC BY 4.0). Unsere daraus abgeleitete Datenbank steht ebenfalls unter der ODbL. Der Geschmack dieser Biere ist eine Schätzung aus dem Bierstil, keine Verkostung.',
+    ],
+  },
+  {
     title: 'Deine Rechte',
     paragraphs: [
       'Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, eine Einwilligung jederzeit zu widerrufen (Sync ausschalten und Cloud-Daten löschen). Deine Daten kannst du jederzeit unter „Profil exportieren“ als Datei mitnehmen.',

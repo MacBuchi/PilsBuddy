@@ -8,6 +8,10 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 | `profiles` | ein Profil je (anonymem) Nutzer: Buddy-Nr., Archetyp, DNA, `visible` | eigenes lesen/schreiben; fremde nur bei `visible = true` (Opt-in) |
 | `ratings` | eine Zeile je Nutzer und Bier, `at` entscheidet beim Sync; `deleted` = Tombstone | nur eigene |
 | `sync_codes` | Hash des Sync-Codes je Nutzer | keine – nur die Edge Function (service_role) |
+| `breweries` | Brauereien DE/AT/CH aus OpenStreetMap + Wikidata, `id` = Quell-ID (`osm-n123`, `wd-q123`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
+| `regional_beers` | bis zu 5 Hauptbiere je Brauerei (`id` = `r-<EAN>` / `r-q<n>`, Stil, ABV, Gebinde, `source` + kurze `source_ref`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
+| `beer_sources` | die wenigen Quellen (Open Food Facts, Wikidata, Website, openbeer) mit Lizenz und Link-Vorlage | öffentlich lesbar, nur per Migration |
+| `places` | Postleitzahlen DE/AT/CH mit Ort und Mittelpunkt (GeoNames) | öffentlich lesbar, schreiben nur der Import |
 
 **Bierkatalog (B3):** Die Tabelle enthält *nur* Biere, die neu sind oder ein gebündeltes Bier ersetzen sollen
 (gleiche `id`) – keine Kopie des ganzen JSON, sonst würde ein alter DB-Stand spätere JSON-Änderungen überdecken.
@@ -29,6 +33,25 @@ Auth-Einstellungen (seit 2026-10-01 aktiv; gezielt per Management-API `PATCH /v1
 gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = true`, Site URL
 `https://pilsbuddy.mcbuchi.de`, Rate-Limit 30 anonyme Anmeldungen/Stunde je IP (Default).
 
+**Regionalkatalog (Stufe R):** befüllt nur von `tools/catalog` – nie von der App. Ablauf:
+
+1. Workflow „Regional catalogue (fetch)“ (`gh workflow run catalog.yml --ref <branch>`) lädt OSM (Overpass,
+   mit Spiegel-Servern), Wikidata, den Open-Food-Facts-Export und die GeoNames-Postleitzahlen; Artefakt
+   `catalog-raw` nach `tools/catalog/raw/` entpacken.
+2. `npm run catalog:build` → `tools/catalog/out/*.sql` + `report.txt`: Brauereien dedupliziert (gleicher Name
+   < 300 m, Wikidata per Tag oder Name < 500 m), Biere einer Brauerei zugeordnet (alle Namensteile der Brauerei
+   in Marke/Hersteller, gleichnamige nur mit passendem Herstellungsort), davon die **Hauptbiere**: je Stil eines
+   (Größen/Gebinde fallen zusammen), höchstens 5, Radler/Alkoholfreies zuletzt, unbekannter Stil nur ohne
+   Alternative. Bricht ab bei < 1000 Brauereien (unvollständiger Download).
+3. Lokal prüfen: `for f in tools/catalog/out/*.sql; do psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$f"; done`
+4. Live (nur nach OK): dieselbe Schleife mit `supabase db query --linked -f "$f"`. Jede Datei ist eine
+   Transaktion; Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
+   setzt Brauereien/Biere, die nicht mehr in den Quellen sind, auf `published = false` (Zeilen bleiben).
+
+Geschmack wird nicht gespeichert – die App leitet ihn aus Stil + ABV ab (`tasteFromStyle`, „Stil-Schätzung“).
+Lizenzen: OpenStreetMap und Open Food Facts ODbL (Namensnennung, abgeleitete DB bleibt ODbL), Wikidata CC0,
+GeoNames CC BY 4.0 – genannt in `src/data/legal.ts`.
+
 Advisor: Die zwei WARN „Anonymous Access Policies“ (0012) für `profiles` und `ratings` sind gewollt – anonyme
 Nutzer sind die Nutzer dieser App und sehen per RLS nur ihre eigenen Zeilen. Alles andere muss sauber bleiben.
 
@@ -43,6 +66,8 @@ supabase db advisors --local # Sicherheits-/Performance-Hinweise
 supabase start -x studio,imgproxy,vector,logflare,supavisor,mailpit,realtime,storage-api   # + Auth + Functions
 supabase functions deploy sync-code   # nach dem Merge
 supabase db push             # nach dem Merge: Migrationen ins Projekt (vorher: supabase link --project-ref rwqpljpnotnyovvuxjgl)
+# hängt `db push` (Host nur per IPv6): supabase db query --linked -f migrations/<datei>.sql, dann
+# insert into supabase_migrations.schema_migrations (version, name) values ('<ts>', '<name>');
 ```
 
 App gegen den lokalen Stack + Zwei-Geräte-Test:

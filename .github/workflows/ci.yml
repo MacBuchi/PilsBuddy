@@ -56,6 +56,12 @@ jobs:
         with:
           version: 2.109.1
       - run: supabase start -x studio,imgproxy,vector,logflare,supavisor,mailpit,realtime,storage-api
+      - name: Regional catalogue import (fixture, twice → idempotent)
+        run: |
+          eval "$(supabase status -o env | grep -E '^DB_URL=')"
+          npm run catalog:build -- --raw tools/catalog/fixtures --out /tmp/regional --min-breweries 1
+          for run in 1 2; do for f in /tmp/regional/*.sql; do psql "$DB_URL" -q -v ON_ERROR_STOP=1 -f "$f"; done; done
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f tools/catalog/fixtures/check.sql
       - name: Install Playwright next to the sync script
         run: |
           mkdir -p /tmp/pw

@@ -4,7 +4,22 @@
 import { args, bboxAround, getJson, PROBE, sleep, writeRaw } from './lib.mjs'
 
 const { country } = args()
-const ENDPOINT = 'https://overpass-api.de/api/interpreter'
+// the main instance answers 504 under load – rotate through public mirrors
+const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter']
+
+async function overpass(query) {
+  for (let round = 0; ; round++) {
+    for (const url of ENDPOINTS) {
+      try {
+        return await getJson(url, { method: 'POST', body: new URLSearchParams({ data: query }), signal: AbortSignal.timeout(360_000) }, 2)
+      } catch (err) {
+        console.log(`${url}: ${err.message}`)
+        if (round >= 2 && url === ENDPOINTS.at(-1)) throw err
+      }
+    }
+    await sleep(30_000)
+  }
+}
 
 const filters = ['["craft"="brewery"]', '["microbrewery"="yes"]', '["industrial"="brewery"]']
 const DE_STATES = ['BW', 'BY', 'BE', 'BB', 'HB', 'HH', 'HE', 'MV', 'NI', 'NW', 'RP', 'SL', 'SN', 'ST', 'SH', 'TH']
@@ -22,7 +37,7 @@ for (const area of areas) {
     scope = `(${b.s},${b.w},${b.n},${b.e})`
   }
   const query = `[out:json][timeout:300];${area ?? ''}(${filters.map((f) => `nwr${f}${scope};`).join('')});out center tags;`
-  const data = await getJson(ENDPOINT, { method: 'POST', body: new URLSearchParams({ data: query }) })
+  const data = await overpass(query)
   for (const el of data.elements) elements.set(`${el.type}${el.id}`, el)
   if (areas.length > 1) {
     console.log(`${area.match(/"([A-Z-]+)"\]/)[1]}: ${elements.size}`)
