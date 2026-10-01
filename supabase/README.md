@@ -25,8 +25,12 @@ Dafür bekommt der Nutzer beim ersten Einlösen eine interne Platzhalter-Adresse
 `on delete cascade` mit. Andere Geräte merken es beim nächsten Sync (Fremdschlüssel-Fehler bzw. unbekannter
 Code), schalten ihren Sync aus und behalten ihre lokale Kopie.
 
-Auth-Einstellungen (Dashboard, nicht per CLI gepusht): anonyme Anmeldung an, Site URL
-`https://pilsbuddy.mcbuchi.de`.
+Auth-Einstellungen (seit 2026-10-01 aktiv; gezielt per Management-API `PATCH /v1/projects/<ref>/config/auth`
+gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = true`, Site URL
+`https://pilsbuddy.mcbuchi.de`, Rate-Limit 30 anonyme Anmeldungen/Stunde je IP (Default).
+
+Advisor: Die zwei WARN „Anonymous Access Policies“ (0012) für `profiles` und `ratings` sind gewollt – anonyme
+Nutzer sind die Nutzer dieser App und sehen per RLS nur ihre eigenen Zeilen. Alles andere muss sauber bleiben.
 
 Löscht man den Auth-Nutzer, verschwinden Profil und Bewertungen mit (`on delete cascade`).
 
