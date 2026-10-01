@@ -12,7 +12,11 @@ export interface Operator {
 }
 
 /** Anbieter nach § 5 DDG / Verantwortlicher nach Art. 4 Nr. 7 DSGVO. null = noch nicht eingetragen. */
-export const OPERATOR: Operator | null = null
+export const OPERATOR: Operator | null = {
+  name: 'Marcus Bucher',
+  address: ['Schumannstr. 7', '74906 Bad Rappenau'],
+  email: 'macbuchi.apps@gmail.com',
+}
 
 export const LEGAL_UPDATED = 'Oktober 2026'
 

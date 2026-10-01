@@ -139,7 +139,7 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
       `#datenschutz`, Text in `src/data/legal.ts`); „Profil zurücksetzen“ löscht das Sync-Konto serverseitig
       (Edge Function `sync-code` › `delete`, Cascade), „Daten aus der Cloud löschen“ nur die Cloud-Kopie;
       verbundene Geräte schalten ihren Sync dann selbst aus. Zwei-Geräte-E2E prüft das Löschen (S)
-  - [ ] Anbieterangaben fürs Impressum eintragen (`OPERATOR` in `src/data/legal.ts`)
+  - [x] Anbieterangaben fürs Impressum eintragen (`OPERATOR` in `src/data/legal.ts`)
 
 ## Stufe E – Minispiele (vorgezogen vor C, Wunsch 2026-10-01)
 
