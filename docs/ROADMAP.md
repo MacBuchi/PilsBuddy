@@ -49,9 +49,11 @@ Teil 1 – Flaschen-Designs (Nutzer gestaltet in Claude Design)
 
 - [x] `docs/FLASCHEN.md`: Design-Brief je Bier (Form, Farben, Charakter, Tags) + Export-Spec,
       generiert aus `beers.json` via `node tools/bottles/build-brief.mjs`
-- [ ] Designs als `public/bottles/<id>.png` (600 × 1200, transparent, gleiche Bodenlinie) ablegen
-- [ ] `beers.json`: `image: "/bottles/<id>.png"` eintragen; Rendering in BeerCard/Detail/Match
-      prüfen (Objektgröße, Schatten, dunkle Biere)
+- [x] 42 Designs mit Gesicht + Animation (Claude Design) als `public/bottles/<id>.svg`, Schriften auf
+      die benutzten Zeichen reduziert (`tools/bottles/optimize.py`, 6,4 MB → 0,6 MB)
+- [x] `beers.json`: `image` gesetzt; `BeerBottle` wählt Design oder Fallback in allen Screens
+- [ ] Restliche 18 Biere (aus A3) gestalten – Skill `pilsbuddy-flaschendesign`, braucht den Generator
+      `bottles.js` unter `docs/pilsbuddy-mobile-app-design/flaschen/`
 
 Hinweis: Eigene, stilisierte Designs statt Fotos – keine 1:1-Kopien realer Etiketten (Markenrecht).
 

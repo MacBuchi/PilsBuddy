@@ -71,17 +71,6 @@
   white-space: nowrap;
 }
 
-.photo {
-  position: absolute;
-  left: 50%;
-  top: 62px;
-  bottom: 18px;
-  height: calc(100% - 80px);
-  transform: translateX(-50%);
-  object-fit: contain;
-  filter: drop-shadow(0 6px 0 rgba(29, 24, 17, 0.25));
-  pointer-events: none;
-}
 
 
 

@@ -11,7 +11,7 @@ import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
 import page from './page.module.css'
-import { BottleArt } from '../components/BottleArt'
+import { BeerBottle } from '../components/BeerBottle'
 import { RateSheet } from '../components/RateSheet'
 import { useBuddyInvite } from '../useBuddyInvite'
 import { RATING_COLOR } from '../ratingStyle'
@@ -74,7 +74,7 @@ export function Matches() {
           {recos.map(({ beer, pct }) => (
             <button key={beer.id} type="button" className={styles.reco} onClick={() => openDetail(beer.id)}>
               <span className={styles.bottle} style={{ background: beer.color }}>
-                <BottleArt beer={beer} size={50} />
+                <BeerBottle beer={beer} size={50} />
               </span>
               <span className={styles.recoText}>
                 <span className={styles.recoName}>{beer.name}</span>
@@ -101,7 +101,7 @@ export function Matches() {
             <div key={beer.id} className={styles.reco}>
               <button type="button" className={styles.tryOpen} onClick={() => openDetail(beer.id)}>
                 <span className={styles.bottle} style={{ background: beer.color }}>
-                  <BottleArt beer={beer} size={50} />
+                  <BeerBottle beer={beer} size={50} />
                 </span>
                 <span className={styles.recoText}>
                   <span className={styles.recoName}>{beer.name}</span>

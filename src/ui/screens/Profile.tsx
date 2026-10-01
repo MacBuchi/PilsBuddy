@@ -9,7 +9,7 @@ import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { RATING_COLOR, RATING_ICON } from '../ratingStyle'
 import page from './page.module.css'
-import { BottleArt } from '../components/BottleArt'
+import { BeerBottle } from '../components/BeerBottle'
 import { ACH_ICON } from '../achievementIcons'
 import styles from './Profile.module.css'
 
@@ -91,7 +91,7 @@ export function Profile() {
         <h2 className={styles.h2}>{COPY.profile.relations}</h2>
         {history.map(({ beer, rating }) => (
           <button key={beer.id} type="button" className={styles.rel} onClick={() => openDetail(beer.id)}>
-            <BottleArt beer={beer} size={30} outline="var(--edge)" className={styles.relBottle} />
+            <BeerBottle beer={beer} size={30} outline="var(--edge)" className={styles.relBottle} />
             <span className={styles.relName}>{beer.fullName}</span>
             <span className={styles.relRating} style={{ color: RATING_COLOR[rating] }}>
               {RATING_ICON[rating]}

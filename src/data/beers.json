@@ -14,6 +14,7 @@
     "disLikeQuip": "Du und Jever habt eine komplizierte Vergangenheit.",
     "tags": ["herb", "trocken", "friesisch direkt"],
     "color": "#E6C150",
+    "image": "/bottles/jever.svg",
     "reference": true
   },
   {
@@ -31,6 +32,7 @@
     "disLikeQuip": "Mutig. In München würde man dich jetzt anschauen.",
     "tags": ["süffig", "malzig", "Kultstatus"],
     "color": "#F1C656",
+    "image": "/bottles/augustiner.svg",
     "reference": true
   },
   {
@@ -47,6 +49,7 @@
     "humorousBio": "Schmeckt nach Banane, ohne je eine gesehen zu haben.",
     "tags": ["fruchtig", "hefig", "Biergarten"],
     "color": "#E8B84A",
+    "image": "/bottles/paulaner-weisse.svg",
     "disLikeQuip": "Keine Banane für dich. Mehr für den Biergarten.",
     "reference": true
   },
@@ -65,6 +68,7 @@
     "disLikeQuip": "Beck's wird darüber hinwegkommen. Es hat genug Freunde.",
     "tags": ["mild-herb", "massentauglich", "grüne Flasche"],
     "color": "#E9C75B",
+    "image": "/bottles/becks.svg",
     "reference": true
   },
   {
@@ -81,6 +85,7 @@
     "humorousBio": "Sieht aus wie Guinness, trinkt sich wie Pils. Ein Doppelagent.",
     "tags": ["röstig", "dunkel", "leichter als gedacht"],
     "color": "#2B1A12",
+    "image": "/bottles/koestritzer.svg",
     "disLikeQuip": "Der Doppelagent ist enttarnt. Mission abgebrochen.",
     "reference": true
   },
@@ -98,6 +103,7 @@
     "humorousBio": "Riecht nach Grapefruit und Selbstbewusstsein.",
     "tags": ["fruchtig", "hopfig", "Craft"],
     "color": "#D98E2E",
+    "image": "/bottles/ratsherrn.svg",
     "disLikeQuip": "Zu viel Grapefruit? Verstehen wir. Hamburg nicht.",
     "reference": true
   },
@@ -115,6 +121,7 @@
     "humorousBio": "Ohne Limette nur ein Bier. Mit Limette immer noch nur ein Bier.",
     "tags": ["leicht", "Limette", "Strand"],
     "color": "#F4D970",
+    "image": "/bottles/corona.svg",
     "disLikeQuip": "Auch mit Limette nicht. Konsequent.",
     "reference": true
   },
@@ -133,6 +140,7 @@
     "disLikeQuip": "Verständlich. Ihr hattet nie eine echte Chance.",
     "tags": ["rauchig", "malzig", "polarisiert"],
     "color": "#6B3316",
+    "image": "/bottles/schlenkerla.svg",
     "reference": true
   },
   {
@@ -149,6 +157,7 @@
     "humorousBio": "Kleine Flasche, große Fangemeinde. Ausverkauft, wenn man es am meisten braucht.",
     "tags": ["ausgewogen", "süffig", "Schwarzwald"],
     "color": "#EDC24E",
+    "image": "/bottles/rothaus.svg",
     "disLikeQuip": "Tannenzäpfle ist jetzt traurig. Irgendwo im Schwarzwald fällt ein Zapfen.",
     "reference": true
   },
@@ -166,6 +175,7 @@
     "humorousBio": "Hat 2007 Krawall gemacht und ist jetzt im Supermarkt. Wie wir alle.",
     "tags": ["hopfig", "tropisch", "Craft-Klassiker"],
     "color": "#E3A63A",
+    "image": "/bottles/punk-ipa.svg",
     "disLikeQuip": "Punk ist tot. Zumindest für dich.",
     "reference": true
   },
@@ -183,6 +193,7 @@
     "humorousBio": "Kommt in 0,2 l. Kommt aber oft.",
     "tags": ["leicht", "Stange", "Köln"],
     "color": "#F0CB5A",
+    "image": "/bottles/frueh.svg",
     "disLikeQuip": "Deckel drauf. Der Köbes hat verstanden.",
     "reference": true
   },
@@ -200,6 +211,7 @@
     "humorousBio": "Braucht 119,5 Sekunden zum Zapfen. Und du sollst warten. Frechheit.",
     "tags": ["röstig", "cremig", "Pub"],
     "color": "#1E120C",
+    "image": "/bottles/guinness.svg",
     "disLikeQuip": "119,5 Sekunden gewartet – für einen Korb.",
     "reference": true
   },
@@ -217,6 +229,7 @@
     "humorousBio": "Flüssiges Brot. Von Mönchen erfunden, die beim Fasten geschummelt haben.",
     "tags": ["malzig", "stark", "Starkbierzeit"],
     "color": "#9E5A22",
+    "image": "/bottles/salvator.svg",
     "disLikeQuip": "Die Mönche fasten jetzt ohne dich.",
     "reference": true
   },
@@ -234,6 +247,7 @@
     "humorousBio": "Heißt „Teufel“. Und das steht da nicht aus Spaß.",
     "tags": ["stark", "spritzig", "Teufelszeug"],
     "color": "#F1CE5C",
+    "image": "/bottles/duvel.svg",
     "disLikeQuip": "Der Teufel nimmt's persönlich. Er hat Zeit.",
     "reference": true
   },
@@ -251,6 +265,7 @@
     "humorousBio": "Schmeckt nach Wochenende mit Grillgeruch. Für alle. Wirklich alle.",
     "tags": ["mild", "süffig", "Crowd-Pleaser"],
     "color": "#EBC75C",
+    "image": "/bottles/krombacher.svg",
     "disLikeQuip": "Krombacher wird's verkraften. Es hat noch ein paar Millionen andere Fans."
   },
   {
@@ -267,6 +282,7 @@
     "humorousBio": "Weich wie ein Sonntagmorgen am See. Ohne Wecker.",
     "tags": ["weich", "malzig", "bayerisch"],
     "color": "#F3CD62",
+    "image": "/bottles/tegernseer.svg",
     "disLikeQuip": "Ein Korb an den Tegernsee. Die Enten sind entsetzt."
   },
   {
@@ -283,6 +299,7 @@
     "humorousBio": "Hafenkante, Herz, Anker. Kein Bier für Smalltalk.",
     "tags": ["kiezig", "mild", "ehrlich"],
     "color": "#EAC45A",
+    "image": "/bottles/astra.svg",
     "disLikeQuip": "Astra nimmt's sportlich. Kiezregel: nicht nachtreten."
   },
   {
@@ -299,6 +316,7 @@
     "humorousBio": "Frisch, klar, sauerländisch unkompliziert. Wie ein fester Handschlag.",
     "tags": ["frisch", "süffig", "klar"],
     "color": "#EBC862",
+    "image": "/bottles/veltins.svg",
     "disLikeQuip": "Kein Handschlag heute. Das Sauerland schweigt."
   },
   {
@@ -315,6 +333,7 @@
     "humorousBio": "Naturtrüb. Hat nichts zu verbergen – außer Hefe.",
     "tags": ["naturtrüb", "malzig", "Ostsee"],
     "color": "#D8A13E",
+    "image": "/bottles/stoertebeker.svg",
     "disLikeQuip": "Störtebeker kapert jetzt jemand anderen."
   },
   {
@@ -331,6 +350,7 @@
     "humorousBio": "Trägt Anzug. Auch am Wochenende.",
     "tags": ["feinherb", "klassisch", "Eifel"],
     "color": "#EAC65A",
+    "image": "/bottles/bitburger.svg",
     "disLikeQuip": "Bitte kein Bit. Notiert."
   },
   {
@@ -347,6 +367,7 @@
     "humorousBio": "Feinherb und ein bisschen stolz auf die eigene Geschichte. Zu Recht.",
     "tags": ["feinherb", "sächsisch", "Tradition"],
     "color": "#E6C255",
+    "image": "/bottles/radeberger.svg",
     "disLikeQuip": "Radeberger zieht sich höflich zurück. Sächsisch gefasst."
   },
   {
@@ -363,6 +384,7 @@
     "humorousBio": "Macht Plopp. Redet nicht viel. Meint es aber ernst.",
     "tags": ["herb", "trocken", "Bügelverschluss"],
     "color": "#E3BC4A",
+    "image": "/bottles/flensburger.svg",
     "disLikeQuip": "Kein Plopp für dich. Flensburg zuckt nur mit den Schultern."
   },
   {
@@ -379,6 +401,7 @@
     "humorousBio": "Das Original. Und es weiß das auch.",
     "tags": ["vollmundig", "hopfig", "Urgestein"],
     "color": "#E0AE3C",
+    "image": "/bottles/urquell.svg",
     "disLikeQuip": "Das Original ist unbeeindruckt. Es hat schon ganz andere überlebt."
   },
   {
@@ -395,6 +418,7 @@
     "humorousBio": "Hat eine Krone im Logo und trotzdem keine Allüren.",
     "tags": ["mild", "klar", "Tulpe"],
     "color": "#EBC95E",
+    "image": "/bottles/warsteiner.svg",
     "disLikeQuip": "Die Krone sitzt schief. Aber sie sitzt."
   },
   {
@@ -411,6 +435,7 @@
     "humorousBio": "Das Weißbier, das auch deine Tante kennt. Aus dem Fernsehen.",
     "tags": ["mild", "spritzig", "Weizen-Einstieg"],
     "color": "#EABD4F",
+    "image": "/bottles/erdinger.svg",
     "disLikeQuip": "Deine Tante wird enttäuscht sein."
   },
   {
@@ -427,6 +452,7 @@
     "humorousBio": "Seit 1040 im Geschäft. Hat mehr Erfahrung als du und ich zusammen.",
     "tags": ["vollmundig", "prämiert", "Klosterbier"],
     "color": "#E5B448",
+    "image": "/bottles/weihenstephaner.svg",
     "disLikeQuip": "Seit 1040 der erste Korb. Das Klosterarchiv ist informiert."
   },
   {
@@ -443,6 +469,7 @@
     "humorousBio": "Das Kölsch für Leute, die beim Karneval noch wissen, was sie trinken.",
     "tags": ["frisch", "hopfenbetont", "Karneval"],
     "color": "#EEC855",
+    "image": "/bottles/gaffel.svg",
     "disLikeQuip": "Gaffel geht ohne dich zum Karneval. Alaaf trotzdem."
   },
   {
@@ -459,6 +486,7 @@
     "humorousBio": "Das dat lecker Dröppke. Sagt Düsseldorf. Köln widerspricht.",
     "tags": ["herb", "kupferfarben", "Altstadt"],
     "color": "#8B4A1E",
+    "image": "/bottles/uerige.svg",
     "disLikeQuip": "Kein lecker Dröppke. Köln applaudiert leise."
   },
   {
@@ -475,6 +503,7 @@
     "humorousBio": "Das Alt, das sich mit allen versteht. Sogar mit Kölsch-Trinkern.",
     "tags": ["mild", "malzig", "Niederrhein"],
     "color": "#9C5424",
+    "image": "/bottles/diebels.svg",
     "disLikeQuip": "Selbst Diebels kann nicht mit allen. Überraschung."
   },
   {
@@ -491,6 +520,7 @@
     "humorousBio": "Ist überall. Schmeckt überall gleich. Das ist der Plan.",
     "tags": ["international", "mild", "grüne Flasche"],
     "color": "#EFC94C",
+    "image": "/bottles/heineken.svg",
     "disLikeQuip": "Heineken gibt es überall. Nur nicht bei dir."
   },
   {
@@ -507,6 +537,7 @@
     "humorousBio": "Kommt im Kelch. Fühlt sich wie ein Sektempfang an, ist aber Lager.",
     "tags": ["Kelchglas", "mild", "Belgien"],
     "color": "#EDC44F",
+    "image": "/bottles/stella.svg",
     "disLikeQuip": "Kein Sektempfang heute. Der Kelch bleibt leer."
   },
   {
@@ -523,6 +554,7 @@
     "humorousBio": "Schmeckt wie ein Dessert, das sich als Bier verkleidet hat.",
     "tags": ["süß", "Abteibier", "Vanille"],
     "color": "#E5A93A",
+    "image": "/bottles/leffe.svg",
     "disLikeQuip": "Dessert abgelehnt. Diszipliniert."
   },
   {
@@ -539,6 +571,7 @@
     "humorousBio": "Hat eine kleine Ziege an der Flasche. Braucht keine weiteren Argumente.",
     "tags": ["dunkel", "Schokolade", "Ziege inklusive"],
     "color": "#4A2412",
+    "image": "/bottles/celebrator.svg",
     "disLikeQuip": "Die Ziege hat es gesehen. Die Ziege vergisst nicht."
   },
   {
@@ -555,6 +588,7 @@
     "humorousBio": "Bayerisches Craft Beer. Ja, das gibt's. Und es ist laut.",
     "tags": ["hopfig", "Mango", "Craft aus Bayern"],
     "color": "#DA9331",
+    "image": "/bottles/drunken-sailor.svg",
     "disLikeQuip": "Der Matrose segelt weiter. Ohne dich an Bord."
   },
   {
@@ -571,6 +605,7 @@
     "humorousBio": "Kostet weniger als der Pfand drumherum. Und ist trotzdem stolz.",
     "tags": ["günstig", "Späti", "Leipzig"],
     "color": "#ECC757",
+    "image": "/bottles/sternburg.svg",
     "disLikeQuip": "Du lehnst ein Bier ab, das weniger kostet als sein Pfand. Respekt."
   },
   {
@@ -587,6 +622,7 @@
     "humorousBio": "Macht keine Werbung. Muss es auch nicht. Kennt eh jeder vom Studium.",
     "tags": ["günstig", "mild", "Studentenbier"],
     "color": "#EBC85C",
+    "image": "/bottles/oettinger.svg",
     "disLikeQuip": "Oettinger ist Ablehnung gewohnt. Nur nicht beim Preis."
   },
   {
@@ -603,6 +639,7 @@
     "humorousBio": "Sechseckige Flasche. Weil rund kann jeder.",
     "tags": ["kernig", "Harz", "Sechskant"],
     "color": "#E9C556",
+    "image": "/bottles/hasseroeder.svg",
     "disLikeQuip": "Sechs Ecken, null Chancen."
   },
   {
@@ -619,6 +656,7 @@
     "humorousBio": "Nennt sich selbst Legende. Und wer will da schon widersprechen.",
     "tags": ["hopfenbetont", "Vogtland", "Legende"],
     "color": "#E8C34F",
+    "image": "/bottles/wernesgruener.svg",
     "disLikeQuip": "Du hast einer Legende widersprochen. Mutig."
   },
   {
@@ -635,6 +673,7 @@
     "humorousBio": "Wird pro Tag von mehr Touristen fotografiert als der Eiffelturm. Gefühlt.",
     "tags": ["Maßkrug", "Touristen", "München"],
     "color": "#F1C858",
+    "image": "/bottles/hofbraeu.svg",
     "disLikeQuip": "Ein Prosit weniger. Die Touristen trinken's schon."
   },
   {
@@ -651,6 +690,7 @@
     "humorousBio": "Wird von Mönchen gebraut. Man merkt, die haben Zeit.",
     "tags": ["Kloster", "malzig", "Karamell"],
     "color": "#5A2E14",
+    "image": "/bottles/andechser-doppelbock.svg",
     "disLikeQuip": "Die Mönche beten für dich. Sie haben ja Zeit."
   },
   {
@@ -667,6 +707,7 @@
     "humorousBio": "Ungefiltert und stolz drauf. Wie ein guter Freund nach dem dritten Bier.",
     "tags": ["ungefiltert", "fränkisch", "bernstein"],
     "color": "#D9A43C",
+    "image": "/bottles/moenchshof-keller.svg",
     "disLikeQuip": "Ungefiltert und ungeliebt. Hart."
   },
   {
@@ -683,6 +724,7 @@
     "humorousBio": "Hat das Bockbier erfunden. Erwähnt das gelegentlich.",
     "tags": ["Bock-Erfinder", "malzig", "Niedersachsen"],
     "color": "#6E3A18",
+    "image": "/bottles/einbecker-urbock.svg",
     "disLikeQuip": "Der Bock-Erfinder ist beleidigt. Zum ersten Mal seit 1378."
   },
   {

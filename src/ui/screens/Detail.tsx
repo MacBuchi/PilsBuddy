@@ -9,7 +9,7 @@ import type { Rating } from '../../domain/types'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { RATING_COLOR, RATING_ICON } from '../ratingStyle'
-import { BottleArt } from '../components/BottleArt'
+import { BeerBottle } from '../components/BeerBottle'
 import styles from './Detail.module.css'
 
 export function Detail() {
@@ -35,11 +35,7 @@ export function Detail() {
       <div className={styles.hero} style={{ background: beer.color }}>
         <div className={styles.foam} />
         <div className={styles.scallop} />
-        {beer.image ? (
-          <img className={styles.photo} src={beer.image} alt={beer.fullName} />
-        ) : (
-          <BottleArt beer={beer} className={styles.art} />
-        )}
+        <BeerBottle beer={beer} className={styles.art} />
         <button type="button" className={styles.back} onClick={back} aria-label="Zurück">
           <ArrowLeftIcon weight="bold" />
         </button>

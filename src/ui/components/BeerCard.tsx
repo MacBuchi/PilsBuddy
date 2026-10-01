@@ -2,7 +2,7 @@ import { COPY } from '../../data/copy'
 import { formatAbv } from '../../data/beers'
 import type { Beer, Rating } from '../../domain/types'
 import { textOnBeer } from '../color'
-import { BottleArt } from './BottleArt'
+import { BeerBottle } from './BeerBottle'
 import styles from './BeerCard.module.css'
 
 export type StampOpacity = Partial<Record<Rating, number>>
@@ -50,11 +50,7 @@ export function BeerCard({ beer, position, stamps = {}, smoothStamps = false, ba
             {badge.text}
           </span>
         )}
-        {beer.image ? (
-          <img className={styles.photo} src={beer.image} alt={beer.fullName} draggable={false} />
-        ) : (
-          <BottleArt beer={beer} className={styles.art} />
-        )}
+        <BeerBottle beer={beer} className={styles.art} />
 
         <div className={`${styles.stamp} ${styles.stampLike}`} style={{ opacity: stamps.LIKE ?? 0, transition: fade }}>
           {COPY.rating.LIKE.stamp}

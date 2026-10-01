@@ -1,23 +1,22 @@
 # Flaschen-Design-Brief
 
-Generiert aus `src/data/beers.json` (`node tools/bottles/build-brief.mjs`). Stand: 2026-09-30.
+Generiert aus `src/data/beers.json` (`node tools/bottles/build-brief.mjs`). Stand: 2026-10-01.
 60 Biere, 22 Sorten. Die Steckbriefe sind **Inspiration im PilsBuddy-Look** –
 bitte keine 1:1-Kopien realer Etiketten oder Logos (Markenrecht); Farbwelt, Form und Stimmung dürfen
 erkennbar sein.
 
 ## Export-Spezifikation (damit die Designs ohne Anpassung in die App passen)
 
-- Datei: `public/bottles/<id>.png` (id = erste Spalte unten), transparenter Hintergrund
-- Größe: **600 × 1200 px** (Hochformat 1:2), Flasche zentriert, Standfläche auf der Unterkante,
-  ca. 40 px Luft oben; alle Flaschen mit **gleicher Bodenlinie**, damit der Stapel ruhig wirkt
-- Stil: Bierdeckel-Look wie der Avatar – Tinten-Kante `#1D1811` 2,5–3 px, harte Schatten ohne
-  Unschärfe, flache Flächen, keine Farbverläufe; Schaum `#FFF6E3`, Gold `#F2B53A`
+- Gestaltet wird im Generator `bottles.js` (Claude Design, Seite „PilsBuddy Flaschen“) nach dem Skill
+  `.claude/skills/pilsbuddy-flaschendesign/SKILL.md` – Formen, Gesichter, Gesten, Rechtsregeln.
+- Export „SVG laden (animiert)“ → `docs/pilsbuddy-mobile-app-design/bottles/<id>.svg` (id = erste Spalte
+  unten), 600 × 1200, gemeinsame Bodenlinie y = 1188
+- `python3 tools/bottles/optimize.py` verkleinert die eingebetteten Schriften → `public/bottles/<id>.svg`
+- In `beers.json` wird dann `"image": "/bottles/<id>.svg"` eingetragen
 - Die App legt die Flasche auf die **Bierfarbe** (Spalte „Farbe“) – das Etikett muss darauf lesbar sein.
   Bei dunklen Bieren (Guinness, Köstritzer, Schlenkerla, Doppelbock) ist der Hintergrund fast schwarz.
-- Optional zusätzlich `<id>-mini.png` 120 × 240 px für Listen (sonst wird skaliert)
-- In `beers.json` wird dann `"image": "/bottles/<id>.png"` eingetragen
-- Vergleich mit den Illustrationen: `npm run dev`, dann `http://localhost:5173/?gallery=bottles`
-  (zeigt jedes Bier auf seiner Bierfarbe – dein PNG, sobald eingetragen, sonst die Illustration)
+- Kontrolle: `npm run dev`, dann `http://localhost:5173/?gallery=bottles` – Biere ohne Design sind
+  dort als „gezeichnet“ markiert (Fallback-Illustration)
 
 ## Sorten (Bier-Stile) und Formvorschlag
 
