@@ -39,6 +39,9 @@ export interface WikidataBeerRow {
   id: string
   name: string | null
   brewery: string
+  /** label + municipality of the brewery item – for breweries Wikidata has no coordinates for */
+  breweryName?: string | null
+  breweryPlace?: string | null
   abv: number | null
   /** labels of „instance of“ (e.g. „Pils“, „Weizenbier“) – style hints */
   kinds: string[]
@@ -354,7 +357,9 @@ export function mainBeers(off: OffRow[], breweries: Brewery[], wdBeers: Wikidata
   for (const w of wdBeers) {
     const qid = w.id.replace(/^wd:/, '')
     const name = text(w.name, 200)
-    const b = byQid.get(w.brewery.replace(/^wd:/, ''))
+    const b =
+      byQid.get(w.brewery.replace(/^wd:/, '')) ??
+      (w.breweryName ? match({ brands: w.breweryName, owner: null, places: w.breweryPlace ?? null }) : null)
     if (!name || !b || !/^Q\d+$/.test(qid) || /^Q\d+$/.test(name)) continue
     // brand and company items („Biermarke“, „Brauerei“) are not a single beer
     if (w.kinds.some((k) => NOT_A_BEER.test(k))) continue

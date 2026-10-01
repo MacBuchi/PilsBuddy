@@ -169,12 +169,14 @@ describe('mainBeers', () => {
         { id: 'wd:Q3', name: 'Rotes Ross', brewery: 'wd:Q100', abv: null, kinds: ['Weizenbier'] },
         { id: 'wd:Q4', name: 'Q4', brewery: 'wd:Q100', abv: null, kinds: ['Bockbier'] },
         { id: 'wd:Q5', name: 'Fremdes Bier', brewery: 'wd:Q999', abv: null, kinds: [] },
+        { id: 'wd:Q8', name: 'Krombacher Kellerbier', brewery: 'wd:Q998', breweryName: 'Krombacher Brauerei', abv: 5.2, kinds: ['Bier'] },
         { id: 'wd:Q6', name: 'Krombacher', brewery: 'wd:Q100', abv: null, kinds: ['Biermarke'] },
         { id: 'wd:Q7', name: 'Krombacher Export', brewery: 'wd:Q100', abv: null, kinds: ['Brauerei', 'Markenzeichen'] },
       ],
     )
     expect(beers.map((x) => [x.id, x.style, x.source, x.sourceRef])).toEqual([
       ['r-4001', 'Pils', 1, '4001'],
+      ['r-q8', 'Kellerbier', 2, 'Q8'],
       ['r-q3', 'Weißbier', 2, 'Q3'],
       ['r-q2', 'Dunkles', 2, 'Q2'],
     ])

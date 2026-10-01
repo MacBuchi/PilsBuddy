@@ -8,14 +8,15 @@ const ENDPOINT = 'https://query.wikidata.org/sparql'
 
 // --beers: beers whose manufacturer (P176) is a brewery in DE/AT/CH → raw/wikidata-beers.json
 if (beers) {
-  const q = `SELECT ?beer ?beerLabel ?brewery ?abv (GROUP_CONCAT(DISTINCT ?kindLabel; separator="|") AS ?kinds) WHERE {
+  const q = `SELECT ?beer ?beerLabel ?brewery ?breweryLabel ?placeLabel ?abv (GROUP_CONCAT(DISTINCT ?kindLabel; separator="|") AS ?kinds) WHERE {
     VALUES ?c { ${Object.values(COUNTRIES).map((c) => `wd:${c}`).join(' ')} }
     ?brewery wdt:P17 ?c ; wdt:P31/wdt:P279* wd:Q131734 .
     ?beer wdt:P176 ?brewery .
     OPTIONAL { ?beer wdt:P2665 ?abv }
+    OPTIONAL { ?brewery wdt:P131 ?place }
     OPTIONAL { ?beer wdt:P31 ?kind . ?kind rdfs:label ?kindLabel . FILTER(LANG(?kindLabel) = "de") }
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "de,mul,en,fr,it" . ?beer rdfs:label ?beerLabel . }
-  } GROUP BY ?beer ?beerLabel ?brewery ?abv`
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "de,mul,en,fr,it" . ?beer rdfs:label ?beerLabel . ?brewery rdfs:label ?breweryLabel . ?place rdfs:label ?placeLabel . }
+  } GROUP BY ?beer ?beerLabel ?brewery ?breweryLabel ?placeLabel ?abv`
   const data = await getJson(`${ENDPOINT}?query=${encodeURIComponent(q)}`, { headers: { Accept: 'application/sparql-results+json' } })
   const byId = new Map()
   for (const b of data.results.bindings) {
@@ -26,6 +27,9 @@ if (beers) {
       id: `wd:${id}`,
       name: b.beerLabel?.value && b.beerLabel.value !== id ? b.beerLabel.value : null,
       brewery: `wd:${b.brewery.value.split('/').pop()}`,
+      // many brewery items have no coordinates → matched by name + place like Open Food Facts brands
+      breweryName: b.breweryLabel?.value ?? null,
+      breweryPlace: b.placeLabel?.value ?? null,
       abv: Number.isFinite(abv) ? abv : null,
       kinds: b.kinds?.value ? b.kinds.value.split('|') : [],
     })
