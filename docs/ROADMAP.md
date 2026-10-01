@@ -156,8 +156,10 @@ Leitplanken:
   Entfernung und Ranking rechnet der Client. Zellen werden 30 Tage gecacht.
 - Live-Migration und Live-Import nur nach OK.
 
-- [ ] R0 **Datenprobe:** `tools/catalog/` (Overpass, Wikidata-SPARQL, OFF-API), Probe Bad Rappenau ± 50 km,
+- [x] R0 **Datenprobe:** `tools/catalog/` (Overpass, Wikidata-SPARQL, OFF-API), Probe Bad Rappenau ± 50 km,
       Bericht `docs/REGIONAL.md` (Abdeckung, Duplikate, Bier→Brauerei-Zuordnung, Datenmenge je Zelle) (S)
+      - umgesetzt: Abruf per GitHub Actions (`catalog.yml`), OFF aus dem Tagesexport. 2 427 Brauereien DACH,
+        1 901 OFF-Biere; nur 7 % der Brauereien haben ein Bier in offenen Daten → Brauerei-Profil als Rückfall offen
 - [ ] R1 **Schema + Import-Pipeline:** Migration + pgTAP (öffentlich lesbar nur `published`, kein
       Schreibzugriff), Dedupe Brauereien (Name + < 300 m), Bier→Brauerei-Zuordnung mit Konfidenz,
       idempotente Upserts per Quell-ID, Lizenz-Nennung in `legal.ts` (L)
