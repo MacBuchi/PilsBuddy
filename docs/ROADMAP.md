@@ -141,6 +141,23 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
       verbundene Geräte schalten ihren Sync dann selbst aus. Zwei-Geräte-E2E prüft das Löschen (S)
   - [ ] Anbieterangaben fürs Impressum eintragen (`OPERATOR` in `src/data/legal.ts`)
 
+## Stufe E – Minispiele (vorgezogen vor C, Wunsch 2026-10-01)
+
+Eigener Tab „Spiele“. Regeln als reine, per Seed deterministische Domain-Logik (`src/domain/games/`),
+damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkregeln – Wissen und Geschick.
+
+- [x] E1 **Bier-Quartett** gegen den Kneipen-Bot (Supertrumpf: Wert nennen, höherer gewinnt, Patt → Pot;
+      10 Karten je Seite, max. 30 Runden). Bot nennt den Wert, mit dem seine Karte relativ am stärksten ist
+      (Simulation: naiver Mensch gewinnt ~43 %, kluger ~62 %). Statistik im Profil, Achievement
+      „Quartett-König“ (3 Siege) (M)
+- [ ] E2 **Wie viel ist drin?** Füllmenge schätzen; Volumen aus der Glasform (Rotationskörper) berechnet –
+      Stange, Tulpe, Weizen, Maß, Willibecher (M)
+- [ ] E3 **Flaschen-Memory** mit den animierten Flaschen; Variante Flasche ↔ Bierstil (S)
+- [ ] E4 **Mehrspieler-Gerüst:** Raum per Code/QR über Supabase Realtime (Broadcast + Presence, anonym),
+      Gastgeber hält den Spielzustand (M)
+- [ ] E5 **Quartett zu zweit** und „Wie viel ist drin?“ für alle im Raum auf E4 (M)
+- [ ] E6 **Tasting-Abend:** Gastgeber startet, alle bewerten dasselbe Bier, gemeinsame Auflösung (M)
+
 ## Stufe C – Pils-Match (Social)
 
 - [x] C1 Buddy-Link ohne Backend: `?buddy=<base64url(Buddy-Nr., Bewertungen)>` – Geschmack/Persona

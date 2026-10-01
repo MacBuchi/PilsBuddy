@@ -1,0 +1,378 @@
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: calc(var(--safe-top) + 6px) 16px calc(var(--safe-bottom) + 14px);
+  background: var(--bg);
+  animation: pbIn 0.35s ease both;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.close {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.title {
+  flex: 1;
+  font: 800 20px/1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.score {
+  font: 700 15px/1 var(--font-mono);
+  padding: 8px 12px;
+  border-radius: 99px;
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.pot {
+  color: var(--try);
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---- the bot's card (compact) ---- */
+.opp {
+  flex: none;
+  height: 62px;
+  border-radius: 18px;
+  border: 2.5px solid var(--edge);
+  box-shadow: 0 4px 0 var(--edge);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px 0 10px;
+  overflow: hidden;
+}
+
+.oppBack {
+  justify-content: space-between;
+  background: repeating-linear-gradient(45deg, var(--gold) 0 12px, #e9a92c 12px 24px);
+  color: var(--ink-fixed);
+}
+
+.oppBackText {
+  font: 800 17px/1 var(--font-display);
+  letter-spacing: -0.02em;
+  padding-left: 6px;
+}
+
+.oppCount {
+  font: 700 10px/1.2 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.thinking {
+  animation: pbQThink 0.9s ease-in-out infinite;
+}
+
+
+.flip {
+  animation: pbQFlip 0.45s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+
+.oppBottle {
+  flex: none;
+  align-self: flex-end;
+}
+
+.oppName {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.oppTitle {
+  font: 800 19px/1 var(--font-display);
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.oppValue {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  font: 700 20px/1 var(--font-mono);
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: var(--sf);
+  color: var(--ink);
+  border: 2px solid var(--edge);
+}
+
+.oppStat {
+  font: 700 9px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+/* ---- your card ---- */
+.card {
+  background: var(--sf);
+  border: 2.5px solid var(--edge);
+  border-radius: 24px;
+  box-shadow: 0 5px 0 var(--edge);
+  overflow: hidden;
+  animation: pbPop 0.35s ease both;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 8px 16px 0;
+  border-bottom: 2.5px solid var(--edge);
+}
+
+.cardBottle {
+  flex: none;
+  margin-bottom: -2px;
+}
+
+.cardName {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 10px;
+  min-width: 0;
+}
+
+.cardStyle {
+  font: 700 10px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.cardTitle {
+  font: 800 25px/0.95 var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+.cardBrewery {
+  font: 500 12px/1.2 var(--font-display);
+  opacity: 0.85;
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 4px 6px 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 92px 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px;
+  min-height: 27px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.row:disabled {
+  cursor: default;
+  color: var(--ink);
+}
+
+.row:not(:disabled):hover,
+.row:not(:disabled):focus-visible {
+  background: var(--bg);
+  border-color: var(--edge);
+}
+
+.row:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.rowLabel {
+  font: 700 14px/1 var(--font-display);
+}
+
+.rowBar {
+  height: 8px;
+  border-radius: 99px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.rowBar > span {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  box-shadow: inset 0 0 0 1.5px rgba(29, 24, 17, 0.35);
+}
+
+.rowValue {
+  font: 700 14px/1 var(--font-mono);
+  text-align: right;
+}
+
+.rowOn {
+  border-color: var(--edge);
+  animation: pbPop 0.3s ease both;
+}
+
+/* result colours – identical in light and dark mode (semantic action colours) */
+.win {
+  background: var(--like);
+  color: #fff;
+}
+
+.lose {
+  background: var(--nope);
+  color: #fff;
+}
+
+.tie {
+  background: var(--gold);
+  color: var(--ink-fixed);
+}
+
+.row.win,
+.row.lose,
+.row.tie,
+.oppValue.win,
+.oppValue.lose,
+.oppValue.tie {
+  border-color: var(--edge);
+}
+
+.row.win .rowBar,
+.row.lose .rowBar,
+.row.tie .rowBar {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.oppValue.win .oppStat,
+.oppValue.lose .oppStat {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- footer ---- */
+.foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+
+.status {
+  margin: 0;
+  min-height: 2.7em;
+  text-align: center;
+  font: 600 14.5px/1.35 var(--font-display);
+  color: var(--ink);
+}
+
+.status.win,
+.status.lose,
+.status.tie {
+  background: none;
+  color: var(--ink);
+}
+
+/* ---- game over ---- */
+.endWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(29, 24, 17, 0.55);
+  animation: pbFade 0.25s ease both;
+}
+
+.end {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 20px 18px;
+  border-radius: 26px;
+  border: 2.5px solid var(--edge);
+  background: var(--sf);
+  box-shadow: 0 6px 0 var(--edge);
+  animation: pbPop 0.4s ease both;
+}
+
+.endScore {
+  font: 700 34px/1 var(--font-mono);
+}
+
+.endTitle {
+  margin: 0;
+  text-align: center;
+  font: 800 22px/1.15 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.endBack {
+  border: 0;
+  background: none;
+  color: var(--mut);
+  font: 700 12px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 6px;
+  cursor: pointer;
+}
+

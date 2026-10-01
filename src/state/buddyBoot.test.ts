@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { encodeBuddy } from '../domain/buddyLink'
 import { withIncomingBuddy, withLegalHash } from './AppContext'
-import { initialState } from './reducer'
+import { initialState, NO_GAMES } from './reducer'
 import { parseProfile, serializeProfile } from './storage'
 
 const link = encodeBuddy(4242, { jever: { rating: 'LIKE', at: 1 }, becks: { rating: 'DISLIKE', at: 2 } })
 const base = (onboarded: boolean) =>
-  initialState({ ratings: {}, ageConfirmed: true, onboarded, dark: false, buddyNo: 7, seen: [], buddy: null, sync: { on: false, code: null } })
+  initialState({ ratings: {}, ageConfirmed: true, onboarded, dark: false, buddyNo: 7, seen: [], buddy: null, sync: { on: false, code: null }, games: NO_GAMES })
 
 describe('incoming buddy link', () => {
   it('stores the buddy; onboarded users land on the comparison', () => {

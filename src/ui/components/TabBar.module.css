@@ -4,11 +4,11 @@
   right: 0;
   bottom: 0;
   height: calc(60px + var(--safe-bottom, 0px) + 24px);
-  padding: 8px 14px calc(var(--safe-bottom, 0px) + 24px);
+  padding: 8px 8px calc(var(--safe-bottom, 0px) + 24px);
   background: var(--sf);
   border-top: 2px solid var(--line);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   z-index: 60;
 }
 
@@ -29,7 +29,7 @@
 }
 
 .pill {
-  width: 52px;
+  width: 48px;
   height: 30px;
   border-radius: 99px;
   display: flex;

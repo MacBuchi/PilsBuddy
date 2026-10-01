@@ -23,13 +23,13 @@ export interface Derived {
 
 /** Everything computed from the ratings, memoised per ratings object. */
 export function useDerived(): Derived {
-  const { ratings } = useApp().state.profile
+  const { ratings, games } = useApp().state.profile
   // Session start, taken once; newer ratings push "now" forward so fresh swipes count as activity.
   const [sessionStart] = useState(() => Date.now())
   return useMemo(() => {
     const dna = computeDNA(ratings)
     const archetype = archetypeFor(dna)
-    const achievements = evaluateAchievements({ counts: dna.counts, decoded: dna.decoded, kept: keptPromises(ratings) })
+    const achievements = evaluateAchievements({ counts: dna.counts, decoded: dna.decoded, kept: keptPromises(ratings), quartettWins: games.quartett.won })
     const unlocked = achievements.filter((a) => a.unlocked).map((a) => a.id)
     const now = Math.max(sessionStart, ...Object.values(ratings).map((e) => e.at))
     const extras = avatarExtras(ratings, dna.taste, unlocked, now)
@@ -42,5 +42,5 @@ export function useDerived(): Derived {
       candidates: rankCandidates(dna.taste, ratings),
       achievements,
     }
-  }, [ratings, sessionStart])
+  }, [games, ratings, sessionStart])
 }

@@ -9,11 +9,13 @@ import { Analyzing } from './ui/screens/Analyzing'
 import { AvatarScreen } from './ui/screens/AvatarScreen'
 import { Detail } from './ui/screens/Detail'
 import { Dna } from './ui/screens/Dna'
+import { Games } from './ui/screens/Games'
 import { ErrorBoundary } from './ui/screens/ErrorScreen'
 import { Howto } from './ui/screens/Howto'
 import { Match } from './ui/screens/Match'
 import { Matches } from './ui/screens/Matches'
 import { Profile } from './ui/screens/Profile'
+import { Quartett } from './ui/screens/Quartett'
 import { Swipe } from './ui/screens/Swipe'
 import { Welcome } from './ui/screens/Welcome'
 
@@ -29,7 +31,7 @@ function MomentHost() {
   const close = useCallback(() => {
     if (id) dispatch({ type: 'MARK_SEEN', id })
   }, [dispatch, id])
-  if (!pending || ['welcome', 'howto', 'analyzing'].includes(state.screen)) return null
+  if (!pending || ['welcome', 'howto', 'analyzing', 'quartett'].includes(state.screen)) return null
   const onDna =
     pending.id === 'entschluesselt'
       ? () => {
@@ -56,6 +58,8 @@ function Screens() {
         {s === 'detail' && <Detail />}
         {s === 'matches' && <Matches />}
         {s === 'profile' && <Profile />}
+        {s === 'games' && <Games />}
+        {s === 'quartett' && <Quartett />}
         {s === 'legal' && (
           <Suspense fallback={null}>
             <Legal />

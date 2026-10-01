@@ -81,4 +81,13 @@ describe('storage', () => {
     expect(() => store.save(initialProfile())).not.toThrow()
     expect(store.load()).toBeNull()
   })
+
+  it('game stats survive a reload; junk and old profiles count as nothing played', () => {
+    const p = { ...initialProfile(), games: { quartett: { played: 5, won: 3 } } }
+    expect(parseProfile(serializeProfile(p))?.games).toEqual({ quartett: { played: 5, won: 3 } })
+    const old = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: undefined } })
+    expect(parseProfile(old)?.games).toEqual({ quartett: { played: 0, won: 0 } })
+    const junk = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quartett: { played: 2, won: 9 } } } })
+    expect(parseProfile(junk)?.games.quartett).toEqual({ played: 2, won: 2 })
+  })
 })
