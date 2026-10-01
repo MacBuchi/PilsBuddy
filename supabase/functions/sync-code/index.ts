@@ -6,7 +6,7 @@
 //
 // Only sha-256(code) is stored. To mint a session GoTrue needs an e-mail, so on first redeem the
 // anonymous user gets an internal placeholder address (`.invalid` TLD, never mailed).
-import { createClient } from 'npm:@supabase/supabase-js@2'
+import { createClient } from 'npm:@supabase/supabase-js@2.117.2' // pinned: same version as the app
 
 const ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ' // 32 letters, no 0/O/1/I
 const CORS = {

@@ -65,6 +65,8 @@ jobs:
       - name: Dev server against the local stack, run sync flow
         run: |
           eval "$(supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=')"
+          # boot the edge runtime once (the first request after start can be slow)
+          curl -s -m 60 -X POST "$API_URL/functions/v1/sync-code" -H 'content-type: application/json' -d '{"action":"redeem","code":"x"}' || true
           VITE_SUPABASE_URL=$API_URL VITE_SUPABASE_KEY=$PUBLISHABLE_KEY npx vite --port 5179 --strictPort &
           npx -y wait-on@8 http://localhost:5179/
           node /tmp/pw/sync.mjs http://localhost:5179/ /tmp/sync
