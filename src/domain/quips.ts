@@ -2,13 +2,10 @@ import { BEER_BY_ID } from '../data/beers'
 import { COPY, fill, pick } from '../data/copy'
 import { countRatings, DECODE_TARGET, decodedPercent } from './dna'
 import type { ArchetypeId, Beer, Rating, Ratings } from './types'
+import { hashId } from './hash'
 
 /** Small stable hash so the same beer always gets the same line. */
-export function hashId(id: string): number {
-  let h = 7
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0
-  return Math.abs(h)
-}
+export { hashId }
 
 export interface QuipContext {
   rating: Rating

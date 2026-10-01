@@ -1,3 +1,5 @@
+import type { BottleDesign } from './bottles/types'
+
 /**
  * Core domain types. Nothing in here depends on React, storage or the network,
  * so the same model can later back social matching and a remote backend.
@@ -43,8 +45,10 @@ export interface Beer {
   tags: string[]
   /** Card background – "beer colour". */
   color: string
-  /** Optional bottle image URL; card shows a placeholder glass without it. */
+  /** Optional bottle image URL (photo); without it the bottle is generated (see `bottle`). */
   image?: string
+  /** Hand-tuned bottle design; without it one is derived from style, colour and taste (`designFor`). */
+  bottle?: BottleDesign
   /** Reference beers form the onboarding deck; they should cover diverse taste profiles. */
   reference?: boolean
 }

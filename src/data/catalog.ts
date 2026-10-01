@@ -1,3 +1,4 @@
+import { sanitizeDesign } from '../domain/bottles/sanitize'
 import type { Beer, TasteVector } from '../domain/types'
 import { SUPABASE_KEY, SUPABASE_URL } from '../sync/config'
 
@@ -31,8 +32,9 @@ export function toBeer(row: CatalogRow): Beer | null {
   if (typeof d.abv !== 'number' || d.abv < 0 || d.abv > 20) return null
   if (typeof d.color !== 'string' || !/^#[0-9a-fA-F]{6}$/.test(d.color)) return null
   const tags = Array.isArray(d.tags) ? d.tags.filter((t): t is string => str(t, 40)).slice(0, 6) : []
-  // only our own bottle files – nothing that loads from elsewhere (a missing file falls back to BottleArt)
+  // only our own bottle photos – nothing that loads from elsewhere (a missing file falls back to the generated bottle)
   const image = typeof d.image === 'string' && /^\/bottles\/[a-z0-9-]+\.(svg|png|webp)$/.test(d.image) ? d.image : undefined
+  const bottle = sanitizeDesign(d.bottle)
   return {
     id: row.id,
     name: d.name as string,
@@ -49,6 +51,7 @@ export function toBeer(row: CatalogRow): Beer | null {
     tags,
     color: d.color,
     ...(image ? { image } : {}),
+    ...(bottle ? { bottle } : {}),
     ...(d.reference === true ? { reference: true } : {}),
   }
 }
@@ -61,7 +64,12 @@ export function mergeCatalog(bundled: readonly Beer[], rows: readonly CatalogRow
     if (beer) fromDb.set(beer.id, beer)
   }
   const known = new Set(bundled.map((b) => b.id))
-  return [...bundled.map((b) => fromDb.get(b.id) ?? b), ...[...fromDb.values()].filter((b) => !known.has(b.id))]
+  // a DB row without its own bottle design keeps the hand-tuned one of the bundled beer
+  const replace = (b: Beer) => {
+    const db = fromDb.get(b.id)
+    return !db ? b : db.bottle || !b.bottle ? db : { ...db, bottle: b.bottle }
+  }
+  return [...bundled.map(replace), ...[...fromDb.values()].filter((b) => !known.has(b.id))]
 }
 
 export function readCachedRows(): CatalogRow[] {

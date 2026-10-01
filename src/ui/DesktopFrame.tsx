@@ -101,7 +101,7 @@ export function DesktopRight() {
         <div className={styles.box}>
           <span className="t-label">{COPY.match.label}</span>
           <div className={styles.next}>
-            <BeerBottle beer={top.beer} size={44} outline="var(--edge)" className={styles.nextBottle} />
+            <BeerBottle beer={top.beer} size={44} className={styles.nextBottle} />
             <div className={styles.nextText}>
               <span className={styles.nextName}>
                 {top.beer.fullName} · {top.pct} %

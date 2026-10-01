@@ -20,6 +20,9 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   marks the onboarding deck). Adding beers needs no code change. Rows in the DB table `beers` add/replace
   beers at runtime (`src/data/catalog.ts`, cached, applied on the next start) – so never assume a beer id from
   ratings, sync or a buddy link exists in `BEER_BY_ID`.
+- Bottles are generated (`src/domain/bottles/`, skill `pilsbuddy-flaschendesign`): no SVG file per beer. A beer
+  without `bottle` in beers.json gets one derived from style/colour/taste (`designFor`); DB designs only via
+  `sanitizeDesign`. Shape outlines are pinned by tests – change them only on purpose.
 - Styling: CSS Modules + tokens from `src/index.css`. Keyframes are global (Vite uses the
   lightningcss transformer with `cssModules.animation: false` – keep that).
 - Semantic action colours (like/nope/try/know/unknown) are identical in light and dark mode.

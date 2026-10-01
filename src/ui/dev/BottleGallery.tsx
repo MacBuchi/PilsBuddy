@@ -1,8 +1,8 @@
 import { BEERS } from '../../data/beers'
 import { BeerBottle } from '../components/BeerBottle'
 
-/** Dev only (`?gallery=bottles`): every beer's bottle on its beer colour – designed SVG if present,
- * otherwise the drawn fallback (caption marked „gezeichnet“ – those still need a design). */
+/** Dev only (`?gallery=bottles`): every beer's bottle on its beer colour – hand-tuned design if present,
+ * otherwise derived from the beer's data (caption marked „abgeleitet“). */
 export default function BottleGallery() {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, padding: 16, background: 'var(--page)', minHeight: '100vh' }}>
@@ -13,7 +13,7 @@ export default function BottleGallery() {
           </div>
           <figcaption style={{ marginTop: 4 }}>
             {b.id}
-            {!b.image && <span style={{ color: 'var(--nope)' }}> · gezeichnet</span>}
+            {!b.bottle && <span style={{ color: 'var(--nope)' }}> · abgeleitet</span>}
           </figcaption>
         </figure>
       ))}

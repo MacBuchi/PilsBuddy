@@ -36,7 +36,7 @@ await step('next start: the DB version of Jever is on the first card', async () 
 })
 await step('the new beer is in the catalogue (drawn bottle)', async () => {
   await page.goto(`${base}?gallery=bottles`, { waitUntil: 'load' })
-  await page.getByText('db-testbier · gezeichnet').waitFor()
+  await page.getByText('db-testbier · abgeleitet').waitFor()
 })
 await step('backend unreachable: the cached catalogue still works', async () => {
   await ctx.route('**/rest/v1/**', (r) => r.abort())
