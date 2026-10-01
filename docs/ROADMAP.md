@@ -3,7 +3,8 @@
 Stand: 2026-10-01 · Live: <https://pilsbuddy.mcbuchi.de> · MVP (Phasen 1–12 des Briefs) ist fertig.
 
 Reihenfolge folgt der Produktpriorität des Konzepts: erst Spaß & Nutzbarkeit lokal (A), dann
-Backend (B), dann Pils-Match (C), dann optionale KI (D). Jedes Paket ist für sich releasebar und
+Backend (B), dann Pils-Match (C), dann optionale KI (D). Vorgezogen auf Wunsch: Minispiele (E1) und
+**Biere aus deiner Nähe (R) – nächste Stufe**, danach E2–E6, C2/C3, D. Jedes Paket ist für sich releasebar und
 endet mit dem Gate: `npm run build` · `npm test` · `npm run lint` · `e2e/flow.mjs` · Screenshots
 mobil + desktop · `npm run deploy` · Häkchen hier setzen · Commit.
 
@@ -140,6 +141,37 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
       (Edge Function `sync-code` › `delete`, Cascade), „Daten aus der Cloud löschen“ nur die Cloud-Kopie;
       verbundene Geräte schalten ihren Sync dann selbst aus. Zwei-Geräte-E2E prüft das Löschen (S)
   - [x] Anbieterangaben fürs Impressum eintragen (`OPERATOR` in `src/data/legal.ts`)
+
+## Stufe R – Biere aus deiner Nähe (Priorität seit 2026-10-01)
+
+Nach dem Profiling findet der Buddy die passendsten Biere regionaler Brauereien im wählbaren Umkreis
+(10 · 25 · 50 · 100 km). Datenbasis für DACH aus offenen Quellen: OpenStreetMap (Brauereien, ODbL),
+Open Food Facts (Biere, ODbL), Wikidata (CC0), GeoNames-PLZ (CC-BY 4.0) – Namensnennung im
+Datenschutz/Impressum, die abgeleitete Bier-DB bleibt offen.
+
+Leitplanken:
+- Eigene Tabellen `breweries`, `regional_beers`, `places` – nicht `beers` (das Swipe-Deck bleibt kuratiert).
+- Importierte Biere haben keine Geschmacksachsen: `tasteFromStyle(style, abv, ibu?)` (rein, getestet,
+  kalibriert an den kuratierten Bieren); die UI markiert das als „Stil-Schätzung“.
+- Der Standort bleibt auf dem Gerät: abgefragt werden nur 0,5°-Rasterzellen (bzw. die eingegebene PLZ),
+  Entfernung und Ranking rechnet der Client. Zellen werden 30 Tage gecacht.
+- Live-Migration und Live-Import nur nach OK.
+
+- [ ] R0 **Datenprobe:** `tools/catalog/` (Overpass, Wikidata-SPARQL, OFF-API), Probe Bad Rappenau ± 50 km,
+      Bericht `docs/REGIONAL.md` (Abdeckung, Duplikate, Bier→Brauerei-Zuordnung, Datenmenge je Zelle) (S)
+- [ ] R1 **Schema + Import-Pipeline:** Migration + pgTAP (öffentlich lesbar nur `published`, kein
+      Schreibzugriff), Dedupe Brauereien (Name + < 300 m), Bier→Brauerei-Zuordnung mit Konfidenz,
+      idempotente Upserts per Quell-ID, Lizenz-Nennung in `legal.ts` (L)
+- [ ] R2 **Stilprofile** `src/domain/styleProfile.ts`: ~25 Stile mit Aliasen, `normalizeStyle`,
+      `tasteFromStyle`; Leave-one-out-Test gegen die kuratierten Biere (M)
+- [ ] R3 **Regional-Finder:** `src/domain/regional.ts` (Zellen, Haversine, `rankRegional`), Screen
+      `regional` (Einstieg im DNA-Screen + Segment „In der Nähe“ in Matches), Standort oder PLZ,
+      Radius-Chips, Liste mit Match-% und Entfernung, Brauerei-Sheet mit Route-Link, Probierliste;
+      angefasste Regionalbiere (`r:<id>`) lokal als Snapshot im Katalog-Overlay. E2E mit Geolocation (L)
+- [ ] R4 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
+      Achievement „Lokalpatriot“, Share-Card-Zeile (M)
+- [ ] R5 **„Bier fehlt? Eintragen“:** `beer_submissions` mit Freigabe-Queue, Limit je anonymer Session (M)
+- [ ] R6 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
 
 ## Stufe E – Minispiele (vorgezogen vor C, Wunsch 2026-10-01)
 
