@@ -4,7 +4,7 @@ import { chromium, devices } from 'playwright'
 const base = process.argv[2] ?? 'http://localhost:5179/'
 const out = process.argv[3] ?? '/tmp/flow'
 const browser = await chromium.launch()
-const ctx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2 })
+const ctx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2, permissions: ['clipboard-read', 'clipboard-write'] })
 const page = await ctx.newPage()
 const errors = []
 page.on('pageerror', (e) => errors.push(String(e)))
@@ -125,6 +125,16 @@ await step('reload resumes on deck with tabs', async () => {
   await m.getByText('Bier-DNA', { exact: true }).click()
   await see('entschlüsselt')
 })
+let buddyLink = ''
+await step('buddy invite copies a link', async () => {
+  await m.getByText('Matches', { exact: true }).click()
+  await m.getByRole('tab', { name: /Menschen/ }).click()
+  await m.getByRole('button', { name: 'Buddy einladen' }).click()
+  await see('Link kopiert')
+  const text = await page.evaluate(() => navigator.clipboard.readText())
+  buddyLink = text.slice(text.indexOf('http'))
+  if (!buddyLink.includes('?buddy=')) throw new Error('no buddy link in clipboard: ' + text)
+})
 await step('export → reset → import on welcome restores the profile', async () => {
   await m.getByText('Profil', { exact: true }).click()
   const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 10000 }), m.getByText('Profil exportieren').click()])
@@ -146,6 +156,21 @@ await step('reset clears everything', async () => {
   await see('Erst Biere daten')
   await page.reload({ waitUntil: 'load' })
   await see('Erst Biere daten')
+})
+await step('buddy link: new user is invited, onboards, sees the comparison', async () => {
+  await page.goto(buddyLink, { waitUntil: 'load' })
+  await see('hat dich eingeladen')
+  if (page.url().includes('buddy=')) throw new Error('buddy param not removed from URL')
+  await m.getByText("Los geht's").click()
+  await m.getByText('Ich bin mindestens 18').click()
+  await m.getByText('Erstes Date starten').click()
+  for (let i = 0; i < 6; i++) { await page.keyboard.press(i % 2 ? 'ArrowLeft' : 'ArrowRight'); await page.waitForTimeout(450) }
+  await m.getByText('DNA auswerten').click()
+  await page.waitForTimeout(3300)
+  await m.getByText('Vergleich ansehen').click()
+  await see('Du + Buddy #')
+  await see('Bier-DNA-Match')
+  await page.screenshot({ path: `${out}-buddy.png` })
 })
 if (errors.length) console.log('PAGE ERRORS:\n' + errors.join('\n'))
 else console.log('no page errors')

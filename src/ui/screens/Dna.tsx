@@ -49,6 +49,20 @@ export function Dna() {
         <p className={styles.sub}>{longMsg}</p>
       </div>
 
+      {state.profile.buddy && (
+        <button
+          type="button"
+          className={styles.buddyCard}
+          onClick={() => {
+            dispatch({ type: 'SET_MATCH_TAB', tab: 'menschen' })
+            go('matches')
+          }}
+        >
+          <span>{fill(COPY.buddy.title, { no: String(state.profile.buddy.no).padStart(4, '0') })}</span>
+          <b>{COPY.buddy.dnaCta} →</b>
+        </button>
+      )}
+
       {showInstall && (
         <div className={styles.install} role="note">
           <span className={styles.installText}>

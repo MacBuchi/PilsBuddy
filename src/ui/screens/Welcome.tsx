@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from '@phosphor-icons/react'
-import { COPY } from '../../data/copy'
+import { COPY, fill } from '../../data/copy'
 import { useApp } from '../../state/AppContext'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
@@ -14,7 +14,8 @@ const BUBBLES = Array.from({ length: 9 }, (_, i) => ({
 }))
 
 export function Welcome() {
-  const { go } = useApp()
+  const { go, state } = useApp()
+  const buddy = state.profile.buddy
   const importer = useProfileImport((p) => go(p.ageConfirmed ? 'swipe' : 'howto'))
   return (
     <div className={styles.screen}>
@@ -35,6 +36,9 @@ export function Welcome() {
         <p className={styles.tagline}>{COPY.app.tagline}</p>
       </div>
       <div className={styles.footer}>
+        {buddy && (
+          <p className={styles.invite}>{fill(COPY.buddy.welcome, { no: String(buddy.no).padStart(4, '0') })}</p>
+        )}
         <Button variant="ink" block onClick={() => go('howto')}>
           {COPY.welcome.cta} <ArrowRightIcon weight="bold" />
         </Button>

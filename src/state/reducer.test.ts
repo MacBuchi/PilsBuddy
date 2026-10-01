@@ -3,7 +3,7 @@ import { initialState, reducer } from './reducer'
 import type { Action, AppState } from './reducer'
 
 const run = (s: AppState, ...actions: Action[]) => actions.reduce(reducer, s)
-const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [] })
+const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [], buddy: null })
 
 describe('reducer', () => {
   it('GO to dna marks the user as onboarded, other screens do not', () => {

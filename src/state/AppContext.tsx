@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer,
 import type { ReactNode } from 'react'
 import { newlyUnlocked, progressOf } from '../domain/achievements'
 import type { AchievementDef } from '../domain/achievements'
+import { decodeBuddy } from '../domain/buddyLink'
 import { countRatings } from '../domain/dna'
 import type { Rating } from '../domain/types'
 import { initialState, reducer, TAB_SCREENS } from './reducer'
@@ -64,6 +65,25 @@ const DEMO_RATINGS: Record<string, Rating> = {
   flensburger: 'LIKE',
 }
 
+/**
+ * A `?buddy=` link: remember the buddy (not our own link) and, for an onboarded user, open the
+ * comparison right away. Brand-new users go through onboarding first; the Welcome screen says why.
+ */
+export function withIncomingBuddy(s: AppState, param: string | null): AppState {
+  const buddy = decodeBuddy(param)
+  if (!buddy || buddy.no === s.profile.buddyNo) return s
+  const next = { ...s, profile: { ...s.profile, buddy } }
+  return s.profile.onboarded ? { ...next, screen: 'matches', prevScreen: 'matches', matchTab: 'menschen' } : next
+}
+
+function buddyParam(): string | null {
+  try {
+    return new URLSearchParams(window.location.search).get('buddy')
+  } catch {
+    return null
+  }
+}
+
 /** Resume where the user left off: a returning user with a confirmed age lands on the deck. */
 export function bootState(store: ProfileStore): AppState {
   const saved = store.load()
@@ -74,7 +94,15 @@ export function bootState(store: ProfileStore): AppState {
 }
 
 export function AppProvider({ children, initial, store = profileStore }: { children: ReactNode; initial?: AppState; store?: ProfileStore }) {
-  const [state, dispatch] = useReducer(reducer, initial, (i) => i ?? devInitialState() ?? bootState(store))
+  const [state, dispatch] = useReducer(reducer, initial, (i) => i ?? devInitialState() ?? withIncomingBuddy(bootState(store), buddyParam()))
+
+  // the buddy payload is in the profile now – keep the address bar clean (and reload-safe)
+  useEffect(() => {
+    if (!buddyParam()) return
+    const url = new URL(window.location.href)
+    url.searchParams.delete('buddy')
+    window.history.replaceState(null, '', url.pathname + url.search + url.hash)
+  }, [])
   const [globalToast, setGlobalToast] = useState<ToastMsg | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 

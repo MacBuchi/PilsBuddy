@@ -133,6 +133,7 @@
 }
 
 .preview {
+  flex: none;
   background: var(--sf);
   border: 2.5px solid var(--edge);
   border-radius: 26px;
@@ -215,6 +216,7 @@
 
 .pillLike {
   padding: 6px 10px;
+  border: 0;
   border-radius: 99px;
   background: rgba(47, 165, 107, 0.14);
   color: var(--like-dark);
@@ -223,6 +225,7 @@
 
 .pillNope {
   padding: 6px 10px;
+  background: transparent;
   border-radius: 99px;
   border: 1.5px solid var(--nope);
   color: var(--nope-dark);
@@ -266,4 +269,50 @@
 .tryBtn:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 var(--ink-fixed);
+}
+
+button.pillLike,
+button.pillNope,
+.pillTip {
+  cursor: pointer;
+}
+
+.pillTip {
+  padding: 6px 10px;
+  border-radius: 99px;
+  border: 1.5px solid var(--try);
+  background: rgba(240, 122, 43, 0.12);
+  color: var(--ink);
+  font: 700 13px/1 var(--font-display);
+}
+
+.removeBuddy {
+  align-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--mut);
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.privacy {
+  margin: 0;
+  font: 500 12.5px/1.35 var(--font-display);
+  color: var(--mut);
+  text-align: center;
+}
+
+.inviteBox {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 22px;
+  border: 2.5px solid var(--edge);
+  background: var(--sf);
+  box-shadow: 0 4px 0 var(--edge);
 }

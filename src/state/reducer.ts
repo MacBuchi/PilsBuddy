@@ -1,3 +1,4 @@
+import type { BuddySnapshot } from '../domain/buddyLink'
 import type { Rating, RatingEntry, Ratings } from '../domain/types'
 
 export type Screen =
@@ -28,6 +29,8 @@ export interface Profile {
   buddyNo: number
   /** Achievement moments already shown (full-screen overlay appears once per id). */
   seen: string[]
+  /** The last buddy whose link was opened (Stufe C1) – compared in Matches › Menschen. */
+  buddy: BuddySnapshot | null
 }
 
 export interface AppState {
@@ -54,6 +57,7 @@ export type Action =
   | { type: 'RESTART_DECK' }
   | { type: 'MARK_SEEN'; id: string }
   | { type: 'IMPORT'; profile: Profile }
+  | { type: 'SET_BUDDY'; buddy: BuddySnapshot | null }
   | { type: 'RESET' }
 
 export function newBuddyNo(): number {
@@ -61,7 +65,7 @@ export function newBuddyNo(): number {
 }
 
 export function initialProfile(): Profile {
-  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [] }
+  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [], buddy: null }
 }
 
 export function initialState(profile: Profile = initialProfile()): AppState {
@@ -127,6 +131,8 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'MARK_SEEN':
       if (state.profile.seen.includes(action.id)) return state
       return { ...state, profile: { ...state.profile, seen: [...state.profile.seen, action.id] } }
+    case 'SET_BUDDY':
+      return { ...state, profile: { ...state.profile, buddy: action.buddy } }
     case 'IMPORT':
       // a restored profile is by definition past the age gate and onboarding it had
       return { ...state, profile: action.profile, lastRated: null }

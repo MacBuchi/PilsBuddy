@@ -136,3 +136,24 @@
   font: 800 13px/1 var(--font-display);
   cursor: pointer;
 }
+
+.buddyCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 2px solid var(--ink-fixed);
+  background: var(--gold);
+  color: var(--ink-fixed);
+  box-shadow: 0 3px 0 var(--ink-fixed);
+  font: 700 15px/1.2 var(--font-display);
+  cursor: pointer;
+  text-align: left;
+}
+
+.buddyCard b {
+  font-weight: 800;
+  white-space: nowrap;
+}
