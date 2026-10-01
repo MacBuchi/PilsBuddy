@@ -126,8 +126,11 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 ## Stufe B – Backend (Supabase, Free Tier) – nach A0–A4
 
 - [x] B1 Projekt `PilsBuddy` (`rwqpljpnotnyovvuxjgl`, eu-central-1) + Migrationen: `profiles`, `ratings`, `beers`; RLS mit 18 pgTAP-Tests (CI-Job „Database“); Advisor grün (S)
-- [ ] B2 Anonyme Auth + `supabaseStore` (gleiches `ProfileStore`-Interface), Merge „neueste `at` gewinnt“,
-      localStorage bleibt Offline-Quelle (M)
+- [x] B2 Geräte-Sync (opt-in im Profil): anonyme Auth, Drei-Wege-Merge pro Bier („wer seit dem letzten
+      Sync geändert hat, gewinnt; sonst neueste `at`“, Löschungen als Tombstones), **Sync-Code**
+      `PILS-XXXX-…` (Edge Function `sync-code`, nur Hash gespeichert, erneuerbar) holt ein zweites Gerät
+      ins selbe Konto; localStorage bleibt Quelle der Wahrheit, supabase-js wird erst bei Bedarf geladen.
+      Zwei-Geräte-E2E (`e2e/sync.mjs`) läuft in der CI gegen eine lokale Supabase (M)
 - [ ] B3 Bierkatalog aus DB mit JSON-Fallback (S)
 - [ ] B4 Impressum/Datenschutz, „Alles löschen“ serverseitig (S)
 

@@ -3,7 +3,7 @@ import type { BuddySnapshot } from '../domain/buddyLink'
 import { RATINGS } from '../domain/types'
 import type { Rating, Ratings } from '../domain/types'
 import { initialProfile } from './reducer'
-import type { Profile } from './reducer'
+import type { Profile, SyncSettings } from './reducer'
 
 /**
  * Local persistence. The MVP keeps the whole profile in localStorage under a
@@ -46,6 +46,14 @@ function sanitizeBuddy(raw: unknown): BuddySnapshot | null {
   return typeof no === 'number' && Object.keys(r).length ? { no, ratings: r } : null
 }
 
+const SYNC_CODE = /^PILS(-[2-9A-HJ-NP-Z]{4}){4}$/
+
+function sanitizeSync(raw: unknown): SyncSettings {
+  if (!raw || typeof raw !== 'object') return { on: false, code: null }
+  const { on, code } = raw as { on?: unknown; code?: unknown }
+  return { on: on === true, code: typeof code === 'string' && SYNC_CODE.test(code) ? code : null }
+}
+
 /** Accepts whatever is on disk and returns a valid Profile – or null if unusable. */
 export function parseProfile(json: string | null): Profile | null {
   if (!json) return null
@@ -64,6 +72,7 @@ export function parseProfile(json: string | null): Profile | null {
       // Profiles from before moments existed: everything already unlocked counts as seen,
       // so nobody gets a burst of old overlays after an update.
       buddy: sanitizeBuddy(p.buddy),
+      sync: sanitizeSync(p.sync),
       seen: Array.isArray(p.seen) ? p.seen.filter((x): x is string => typeof x === 'string') : unlockedIds(progressOf(ratings)),
     }
   } catch {

@@ -12,6 +12,8 @@ import page from './page.module.css'
 import { BeerBottle } from '../components/BeerBottle'
 import { ACH_ICON } from '../achievementIcons'
 import styles from './Profile.module.css'
+import { SyncSection } from './SyncSection'
+import { syncActions } from '../../sync/useCloudSync'
 
 export function Profile() {
   const { state, dispatch, openDetail, withTabs, toast } = useApp()
@@ -47,7 +49,10 @@ export function Profile() {
   }
 
   const reset = () => {
-    if (window.confirm(COPY.profile.resetConfirm)) dispatch({ type: 'RESET' })
+    if (!window.confirm(COPY.profile.resetConfirm)) return
+    // forget the cloud account on this device too (deleting it server-side comes with B4)
+    if (state.profile.sync.on || state.profile.sync.code) void syncActions.forget().catch(() => undefined)
+    dispatch({ type: 'RESET' })
   }
 
   return (
@@ -113,6 +118,7 @@ export function Profile() {
             <span className={styles.knob} style={{ left: dark ? 22 : 2 }} />
           </span>
         </button>
+        <SyncSection />
         <h2 className={styles.h2}>{COPY.profile.backup}</h2>
         <button type="button" className={styles.setting} onClick={exportProfile}>
           <DownloadSimpleIcon weight="bold" size={20} />

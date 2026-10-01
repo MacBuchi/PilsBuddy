@@ -229,3 +229,51 @@
   color: var(--mut);
   font: 600 14px/1.3 var(--font-display);
 }
+
+.syncCode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--sf);
+  border: 2px solid var(--edge);
+}
+
+.codeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.code {
+  flex: 1;
+  font: 700 16px var(--font-mono);
+  letter-spacing: 0.04em;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+
+.codeBtn {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 2px solid var(--edge);
+  background: var(--gold);
+  color: var(--ink-fixed);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.linkBtn {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mut);
+  font: 600 13px var(--font-display);
+  text-decoration: underline;
+  cursor: pointer;
+}

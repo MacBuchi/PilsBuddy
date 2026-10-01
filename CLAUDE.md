@@ -26,6 +26,8 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   `supabase/migrations/` + pgTAP tests in `supabase/tests/` (`supabase db start && supabase test db`); after
   merge apply with `supabase db push`. RLS on every table; `supabase db advisors --linked` must stay clean.
   The app must keep working fully offline/without the backend (localStorage stays the source of truth).
+  Sync code lives in `src/sync/` (pure merge in `merge.ts` with tests; supabase-js only via lazy `cloud.ts`).
+  Edge functions in `supabase/functions/`; the two-device flow `e2e/sync.mjs` runs in CI against a local stack.
 - No analytics. No new cloud projects or paid services without asking.
 - Work follows `docs/ROADMAP.md`: keep its order (A0 → A1 → A2 → A9 → …), tick the checkbox of a
   package when it is live, and run the gate (build, test, lint, `e2e/flow.mjs`, screenshots,

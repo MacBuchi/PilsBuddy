@@ -1,0 +1,37 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.text {
+  margin: 0;
+  color: var(--mut);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.input {
+  font: 700 17px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.error {
+  margin: 0;
+  color: var(--nope);
+  font-weight: 600;
+  font-size: 14px;
+}

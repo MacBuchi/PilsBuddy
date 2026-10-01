@@ -7,9 +7,10 @@ berechnet daraus deine **Bier-DNA**, gibt dir eine **Bier-Persönlichkeit** und 
 **Bier-Avatar** und empfiehlt dir passende Biere. Später bringt Pils-Match Menschen mit
 ähnlichem Geschmack zusammen.
 
-Kein Account, kein Backend, kein LLM: alles läuft lokal im Browser und ist deterministisch.
-Die App funktioniert offline (Service Worker) und lässt sich als Datei sichern und auf einem
-anderen Gerät wiederherstellen (Profil → Sichern & umziehen).
+Kein Account, kein LLM: alles läuft lokal im Browser und ist deterministisch. Die App funktioniert
+offline (Service Worker) und lässt sich als Datei sichern (Profil → Sichern & umziehen).
+Optional synchronisiert sie über Supabase zwischen Geräten – anonym, ohne E-Mail, per Sync-Code
+(Profil → Auf allen Geräten; Details in [supabase/README.md](supabase/README.md)).
 
 ## Loslegen
 
