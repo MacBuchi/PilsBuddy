@@ -3,7 +3,7 @@ import type { BuddySnapshot } from '../domain/buddyLink'
 import { RATINGS } from '../domain/types'
 import type { Rating, Ratings } from '../domain/types'
 import { initialProfile } from './reducer'
-import type { Profile, SyncSettings } from './reducer'
+import type { GameStats, Profile, SyncSettings } from './reducer'
 
 /**
  * Local persistence. The MVP keeps the whole profile in localStorage under a
@@ -54,6 +54,14 @@ function sanitizeSync(raw: unknown): SyncSettings {
   return { on: on === true, code: typeof code === 'string' && SYNC_CODE.test(code) ? code : null }
 }
 
+const count = (v: unknown): number => (typeof v === 'number' && Number.isInteger(v) && v >= 0 ? v : 0)
+
+function sanitizeGames(raw: unknown): GameStats {
+  const q = (raw as { quartett?: { played?: unknown; won?: unknown } } | null)?.quartett
+  const played = count(q?.played)
+  return { quartett: { played, won: Math.min(played, count(q?.won)) } }
+}
+
 /** Accepts whatever is on disk and returns a valid Profile – or null if unusable. */
 export function parseProfile(json: string | null): Profile | null {
   if (!json) return null
@@ -73,7 +81,8 @@ export function parseProfile(json: string | null): Profile | null {
       // so nobody gets a burst of old overlays after an update.
       buddy: sanitizeBuddy(p.buddy),
       sync: sanitizeSync(p.sync),
-      seen: Array.isArray(p.seen) ? p.seen.filter((x): x is string => typeof x === 'string') : unlockedIds(progressOf(ratings)),
+      games: sanitizeGames(p.games),
+      seen: Array.isArray(p.seen) ? p.seen.filter((x): x is string => typeof x === 'string') : unlockedIds(progressOf(ratings, sanitizeGames(p.games))),
     }
   } catch {
     return null

@@ -1,6 +1,7 @@
 import {
   BeerSteinIcon,
   BinocularsIcon,
+  CardsThreeIcon,
   CrownIcon,
   DnaIcon,
   FireIcon,
@@ -25,6 +26,7 @@ export const ACH_ICON: Record<AchievementDef['icon'], ReactNode> = {
   medal: <MedalIcon weight="fill" />,
   package: <PackageIcon weight="bold" />,
   handshake: <HandshakeIcon weight="bold" />,
+  cards: <CardsThreeIcon weight="fill" />,
 }
 
 /** Sticker colours on the avatar glass, per achievement icon. */
@@ -39,6 +41,7 @@ export const ACH_COLOR: Record<AchievementDef['icon'], string> = {
   medal: '#F2B53A',
   package: '#2FA56B',
   handshake: '#2FA56B',
+  cards: '#E5534B',
 }
 
 export const ACH_BY_ID: Readonly<Record<string, AchievementDef>> = Object.fromEntries(ACHIEVEMENTS.map((a) => [a.id, a]))

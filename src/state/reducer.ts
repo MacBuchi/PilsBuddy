@@ -13,11 +13,13 @@ export type Screen =
   | 'matches'
   | 'profile'
   | 'legal'
+  | 'games'
+  | 'quartett'
 
 export type MatchTab = 'biere' | 'probieren' | 'menschen'
 
 /** Screens that show the bottom tab bar once the user is onboarded. */
-export const TAB_SCREENS = ['swipe', 'dna', 'matches', 'profile'] as const satisfies readonly Screen[]
+export const TAB_SCREENS = ['swipe', 'dna', 'matches', 'games', 'profile'] as const satisfies readonly Screen[]
 
 /** The part of the state that survives a reload. */
 export interface Profile {
@@ -34,7 +36,20 @@ export interface Profile {
   buddy: BuddySnapshot | null
   /** Device sync (Stufe B2): opt-in; the Sync-Code puts another device into the same account. */
   sync: SyncSettings
+  /** Mini games (Stufe E): finished games per game, device-local. */
+  games: GameStats
 }
+
+export interface GameRecord {
+  played: number
+  won: number
+}
+
+export interface GameStats {
+  quartett: GameRecord
+}
+
+export const NO_GAMES: GameStats = { quartett: { played: 0, won: 0 } }
 
 export interface SyncSettings {
   on: boolean
@@ -68,6 +83,7 @@ export type Action =
   | { type: 'IMPORT'; profile: Profile }
   | { type: 'SET_BUDDY'; buddy: BuddySnapshot | null }
   | { type: 'RESET' }
+  | { type: 'GAME_OVER'; game: keyof GameStats; won: boolean }
   | { type: 'SET_SYNC'; sync: Partial<SyncSettings> }
   /** Result of a cloud sync, computed from `sent`; ratings changed meanwhile on this device are kept. */
   | { type: 'SYNC_APPLY'; sent: Ratings; result: Ratings; adopt?: Partial<Pick<Profile, 'buddyNo' | 'onboarded' | 'dark'>> }
@@ -81,7 +97,7 @@ export function newBuddyNo(): number {
 }
 
 export function initialProfile(): Profile {
-  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [], buddy: null, sync: { on: false, code: null } }
+  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [], buddy: null, sync: { on: false, code: null }, games: NO_GAMES }
 }
 
 export function initialState(profile: Profile = initialProfile()): AppState {
@@ -154,6 +170,11 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, profile: action.profile, lastRated: null }
     case 'RESET':
       return initialState({ ...initialProfile(), dark: state.profile.dark })
+    case 'GAME_OVER': {
+      const rec = state.profile.games[action.game]
+      const games = { ...state.profile.games, [action.game]: { played: rec.played + 1, won: rec.won + (action.won ? 1 : 0) } }
+      return { ...state, profile: { ...state.profile, games } }
+    }
     case 'SET_SYNC':
       return { ...state, profile: { ...state.profile, sync: { ...state.profile.sync, ...action.sync } } }
     case 'SYNC_APPLY': {

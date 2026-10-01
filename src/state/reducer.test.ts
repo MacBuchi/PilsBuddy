@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { initialState, reducer } from './reducer'
+import { initialState, NO_GAMES, reducer } from './reducer'
 import type { Action, AppState } from './reducer'
 
 const run = (s: AppState, ...actions: Action[]) => actions.reduce(reducer, s)
-const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [], buddy: null, sync: { on: false, code: null } })
+const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [], buddy: null, sync: { on: false, code: null }, games: NO_GAMES })
 
 describe('reducer', () => {
   it('GO to dna marks the user as onboarded, other screens do not', () => {
@@ -123,5 +123,11 @@ describe('sync', () => {
     const next = run(s, { type: 'SYNC_APPLY', sent: s.profile.ratings, result: s.profile.ratings, adopt: { buddyNo: 4711, onboarded: true } })
     expect(next.profile.buddyNo).toBe(4711)
     expect(next.profile.onboarded).toBe(true)
+  })
+
+  it('GAME_OVER counts games and wins; RESET clears them', () => {
+    const s = run(fresh(), { type: 'GAME_OVER', game: 'quartett', won: true }, { type: 'GAME_OVER', game: 'quartett', won: false })
+    expect(s.profile.games.quartett).toEqual({ played: 2, won: 1 })
+    expect(run(s, { type: 'RESET' }).profile.games).toEqual(NO_GAMES)
   })
 })

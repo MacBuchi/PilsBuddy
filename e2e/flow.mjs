@@ -99,6 +99,20 @@ await step('profile shows history + achievement', async () => {
   await see('Erstes Date'); await see('Jever Pilsener')
   await page.screenshot({ path: `${out}-profile.png` })
 })
+await step('spiele: bier-quartett, one round against the bot', async () => {
+  await m.getByText('Spiele', { exact: true }).click()
+  await see('Bier-Quartett')
+  await m.getByRole('button', { name: /Gegen den Kneipen-Bot/ }).click()
+  await see('Runde 1 von 30')
+  await m.getByRole('button', { name: /^Bittere/ }).click()
+  await see('Du sagst: Bittere!')
+  await page.screenshot({ path: `${out}-quartett.png` })
+  await m.getByRole('button', { name: 'Weiter' }).click()
+  page.once('dialog', (d) => d.accept())
+  await m.getByRole('button', { name: 'Spiel beenden' }).click()
+  await see('Noch nie gespielt') // an abandoned game doesn't count
+  await m.getByText('Profil', { exact: true }).click()
+})
 await step('impressum & datenschutz from profile, back', async () => {
   await m.getByRole('button', { name: 'Impressum & Datenschutz' }).click()
   await see('Kurz gesagt'); await see('Geräte-Sync (nur wenn du ihn einschaltest)')

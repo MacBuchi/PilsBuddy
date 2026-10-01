@@ -1,4 +1,4 @@
-import { CardsIcon, DnaIcon, HeartIcon, UserCircleIcon } from '@phosphor-icons/react'
+import { CardsIcon, DnaIcon, GameControllerIcon, HeartIcon, UserCircleIcon } from '@phosphor-icons/react'
 import { COPY } from '../../data/copy'
 import { TAB_SCREENS } from '../../state/reducer'
 import { useApp } from '../../state/AppContext'
@@ -8,6 +8,7 @@ const ICONS: Record<(typeof TAB_SCREENS)[number], typeof CardsIcon> = {
   swipe: CardsIcon,
   dna: DnaIcon,
   matches: HeartIcon,
+  games: GameControllerIcon,
   profile: UserCircleIcon,
 }
 

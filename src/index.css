@@ -168,3 +168,28 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Bier-Quartett: the bot's card wobbles while it thinks, then flips open */
+@keyframes pbQThink {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-1.2deg);
+  }
+  75% {
+    transform: rotate(1.2deg);
+  }
+}
+
+@keyframes pbQFlip {
+  from {
+    transform: perspective(600px) rotateX(80deg);
+    opacity: 0.3;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}

@@ -4,7 +4,7 @@ import type { Progress } from './achievements'
 import type { RatingCounts } from './types'
 
 const c = (p: Partial<RatingCounts>): RatingCounts => ({ LIKE: 0, DISLIKE: 0, KNOW: 0, UNKNOWN: 0, WANT_TO_TRY: 0, total: 0, ...p })
-const pr = (counts: Partial<RatingCounts>, decoded = 0, kept = 0): Progress => ({ counts: c(counts), decoded, kept })
+const pr = (counts: Partial<RatingCounts>, decoded = 0, kept = 0): Progress => ({ counts: c(counts), decoded, kept, quartettWins: 0 })
 
 describe('achievements', () => {
   it('nothing unlocked at start', () => {
@@ -42,5 +42,12 @@ describe('achievements', () => {
     const after = progressOf({ ...ratings, d: { rating: 'LIKE', at: 5, previous: 'WANT_TO_TRY' } })
     expect(after.kept).toBe(3)
     expect(newlyUnlocked(before, after).map((x) => x.id)).toContain('wort-gehalten')
+  })
+
+  it('Quartett-König after three wins against the bot', () => {
+    const before = progressOf({}, { quartett: { won: 2 } })
+    const after = progressOf({}, { quartett: { won: 3 } })
+    expect(newlyUnlocked(before, after).map((x) => x.id)).toEqual(['quartett-koenig'])
+    expect(progressOf({}).quartettWins).toBe(0)
   })
 })

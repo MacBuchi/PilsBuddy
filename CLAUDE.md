@@ -12,7 +12,8 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
 ## Rules that matter
 
 - `src/domain/` must stay framework-free and deterministic. No LLM, no randomness in DNA,
-  matching, persona or avatar. Every change there needs a test.
+  matching, persona or avatar. Every change there needs a test. Mini games (`src/domain/games/`) shuffle only
+  through the seeded PRNG there – same seed, same game; the UI passes the seed in.
 - `UNKNOWN` never influences the taste vector; `DISLIKE` is negative; `WANT_TO_TRY` is interest,
   not preference. Don't "fix" that.
 - Copy lives in `src/data/copy.ts`; beers in `src/data/beers.json` (8 axes, 0–100, `reference: true`

@@ -1,4 +1,4 @@
-import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, CardsIcon, DnaIcon, HeartIcon, UserCircleIcon } from '@phosphor-icons/react'
+import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, CardsIcon, DnaIcon, GameControllerIcon, HeartIcon, UserCircleIcon } from '@phosphor-icons/react'
 import { COPY } from '../data/copy'
 import { DISPLAY_AXES } from '../domain/dna'
 import { matchReason } from '../domain/matching'
@@ -9,7 +9,7 @@ import { BuddyAvatar } from './components/BuddyAvatar'
 import { BeerBottle } from './components/BeerBottle'
 import styles from './DesktopFrame.module.css'
 
-const ICONS = { swipe: CardsIcon, dna: DnaIcon, matches: HeartIcon, profile: UserCircleIcon }
+const ICONS = { swipe: CardsIcon, dna: DnaIcon, matches: HeartIcon, games: GameControllerIcon, profile: UserCircleIcon }
 
 const KEYS = [
   { icon: <ArrowLeftIcon weight="bold" />, label: COPY.rating.DISLIKE.short },
