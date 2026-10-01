@@ -189,10 +189,14 @@ Leitplanken:
         Biere aus A1 und alle Regionalbiere ab (M–L)
       - umgesetzt: 7 Formen (Umrisse zeichengenau wie die Designs, per Test fixiert), 33 Motive, ~350 Byte je
         Handdesign in `beers.json`; Ableitung `designFor` für alle anderen; DB-Designs nur über `sanitizeDesign`
-- [ ] R4 **Regional-Finder:** `src/domain/regional.ts` (Zellen, Haversine, `rankRegional`), Screen
+- [x] R4 **Regional-Finder:** `src/domain/regional.ts` (Zellen, Haversine, `rankRegional`), Screen
       `regional` (Einstieg im DNA-Screen + Segment „In der Nähe“ in Matches), Standort oder PLZ,
       Radius-Chips, Liste mit Match-% und Entfernung, Brauerei-Sheet mit Route-Link, Probierliste;
       angefasste Regionalbiere (`r-<EAN>`) lokal als Snapshot im Katalog-Overlay. E2E mit Geolocation (L)
+      - umgesetzt (2026-10-02, #34): Segment heißt „Nähe“; Brauereien ohne bekannte Biere stehen separat nach
+        Entfernung, ohne erfundenes Profil. Keine Migration – der Client liest `breweries` + `regional_beers`
+        eingebettet. Snapshots in `pilsbuddy.regional.beers` (nur `BEER_BY_ID`, nie im Deck). Offen: auf einem
+        zweiten Gerät (Sync/Import) fehlen die Snapshots, diese Bewertungen werden dort ignoriert
 - [ ] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
       Achievement „Lokalpatriot“, Share-Card-Zeile (M)
 - [ ] R6 **„Bier fehlt? Eintragen“:** `beer_submissions` mit Freigabe-Queue, Limit je anonymer Session (M)
