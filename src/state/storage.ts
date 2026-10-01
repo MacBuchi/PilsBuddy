@@ -1,4 +1,5 @@
 import { progressOf, unlockedIds } from '../domain/achievements'
+import type { BuddySnapshot } from '../domain/buddyLink'
 import { RATINGS } from '../domain/types'
 import type { Rating, Ratings } from '../domain/types'
 import { initialProfile } from './reducer'
@@ -38,6 +39,13 @@ function sanitizeRatings(raw: unknown): Ratings {
   return out
 }
 
+function sanitizeBuddy(raw: unknown): BuddySnapshot | null {
+  if (!raw || typeof raw !== 'object') return null
+  const { no, ratings } = raw as { no?: unknown; ratings?: unknown }
+  const r = sanitizeRatings(ratings)
+  return typeof no === 'number' && Object.keys(r).length ? { no, ratings: r } : null
+}
+
 /** Accepts whatever is on disk and returns a valid Profile – or null if unusable. */
 export function parseProfile(json: string | null): Profile | null {
   if (!json) return null
@@ -55,6 +63,7 @@ export function parseProfile(json: string | null): Profile | null {
       buddyNo: typeof p.buddyNo === 'number' ? p.buddyNo : base.buddyNo,
       // Profiles from before moments existed: everything already unlocked counts as seen,
       // so nobody gets a burst of old overlays after an update.
+      buddy: sanitizeBuddy(p.buddy),
       seen: Array.isArray(p.seen) ? p.seen.filter((x): x is string => typeof x === 'string') : unlockedIds(progressOf(ratings)),
     }
   } catch {

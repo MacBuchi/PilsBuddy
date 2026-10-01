@@ -92,3 +92,15 @@
   padding: 6px;
   cursor: pointer;
 }
+
+.invite {
+  margin: 0 0 4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background: var(--foam);
+  border: 2px solid var(--ink-fixed);
+  color: var(--ink-fixed);
+  font: 700 14px/1.35 var(--font-display);
+  text-align: center;
+  animation: pbIn 0.4s ease both;
+}

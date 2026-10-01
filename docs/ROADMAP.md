@@ -26,7 +26,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | WANT_TO_TRY | Interesse-Signal, Probierliste mit Nachbewertung | – |
 | Persistenz | localStorage, versioniert, Export/Import, offline-fähig | geräteübergreifend erst mit Stufe B |
 | Share | Bild-Karte (Story-Format) + Text-Fallback | – |
-| Social | `buddyMatch()` vorbereitet | keine UI, kein Backend |
+| Social | Buddy-Link-Vergleich (C1) ohne Backend | öffentlicher Pils-Match braucht Stufe B |
 | Qualität | Domain-, Reducer-, Komponententests, E2E in CI | Auto-Deploy wartet auf Secrets |
 
 ## Stufe A – Spaß & Nutzbarkeit (kein Backend)
@@ -131,8 +131,9 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 
 ## Stufe C – Pils-Match (Social)
 
-- [ ] C1 Buddy-Link ohne Backend: `?buddy=<base64url(taste, likes, archetype)>` → `BuddyCompare` mit
-      `buddyMatch()`; kann schon in Stufe A (S)
+- [x] C1 Buddy-Link ohne Backend: `?buddy=<base64url(Buddy-Nr., Bewertungen)>` – Geschmack/Persona
+      rechnet der Empfänger selbst; Vergleich in Matches › Menschen (Prozent, gemeinsame Herzbiere,
+      Streitbiere, Tipps), Einladung per Share/Zwischenablage, Hinweis auf Welcome und im DNA-Screen
 - [ ] C2 Feed über Edge Function `match_candidates` (nur `visible`-Profile; keine Fotos, keine
       Persönlichkeitsbewertung) (L)
 - [ ] C3 Opt-in, Handle, Blockieren; kein Chat (S)
