@@ -12,6 +12,7 @@ export type Screen =
   | 'detail'
   | 'matches'
   | 'profile'
+  | 'legal'
 
 export type MatchTab = 'biere' | 'probieren' | 'menschen'
 

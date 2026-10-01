@@ -132,7 +132,11 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
       ins selbe Konto; localStorage bleibt Quelle der Wahrheit, supabase-js wird erst bei Bedarf geladen.
       Zwei-Geräte-E2E (`e2e/sync.mjs`) läuft in der CI gegen eine lokale Supabase (M)
 - [ ] B3 Bierkatalog aus DB mit JSON-Fallback (S)
-- [ ] B4 Impressum/Datenschutz, „Alles löschen“ serverseitig (S)
+- [x] B4 Impressum & Datenschutz (Screen `legal`, verlinkt in Welcome und Profil, Deeplink `#impressum` /
+      `#datenschutz`, Text in `src/data/legal.ts`); „Profil zurücksetzen“ löscht das Sync-Konto serverseitig
+      (Edge Function `sync-code` › `delete`, Cascade), „Daten aus der Cloud löschen“ nur die Cloud-Kopie;
+      verbundene Geräte schalten ihren Sync dann selbst aus. Zwei-Geräte-E2E prüft das Löschen (S)
+  - [ ] Anbieterangaben fürs Impressum eintragen (`OPERATOR` in `src/data/legal.ts`)
 
 ## Stufe C – Pils-Match (Social)
 

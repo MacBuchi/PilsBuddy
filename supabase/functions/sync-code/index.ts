@@ -3,6 +3,8 @@
 //
 //   POST { action: "create" }         (Authorization: the user's JWT) → { code }  – replaces the old one
 //   POST { action: "redeem", code }   (no session needed)             → { token_hash } for auth.verifyOtp
+//   POST { action: "delete" }         (Authorization: the user's JWT) → { deleted: true }  – B4 „Alles löschen“:
+//                                     removes the account; profile, ratings and Sync-Code go with it (cascade)
 //
 // Only sha-256(code) is stored. To mint a session GoTrue needs an e-mail, so on first redeem the
 // anonymous user gets an internal placeholder address (`.invalid` TLD, never mailed).
@@ -43,15 +45,21 @@ async function sha256(text: string): Promise<string> {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-async function create(req: Request): Promise<Response> {
+/** The caller's user id from their JWT, or null. */
+async function caller(req: Request): Promise<string | null> {
   const jwt = req.headers.get('Authorization')?.replace(/^Bearer /, '')
-  if (!jwt) return json({ error: 'auth' }, 401)
+  if (!jwt) return null
   const { data, error } = await admin.auth.getUser(jwt)
-  if (error || !data.user) return json({ error: 'auth' }, 401)
+  return error || !data.user ? null : data.user.id
+}
+
+async function create(req: Request): Promise<Response> {
+  const userId = await caller(req)
+  if (!userId) return json({ error: 'auth' }, 401)
   const code = newCode()
   const { error: dbError } = await admin
     .from('sync_codes')
-    .upsert({ user_id: data.user.id, code_hash: await sha256(code), created_at: new Date().toISOString(), last_used_at: null })
+    .upsert({ user_id: userId, code_hash: await sha256(code), created_at: new Date().toISOString(), last_used_at: null })
   if (dbError) return json({ error: 'db' }, 500)
   return json({ code })
 }
@@ -76,6 +84,15 @@ async function redeem(input: unknown): Promise<Response> {
   return json({ token_hash: link.properties.hashed_token })
 }
 
+async function remove(req: Request): Promise<Response> {
+  const userId = await caller(req)
+  // 401 also for a user that is already gone (deleted from another device); the client checks which
+  if (!userId) return json({ error: 'auth' }, 401)
+  const { error } = await admin.auth.admin.deleteUser(userId)
+  if (error) return json({ error: 'auth' }, 500)
+  return json({ deleted: true })
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST') return json({ error: 'method' }, 405)
@@ -87,5 +104,6 @@ Deno.serve(async (req) => {
   }
   if (body.action === 'create') return create(req)
   if (body.action === 'redeem') return redeem(body.code)
+  if (body.action === 'delete') return remove(req)
   return json({ error: 'action' }, 400)
 })

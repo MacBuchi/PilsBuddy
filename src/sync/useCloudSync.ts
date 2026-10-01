@@ -1,5 +1,6 @@
 import { useEffect, useRef, useSyncExternalStore } from 'react'
-import type { Action, Profile } from '../state/reducer'
+import type { Action, Profile, SyncSettings } from '../state/reducer'
+import { AUTH_STORAGE_KEY } from './config'
 import { normalizeCode } from './code'
 
 /**
@@ -8,7 +9,8 @@ import { normalizeCode } from './code'
  * Errors never block the app – the status line in the profile tells what happened.
  */
 
-export type SyncState = 'off' | 'syncing' | 'ok' | 'offline' | 'error'
+/** `gone`: the account was deleted on another device – sync switched itself off, local data stays. */
+export type SyncState = 'off' | 'syncing' | 'ok' | 'offline' | 'error' | 'gone'
 export interface SyncStatus {
   state: SyncState
   lastAt: number | null
@@ -39,14 +41,16 @@ export const RETRY_MS = [3_000, 10_000, 30_000, 60_000]
 /** Set after joining an account: the next sync adopts the account's buddy number. */
 let adoptNext = false
 
-/** Returns 'ok', 'offline' or 'error' (the latter is retried). */
-async function runSync(profile: Profile, dispatch: (a: Action) => void): Promise<'ok' | 'offline' | 'error'> {
+/** Returns 'ok', 'offline', 'gone' or 'error' (only the latter is retried). */
+async function runSync(profile: Profile, dispatch: (a: Action) => void): Promise<'ok' | 'offline' | 'error' | 'gone'> {
   setStatus({ state: 'syncing' })
   try {
     const c = await loadCloud() // may fail offline before the chunk was ever cached
     // site data cleared or profile imported on a new device: rejoin the account behind the code
     if (profile.sync.code && !(await c.signedInto(profile.sync.code))) {
-      await c.joinWithCode(profile.sync.code)
+      await c.joinWithCode(profile.sync.code).catch((e: { kind?: string }) => {
+        throw e.kind === 'code' ? Object.assign(e, { kind: 'gone' }) : e // the code's account no longer exists
+      })
       adoptNext = true
     }
     const sent = profile.ratings
@@ -62,6 +66,13 @@ async function runSync(profile: Profile, dispatch: (a: Action) => void): Promise
     return 'ok'
   } catch (e) {
     const kind = (e as { kind?: string }).kind
+    if (kind === 'gone') {
+      const c = await loadCloud()
+      await c.leave()
+      dispatch({ type: 'SET_SYNC', sync: { on: false, code: null } })
+      setStatus({ state: 'gone', lastAt: null })
+      return 'gone'
+    }
     const result = kind === 'offline' || navigator.onLine === false ? 'offline' : 'error'
     setStatus({ state: result })
     return result
@@ -84,7 +95,7 @@ export function useCloudSync(profile: Profile, dispatch: (a: Action) => void): v
 
   useEffect(() => {
     if (!on) {
-      setStatus({ state: 'off' })
+      if (status.state !== 'gone') setStatus({ state: 'off' }) // keep telling why it switched off
       return
     }
     const kick = () => {
@@ -137,10 +148,21 @@ export const syncActions = {
     const c = await loadCloud()
     dispatch({ type: 'SET_SYNC', sync: { code: await c.createSyncCode() } })
   },
-  /** RESET: forget the account on this device. */
-  async forget(): Promise<void> {
+  /** Deletes the cloud account with all its data and switches sync off; local data stays. */
+  async erase(code: string | null, dispatch: (a: Action) => void): Promise<void> {
     const c = await loadCloud()
-    await c.leave()
+    await c.deleteAccount(code)
+    dispatch({ type: 'SET_SYNC', sync: { on: false, code: null } })
     setStatus({ state: 'off', lastAt: null })
   },
+}
+
+/** True if this device ever used the sync (switched on, holds a code or a stored session). */
+export function hasCloudAccount(sync: SyncSettings): boolean {
+  if (sync.on || sync.code) return true
+  try {
+    return localStorage.getItem(AUTH_STORAGE_KEY) !== null
+  } catch {
+    return false
+  }
 }

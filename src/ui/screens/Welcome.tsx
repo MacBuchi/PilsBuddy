@@ -54,6 +54,9 @@ export function Welcome() {
           {COPY.sync.join}
         </button>
         {joining && <SyncJoinSheet onClose={() => setJoining(false)} onJoined={() => go('howto')} />}
+        <button type="button" className={`${styles.restore} ${styles.legal}`} onClick={() => go('legal')}>
+          {COPY.profile.legal}
+        </button>
       </div>
     </div>
   )

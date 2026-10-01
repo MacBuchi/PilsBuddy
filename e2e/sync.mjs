@@ -3,7 +3,8 @@
 //   VITE_SUPABASE_URL=http://127.0.0.1:54321 VITE_SUPABASE_KEY=<local publishable key> npx vite --port 5179
 //   node e2e/sync.mjs http://localhost:5179/
 // Device A turns sync on and gets a Sync-Code; device B joins with it, receives A's beers and
-// buddy number; a beer rated on B shows up on A.
+// buddy number; a beer rated on B shows up on A. Then A resets its profile, which deletes the cloud
+// account (B4): B switches its sync off by itself, keeps its beers, and the old code is dead.
 import { chromium, devices } from 'playwright'
 
 const base = process.argv[2] ?? 'http://localhost:5179/'
@@ -69,6 +70,27 @@ await step('B rates a beer → A receives it', async () => {
 
 await A.page.screenshot({ path: `${out}-a.png` })
 await B.page.screenshot({ path: `${out}-b.png` })
+
+await step('A: Profil zurücksetzen deletes the cloud account', async () => {
+  A.page.once('dialog', (d) => d.accept())
+  await A.m.getByRole('button', { name: /Profil zurücksetzen/ }).click()
+  await A.m.getByRole('button', { name: "Los geht's" }).waitFor({ timeout: 15000 })
+})
+await step('B: notices, switches sync off, keeps its beers', async () => {
+  await B.page.getByRole('button', { name: 'Profil', exact: true }).click()
+  await B.page.evaluate(() => window.dispatchEvent(new Event('online')))
+  await B.m.getByText(/auf einem anderen Gerät gelöscht/).waitFor({ timeout: 15000 })
+  await B.m.getByRole('switch', { name: /Geräte-Sync/ }).and(B.m.locator('[aria-checked="false"]')).waitFor()
+  await B.m.getByText('Jever Pilsener').waitFor()
+  await B.page.screenshot({ path: `${out}-b-gone.png` })
+})
+await step('B: the old code is gone', async () => {
+  await B.m.getByRole('button', { name: /Sync-Code eingeben/ }).click()
+  await B.m.getByRole('textbox', { name: 'Sync-Code eingeben' }).fill(code)
+  B.page.once('dialog', (d) => d.accept()) // „Bewertungen zusammenführen?“
+  await B.m.getByRole('button', { name: 'Verbinden' }).click()
+  await B.m.getByText('Diesen Code kennen wir nicht').waitFor({ timeout: 10000 })
+})
 console.log(errors.length ? `page errors:\n${errors.join('\n')}` : 'no page errors')
 await browser.close()
 process.exit(errors.length ? 1 : 0)

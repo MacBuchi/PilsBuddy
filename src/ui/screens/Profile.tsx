@@ -13,10 +13,10 @@ import { BeerBottle } from '../components/BeerBottle'
 import { ACH_ICON } from '../achievementIcons'
 import styles from './Profile.module.css'
 import { SyncSection } from './SyncSection'
-import { syncActions } from '../../sync/useCloudSync'
+import { hasCloudAccount, syncActions } from '../../sync/useCloudSync'
 
 export function Profile() {
-  const { state, dispatch, openDetail, withTabs, toast } = useApp()
+  const { state, dispatch, go, openDetail, withTabs, toast } = useApp()
   const { counts, decoded, archetype, avatar, achievements } = useDerived()
   const { ratings, dark, buddyNo } = state.profile
   const P = COPY.personas[archetype]
@@ -48,10 +48,18 @@ export function Profile() {
     toast(COPY.profile.exported)
   }
 
-  const reset = () => {
-    if (!window.confirm(COPY.profile.resetConfirm)) return
-    // forget the cloud account on this device too (deleting it server-side comes with B4)
-    if (state.profile.sync.on || state.profile.sync.code) void syncActions.forget().catch(() => undefined)
+  const reset = async () => {
+    const cloudAccount = hasCloudAccount(state.profile.sync)
+    if (!window.confirm(cloudAccount ? COPY.profile.resetConfirmCloud : COPY.profile.resetConfirm)) return
+    if (cloudAccount) {
+      // „alles vergessen“ includes the server: delete the account first, keep everything if that fails
+      try {
+        await syncActions.erase(state.profile.sync.code, dispatch)
+      } catch {
+        toast(COPY.profile.resetFailed)
+        return
+      }
+    }
     dispatch({ type: 'RESET' })
   }
 
@@ -137,6 +145,9 @@ export function Profile() {
         {importer.input}
         <button type="button" className={styles.reset} onClick={reset}>
           {COPY.profile.reset}
+        </button>
+        <button type="button" className={styles.legalLink} onClick={() => go('legal')}>
+          {COPY.profile.legal}
         </button>
       </section>
     </div>

@@ -9,11 +9,14 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 | `ratings` | eine Zeile je Nutzer und Bier, `at` entscheidet beim Sync; `deleted` = Tombstone | nur eigene |
 | `sync_codes` | Hash des Sync-Codes je Nutzer | keine – nur die Edge Function (service_role) |
 
-Edge Function `sync-code` (`verify_jwt = false`, prüft den JWT bei `create` selbst):
+Edge Function `sync-code` (`verify_jwt = false`, prüft den JWT bei `create` und `delete` selbst):
 `create` erzeugt einen neuen Code für den angemeldeten Nutzer (alter wird ungültig), `redeem` tauscht einen
 Code gegen einen Magic-Link-Token, mit dem `auth.verifyOtp` ein zweites Gerät ins selbe anonyme Konto holt.
 Dafür bekommt der Nutzer beim ersten Einlösen eine interne Platzhalter-Adresse `<uuid>@sync.pilsbuddy.invalid`
 (wird nie angeschrieben).
+`delete` (B4 „Alles löschen“) löscht den Auth-Nutzer; `profiles`, `ratings` und `sync_codes` gehen per
+`on delete cascade` mit. Andere Geräte merken es beim nächsten Sync (Fremdschlüssel-Fehler bzw. unbekannter
+Code), schalten ihren Sync aus und behalten ihre lokale Kopie.
 
 Auth-Einstellungen (Dashboard, nicht per CLI gepusht): anonyme Anmeldung an, Site URL
 `https://pilsbuddy.mcbuchi.de`.

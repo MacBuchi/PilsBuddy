@@ -23,7 +23,8 @@ export function cloud(): SupabaseClient {
   return client
 }
 
-export type SyncErrorKind = 'offline' | 'auth' | 'code' | 'server'
+/** `gone`: the account was deleted (on another device) or its code no longer exists. */
+export type SyncErrorKind = 'offline' | 'auth' | 'code' | 'server' | 'gone'
 
 export class SyncError extends Error {
   readonly kind: SyncErrorKind
@@ -77,7 +78,34 @@ export async function joinWithCode(input: string): Promise<void> {
   writeKey(SYNC_ACCOUNT_KEY, code)
 }
 
-/** Forget the session on this device (cloud data stays; deleting it is B4). */
+/**
+ * B4 „Alles löschen“: deletes the account behind this device's session (or behind `code` if the
+ * session is lost) with everything in it, then forgets it here. An account that is already gone
+ * counts as success.
+ */
+export async function deleteAccount(code: string | null): Promise<void> {
+  if (offline()) throw new SyncError('offline')
+  const { data } = await cloud().auth.getSession()
+  if (!data.session) {
+    if (!code) return leave()
+    try {
+      await joinWithCode(code)
+    } catch (e) {
+      if (e instanceof SyncError && e.kind === 'code') return leave() // nothing left to delete
+      throw e
+    }
+  }
+  const { error } = await cloud().functions.invoke('sync-code', { body: { action: 'delete' } })
+  if (error) {
+    const status = (error as { context?: { status?: number } }).context?.status
+    // 401 = token no longer valid; only fine if the user really doesn't exist any more
+    const { data: still } = status === 401 ? await cloud().auth.getUser() : { data: { user: true } }
+    if (still.user) throw new SyncError('server', error.message)
+  }
+  return leave()
+}
+
+/** Forget the session on this device (cloud data stays). */
 export async function leave(): Promise<void> {
   writeBase({})
   writeKey(SYNC_ACCOUNT_KEY, null)
@@ -139,6 +167,9 @@ export interface SyncOutcome {
   remoteProfile: Pick<Profile, 'buddyNo' | 'dark' | 'onboarded'> | null
 }
 
+/** Writing for a user that no longer exists (account deleted on another device, token still valid). */
+const FK_VIOLATION = '23503'
+
 /** One full sync: pull, three-way merge, push. Throws SyncError. */
 export async function syncNow(profile: Profile): Promise<SyncOutcome> {
   const userId = await ensureUser()
@@ -176,7 +207,7 @@ export async function syncNow(profile: Profile): Promise<SyncOutcome> {
   ]
   if (rows.length) {
     const { error } = await db.from('ratings').upsert(rows)
-    if (error) throw new SyncError('server', error.message)
+    if (error) throw new SyncError(error.code === FK_VIOLATION ? 'gone' : 'server', error.message)
   }
 
   const p = profileRes.data
@@ -191,7 +222,7 @@ export async function syncNow(profile: Profile): Promise<SyncOutcome> {
     dark: profile.dark,
     onboarded: profile.onboarded || (p?.onboarded ?? false),
   })
-  if (profileError) throw new SyncError('server', profileError.message)
+  if (profileError) throw new SyncError(profileError.code === FK_VIOLATION ? 'gone' : 'server', profileError.message)
 
   writeBase(merged.base)
   return {

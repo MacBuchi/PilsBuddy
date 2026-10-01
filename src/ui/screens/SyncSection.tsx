@@ -28,6 +28,16 @@ export function SyncSection() {
     }
   }
 
+  const erase = async () => {
+    if (!window.confirm(COPY.sync.eraseConfirm)) return
+    try {
+      await syncActions.erase(code, dispatch)
+      toast(COPY.sync.erased)
+    } catch (e) {
+      toast((e as { kind?: string }).kind === 'offline' ? COPY.sync.errors.offline : COPY.sync.errors.server)
+    }
+  }
+
   const renew = async () => {
     if (!window.confirm(COPY.sync.renewConfirm)) return
     try {
@@ -51,7 +61,7 @@ export function SyncSection() {
         <ArrowsClockwiseIcon weight="bold" size={20} />
         <span className={styles.settingText}>
           <span className={styles.settingLabel}>{COPY.sync.label}</span>
-          <span className={styles.settingSub}>{on ? line : COPY.sync.sub}</span>
+          <span className={styles.settingSub}>{on ? line : status.state === 'gone' ? COPY.sync.status.gone : COPY.sync.sub}</span>
         </span>
         <span className={`${styles.track} ${on ? styles.trackOn : ''}`}>
           <span className={styles.knob} style={{ left: on ? 22 : 2 }} />
@@ -78,6 +88,12 @@ export function SyncSection() {
             </button>
           )}
         </div>
+      )}
+      {/* switching sync off keeps the cloud copy – this removes it (B4) */}
+      {code && (
+        <button type="button" className={`${styles.linkBtn} ${styles.eraseBtn}`} onClick={erase}>
+          {COPY.sync.erase}
+        </button>
       )}
 
       <button type="button" className={styles.setting} onClick={() => setJoining(true)}>
