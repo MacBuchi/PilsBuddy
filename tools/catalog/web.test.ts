@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beerLinks, extractBeers, robotsAllows, textOf } from './web'
+import { beerLinks, cleanName, extractBeers, robotsAllows, textOf } from './web'
 
 describe('robotsAllows', () => {
   it('follows the * group and our own group, wildcards included', () => {
@@ -22,8 +22,9 @@ describe('beerLinks', () => {
       <a href="/shop/biere">Shop</a>
       <a href="/impressum">Impressum</a>
       <a href="https://facebook.com/biere">Biere</a>
-      <a href="/geschichte">Geschichte</a>`
-    expect(beerLinks(html, 'https://brauerei.de/')).toEqual(['https://www.brauerei.de/sortiment', 'https://brauerei.de/de/unsere-biere/'])
+      <a href="/geschichte">Geschichte</a>
+      <a href="/%E0%A4%A/biere">kaputt</a>`
+    expect(beerLinks(html, 'https://brauerei.de/')).toEqual(['https://www.brauerei.de/sortiment', 'https://brauerei.de/de/unsere-biere/', 'https://brauerei.de/%E0%A4%A/biere'])
   })
 })
 
@@ -53,6 +54,36 @@ describe('extractBeers', () => {
 
   it('ignores names without a style and broken JSON', () => {
     expect(extractBeers('<script type="application/ld+json">{oops</script><h2>Sommerfest 2026</h2><h2>Kaufen Sie Pils</h2>')).toEqual([])
+  })
+
+  it('drops sentences, events, rooms and news', () => {
+    const heads = [
+      'Brauhauskeller',
+      'Gärung und Lagerung',
+      'Lager\u00adverkauf',
+      'Bockbierfest 2026',
+      'Oktoberfest im Wirtshaus',
+      'Schwarzbier ist nicht gleich Schwarzbier',
+      'Erstes alkoholfreies Weißbier der Welt',
+      'Andechser Apfelweisse alkoholfrei offiziell vorgestellt',
+      'Unser Biergarten',
+      'Weißbierglas 0,3L',
+      'Alkoholfreie Alternativen',
+      'Bitte alkoholfrei genießen.',
+      'hopfenblumiges, feinherbes, untergäriges Vollbier',
+    ]
+    expect(extractBeers(heads.map((h) => `<h2>${h}</h2>`).join(''))).toEqual([])
+    expect(extractBeers('<h2>Festbier</h2><h2>Kellerbier</h2>').map((b) => b.name)).toEqual(['Festbier', 'Kellerbier'])
+  })
+
+  it('tidies names', () => {
+    expect(cleanName('„Dunkler Doppelbock“ – im Rumfass veredelt')).toBe('Dunkler Doppelbock')
+    expect(cleanName('Easy Rider – Alkoholfreies, BIO')).toBe('Easy Rider – Alkoholfreies, BIO')
+    expect(cleanName('UR-KROSTITZER SCHWARZBIER')).toBe('UR-Krostitzer Schwarzbier')
+    expect(cleanName('HADERNER WEIßBIER')).toBe('Haderner Weißbier')
+    expect(cleanName('INDIA PALE ALE')).toBe('India Pale Ale')
+    expect(cleanName('BRLO IPA')).toBe('Brlo IPA')
+    expect(cleanName('Kel\u00adler Pils')).toBe('Keller Pils')
   })
 
   it('decodes entities', () => {
