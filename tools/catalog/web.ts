@@ -101,15 +101,21 @@ const NOT_A_NAME =
 
 /** Sentences, events, rooms and news rather than a beer: function words, years, typical nouns. */
 const NOT_A_BEER =
-  /\b(und|ist|nicht|der|die|das|den|dem|des|im|auf|für|von|vom|mit|aus|als|wie|zum|zur|bei|nach|ein|eine|einen|einem|the|and|of|for|with)\b|\b(19|20)\d\d\b|\p{L}+(ung|verkauf|hütten?|fest|feste|welt|abend|tour|markt|stube|garten|laden|vielfalt|keller)\b|vorgestellt|offiziell|ab sofort|gewinn|glas|gelee|alternativ|genießen|\d\s*l\b|[.,]$|,.*,/iu
+  /\b(und|ist|nicht|der|die|das|den|dem|des|im|auf|für|von|vom|mit|aus|als|wie|zum|zur|bei|nach|ein|eine|einen|einem|in|an|us|em|oder|or|the|and|of|for|with)\b|\b(19|20)\d\d\b|\p{L}+(ung|verkauf|hütten?|fest|feste|welt|abend|tour|markt|stube|garten|laden|vielfalt|keller)\b|vorgestellt|offiziell|ab sofort|gewinn|mitarbeiter|\(m\/w|\(w\/m|\p{L}*(brand|geist|likör|schnaps)\b|schnitzel|braten|generator|siphon|paradies|\bschweiz\b|\d+\s*x\s*\d+|\d\s*cl\b|events?\b|steckbrief|gastronomie|\p{L}+land\b|glas|gelee|alternativ|genießen|\d\s*l\b|[.,]$|,.*,/iu
 
 const ABBREVIATIONS = new Set(['IPA', 'APA', 'IRA', 'DIPA', 'NEIPA', 'ESB'])
 
-/** All-caps names get title case („INDIA PALE ALE“ → „India Pale Ale“); IPA and two-letter words stay. */
-const unshout = (name: string) =>
-  /\p{Ll}/u.test(name.replace(/ß/g, ''))
-    ? name
-    : name.replace(/\p{L}{3,}/gu, (w) => (ABBREVIATIONS.has(w) ? w : w[0] + w.slice(1).toLowerCase()))
+/**
+ * All-caps names get title case („INDIA PALE ALE“ → „India Pale Ale“), all-lowercase ones capitals
+ * („renegade ipa“ → „Renegade IPA“); IPA and two-letter words stay as they are.
+ */
+const unshout = (name: string) => {
+  const letters = name.replace(/ß/g, '')
+  if (/\p{Ll}/u.test(letters) && /\p{Lu}/u.test(letters)) return name
+  return name.replace(/\p{L}{3,}/gu, (w) =>
+    ABBREVIATIONS.has(w.toUpperCase()) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1).toLowerCase(),
+  )
+}
 
 /**
  * Tidies a heading into a beer name: drops soft hyphens and surrounding quotes, keeps the part before
@@ -117,12 +123,28 @@ const unshout = (name: string) =>
  */
 export function cleanName(raw: string): string {
   const strip = (s: string) => s.replace(/^[\s„“”"«»'‚‘’]+|[\s„“”"«»'‚‘’]+$/g, '').replace(/\s+/g, ' ')
-  const name = strip(raw.replace(/[\u00ad\u200b]/g, ''))
+  const name = strip(raw.replace(/[\u00ad\u200b]/g, '').replace(ABV_IN_NAME, ''))
   const head = strip(name.split(/\s[–—|-]\s/)[0])
   return unshout(head !== name && normalizeStyle([head]) ? head : name)
 }
 
 const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk)/i
+
+/** „West Coast IPA 6.4% ABV“: the ABV at the end of a name is cut off (and used if the text had none). */
+const ABV_IN_NAME = /[\s,(–-]+(\d{1,2}(?:[.,]\d{1,2})?)\s*%.*$/
+
+const toAbv = (s: string | undefined) => {
+  const v = s == null ? NaN : Number(s.replace(',', '.'))
+  return v > 0 && v <= 20 ? v : null
+}
+
+/** A heading or product title as a beer (tidied name + ABV from the name), or null if it is no beer. */
+export function beerName(raw: string, abv: number | null = null): WebBeer | null {
+  const name = cleanName(raw)
+  if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || NOT_A_NAME.test(name) || NOT_A_BEER.test(name)) return null
+  if (!normalizeStyle([name])) return null
+  return { name, abv: toAbv(abv?.toString()) ?? toAbv(raw.match(ABV_IN_NAME)?.[1]) }
+}
 
 /**
  * Beers on a page: schema.org Product names (JSON-LD), and headings that name a beer style
@@ -131,12 +153,11 @@ const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk)/i
 export function extractBeers(html: string): WebBeer[] {
   const out = new Map<string, WebBeer>()
   const add = (rawName: string, abv: number | null) => {
-    const name = cleanName(rawName)
-    if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || NOT_A_NAME.test(name) || NOT_A_BEER.test(name)) return
-    if (!normalizeStyle([name])) return
-    const key = name.toLowerCase()
+    const beer = beerName(rawName, abv)
+    if (!beer) return
+    const key = beer.name.toLowerCase()
     const prev = out.get(key)
-    if (!prev || (prev.abv == null && abv != null)) out.set(key, { name, abv: abv != null && abv > 0 && abv <= 20 ? abv : null })
+    if (!prev || (prev.abv == null && beer.abv != null)) out.set(key, beer)
   }
   for (const m of html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
     let data: unknown

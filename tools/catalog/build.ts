@@ -8,6 +8,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { COUNTRIES, importSql, mainBeers, mergeBreweries, parseOpenbeer, parsePlaces } from './merge'
+import { beerName } from './web'
 import type { Country, OffRow, OpenbeerRow, OsmRow, WebRow, WikidataBeerRow, WikidataRow } from './merge'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -49,10 +50,15 @@ const walk = (dir: string, rel: string): void => {
   }
 }
 if (existsSync(OPENBEER)) walk(OPENBEER, '')
-// brewery websites (crawl.ts, one file per shard)
+// brewery websites (crawl.ts, one file per shard); names re-checked with the current filters, so a
+// stricter beerName() needs no new crawl
 const web = readdirSync(RAW)
   .filter((f) => /^web-\d+\.json$/.test(f))
   .flatMap((f) => read<WebRow[]>(f))
+  .flatMap((w): WebRow[] => {
+    const beer = beerName(w.name, w.abv)
+    return beer ? [{ ...w, ...beer }] : []
+  })
 const beers = mainBeers(off, breweries, wdBeers, openbeer, web)
 
 const places = COUNTRIES.flatMap((c) => {
