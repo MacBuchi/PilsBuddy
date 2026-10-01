@@ -32,16 +32,6 @@
   background: radial-gradient(circle at 18px 0, var(--foam) 17px, transparent 18px) 0 0 / 36px 20px repeat-x;
 }
 
-.photo {
-  position: absolute;
-  left: 50%;
-  top: calc(var(--safe-top) + 98px);
-  bottom: 22px;
-  height: calc(100% - var(--safe-top) - 120px);
-  transform: translateX(-50%);
-  object-fit: contain;
-  filter: drop-shadow(0 6px 0 rgba(29, 24, 17, 0.25));
-}
 
 
 
