@@ -107,18 +107,17 @@ ${beers.length} Biere, ${styles.length} Sorten. Die Steckbriefe sind **Inspirati
 bitte keine 1:1-Kopien realer Etiketten oder Logos (Markenrecht); Farbwelt, Form und Stimmung dürfen
 erkennbar sein.
 
-## Export-Spezifikation (damit die Designs ohne Anpassung in die App passen)
+## So entsteht eine Flasche (Flaschen-Baukasten, Stufe R3)
 
-- Gestaltet wird im Generator \`bottles.js\` (Claude Design, Seite „PilsBuddy Flaschen“) nach dem Skill
-  \`.claude/skills/pilsbuddy-flaschendesign/SKILL.md\` – Formen, Gesichter, Gesten, Rechtsregeln.
-- Export „SVG laden (animiert)“ → \`docs/pilsbuddy-mobile-app-design/bottles/<id>.svg\` (id = erste Spalte
-  unten), 600 × 1200, gemeinsame Bodenlinie y = 1188
-- \`python3 tools/bottles/optimize.py\` verkleinert die eingebetteten Schriften → \`public/bottles/<id>.svg\`
-- In \`beers.json\` wird dann \`"image": "/bottles/<id>.svg"\` eingetragen
+- Es gibt **keine SVG-Datei je Bier** mehr. \`src/domain/bottles/\` erzeugt die Flasche zur Laufzeit aus
+  Vorlagen (7 Formen, 33 Motive, Gesichtsteile, Gesten) und Parametern.
+- Ohne Eintrag leitet \`designFor(beer)\` alles aus Sorte, Farbe, Region, Tags und Geschmacksachsen ab
+  (z. B. herb → strenge Brauen, süffig → hüpfen, schwer → verschlafen + nicken).
+- Feinschliff je Bier: ein \`bottle\`-Eintrag in \`beers.json\` (~350 Byte, Vokabular im Skill
+  \`.claude/skills/pilsbuddy-flaschendesign/SKILL.md\`) – Form, Glas, Etikett, Motiv, Gesicht, Gesten.
 - Die App legt die Flasche auf die **Bierfarbe** (Spalte „Farbe“) – das Etikett muss darauf lesbar sein.
-  Bei dunklen Bieren (Guinness, Köstritzer, Schlenkerla, Doppelbock) ist der Hintergrund fast schwarz.
-- Kontrolle: \`npm run dev\`, dann \`http://localhost:5173/?gallery=bottles\` – Biere ohne Design sind
-  dort als „gezeichnet“ markiert (Fallback-Illustration)
+- Kontrolle: \`npm run dev\` → \`http://localhost:5173/?gallery=bottles\` (Biere ohne Eintrag: „abgeleitet“)
+  oder \`npx tsx tools/bottles/compare.ts out.html\` (Handdesign neben Ableitung).
 
 ## Sorten (Bier-Stile) und Formvorschlag
 

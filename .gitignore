@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# catalog pipeline raw downloads (large, re-fetchable)
+tools/catalog/raw/

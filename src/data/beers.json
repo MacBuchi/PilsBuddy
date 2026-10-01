@@ -14,7 +14,20 @@
     "disLikeQuip": "Du und Jever habt eine komplizierte Vergangenheit.",
     "tags": ["herb", "trocken", "friesisch direkt"],
     "color": "#E6C150",
-    "image": "/bottles/jever.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#16233F", "ink": "#F3E9CF", "a": "#D9A93A", "a2": "#D9A93A", "font": "serif", "frame": true, "word": "PILS", "region": "FRIESLAND" },
+      "neckLabel": { "bg": "#16233F", "a": "#D9A93A" },
+      "motif": "shield",
+      "eyes": "open",
+      "brows": "stern",
+      "mouth": "flat",
+      "acc": [],
+      "gestures": ["look"]
+    },
     "reference": true
   },
   {
@@ -32,7 +45,19 @@
     "disLikeQuip": "Mutig. In München würde man dich jetzt anschauen.",
     "tags": ["süffig", "malzig", "Kultstatus"],
     "color": "#F1C656",
-    "image": "/bottles/augustiner.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#C79A3A",
+      "label": { "kind": "oval", "bg": "#F3E8CC", "ink": "#2B5A35", "a": "#C79A3A", "a2": "#C79A3A", "font": "serif", "frame": true, "word": "HELL", "region": "MÜNCHEN" },
+      "motif": "arch",
+      "eyes": "happy",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": ["blush"],
+      "gestures": ["nod"]
+    },
     "reference": true
   },
   {
@@ -49,7 +74,21 @@
     "humorousBio": "Schmeckt nach Banane, ohne je eine gesehen zu haben.",
     "tags": ["fruchtig", "hefig", "Biergarten"],
     "color": "#E8B84A",
-    "image": "/bottles/paulaner-weisse.svg",
+    "bottle": {
+      "shape": "longneck",
+      "bulge": true,
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#2E5C9A",
+      "label": { "kind": "oval", "bg": "#F2F4F7", "ink": "#1F3F73", "a": "#2E5C9A", "a2": "#2E5C9A", "font": "serif", "frame": true, "word": "WEISSE", "region": "MÜNCHEN" },
+      "neckLabel": { "bg": "#2E5C9A", "a": "#F2B53A" },
+      "motif": "monk",
+      "eyes": "happy",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["sway"]
+    },
     "disLikeQuip": "Keine Banane für dich. Mehr für den Biergarten.",
     "reference": true
   },
@@ -68,7 +107,20 @@
     "disLikeQuip": "Beck's wird darüber hinwegkommen. Es hat genug Freunde.",
     "tags": ["mild-herb", "massentauglich", "grüne Flasche"],
     "color": "#E9C75B",
-    "image": "/bottles/becks.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#C9CFC8",
+      "label": { "kind": "rect", "bg": "#D8DDD5", "ink": "#1E5A34", "a": "#1E5A34", "a2": "#1E5A34", "font": "sans", "word": "PILS", "region": "BREMEN" },
+      "neckLabel": { "bg": "#1E5A34", "a": "#D8DDD5" },
+      "motif": "key",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": [],
+      "gestures": ["hop", "wink"]
+    },
     "reference": true
   },
   {
@@ -85,7 +137,20 @@
     "humorousBio": "Sieht aus wie Guinness, trinkt sich wie Pils. Ein Doppelagent.",
     "tags": ["röstig", "dunkel", "leichter als gedacht"],
     "color": "#2B1A12",
-    "image": "/bottles/koestritzer.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#211812",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#1A1410", "ink": "#E6C15A", "a": "#B8342B", "a2": "#B8342B", "font": "serif", "frame": true, "word": "SCHWARZ", "region": "THÜRINGEN" },
+      "neckLabel": { "bg": "#1A1410", "a": "#E6C15A" },
+      "motif": "shield",
+      "eyes": "open",
+      "brows": "none",
+      "mouth": "smirk",
+      "acc": ["shades"],
+      "gestures": ["look", "shades"]
+    },
     "disLikeQuip": "Der Doppelagent ist enttarnt. Mission abgebrochen.",
     "reference": true
   },
@@ -103,7 +168,19 @@
     "humorousBio": "Riecht nach Grapefruit und Selbstbewusstsein.",
     "tags": ["fruchtig", "hopfig", "Craft"],
     "color": "#D98E2E",
-    "image": "/bottles/ratsherrn.svg",
+    "bottle": {
+      "shape": "longneck33",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#D6372B",
+      "label": { "kind": "rect", "bg": "#D6372B", "ink": "#FFF6E3", "a": "#F39A4B", "a2": "#F7B7A0", "font": "sans", "word": "PALE ALE", "region": "HAMBURG" },
+      "motif": "grapefruit",
+      "eyes": "open",
+      "brows": "raised",
+      "mouth": "grin",
+      "acc": [],
+      "gestures": ["wink", "brow"]
+    },
     "disLikeQuip": "Zu viel Grapefruit? Verstehen wir. Hamburg nicht.",
     "reference": true
   },
@@ -121,7 +198,21 @@
     "humorousBio": "Ohne Limette nur ein Bier. Mit Limette immer noch nur ein Bier.",
     "tags": ["leicht", "Limette", "Strand"],
     "color": "#F4D970",
-    "image": "/bottles/corona.svg",
+    "bottle": {
+      "shape": "longneck33",
+      "closure": "lime",
+      "glass": "#F4F7EE",
+      "clear": true,
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#FFFFFF", "ink": "#1E3F8A", "a": "#D8AE45", "a2": "#D8AE45", "font": "serif", "word": "LAGER", "region": "MEXIKO" },
+      "neckLabel": { "bg": "#FFFFFF", "a": "#1E3F8A" },
+      "motif": "crown",
+      "eyes": "happy",
+      "brows": "none",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["sway"]
+    },
     "disLikeQuip": "Auch mit Limette nicht. Konsequent.",
     "reference": true
   },
@@ -140,7 +231,20 @@
     "disLikeQuip": "Verständlich. Ihr hattet nie eine echte Chance.",
     "tags": ["rauchig", "malzig", "polarisiert"],
     "color": "#6B3316",
-    "image": "/bottles/schlenkerla.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#C98F3E",
+      "label": { "kind": "rect", "bg": "#C98F3E", "ink": "#2E170A", "a": "#6B3316", "a2": "#E8C27A", "font": "gothic", "frame": true, "word": "Rauchbier", "region": "BAMBERG", "badge": "SEIT 1405" },
+      "motif": "fachwerk",
+      "eyes": "open",
+      "brows": "raised",
+      "mouth": "smirk",
+      "acc": [],
+      "gestures": ["wink", "brow"],
+      "extra": "smoke"
+    },
     "reference": true
   },
   {
@@ -157,7 +261,19 @@
     "humorousBio": "Kleine Flasche, große Fangemeinde. Ausverkauft, wenn man es am meisten braucht.",
     "tags": ["ausgewogen", "süffig", "Schwarzwald"],
     "color": "#EDC24E",
-    "image": "/bottles/rothaus.svg",
+    "bottle": {
+      "shape": "vichy33",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "oval", "bg": "#F3E7C6", "ink": "#1F5A33", "a": "#2E7A3F", "a2": "#B0702A", "font": "serif", "frame": true, "word": "PILS", "region": "SCHWARZWALD" },
+      "motif": "tree",
+      "eyes": "open",
+      "brows": "worried",
+      "mouth": "smile",
+      "acc": ["blush"],
+      "gestures": ["sway", "blink"]
+    },
     "disLikeQuip": "Tannenzäpfle ist jetzt traurig. Irgendwo im Schwarzwald fällt ein Zapfen.",
     "reference": true
   },
@@ -175,7 +291,19 @@
     "humorousBio": "Hat 2007 Krawall gemacht und ist jetzt im Supermarkt. Wie wir alle.",
     "tags": ["hopfig", "tropisch", "Craft-Klassiker"],
     "color": "#E3A63A",
-    "image": "/bottles/punk-ipa.svg",
+    "bottle": {
+      "shape": "can",
+      "closure": "can",
+      "glass": "#1E5AA8",
+      "cap": "#F2B53A",
+      "label": { "kind": "none", "bg": "#1E5AA8", "ink": "#FFF6E3", "a": "#F29A2E", "a2": "#F29A2E", "font": "sans", "word": "IPA", "region": "ELLON" },
+      "motif": "bolt",
+      "eyes": "open",
+      "brows": "angry",
+      "mouth": "tongue",
+      "acc": ["mohawk"],
+      "gestures": ["hop", "wink"]
+    },
     "disLikeQuip": "Punk ist tot. Zumindest für dich.",
     "reference": true
   },
@@ -193,7 +321,19 @@
     "humorousBio": "Kommt in 0,2 l. Kommt aber oft.",
     "tags": ["leicht", "Stange", "Köln"],
     "color": "#F0CB5A",
-    "image": "/bottles/frueh.svg",
+    "bottle": {
+      "shape": "longneck33",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#C8322B",
+      "label": { "kind": "rect", "bg": "#F7F4EC", "ink": "#B8282A", "a": "#C8322B", "a2": "#D8AE45", "font": "sans", "word": "KÖLSCH", "region": "KÖLN" },
+      "motif": "dom",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["hop"]
+    },
     "disLikeQuip": "Deckel drauf. Der Köbes hat verstanden.",
     "reference": true
   },
@@ -211,7 +351,19 @@
     "humorousBio": "Braucht 119,5 Sekunden zum Zapfen. Und du sollst warten. Frechheit.",
     "tags": ["röstig", "cremig", "Pub"],
     "color": "#1E120C",
-    "image": "/bottles/guinness.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#211812",
+      "cap": "#F2B53A",
+      "label": { "kind": "oval", "bg": "#F1E6CC", "ink": "#1A1410", "a": "#C9A443", "a2": "#C9A443", "font": "serif", "frame": true, "word": "STOUT", "region": "DUBLIN" },
+      "motif": "harp",
+      "eyes": "sleepy",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": [],
+      "gestures": ["blink"]
+    },
     "disLikeQuip": "119,5 Sekunden gewartet – für einen Korb.",
     "reference": true
   },
@@ -229,7 +381,19 @@
     "humorousBio": "Flüssiges Brot. Von Mönchen erfunden, die beim Fasten geschummelt haben.",
     "tags": ["malzig", "stark", "Starkbierzeit"],
     "color": "#9E5A22",
-    "image": "/bottles/salvator.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#B3261E", "ink": "#F7E3B0", "a": "#D8AE45", "a2": "#D8AE45", "font": "serif", "frame": true, "word": "DOPPELBOCK", "region": "MÜNCHEN" },
+      "motif": "monk",
+      "eyes": "happy",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["hop"]
+    },
     "disLikeQuip": "Die Mönche fasten jetzt ohne dich.",
     "reference": true
   },
@@ -247,7 +411,19 @@
     "humorousBio": "Heißt „Teufel“. Und das steht da nicht aus Spaß.",
     "tags": ["stark", "spritzig", "Teufelszeug"],
     "color": "#F1CE5C",
-    "image": "/bottles/duvel.svg",
+    "bottle": {
+      "shape": "steinie",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#C4302B",
+      "label": { "kind": "rect", "bg": "#F4EAD6", "ink": "#B8282A", "a": "#B8282A", "a2": "#D8AE45", "font": "serif", "frame": true, "word": "STRONG", "region": "BREENDONK" },
+      "motif": "devil",
+      "eyes": "open",
+      "brows": "angry",
+      "mouth": "grin",
+      "acc": [],
+      "gestures": ["wink", "brow"]
+    },
     "disLikeQuip": "Der Teufel nimmt's persönlich. Er hat Zeit.",
     "reference": true
   },
@@ -265,7 +441,21 @@
     "humorousBio": "Schmeckt nach Wochenende mit Grillgeruch. Für alle. Wirklich alle.",
     "tags": ["mild", "süffig", "Crowd-Pleaser"],
     "color": "#EBC75C",
-    "image": "/bottles/krombacher.svg",
+    "bottle": {
+      "shape": "longneck",
+      "waist": true,
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#1F6B3A", "ink": "#F6E7B8", "a": "#E3B94E", "a2": "#E3B94E", "font": "serif", "word": "PILS", "region": "SIEGERLAND" },
+      "neckLabel": { "bg": "#E3B94E", "a": "#1F6B3A" },
+      "motif": "rock",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["hop", "blink"]
+    },
     "disLikeQuip": "Krombacher wird's verkraften. Es hat noch ein paar Millionen andere Fans."
   },
   {
@@ -282,7 +472,19 @@
     "humorousBio": "Weich wie ein Sonntagmorgen am See. Ohne Wecker.",
     "tags": ["weich", "malzig", "bayerisch"],
     "color": "#F3CD62",
-    "image": "/bottles/tegernseer.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#2E5C9A",
+      "label": { "kind": "shield", "bg": "#EEF3F8", "ink": "#1F3F73", "a": "#2E5C9A", "a2": "#9CC3E6", "font": "serif", "frame": true, "word": "HELL", "region": "TEGERNSEE" },
+      "motif": "lake",
+      "eyes": "sleepy",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": ["blush"],
+      "gestures": ["sway"]
+    },
     "disLikeQuip": "Ein Korb an den Tegernsee. Die Enten sind entsetzt."
   },
   {
@@ -299,7 +501,19 @@
     "humorousBio": "Hafenkante, Herz, Anker. Kein Bier für Smalltalk.",
     "tags": ["kiezig", "mild", "ehrlich"],
     "color": "#EAC45A",
-    "image": "/bottles/astra.svg",
+    "bottle": {
+      "shape": "steinie",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#D12B2B",
+      "label": { "kind": "rect", "bg": "#D12B2B", "ink": "#FFF6E3", "a": "#FFF6E3", "a2": "#FFF6E3", "font": "sans", "word": "PILS", "region": "ST. PAULI" },
+      "motif": "heartanchor",
+      "eyes": "open",
+      "brows": "angry",
+      "mouth": "smirk",
+      "acc": [],
+      "gestures": ["wink"]
+    },
     "disLikeQuip": "Astra nimmt's sportlich. Kiezregel: nicht nachtreten."
   },
   {
@@ -316,7 +530,19 @@
     "humorousBio": "Frisch, klar, sauerländisch unkompliziert. Wie ein fester Handschlag.",
     "tags": ["frisch", "süffig", "klar"],
     "color": "#EBC862",
-    "image": "/bottles/veltins.svg",
+    "bottle": {
+      "shape": "steinie",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#C4C9C3",
+      "label": { "kind": "rect", "bg": "#1E4E9A", "ink": "#F2F4F0", "a": "#D8DCD6", "a2": "#D63A2F", "font": "sans", "word": "PILS", "region": "SAUERLAND" },
+      "motif": "swoosh",
+      "eyes": "open",
+      "brows": "stern",
+      "mouth": "smile",
+      "acc": [],
+      "gestures": ["nod", "blink"]
+    },
     "disLikeQuip": "Kein Handschlag heute. Das Sauerland schweigt."
   },
   {
@@ -333,7 +559,19 @@
     "humorousBio": "Naturtrüb. Hat nichts zu verbergen – außer Hefe.",
     "tags": ["naturtrüb", "malzig", "Ostsee"],
     "color": "#D8A13E",
-    "image": "/bottles/stoertebeker.svg",
+    "bottle": {
+      "shape": "nrw",
+      "closure": "crown",
+      "glass": "#3B2414",
+      "cap": "#B86A34",
+      "label": { "kind": "rect", "bg": "#B86A34", "ink": "#FFF1D8", "a": "#5A2E14", "a2": "#F2B53A", "font": "serif", "frame": true, "word": "KELLER", "region": "STRALSUND", "badge": "1402" },
+      "motif": "ship",
+      "eyes": "open",
+      "brows": "angry",
+      "mouth": "grin",
+      "acc": ["patch"],
+      "gestures": ["sway", "wink"]
+    },
     "disLikeQuip": "Störtebeker kapert jetzt jemand anderen."
   },
   {
@@ -350,7 +588,19 @@
     "humorousBio": "Trägt Anzug. Auch am Wochenende.",
     "tags": ["feinherb", "klassisch", "Eifel"],
     "color": "#EAC65A",
-    "image": "/bottles/bitburger.svg",
+    "bottle": {
+      "shape": "steinie",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#C9CFC8",
+      "label": { "kind": "oval", "bg": "#1B2E5C", "ink": "#EEF0F2", "a": "#C9A443", "a2": "#C9A443", "font": "serif", "frame": true, "word": "PILS", "region": "EIFEL" },
+      "motif": "seal",
+      "eyes": "open",
+      "brows": "stern",
+      "mouth": "smile",
+      "acc": ["bowtie"],
+      "gestures": ["nod", "blink"]
+    },
     "disLikeQuip": "Bitte kein Bit. Notiert."
   },
   {
@@ -367,7 +617,20 @@
     "humorousBio": "Feinherb und ein bisschen stolz auf die eigene Geschichte. Zu Recht.",
     "tags": ["feinherb", "sächsisch", "Tradition"],
     "color": "#E6C255",
-    "image": "/bottles/radeberger.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#1F4A36", "ink": "#F1E3B8", "a": "#D2AA4A", "a2": "#D2AA4A", "font": "serif", "frame": true, "word": "PILS", "region": "SACHSEN" },
+      "neckLabel": { "bg": "#1F4A36", "a": "#D2AA4A" },
+      "motif": "castle",
+      "eyes": "open",
+      "brows": "raised",
+      "mouth": "smile",
+      "acc": ["monocle"],
+      "gestures": ["brow"]
+    },
     "disLikeQuip": "Radeberger zieht sich höflich zurück. Sächsisch gefasst."
   },
   {
@@ -384,7 +647,19 @@
     "humorousBio": "Macht Plopp. Redet nicht viel. Meint es aber ernst.",
     "tags": ["herb", "trocken", "Bügelverschluss"],
     "color": "#E3BC4A",
-    "image": "/bottles/flensburger.svg",
+    "bottle": {
+      "shape": "steinie",
+      "closure": "swing",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#F5F7FA", "ink": "#1F4E8C", "a": "#1F4E8C", "a2": "#7FB0DE", "font": "sans", "word": "PILS", "region": "FLENSBURG" },
+      "motif": "waves",
+      "eyes": "open",
+      "brows": "stern",
+      "mouth": "flat",
+      "acc": [],
+      "gestures": ["blink", "plopp"]
+    },
     "disLikeQuip": "Kein Plopp für dich. Flensburg zuckt nur mit den Schultern."
   },
   {
@@ -401,7 +676,19 @@
     "humorousBio": "Das Original. Und es weiß das auch.",
     "tags": ["vollmundig", "hopfig", "Urgestein"],
     "color": "#E0AE3C",
-    "image": "/bottles/urquell.svg",
+    "bottle": {
+      "shape": "nrw",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#F3E9D2", "ink": "#9E2A22", "a": "#B93A2E", "a2": "#2F6B3A", "font": "serif", "frame": true, "word": "PILS", "region": "PILSEN", "badge": "SEIT 1842" },
+      "motif": "gate",
+      "eyes": "happy",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": ["mustache"],
+      "gestures": ["nod"]
+    },
     "disLikeQuip": "Das Original ist unbeeindruckt. Es hat schon ganz andere überlebt."
   },
   {
@@ -418,7 +705,20 @@
     "humorousBio": "Hat eine Krone im Logo und trotzdem keine Allüren.",
     "tags": ["mild", "klar", "Tulpe"],
     "color": "#EBC95E",
-    "image": "/bottles/warsteiner.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#DDB54E", "ink": "#1F4A36", "a": "#1F4A36", "a2": "#F3E9CF", "font": "serif", "frame": true, "word": "PILS", "region": "SAUERLAND" },
+      "neckLabel": { "bg": "#1F4A36", "a": "#DDB54E" },
+      "motif": "crown",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "smile",
+      "acc": ["crown"],
+      "gestures": ["sway", "blink"]
+    },
     "disLikeQuip": "Die Krone sitzt schief. Aber sie sitzt."
   },
   {
@@ -435,7 +735,21 @@
     "humorousBio": "Das Weißbier, das auch deine Tante kennt. Aus dem Fernsehen.",
     "tags": ["mild", "spritzig", "Weizen-Einstieg"],
     "color": "#EABD4F",
-    "image": "/bottles/erdinger.svg",
+    "bottle": {
+      "shape": "longneck",
+      "bulge": true,
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#F7F7F2", "ink": "#1F4E9A", "a": "#1F4E9A", "a2": "#D8AE45", "font": "sans", "word": "WEISSE", "region": "ERDING" },
+      "neckLabel": { "bg": "#1F4E9A", "a": "#D8AE45" },
+      "motif": "bubbles",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": [],
+      "gestures": ["wink"]
+    },
     "disLikeQuip": "Deine Tante wird enttäuscht sein."
   },
   {
@@ -452,7 +766,21 @@
     "humorousBio": "Seit 1040 im Geschäft. Hat mehr Erfahrung als du und ich zusammen.",
     "tags": ["vollmundig", "prämiert", "Klosterbier"],
     "color": "#E5B448",
-    "image": "/bottles/weihenstephaner.svg",
+    "bottle": {
+      "shape": "longneck",
+      "bulge": true,
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "shield", "bg": "#E1B44A", "ink": "#1F3566", "a": "#F7F3E6", "a2": "#F7F3E6", "font": "serif", "frame": true, "word": "WEISSE", "region": "FREISING", "badge": "SEIT 1040" },
+      "neckLabel": { "bg": "#1F3566", "a": "#E1B44A" },
+      "motif": "shield",
+      "eyes": "open",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": ["glasses"],
+      "gestures": ["nod", "blink"]
+    },
     "disLikeQuip": "Seit 1040 der erste Korb. Das Klosterarchiv ist informiert."
   },
   {
@@ -469,7 +797,19 @@
     "humorousBio": "Das Kölsch für Leute, die beim Karneval noch wissen, was sie trinken.",
     "tags": ["frisch", "hopfenbetont", "Karneval"],
     "color": "#EEC855",
-    "image": "/bottles/gaffel.svg",
+    "bottle": {
+      "shape": "longneck33",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#1F4E9A",
+      "label": { "kind": "rect", "bg": "#1F4E9A", "ink": "#FFF6E3", "a": "#D63A2F", "a2": "#D63A2F", "font": "sans", "word": "KÖLSCH", "region": "KÖLN" },
+      "motif": "confetti",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "tongue",
+      "acc": [],
+      "gestures": ["hop", "wink"]
+    },
     "disLikeQuip": "Gaffel geht ohne dich zum Karneval. Alaaf trotzdem."
   },
   {
@@ -486,7 +826,19 @@
     "humorousBio": "Das dat lecker Dröppke. Sagt Düsseldorf. Köln widerspricht.",
     "tags": ["herb", "kupferfarben", "Altstadt"],
     "color": "#8B4A1E",
-    "image": "/bottles/uerige.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "swing",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#7A1E1E", "ink": "#F0D9A0", "a": "#C9A04A", "a2": "#C9A04A", "font": "serif", "frame": true, "word": "ALT", "region": "DÜSSELDORF" },
+      "motif": "gable",
+      "eyes": "open",
+      "brows": "angry",
+      "mouth": "smirk",
+      "acc": [],
+      "gestures": ["blink", "brow"]
+    },
     "disLikeQuip": "Kein lecker Dröppke. Köln applaudiert leise."
   },
   {
@@ -503,7 +855,19 @@
     "humorousBio": "Das Alt, das sich mit allen versteht. Sogar mit Kölsch-Trinkern.",
     "tags": ["mild", "malzig", "Niederrhein"],
     "color": "#9C5424",
-    "image": "/bottles/diebels.svg",
+    "bottle": {
+      "shape": "nrw",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#C4302B",
+      "label": { "kind": "oval", "bg": "#C4302B", "ink": "#FFF1D8", "a": "#D8AE45", "a2": "#D8AE45", "font": "serif", "frame": true, "word": "ALT", "region": "NIEDERRHEIN" },
+      "motif": "seal",
+      "eyes": "happy",
+      "brows": "none",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["sway"]
+    },
     "disLikeQuip": "Selbst Diebels kann nicht mit allen. Überraschung."
   },
   {
@@ -520,7 +884,20 @@
     "humorousBio": "Ist überall. Schmeckt überall gleich. Das ist der Plan.",
     "tags": ["international", "mild", "grüne Flasche"],
     "color": "#EFC94C",
-    "image": "/bottles/heineken.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#D8DCD6",
+      "label": { "kind": "oval", "bg": "#F4F4EE", "ink": "#1F6B3A", "a": "#D1302B", "a2": "#D1302B", "font": "sans", "word": "LAGER", "region": "AMSTERDAM" },
+      "neckLabel": { "bg": "#F4F4EE", "a": "#1F6B3A" },
+      "motif": "star",
+      "eyes": "open",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": [],
+      "gestures": ["blink"]
+    },
     "disLikeQuip": "Heineken gibt es überall. Nur nicht bei dir."
   },
   {
@@ -537,7 +914,20 @@
     "humorousBio": "Kommt im Kelch. Fühlt sich wie ein Sektempfang an, ist aber Lager.",
     "tags": ["Kelchglas", "mild", "Belgien"],
     "color": "#EDC44F",
-    "image": "/bottles/stella.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#F2B53A",
+      "label": { "kind": "shield", "bg": "#F7F3EA", "ink": "#B8282A", "a": "#D8AE45", "a2": "#D8AE45", "font": "serif", "frame": true, "word": "LAGER", "region": "LEUVEN" },
+      "neckLabel": { "bg": "#B8282A", "a": "#F2B53A" },
+      "motif": "horn",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "smile",
+      "acc": ["lashes"],
+      "gestures": ["wink"]
+    },
     "disLikeQuip": "Kein Sektempfang heute. Der Kelch bleibt leer."
   },
   {
@@ -554,7 +944,19 @@
     "humorousBio": "Schmeckt wie ein Dessert, das sich als Bier verkleidet hat.",
     "tags": ["süß", "Abteibier", "Vanille"],
     "color": "#E5A93A",
-    "image": "/bottles/leffe.svg",
+    "bottle": {
+      "shape": "steinie",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "shield", "bg": "#1E3566", "ink": "#F2E3B6", "a": "#D8AE45", "a2": "#D8AE45", "font": "serif", "frame": true, "word": "BLONDE", "region": "DINANT" },
+      "motif": "arch",
+      "eyes": "happy",
+      "brows": "up",
+      "mouth": "smile",
+      "acc": ["blush"],
+      "gestures": ["sway"]
+    },
     "disLikeQuip": "Dessert abgelehnt. Diszipliniert."
   },
   {
@@ -571,7 +973,20 @@
     "humorousBio": "Hat eine kleine Ziege an der Flasche. Braucht keine weiteren Argumente.",
     "tags": ["dunkel", "Schokolade", "Ziege inklusive"],
     "color": "#4A2412",
-    "image": "/bottles/celebrator.svg",
+    "bottle": {
+      "shape": "steinie",
+      "closure": "crown",
+      "glass": "#3B2414",
+      "cap": "#B3261E",
+      "label": { "kind": "rect", "bg": "#231914", "ink": "#E6C15A", "a": "#B3261E", "a2": "#B3261E", "font": "serif", "frame": true, "word": "DOPPELBOCK", "region": "AYING" },
+      "motif": "goat",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": [],
+      "gestures": ["sway", "blink"],
+      "extra": "goat"
+    },
     "disLikeQuip": "Die Ziege hat es gesehen. Die Ziege vergisst nicht."
   },
   {
@@ -588,7 +1003,19 @@
     "humorousBio": "Bayerisches Craft Beer. Ja, das gibt's. Und es ist laut.",
     "tags": ["hopfig", "Mango", "Craft aus Bayern"],
     "color": "#DA9331",
-    "image": "/bottles/drunken-sailor.svg",
+    "bottle": {
+      "shape": "can",
+      "closure": "can",
+      "glass": "#F7F3EA",
+      "cap": "#F2B53A",
+      "label": { "kind": "none", "bg": "#F7F3EA", "ink": "#1E3F8A", "a": "#F08A2E", "a2": "#F08A2E", "font": "sans", "word": "IPA", "region": "MÜNCHEN" },
+      "motif": "anchor",
+      "eyes": "happy",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": ["blush", "sailor"],
+      "gestures": ["wobble"]
+    },
     "disLikeQuip": "Der Matrose segelt weiter. Ohne dich an Bord."
   },
   {
@@ -605,7 +1032,19 @@
     "humorousBio": "Kostet weniger als der Pfand drumherum. Und ist trotzdem stolz.",
     "tags": ["günstig", "Späti", "Leipzig"],
     "color": "#ECC757",
-    "image": "/bottles/sternburg.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#C8322B",
+      "label": { "kind": "rect", "bg": "#F7F4EC", "ink": "#C8322B", "a": "#C8322B", "a2": "#C8322B", "font": "sans", "word": "EXPORT", "region": "LEIPZIG" },
+      "motif": "star",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": [],
+      "gestures": ["wink"]
+    },
     "disLikeQuip": "Du lehnst ein Bier ab, das weniger kostet als sein Pfand. Respekt."
   },
   {
@@ -622,7 +1061,19 @@
     "humorousBio": "Macht keine Werbung. Muss es auch nicht. Kennt eh jeder vom Studium.",
     "tags": ["günstig", "mild", "Studentenbier"],
     "color": "#EBC85C",
-    "image": "/bottles/oettinger.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#1F4E9A",
+      "label": { "kind": "rect", "bg": "#F7F7F2", "ink": "#1F4E9A", "a": "#1F4E9A", "a2": "#D8AE45", "font": "sans", "word": "PILS", "region": "OETTINGEN" },
+      "motif": "stripes",
+      "eyes": "dot",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": [],
+      "gestures": ["blink"]
+    },
     "disLikeQuip": "Oettinger ist Ablehnung gewohnt. Nur nicht beim Preis."
   },
   {
@@ -639,7 +1090,19 @@
     "humorousBio": "Sechseckige Flasche. Weil rund kann jeder.",
     "tags": ["kernig", "Harz", "Sechskant"],
     "color": "#E9C556",
-    "image": "/bottles/hasseroeder.svg",
+    "bottle": {
+      "shape": "longneck",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#1F5A33", "ink": "#F1E3B8", "a": "#D8AE45", "a2": "#C4302B", "font": "serif", "frame": true, "word": "PILS", "region": "HARZ" },
+      "motif": "hexmount",
+      "eyes": "open",
+      "brows": "thick",
+      "mouth": "smile",
+      "acc": [],
+      "gestures": ["nod", "blink"]
+    },
     "disLikeQuip": "Sechs Ecken, null Chancen."
   },
   {
@@ -656,7 +1119,19 @@
     "humorousBio": "Nennt sich selbst Legende. Und wer will da schon widersprechen.",
     "tags": ["hopfenbetont", "Vogtland", "Legende"],
     "color": "#E8C34F",
-    "image": "/bottles/wernesgruener.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#2E6B3B",
+      "cap": "#F2B53A",
+      "label": { "kind": "oval", "bg": "#1F5A33", "ink": "#F5EFE0", "a": "#D8AE45", "a2": "#D8AE45", "font": "serif", "frame": true, "word": "PILS", "region": "VOGTLAND" },
+      "motif": "treemount",
+      "eyes": "open",
+      "brows": "raised",
+      "mouth": "smile",
+      "acc": [],
+      "gestures": ["blink", "brow"]
+    },
     "disLikeQuip": "Du hast einer Legende widersprochen. Mutig."
   },
   {
@@ -673,7 +1148,19 @@
     "humorousBio": "Wird pro Tag von mehr Touristen fotografiert als der Eiffelturm. Gefühlt.",
     "tags": ["Maßkrug", "Touristen", "München"],
     "color": "#F1C858",
-    "image": "/bottles/hofbraeu.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#1F4E9A",
+      "label": { "kind": "rect", "bg": "#F7F7F2", "ink": "#1F4E9A", "a": "#1F4E9A", "a2": "#BFD6EE", "font": "serif", "frame": true, "word": "HELL", "region": "MÜNCHEN" },
+      "motif": "lozenge",
+      "eyes": "open",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["sway", "wink"]
+    },
     "disLikeQuip": "Ein Prosit weniger. Die Touristen trinken's schon."
   },
   {
@@ -690,7 +1177,19 @@
     "humorousBio": "Wird von Mönchen gebraut. Man merkt, die haben Zeit.",
     "tags": ["Kloster", "malzig", "Karamell"],
     "color": "#5A2E14",
-    "image": "/bottles/andechser-doppelbock.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#3B2414",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#5A2E14", "ink": "#F1D9A0", "a": "#D8AE45", "a2": "#B3261E", "font": "serif", "frame": true, "word": "DOPPELBOCK", "region": "ANDECHS" },
+      "motif": "monastery",
+      "eyes": "happy",
+      "brows": "none",
+      "mouth": "smile",
+      "acc": [],
+      "gestures": ["nod"]
+    },
     "disLikeQuip": "Die Mönche beten für dich. Sie haben ja Zeit."
   },
   {
@@ -707,7 +1206,19 @@
     "humorousBio": "Ungefiltert und stolz drauf. Wie ein guter Freund nach dem dritten Bier.",
     "tags": ["ungefiltert", "fränkisch", "bernstein"],
     "color": "#D9A43C",
-    "image": "/bottles/moenchshof-keller.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "swing",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "oval", "bg": "#F1E4C6", "ink": "#5A2E14", "a": "#8A4A1E", "a2": "#8A4A1E", "font": "serif", "frame": true, "word": "KELLER", "region": "KULMBACH" },
+      "motif": "monk",
+      "eyes": "happy",
+      "brows": "up",
+      "mouth": "grin",
+      "acc": ["blush"],
+      "gestures": ["wobble"]
+    },
     "disLikeQuip": "Ungefiltert und ungeliebt. Hart."
   },
   {
@@ -724,7 +1235,19 @@
     "humorousBio": "Hat das Bockbier erfunden. Erwähnt das gelegentlich.",
     "tags": ["Bock-Erfinder", "malzig", "Niedersachsen"],
     "color": "#6E3A18",
-    "image": "/bottles/einbecker-urbock.svg",
+    "bottle": {
+      "shape": "euro",
+      "closure": "crown",
+      "glass": "#6B3A17",
+      "cap": "#F2B53A",
+      "label": { "kind": "rect", "bg": "#7A1E1E", "ink": "#F1D9A0", "a": "#D8AE45", "a2": "#D8AE45", "font": "gothic", "frame": true, "word": "Bock", "region": "EINBECK", "badge": "SEIT 1378" },
+      "motif": "shield",
+      "eyes": "open",
+      "brows": "raised",
+      "mouth": "smirk",
+      "acc": [],
+      "gestures": ["brow"]
+    },
     "disLikeQuip": "Der Bock-Erfinder ist beleidigt. Zum ersten Mal seit 1378."
   },
   {

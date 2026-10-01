@@ -53,8 +53,7 @@ Teil 1 – Flaschen-Designs (Nutzer gestaltet in Claude Design)
 - [x] 42 Designs mit Gesicht + Animation (Claude Design) als `public/bottles/<id>.svg`, Schriften auf
       die benutzten Zeichen reduziert (`tools/bottles/optimize.py`, 6,4 MB → 0,6 MB)
 - [x] `beers.json`: `image` gesetzt; `BeerBottle` wählt Design oder Fallback in allen Screens
-- [ ] Restliche 18 Biere (aus A3) gestalten – Skill `pilsbuddy-flaschendesign`, braucht den Generator
-      `bottles.js` unter `docs/pilsbuddy-mobile-app-design/flaschen/`
+- [x] Restliche 18 Biere (aus A3) – erledigt mit R3: sie bekommen ihre Flasche aus dem Baukasten (abgeleitet)
 
 Hinweis: Eigene, stilisierte Designs statt Fotos – keine 1:1-Kopien realer Etiketten (Markenrecht).
 
@@ -164,14 +163,28 @@ Leitplanken:
       idempotente Upserts per Quell-ID, Lizenz-Nennung in `legal.ts` (L)
 - [ ] R2 **Stilprofile** `src/domain/styleProfile.ts`: ~25 Stile mit Aliasen, `normalizeStyle`,
       `tasteFromStyle`; Leave-one-out-Test gegen die kuratierten Biere (M)
-- [ ] R3 **Regional-Finder:** `src/domain/regional.ts` (Zellen, Haversine, `rankRegional`), Screen
+- [x] R3 **Flaschen-Baukasten** (Wunsch 2026-10-01): keine SVG-Datei mehr je Bier, sondern ein Generator zur
+      Laufzeit – Vorlagen + Parameter, abgeleitet aus Stil, Farbe und Charakter des Biers:
+      - Formen: die ~11 Flaschenformen der 42 Designs als parametrische Pfade (Bauch, Schulter, Hals, Dose, Bügel)
+      - Farben/Etikett: Glas, Etikett, Akzent, Wappen, Schrift-Paar (modern · Serif · Fraktur) aus `color`, Stil, Region
+      - Gesicht: Vorlagen für Augen, Brauen, Mund; Feinschliff aus den Geschmacksachsen
+        (z. B. bitter → strenge Brauen, süß → Lächeln, süffig → entspannt, Charakter → markanter Ausdruck)
+      - Animation: Vorlagen (Wippen, Blinzeln, Hüpfen, Umschauen, Brauen heben, Schaum) mit Dauer/Verzögerung/
+        Amplitude aus Charakter + `hashId` – deterministisch, `prefers-reduced-motion` respektiert
+      - rein in `src/domain/bottleDesign.ts` (getestet), Renderer `BottleSvg.tsx` mit den App-Schriften statt
+        eingebetteter Fonts; die 42 Designs werden zu Parameter-Overrides in `beers.json` (Vergleichsbilder alt/neu
+        im PR), danach fallen `public/bottles/*.svg` (≈ 700 KB) und `BottleArt` weg. Deckt auch die offenen 18
+        Biere aus A1 und alle Regionalbiere ab (M–L)
+      - umgesetzt: 7 Formen (Umrisse zeichengenau wie die Designs, per Test fixiert), 33 Motive, ~350 Byte je
+        Handdesign in `beers.json`; Ableitung `designFor` für alle anderen; DB-Designs nur über `sanitizeDesign`
+- [ ] R4 **Regional-Finder:** `src/domain/regional.ts` (Zellen, Haversine, `rankRegional`), Screen
       `regional` (Einstieg im DNA-Screen + Segment „In der Nähe“ in Matches), Standort oder PLZ,
       Radius-Chips, Liste mit Match-% und Entfernung, Brauerei-Sheet mit Route-Link, Probierliste;
       angefasste Regionalbiere (`r:<id>`) lokal als Snapshot im Katalog-Overlay. E2E mit Geolocation (L)
-- [ ] R4 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
+- [ ] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
       Achievement „Lokalpatriot“, Share-Card-Zeile (M)
-- [ ] R5 **„Bier fehlt? Eintragen“:** `beer_submissions` mit Freigabe-Queue, Limit je anonymer Session (M)
-- [ ] R6 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
+- [ ] R6 **„Bier fehlt? Eintragen“:** `beer_submissions` mit Freigabe-Queue, Limit je anonymer Session (M)
+- [ ] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
 
 ## Stufe E – Minispiele (vorgezogen vor C, Wunsch 2026-10-01)
 
