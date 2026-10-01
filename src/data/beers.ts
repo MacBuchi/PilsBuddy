@@ -1,8 +1,12 @@
 import raw from './beers.json'
 import type { Beer } from '../domain/types'
+import { mergeCatalog, readCachedRows } from './catalog'
 
-/** All beers in dataset order. Extend by editing beers.json – no code change needed. */
-export const BEERS: readonly Beer[] = raw as Beer[]
+/**
+ * All beers in dataset order: beers.json plus the rows last fetched from the database (B3, see
+ * catalog.ts). Extend by editing beers.json or adding a row to `beers` – no code change needed.
+ */
+export const BEERS: readonly Beer[] = mergeCatalog(raw as Beer[], readCachedRows())
 
 export const BEER_BY_ID: Readonly<Record<string, Beer>> = Object.fromEntries(
   BEERS.map((b) => [b.id, b]),

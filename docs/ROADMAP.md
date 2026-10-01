@@ -131,7 +131,10 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
       `PILS-XXXX-…` (Edge Function `sync-code`, nur Hash gespeichert, erneuerbar) holt ein zweites Gerät
       ins selbe Konto; localStorage bleibt Quelle der Wahrheit, supabase-js wird erst bei Bedarf geladen.
       Zwei-Geräte-E2E (`e2e/sync.mjs`) läuft in der CI gegen eine lokale Supabase (M)
-- [ ] B3 Bierkatalog aus DB mit JSON-Fallback (S)
+- [x] B3 Bierkatalog aus DB: Zeilen in `beers` (published) ergänzen oder ersetzen Biere aus `beers.json`
+      per id (`src/data/catalog.ts`, geprüft, nur eigene Flaschenbilder); die App wartet nie aufs Netz – sie
+      startet mit dem zuletzt geholten Stand, lädt im Hintergrund nach, neue Biere erscheinen beim nächsten
+      Start. E2E `e2e/catalog.mjs` gegen lokale Supabase (auch mit abgeschaltetem Backend) (S)
 - [x] B4 Impressum & Datenschutz (Screen `legal`, verlinkt in Welcome und Profil, Deeplink `#impressum` /
       `#datenschutz`, Text in `src/data/legal.ts`); „Profil zurücksetzen“ löscht das Sync-Konto serverseitig
       (Edge Function `sync-code` › `delete`, Cascade), „Daten aus der Cloud löschen“ nur die Cloud-Kopie;

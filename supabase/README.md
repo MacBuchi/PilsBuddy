@@ -4,10 +4,17 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 
 | Tabelle | Inhalt | Zugriff (RLS) |
 |---|---|---|
-| `beers` | Spiegel von `src/data/beers.json` (`data` = Bier-Objekt) | veröffentlichte Biere öffentlich lesbar, schreiben nur Admin |
+| `beers` | Ergänzungen zu `src/data/beers.json` (`data` = Bier-Objekt ohne `id`) | veröffentlichte Biere öffentlich lesbar, schreiben nur Admin |
 | `profiles` | ein Profil je (anonymem) Nutzer: Buddy-Nr., Archetyp, DNA, `visible` | eigenes lesen/schreiben; fremde nur bei `visible = true` (Opt-in) |
 | `ratings` | eine Zeile je Nutzer und Bier, `at` entscheidet beim Sync; `deleted` = Tombstone | nur eigene |
 | `sync_codes` | Hash des Sync-Codes je Nutzer | keine – nur die Edge Function (service_role) |
+
+**Bierkatalog (B3):** Die Tabelle enthält *nur* Biere, die neu sind oder ein gebündeltes Bier ersetzen sollen
+(gleiche `id`) – keine Kopie des ganzen JSON, sonst würde ein alter DB-Stand spätere JSON-Änderungen überdecken.
+Pflege per Studio/SQL; `data` braucht alle Felder eines Biers (siehe `e2e/catalog-seed.sql`), `image` nur als
+`/bottles/<id>.svg` (sonst gezeichnete Flasche), `sort` ordnet neue Biere hinter den gebündelten. Unvollständige
+Zeilen ignoriert die App. Sichtbar wird eine Änderung beim übernächsten App-Start (holen → anwenden).
+Ein gebündeltes Bier ausblenden geht nur per Deploy.
 
 Edge Function `sync-code` (`verify_jwt = false`, prüft den JWT bei `create` und `delete` selbst):
 `create` erzeugt einen neuen Code für den angemeldeten Nutzer (alter wird ungültig), `redeem` tauscht einen

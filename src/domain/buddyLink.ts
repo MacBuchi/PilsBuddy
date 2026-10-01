@@ -68,8 +68,12 @@ export interface BuddyComparison extends BuddyMatch {
 export function compareWithBuddy(myRatings: Ratings, buddy: BuddySnapshot): BuddyComparison {
   const me = computeDNA(myRatings)
   const buddyDna = computeDNA(buddy.ratings)
-  const match = buddyMatch({ taste: me.taste, ratings: myRatings }, { taste: buddyDna.taste, ratings: buddy.ratings })
+  // only beers this catalogue knows (a link or a sync can carry ids from a newer/older catalogue)
+  const known = (id: string) => !!BEER_BY_ID[id]
+  const raw = buddyMatch({ taste: me.taste, ratings: myRatings }, { taste: buddyDna.taste, ratings: buddy.ratings })
+  const match = { ...raw, shared: raw.shared.filter(known), disagree: raw.disagree.filter(known) }
   const tips = Object.keys(buddy.ratings)
+    .filter(known)
     .filter((id) => buddy.ratings[id].rating === 'LIKE')
     .filter((id) => {
       const mine = myRatings[id]?.rating
