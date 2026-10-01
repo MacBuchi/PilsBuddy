@@ -50,6 +50,7 @@ const decode = (s: string) =>
     .replace(/&Uuml;/g, 'Ü')
     .replace(/&szlig;/g, 'ß')
     .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
     .replace(/&[a-z]+;/gi, ' ')
 
 /** Visible text of an HTML fragment. */
@@ -118,12 +119,21 @@ const unshout = (name: string) => {
 }
 
 /**
- * Tidies a heading into a beer name: drops soft hyphens and surrounding quotes, keeps the part before
+ * Tidies a heading into a beer name: decodes entities, drops soft hyphens, surrounding quotes, labels
+ * like „Jetzt neu:“ and „(SOLD OUT)“, keeps the part before
  * a dash if that already names the style („„Dunkler Doppelbock“ – im Rumfass veredelt“).
  */
 export function cleanName(raw: string): string {
   const strip = (s: string) => s.replace(/^[\s„“”"«»'‚‘’]+|[\s„“”"«»'‚‘’]+$/g, '').replace(/\s+/g, ' ')
-  const name = strip(raw.replace(/[\u00ad\u200b]/g, '').replace(ABV_IN_NAME, ''))
+  let name = strip(
+    decode(raw)
+      .replace(/[\u00ad\u200b]/g, '')
+      .replace(ABV_IN_NAME, '')
+      .replace(/\s*\((sold out|ausverkauft|neu|new|limit|saison)[^)]*\)/gi, ''),
+  )
+  // „Jetzt neu: Distel Helles“ – a short label before a colon goes if it names no style
+  const label = name.match(/^([^:]{1,20}):\s+(.+)$/)
+  if (label && !normalizeStyle([label[1]])) name = strip(label[2])
   const head = strip(name.split(/\s[–—|-]\s/)[0])
   return unshout(head !== name && normalizeStyle([head]) ? head : name)
 }
