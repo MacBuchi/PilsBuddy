@@ -33,11 +33,14 @@ export function useSyncStatus(): SyncStatus {
 
 const loadCloud = () => import('./cloud')
 const DEBOUNCE_MS = 1500
+/** After a failed sync (server hiccup, cold function) try again by itself; offline waits for `online`. */
+export const RETRY_MS = [3_000, 10_000, 30_000, 60_000]
 
 /** Set after joining an account: the next sync adopts the account's buddy number. */
 let adoptNext = false
 
-async function runSync(profile: Profile, dispatch: (a: Action) => void): Promise<void> {
+/** Returns 'ok', 'offline' or 'error' (the latter is retried). */
+async function runSync(profile: Profile, dispatch: (a: Action) => void): Promise<'ok' | 'offline' | 'error'> {
   setStatus({ state: 'syncing' })
   try {
     const c = await loadCloud() // may fail offline before the chunk was ever cached
@@ -56,16 +59,21 @@ async function runSync(profile: Profile, dispatch: (a: Action) => void): Promise
     dispatch({ type: 'SYNC_APPLY', sent, result: out.ratings, adopt })
     if (!profile.sync.code) dispatch({ type: 'SET_SYNC', sync: { code: await c.createSyncCode() } })
     setStatus({ state: 'ok', lastAt: Date.now() })
+    return 'ok'
   } catch (e) {
     const kind = (e as { kind?: string }).kind
-    setStatus({ state: kind === 'offline' || navigator.onLine === false ? 'offline' : 'error' })
+    const result = kind === 'offline' || navigator.onLine === false ? 'offline' : 'error'
+    setStatus({ state: result })
+    return result
   }
 }
 
 export function useCloudSync(profile: Profile, dispatch: (a: Action) => void): void {
   const latest = useRef(profile)
-  const running = useRef<Promise<void> | null>(null)
+  const running = useRef<Promise<unknown> | null>(null)
   const again = useRef(false)
+  const failures = useRef(0)
+  const retry = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     latest.current = profile
@@ -80,15 +88,19 @@ export function useCloudSync(profile: Profile, dispatch: (a: Action) => void): v
       return
     }
     const kick = () => {
+      clearTimeout(retry.current)
       if (running.current) {
         again.current = true
         return
       }
-      running.current = runSync(latest.current, dispatch).finally(() => {
+      running.current = runSync(latest.current, dispatch).then((result) => {
         running.current = null
+        failures.current = result === 'error' ? failures.current + 1 : 0
         if (again.current) {
           again.current = false
           kick()
+        } else if (result === 'error') {
+          retry.current = setTimeout(kick, RETRY_MS[Math.min(failures.current, RETRY_MS.length) - 1])
         }
       })
     }
@@ -98,6 +110,7 @@ export function useCloudSync(profile: Profile, dispatch: (a: Action) => void): v
     document.addEventListener('visibilitychange', onHidden)
     return () => {
       clearTimeout(t)
+      clearTimeout(retry.current)
       window.removeEventListener('online', kick)
       document.removeEventListener('visibilitychange', onHidden)
     }
