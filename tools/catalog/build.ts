@@ -8,7 +8,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { COUNTRIES, importSql, mainBeers, mergeBreweries, parseOpenbeer, parsePlaces } from './merge'
-import type { Country, OffRow, OpenbeerRow, OsmRow, WikidataBeerRow, WikidataRow } from './merge'
+import type { Country, OffRow, OpenbeerRow, OsmRow, WebRow, WikidataBeerRow, WikidataRow } from './merge'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const arg = (k: string) => {
@@ -49,7 +49,11 @@ const walk = (dir: string, rel: string): void => {
   }
 }
 if (existsSync(OPENBEER)) walk(OPENBEER, '')
-const beers = mainBeers(off, breweries, wdBeers, openbeer)
+// brewery websites (crawl.ts, one file per shard)
+const web = readdirSync(RAW)
+  .filter((f) => /^web-\d+\.json$/.test(f))
+  .flatMap((f) => read<WebRow[]>(f))
+const beers = mainBeers(off, breweries, wdBeers, openbeer, web)
 
 const places = COUNTRIES.flatMap((c) => {
   const p = join(RAW, `geonames-${c}.txt`)
@@ -69,9 +73,9 @@ const withBeers = new Set(beers.map((b) => b.breweryId)).size
 const report = [
   `Brauereien: ${breweries.length} (${count(breweries, (b) => b.country)}) · Quellen: ${count(breweries, (b) => b.sources.join('+'))}`,
   `  mit Gründungsjahr ${breweries.filter((b) => b.founded).length} · mit Ort ${breweries.filter((b) => b.city).length} · mit Website ${breweries.filter((b) => b.website).length}`,
-  `Open-Food-Facts-Biere: ${off.length} · Wikidata-Biere: ${wdBeers.length} · openbeer-Biere: ${openbeer.length} → Hauptbiere: ${beers.length} bei ${withBeers} Brauereien (${Math.round((withBeers / breweries.length) * 100)} %)`,
+  `Open-Food-Facts-Biere: ${off.length} · Wikidata-Biere: ${wdBeers.length} · openbeer-Biere: ${openbeer.length} · Website-Biere: ${web.length} → Hauptbiere: ${beers.length} bei ${withBeers} Brauereien (${Math.round((withBeers / breweries.length) * 100)} %)`,
   `  Stile: ${count(beers, (b) => b.style ?? '—')}`,
-  `  Quellen: ${count(beers, (b) => String(b.source))} (1 = OFF, 2 = Wikidata, 4 = openbeer)`,
+  `  Quellen: ${count(beers, (b) => String(b.source))} (1 = OFF, 2 = Wikidata, 3 = Website, 4 = openbeer)`,
   `  mit ABV ${beers.filter((b) => b.abv != null).length} · mit Gebinde ${beers.filter((b) => b.pack).length}`,
   `Postleitzahlen: ${places.length} (${count(places, (p) => p.country)})`,
   `SQL: ${readdirSync(OUT).length} Dateien in ${OUT}`,

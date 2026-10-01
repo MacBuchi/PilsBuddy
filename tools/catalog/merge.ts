@@ -59,6 +59,15 @@ export interface OpenbeerRow {
   styles: string
 }
 
+/** raw/web-N.json (crawl.ts): a beer found on the brewery's own website */
+export interface WebRow {
+  breweryId: string
+  /** path of the page on the brewery website */
+  path: string
+  name: string
+  abv: number | null
+}
+
 /** raw/off-XX.json (fetch-off.mjs) */
 export interface OffRow {
   code: string
@@ -393,6 +402,7 @@ export function mainBeers(
   breweries: Brewery[],
   wdBeers: WikidataBeerRow[] = [],
   openbeer: OpenbeerRow[] = [],
+  web: WebRow[] = [],
 ): RegionalBeer[] {
   const match = breweryMatcher(breweries)
   const perBrewery = new Map<string, Candidate[]>()
@@ -451,6 +461,26 @@ export function mainBeers(
       pack: null,
       source: SOURCE.openbeer,
       sourceRef: o.ref,
+    })
+  }
+  // website beers are crawled per brewery – no matching, the brewery only has to still exist
+  const known = new Set(breweries.map((b) => b.id))
+  const seenWeb = new Set<string>()
+  for (const w of web) {
+    const name = text(w.name, 200)
+    if (!name || !known.has(w.breweryId)) continue
+    const code = `w${stableHash(`${w.breweryId}|${normName(name)}`)}`
+    if (seenWeb.has(code)) continue
+    seenWeb.add(code)
+    const abv = w.abv != null && w.abv > 0 && w.abv <= 20 ? Math.round(w.abv * 10) / 10 : null
+    add(w.breweryId, {
+      code,
+      name,
+      style: normalizeStyle([name], abv),
+      abv,
+      pack: null,
+      source: SOURCE.web,
+      sourceRef: w.path.slice(0, 300) || '/',
     })
   }
   const out: RegionalBeer[] = []

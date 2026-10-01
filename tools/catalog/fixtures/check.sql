@@ -8,7 +8,7 @@ declare
   eichbaum text[] := (select array_agg(name order by rank) from public.regional_beers where brewery_id = 'osm-n1');
 begin
   if n_breweries <> 5 then raise exception 'breweries: % (want 5)', n_breweries; end if;
-  if n_beers <> 7 then raise exception 'beers: % (want 7)', n_beers; end if;
+  if n_beers <> 8 then raise exception 'beers: % (want 8)', n_beers; end if;
   if n_places <> 4 then raise exception 'places: % (want 4)', n_places; end if;
   if eichbaum <> array['Ureich Premium Pils', 'Eichbaum Export', 'Kurpfälzer Naturradler'] then
     raise exception 'Eichbaum main beers: %', eichbaum;
@@ -34,5 +34,9 @@ begin
      <> array['off:Doppelbock', 'wikidata:Weißbier', 'openbeer:Bock'] then raise exception 'Andechs beers wrong'; end if;
   if not exists (select 1 from public.regional_beers where source = 4 and source_ref = 'oberbayern/blob/master/beers.txt') then
     raise exception 'openbeer source_ref missing';
+  end if;
+  -- website beers keep the page path; the link is the brewery website + path
+  if (select r.source_ref from public.regional_beers r where r.brewery_id = 'osm-n3' and r.source = 3) <> '/unsere-biere' then
+    raise exception 'website beer missing';
   end if;
 end $$;
