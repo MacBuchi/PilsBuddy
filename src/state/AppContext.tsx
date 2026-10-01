@@ -9,6 +9,7 @@ import type { Rating } from '../domain/types'
 import { initialState, reducer, TAB_SCREENS } from './reducer'
 import type { Action, AppState, Screen } from './reducer'
 import { profileStore } from './storage'
+import { useCloudSync } from '../sync/useCloudSync'
 import type { ProfileStore } from './storage'
 
 export interface ToastMsg {
@@ -103,6 +104,7 @@ export function AppProvider({ children, initial, store = profileStore }: { child
     url.searchParams.delete('buddy')
     window.history.replaceState(null, '', url.pathname + url.search + url.hash)
   }, [])
+  useCloudSync(state.profile, dispatch)
   const [globalToast, setGlobalToast] = useState<ToastMsg | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 

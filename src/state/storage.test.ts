@@ -38,6 +38,13 @@ describe('storage', () => {
     expect(r.c).toEqual({ rating: 'LIKE', at: 3 })
   })
 
+  it('keeps sync settings, drops malformed codes, defaults to off for old profiles', () => {
+    const load = (sync: unknown) => parseProfile(JSON.stringify({ v: 1, profile: { ratings: {}, sync } }))!.sync
+    expect(load({ on: true, code: 'PILS-7K3Q-M9XD-2HTA-WXYZ' })).toEqual({ on: true, code: 'PILS-7K3Q-M9XD-2HTA-WXYZ' })
+    expect(load({ on: 'yes', code: 'PILS-0000-1111-OOOO-IIII' })).toEqual({ on: false, code: null })
+    expect(load(undefined)).toEqual({ on: false, code: null })
+  })
+
   it('round-trips a profile', () => {
     const p = { ...initialProfile(), ratings: { jever: { rating: 'LIKE' as const, at: 5 } }, onboarded: true }
     expect(parseProfile(serializeProfile(p))).toEqual(p)

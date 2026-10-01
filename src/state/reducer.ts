@@ -31,6 +31,14 @@ export interface Profile {
   seen: string[]
   /** The last buddy whose link was opened (Stufe C1) – compared in Matches › Menschen. */
   buddy: BuddySnapshot | null
+  /** Device sync (Stufe B2): opt-in; the Sync-Code puts another device into the same account. */
+  sync: SyncSettings
+}
+
+export interface SyncSettings {
+  on: boolean
+  /** PILS-XXXX-…; kept on the device (and in the export file) so it survives updates. */
+  code: string | null
 }
 
 export interface AppState {
@@ -59,13 +67,20 @@ export type Action =
   | { type: 'IMPORT'; profile: Profile }
   | { type: 'SET_BUDDY'; buddy: BuddySnapshot | null }
   | { type: 'RESET' }
+  | { type: 'SET_SYNC'; sync: Partial<SyncSettings> }
+  /** Result of a cloud sync, computed from `sent`; ratings changed meanwhile on this device are kept. */
+  | { type: 'SYNC_APPLY'; sent: Ratings; result: Ratings; adopt?: Partial<Pick<Profile, 'buddyNo' | 'onboarded' | 'dark'>> }
+
+function sameEntry(a: RatingEntry | undefined, b: RatingEntry | undefined): boolean {
+  return a === b || (!!a && !!b && a.rating === b.rating && a.at === b.at && a.previous === b.previous)
+}
 
 export function newBuddyNo(): number {
   return 100 + Math.floor(Math.random() * 9900)
 }
 
 export function initialProfile(): Profile {
-  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [], buddy: null }
+  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [], buddy: null, sync: { on: false, code: null } }
 }
 
 export function initialState(profile: Profile = initialProfile()): AppState {
@@ -138,5 +153,20 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, profile: action.profile, lastRated: null }
     case 'RESET':
       return initialState({ ...initialProfile(), dark: state.profile.dark })
+    case 'SET_SYNC':
+      return { ...state, profile: { ...state.profile, sync: { ...state.profile.sync, ...action.sync } } }
+    case 'SYNC_APPLY': {
+      const ratings = { ...state.profile.ratings }
+      let changed = false
+      for (const id of new Set([...Object.keys(action.sent), ...Object.keys(action.result)])) {
+        if (!sameEntry(ratings[id], action.sent[id])) continue // rated again while syncing – keep it
+        if (sameEntry(ratings[id], action.result[id])) continue
+        if (action.result[id]) ratings[id] = action.result[id]
+        else delete ratings[id]
+        changed = true
+      }
+      if (!changed && !action.adopt) return state
+      return { ...state, profile: { ...state.profile, ...action.adopt, ratings: changed ? ratings : state.profile.ratings } }
+    }
   }
 }

@@ -3,6 +3,8 @@ import { COPY, fill } from '../../data/copy'
 import { useApp } from '../../state/AppContext'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
+import { useState } from 'react'
+import { SyncJoinSheet } from '../components/SyncJoinSheet'
 import { useProfileImport } from '../useProfileImport'
 import styles from './Welcome.module.css'
 
@@ -17,6 +19,7 @@ export function Welcome() {
   const { go, state } = useApp()
   const buddy = state.profile.buddy
   const importer = useProfileImport((p) => go(p.ageConfirmed ? 'swipe' : 'howto'))
+  const [joining, setJoining] = useState(false)
   return (
     <div className={styles.screen}>
       <div className={styles.foam} />
@@ -47,6 +50,10 @@ export function Welcome() {
           {COPY.welcome.restore}
         </button>
         {importer.input}
+        <button type="button" className={styles.restore} onClick={() => setJoining(true)}>
+          {COPY.sync.join}
+        </button>
+        {joining && <SyncJoinSheet onClose={() => setJoining(false)} onJoined={() => go('howto')} />}
       </div>
     </div>
   )

@@ -3,7 +3,7 @@ import { initialState, reducer } from './reducer'
 import type { Action, AppState } from './reducer'
 
 const run = (s: AppState, ...actions: Action[]) => actions.reduce(reducer, s)
-const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [], buddy: null })
+const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [], buddy: null, sync: { on: false, code: null } })
 
 describe('reducer', () => {
   it('GO to dna marks the user as onboarded, other screens do not', () => {
@@ -88,5 +88,40 @@ describe('reducer', () => {
     expect(reset.profile.ratings).toEqual({})
     expect(reset.profile.dark).toBe(true)
     expect(reset.profile.ageConfirmed).toBe(false)
+  })
+})
+
+describe('sync', () => {
+  const rated = () => run(fresh(), { type: 'RATE', id: 'jever', rating: 'LIKE', at: 5 })
+
+  it('SET_SYNC merges settings, RESET turns sync off', () => {
+    const s = run(fresh(), { type: 'SET_SYNC', sync: { on: true } }, { type: 'SET_SYNC', sync: { code: 'PILS-AAAA-BBBB-CCCC-DDDD' } })
+    expect(s.profile.sync).toEqual({ on: true, code: 'PILS-AAAA-BBBB-CCCC-DDDD' })
+    expect(run(s, { type: 'RESET' }).profile.sync).toEqual({ on: false, code: null })
+  })
+
+  it('SYNC_APPLY takes the merged ratings', () => {
+    const s = rated()
+    const next = run(s, {
+      type: 'SYNC_APPLY',
+      sent: s.profile.ratings,
+      result: { becks: { rating: 'DISLIKE', at: 3 } },
+    })
+    expect(next.profile.ratings).toEqual({ becks: { rating: 'DISLIKE', at: 3 } })
+  })
+
+  it('SYNC_APPLY keeps what was rated while the sync ran', () => {
+    const s = rated()
+    const sent = s.profile.ratings
+    const during = run(s, { type: 'RATE', id: 'jever', rating: 'DISLIKE', at: 9 })
+    const next = run(during, { type: 'SYNC_APPLY', sent, result: { jever: { rating: 'KNOW', at: 7 } } })
+    expect(next.profile.ratings.jever.rating).toBe('DISLIKE')
+  })
+
+  it('SYNC_APPLY can adopt the account profile on a joined device', () => {
+    const s = rated()
+    const next = run(s, { type: 'SYNC_APPLY', sent: s.profile.ratings, result: s.profile.ratings, adopt: { buddyNo: 4711, onboarded: true } })
+    expect(next.profile.buddyNo).toBe(4711)
+    expect(next.profile.onboarded).toBe(true)
   })
 })
