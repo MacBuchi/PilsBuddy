@@ -160,9 +160,14 @@ Leitplanken:
       Bericht `docs/REGIONAL.md` (Abdeckung, Duplikate, Bier→Brauerei-Zuordnung, Datenmenge je Zelle) (S)
       - umgesetzt: Abruf per GitHub Actions (`catalog.yml`), OFF aus dem Tagesexport. 2 427 Brauereien DACH,
         1 901 OFF-Biere; nur 7 % der Brauereien haben ein Bier in offenen Daten → Brauerei-Profil als Rückfall offen
-- [ ] R1 **Schema + Import-Pipeline:** Migration + pgTAP (öffentlich lesbar nur `published`, kein
+- [x] R1 **Schema + Import-Pipeline:** Migration + pgTAP (öffentlich lesbar nur `published`, kein
       Schreibzugriff), Dedupe Brauereien (Name + < 300 m), Bier→Brauerei-Zuordnung mit Konfidenz,
       idempotente Upserts per Quell-ID, Lizenz-Nennung in `legal.ts` (L)
+      - umgesetzt: Tabellen `breweries`, `regional_beers`, `places`, `beer_sources` (Quelle je Bier als
+        smallint + kurze Referenz). Nur **Hauptbiere**: je Stil eins, max. 5 je Brauerei. Live seit 2026-10-01:
+        2 428 Brauereien, 380 Hauptbiere bei 191 Brauereien (Open Food Facts + Wikidata), 46 761 PLZ
+      - nächste Bier-Quellen (eigene Batches, gleiche Pipeline): openbeer/beer.db (Bayern, AT; Public Domain),
+        danach Crawler für Brauerei-Websites (1 613 mit Website; robots.txt, nur Fakten, Pfad als Quelle)
 - [x] R2 **Stilprofile** `src/domain/styleProfile.ts`: ~25 Stile mit Aliasen, `normalizeStyle`,
       `tasteFromStyle`; Leave-one-out-Test gegen die kuratierten Biere (M)
       - umgesetzt: 30 Stile (Basis = Mittel der kuratierten Biere, 8 Stile ohne kuratiertes Bier von Hand),
