@@ -161,8 +161,13 @@ Leitplanken:
 - [ ] R1 **Schema + Import-Pipeline:** Migration + pgTAP (öffentlich lesbar nur `published`, kein
       Schreibzugriff), Dedupe Brauereien (Name + < 300 m), Bier→Brauerei-Zuordnung mit Konfidenz,
       idempotente Upserts per Quell-ID, Lizenz-Nennung in `legal.ts` (L)
-- [ ] R2 **Stilprofile** `src/domain/styleProfile.ts`: ~25 Stile mit Aliasen, `normalizeStyle`,
+- [x] R2 **Stilprofile** `src/domain/styleProfile.ts`: ~25 Stile mit Aliasen, `normalizeStyle`,
       `tasteFromStyle`; Leave-one-out-Test gegen die kuratierten Biere (M)
+      - umgesetzt: 30 Stile (Basis = Mittel der kuratierten Biere, 8 Stile ohne kuratiertes Bier von Hand),
+        ABV verschiebt Körper/Malz/Süffigkeit, IBU setzt die Bittere; Schätzfehler auf den 60 kuratierten
+        Bieren Ø 5 Punkte je Achse. Flaschenparameter aus Produktdaten: `Beer.pack` (Füllmenge, Dose, Bügel,
+        `parsePack` für OFF-Texte) und `Beer.founded` („SEIT 1872“) steuern `designFor`; unbekannter Stil → „BIER“.
+        Prototyp über die R0-Rohdaten: 68 % der OFF-Biere bekommen einen Stil, 77 % ein Gebinde
 - [x] R3 **Flaschen-Baukasten** (Wunsch 2026-10-01): keine SVG-Datei mehr je Bier, sondern ein Generator zur
       Laufzeit – Vorlagen + Parameter, abgeleitet aus Stil, Farbe und Charakter des Biers:
       - Formen: die ~11 Flaschenformen der 42 Designs als parametrische Pfade (Bauch, Schulter, Hals, Dose, Bügel)

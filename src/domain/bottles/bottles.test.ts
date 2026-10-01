@@ -3,6 +3,7 @@ import raw from '../../data/beers.json'
 import type { Beer } from '../types'
 import { bottleDesign, designFor, styleRule } from './design'
 import { MOTIFS } from './motifs'
+import { parsePack } from './pack'
 import { escapeXml, renderBottle, textWidth } from './render'
 import { sanitizeDesign } from './sanitize'
 import { bodyPath, SHAPES } from './shapes'
@@ -142,5 +143,48 @@ describe('designFor', () => {
   it('stays small enough to store per beer', () => {
     const sizes = beers.filter((b) => b.bottle).map((b) => JSON.stringify(b.bottle as BottleDesign).length)
     expect(Math.max(...sizes)).toBeLessThan(600)
+  })
+})
+
+describe('parsePack', () => {
+  it.each([
+    ['500 ml', null, { ml: 500 }],
+    ['0,33 l', null, { ml: 330 }],
+    ['33 cl', 'en:glass-bottle', { ml: 330 }],
+    ['6 x 0.33 l', null, { ml: 330 }],
+    ['0,5 l', 'en:can,en:aluminium', { ml: 500, can: true }],
+    ['500ml Dose', null, { ml: 500, can: true }],
+    ['0,5 l', 'de:bügelflasche', { ml: 500, swing: true }],
+    ['30 l', null, undefined],
+    ['', '', undefined],
+  ] as const)('%s / %s', (q, p, want) => {
+    expect(parsePack(q, p)).toEqual(want)
+  })
+})
+
+describe('designFor with product data', () => {
+  const pils = { ...byId('jever'), id: 'r:test-pils', bottle: undefined }
+
+  it('follows the container: can, 0.33 l, 0.5 l, swing top', () => {
+    expect(designFor({ ...pils, pack: { ml: 500, can: true } }).shape).toBe('can')
+    for (let i = 0; i < 12; i++) {
+      const id = `r:p${i}`
+      expect(['longneck33', 'vichy33', 'steinie']).toContain(designFor({ ...pils, id, pack: { ml: 330 } }).shape)
+      expect(['longneck', 'nrw']).toContain(designFor({ ...pils, id, pack: { ml: 500 } }).shape)
+      expect(designFor({ ...pils, id, pack: { swing: true } }).closure).toBe('swing')
+    }
+    // a style without a small bottle falls back to the 0.33 longneck
+    const helles = { ...pils, style: 'Helles' }
+    expect(designFor({ ...helles, pack: { ml: 330 } }).shape).toBe('longneck33')
+  })
+
+  it('prints the founding year as badge', () => {
+    expect(designFor({ ...pils, founded: 1872 }).label.badge).toBe('SEIT 1872')
+    expect(designFor({ ...pils, founded: 3 }).label.badge).toBeUndefined()
+    expect(sanitizeDesign(designFor({ ...pils, founded: 1872 }))).toEqual(designFor({ ...pils, founded: 1872 }))
+  })
+
+  it('keeps designs of beers without product data unchanged', () => {
+    expect(designFor({ ...pils, pack: undefined })).toEqual(designFor(pils))
   })
 })
