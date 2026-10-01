@@ -123,7 +123,7 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 
 ## Stufe B – Backend (Supabase, Free Tier) – nach A0–A4
 
-- [ ] B1 Projekt `pilsbuddy` (eu-west-1) + Migrationen: `profiles`, `ratings`, `beers`; RLS; Advisor grün (S)
+- [x] B1 Projekt `PilsBuddy` (`rwqpljpnotnyovvuxjgl`, eu-central-1) + Migrationen: `profiles`, `ratings`, `beers`; RLS mit 18 pgTAP-Tests (CI-Job „Database“); Advisor grün (S)
 - [ ] B2 Anonyme Auth + `supabaseStore` (gleiches `ProfileStore`-Interface), Merge „neueste `at` gewinnt“,
       localStorage bleibt Offline-Quelle (M)
 - [ ] B3 Bierkatalog aus DB mit JSON-Fallback (S)
