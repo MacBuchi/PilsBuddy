@@ -74,7 +74,12 @@ export function beerLinks(html: string, base: string, limit = 3): string[] {
     }
     if (!/^https?:$/.test(url.protocol) || url.hostname.replace(/^www\./, '') !== baseUrl.hostname.replace(/^www\./, '')) continue
     const text = textOf(m[2])
-    const path = decodeURIComponent(url.pathname)
+    let path = url.pathname
+    try {
+      path = decodeURIComponent(path)
+    } catch {
+      // malformed %-escape: match on the raw path
+    }
     if (SKIP_LINK.test(path) || SKIP_LINK.test(text)) continue
     const score = (BEER_LINK.test(text) ? 2 : 0) + (BEER_LINK.test(path) ? 1 : 0)
     if (!score) continue
@@ -94,6 +99,29 @@ export interface WebBeer {
 const NOT_A_NAME =
   /unsere|alle |mehr|weiter|entdecken|shop|kaufen|bestellen|warenkorb|karte|sortiment|übersicht|produkte|biere$|^biere?\b|spezialitäten|newsletter|cookie|kontakt|öffnungszeit|veranstaltung|news|aktuell|geschichte|tradition|führung|gutschein|^\d|€|schwarzwald|zwischen|willkommen|herzlich|heimat|region|[!?]$/i
 
+/** Sentences, events, rooms and news rather than a beer: function words, years, typical nouns. */
+const NOT_A_BEER =
+  /\b(und|ist|nicht|der|die|das|den|dem|des|im|auf|für|von|vom|mit|aus|als|wie|zum|zur|bei|nach|ein|eine|einen|einem|the|and|of|for|with)\b|\b(19|20)\d\d\b|\p{L}+(ung|verkauf|hütten?|fest|feste|welt|abend|tour|markt|stube|garten|laden|vielfalt|keller)\b|vorgestellt|offiziell|ab sofort|gewinn|glas|gelee|alternativ|genießen|\d\s*l\b|[.,]$|,.*,/iu
+
+const ABBREVIATIONS = new Set(['IPA', 'APA', 'IRA', 'DIPA', 'NEIPA', 'ESB'])
+
+/** All-caps names get title case („INDIA PALE ALE“ → „India Pale Ale“); IPA and two-letter words stay. */
+const unshout = (name: string) =>
+  /\p{Ll}/u.test(name.replace(/ß/g, ''))
+    ? name
+    : name.replace(/\p{L}{3,}/gu, (w) => (ABBREVIATIONS.has(w) ? w : w[0] + w.slice(1).toLowerCase()))
+
+/**
+ * Tidies a heading into a beer name: drops soft hyphens and surrounding quotes, keeps the part before
+ * a dash if that already names the style („„Dunkler Doppelbock“ – im Rumfass veredelt“).
+ */
+export function cleanName(raw: string): string {
+  const strip = (s: string) => s.replace(/^[\s„“”"«»'‚‘’]+|[\s„“”"«»'‚‘’]+$/g, '').replace(/\s+/g, ' ')
+  const name = strip(raw.replace(/[\u00ad\u200b]/g, ''))
+  const head = strip(name.split(/\s[–—|-]\s/)[0])
+  return unshout(head !== name && normalizeStyle([head]) ? head : name)
+}
+
 const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk)/i
 
 /**
@@ -103,8 +131,8 @@ const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk)/i
 export function extractBeers(html: string): WebBeer[] {
   const out = new Map<string, WebBeer>()
   const add = (rawName: string, abv: number | null) => {
-    const name = rawName.replace(/\s+/g, ' ').trim()
-    if (name.length < 3 || name.length > 60 || name.split(' ').length > 7 || NOT_A_NAME.test(name)) return
+    const name = cleanName(rawName)
+    if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || NOT_A_NAME.test(name) || NOT_A_BEER.test(name)) return
     if (!normalizeStyle([name])) return
     const key = name.toLowerCase()
     const prev = out.get(key)

@@ -112,7 +112,11 @@ async function crawl(origin: string, ids: string[]) {
 const queue = [...mine]
 await Promise.all(
   Array.from({ length: PARALLEL }, async () => {
-    for (let next = queue.shift(); next; next = queue.shift()) await crawl(...next)
+    for (let next = queue.shift(); next; next = queue.shift())
+      await crawl(...next).catch((e: unknown) => {
+        stats.unreachable++
+        console.warn(`${next![0]}: ${e instanceof Error ? e.message : e}`)
+      })
   }),
 )
 
