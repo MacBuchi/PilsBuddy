@@ -1,6 +1,9 @@
 import raw from './beers.json'
 import type { Beer } from '../domain/types'
+import { toRegionalBeer } from '../domain/regionalBeer'
+import type { RegionalBeerRow, RegionalBrewery } from '../domain/regionalBeer'
 import { mergeCatalog, readCachedRows } from './catalog'
+import { readSnapshots, writeSnapshot } from './regional'
 
 /**
  * All beers in dataset order: beers.json plus the rows last fetched from the database (B3, see
@@ -8,9 +11,27 @@ import { mergeCatalog, readCachedRows } from './catalog'
  */
 export const BEERS: readonly Beer[] = mergeCatalog(raw as Beer[], readCachedRows())
 
-export const BEER_BY_ID: Readonly<Record<string, Beer>> = Object.fromEntries(
-  BEERS.map((b) => [b.id, b]),
-)
+/**
+ * Every beer the app can name: the catalogue plus regional beers the user touched (Stufe R4, snapshots
+ * on the device). Regional beers never join BEERS – the swipe deck stays curated.
+ */
+const byId: Record<string, Beer> = Object.fromEntries([
+  ...readSnapshots().map((s) => [s.row.id, toRegionalBeer(s.row, s.brewery)] as const),
+  ...BEERS.map((b) => [b.id, b] as const),
+])
+
+export const BEER_BY_ID: Readonly<Record<string, Beer>> = byId
+
+/**
+ * Makes a regional beer known from now on (Detail, Probierliste, DNA) and keeps its snapshot for the
+ * next start. Call it before opening or rating the beer.
+ */
+export function rememberRegional(row: RegionalBeerRow, brewery: RegionalBrewery | Omit<RegionalBrewery, 'beers'>): Beer {
+  const beer = byId[row.id]?.regional || !byId[row.id] ? toRegionalBeer(row, brewery) : byId[row.id]
+  byId[row.id] = beer
+  writeSnapshot(row, brewery)
+  return beer
+}
 
 /** Deck order: reference beers first (they cover diverse profiles), then the rest. */
 export const DECK_ORDER: readonly string[] = [

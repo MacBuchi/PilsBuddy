@@ -2,6 +2,7 @@ import { DownloadSimpleIcon, MoonStarsIcon, UploadSimpleIcon } from '@phosphor-i
 import { serializeProfile } from '../../state/storage'
 import { useProfileImport } from '../useProfileImport'
 import { BEER_BY_ID } from '../../data/beers'
+import { forgetRegional } from '../../data/regional'
 import { COPY, fill } from '../../data/copy'
 import { progressMessage } from '../../domain/quips'
 import { useApp } from '../../state/AppContext'
@@ -60,6 +61,7 @@ export function Profile() {
         return
       }
     }
+    forgetRegional()
     dispatch({ type: 'RESET' })
   }
 

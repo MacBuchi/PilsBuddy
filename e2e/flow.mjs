@@ -4,7 +4,12 @@ import { chromium, devices } from 'playwright'
 const base = process.argv[2] ?? 'http://localhost:5179/'
 const out = process.argv[3] ?? '/tmp/flow'
 const browser = await chromium.launch()
-const ctx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2, permissions: ['clipboard-read', 'clipboard-write'] })
+const ctx = await browser.newContext({
+  ...devices['iPhone 14'],
+  deviceScaleFactor: 2,
+  permissions: ['clipboard-read', 'clipboard-write', 'geolocation'],
+  geolocation: { latitude: 49.2386, longitude: 9.1016 }, // Bad Rappenau – real regional data (R4)
+})
 const page = await ctx.newPage()
 const errors = []
 page.on('pageerror', (e) => errors.push(String(e)))
@@ -145,6 +150,34 @@ await step('reload resumes on deck with tabs', async () => {
   await see('übrig'); await see('Swipen')
   await m.getByText('Bier-DNA', { exact: true }).click()
   await see('entschlüsselt')
+})
+let regionalBeer = ''
+await step('regional finder: position → nearby beers → sheet → Probieren', async () => {
+  await m.getByRole('button', { name: /Biere aus deiner Nähe/ }).click()
+  await m.getByRole('button', { name: 'Mein Standort' }).click()
+  await m.getByText(/\d+ Biere? · \d+ Brauereie?n? im Umkreis/).waitFor({ timeout: 20000 })
+  await m.getByText('Stil-Schätzung').first().waitFor()
+  await page.screenshot({ path: `${out}-regional.png` })
+  await m.locator('button[class*="reco"]').first().click()
+  await see('Hauptbiere')
+  const dialog = m.locator('[role=dialog]')
+  regionalBeer = (await dialog.locator('[class*="recoName"]').first().innerText()).trim()
+  await dialog.getByRole('button', { name: 'Probieren', exact: true }).first().click()
+  await dialog.getByRole('button', { name: 'Vorgemerkt', exact: true }).first().waitFor()
+  await page.keyboard.press('Escape')
+  await m.getByLabel('Zurück').click()
+  await see('entschlüsselt')
+})
+await step('regional beer stays on the Probierliste after a reload', async () => {
+  await page.reload({ waitUntil: 'load' })
+  await m.getByText('Matches', { exact: true }).click()
+  await m.getByRole('tab', { name: 'Probierliste' }).click()
+  await m.getByText(regionalBeer, { exact: true }).first().waitFor({ timeout: 4000 })
+  await m.getByRole('tab', { name: 'Nähe' }).click()
+  await m.getByLabel('PLZ').fill('74906')
+  await m.getByRole('button', { name: 'Los' }).click()
+  await see('Rund um 74906')
+  await m.getByText('Bier-DNA', { exact: true }).click()
 })
 let buddyLink = ''
 await step('buddy invite copies a link', async () => {

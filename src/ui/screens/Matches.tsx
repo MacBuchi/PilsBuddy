@@ -13,6 +13,7 @@ import { Button } from '../components/Button'
 import page from './page.module.css'
 import { BeerBottle } from '../components/BeerBottle'
 import { RateSheet } from '../components/RateSheet'
+import { RegionalFinder } from '../components/RegionalFinder'
 import { useBuddyInvite } from '../useBuddyInvite'
 import { RATING_COLOR } from '../ratingStyle'
 import styles from './Matches.module.css'
@@ -20,6 +21,7 @@ import styles from './Matches.module.css'
 const SEGMENTS: { k: MatchTab; label: string; beta: boolean }[] = [
   { k: 'biere', label: COPY.matches.tabBeers, beta: false },
   { k: 'probieren', label: COPY.matches.tabTry, beta: false },
+  { k: 'naehe', label: COPY.matches.tabNear, beta: false },
   { k: 'menschen', label: COPY.matches.tabPeople, beta: true },
 ]
 
@@ -119,6 +121,8 @@ export function Matches() {
           {tryList.length === 0 && <div className={page.dashed}>{COPY.tryList.empty}</div>}
         </>
       )}
+
+      {tab === 'naehe' && <RegionalFinder />}
 
       {tried && <RateSheet beer={tried} onRate={(r) => verdict(tried, r)} onClose={() => setTried(null)} />}
 

@@ -63,6 +63,11 @@ export function Dna() {
         </button>
       )}
 
+      <button type="button" className={styles.buddyCard} onClick={() => go('regional')}>
+        <span>{COPY.regional.dnaCta}</span>
+        <b>{COPY.regional.dnaCtaGo} →</b>
+      </button>
+
       {showInstall && (
         <div className={styles.install} role="note">
           <span className={styles.installText}>

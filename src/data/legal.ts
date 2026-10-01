@@ -55,6 +55,14 @@ export const PRIVACY: LegalSection[] = [
     ],
   },
   {
+    title: 'Biere aus deiner Nähe',
+    paragraphs: [
+      'Wenn du „Mein Standort“ antippst, fragt der Browser um Erlaubnis und gibt die Position nur an die App auf deinem Gerät. Sie wird nicht gesendet und nicht gespeichert. Die App fragt bei Supabase (Server in Frankfurt am Main) nur grobe Kartenfelder von etwa 55 × 36 km ab, in denen dein Umkreis liegt, und rechnet Entfernung und Reihenfolge selbst aus. Gibst du stattdessen eine Postleitzahl ein, wird diese Postleitzahl gesendet.',
+      'Die abgerufenen Brauereien, deine zuletzt eingegebene Postleitzahl, der Umkreis und die Regionalbiere, die du dir angesehen oder vorgemerkt hast, bleiben auf deinem Gerät, damit der Finder auch offline funktioniert (Brauerei-Daten werden nach 30 Tagen neu geladen). „Profil zurücksetzen“ löscht auch sie. „Route“ öffnet Google Maps mit der Position der Brauerei – nicht mit deiner; dabei gelten die Datenschutzhinweise von Google.',
+      'Rechtsgrundlage ist dein Wunsch, Biere in deiner Nähe zu finden (Art. 6 Abs. 1 lit. b DSGVO); die Standortfreigabe kannst du jederzeit in den Browser-Einstellungen zurücknehmen.',
+    ],
+  },
+  {
     title: 'Geräte-Sync (nur wenn du ihn einschaltest)',
     paragraphs: [
       'Der Sync ist standardmäßig aus. Schaltest du ihn im Profil ein, legen wir bei Supabase (Supabase, Inc., USA; Server in Frankfurt am Main, EU) ein anonymes Konto an – mit einer zufälligen ID, ohne Name und ohne E-Mail.',

@@ -15,8 +15,9 @@ export type Screen =
   | 'legal'
   | 'games'
   | 'quartett'
+  | 'regional'
 
-export type MatchTab = 'biere' | 'probieren' | 'menschen'
+export type MatchTab = 'biere' | 'probieren' | 'naehe' | 'menschen'
 
 /** Screens that show the bottom tab bar once the user is onboarded. */
 export const TAB_SCREENS = ['swipe', 'dna', 'matches', 'games', 'profile'] as const satisfies readonly Screen[]
