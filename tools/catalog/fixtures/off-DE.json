@@ -1,0 +1,8 @@
+[
+ {"code":"4001","name":"Ureich Premium Pils 0,5l","brands":"Eichbaum","owner":"Privatbrauerei Eichbaum GmbH & Co. KG","places":"Mannheim","abv":4.9,"categories":["en:beers","en:lagers"],"labels":[],"quantity":"0,5 l","packaging":"en:glass-bottle"},
+ {"code":"4002","name":"Ureich Premium Pils","brands":"Eichbaum","owner":null,"places":null,"abv":null,"categories":["en:beers"],"labels":[],"quantity":"6 x 0,33 l","packaging":null},
+ {"code":"4003","name":"Eichbaum Export","brands":"Eichbaum","owner":null,"places":null,"abv":5.2,"categories":["en:beers"],"labels":[],"quantity":"330 ml","packaging":"en:can"},
+ {"code":"4004","name":"Kurpfälzer Naturradler","brands":"Eichbaum","owner":null,"places":null,"abv":2.4,"categories":["en:beers"],"labels":[],"quantity":null,"packaging":null},
+ {"code":"4005","name":"Andechser Doppelbock Dunkel","brands":"Andechser, Klosterbrauerei Andechs","owner":null,"places":"Andechs","abv":7.1,"categories":["en:beers"],"labels":["en:organic"],"quantity":"0,5 l","packaging":"de:bügelflasche"},
+ {"code":"4006","name":"Adler Hell","brands":"Adler","owner":null,"places":null,"abv":5,"categories":["en:beers"],"labels":[],"quantity":null,"packaging":null}
+]

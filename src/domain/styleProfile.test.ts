@@ -20,6 +20,7 @@ describe('normalizeStyle', () => {
     ['Hefeweißbier Dunkel', 'Dunkles Weißbier'],
     ['Aventinus Weizenbock', 'Bock'],
     ['Paulaner Salvator', 'Doppelbock'],
+    ['Doppel Bock Dunkel', 'Doppelbock'],
     ['Schlenkerla Rauchbier Märzen', 'Rauchbier'],
     ['Chameleon India Pale Ale', 'IPA'],
     ['Voyage Pale Ale', 'Pale Ale'],

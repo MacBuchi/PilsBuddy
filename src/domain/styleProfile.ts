@@ -66,7 +66,7 @@ const PATTERNS: [RegExp, string][] = [
   [/berliner[ -]weiss/, 'Berliner Weisse'],
   [/\bgose\b/, 'Gose'],
   [/rauch|smoked/, 'Rauchbier'],
-  [/eisbock|doppel-?bock|\b\w+ator\b/, 'Doppelbock'],
+  [/eisbock|doppel[ -]?bock|\b\w+ator\b/, 'Doppelbock'],
   [/\bbock|bock\b|maibock|festbock|weizenbock|bock-beers/, 'Bock'],
   [/trappist/, 'Trappist'],
   [/tripel|abbey|abtei|abdij|blonde-ales?|\bblond(e)?\b/, 'Abbey Blonde'],

@@ -1,0 +1,2 @@
+DE	74906	Bad Rappenau	Baden-Württemberg	BW					49.2386	9.1016	4
+DE	68169	Mannheim	Baden-Württemberg	BW					49.5	8.48	4

@@ -1,0 +1,6 @@
+[
+ {"id":"osm:n1","name":"Privatbrauerei Eichbaum","lat":49.4954,"lon":8.4823,"city":"Mannheim","postcode":"68169","country":"DE","website":"eichbaum.de","beers":[],"wikidata":"Q1"},
+ {"id":"osm:w2","name":"Eichbaum Brauerei GmbH","lat":49.4956,"lon":8.4825,"city":"Mannheim","postcode":null,"country":"DE","website":null,"beers":[]},
+ {"id":"osm:n3","name":"Brauerei Adler","lat":49.3,"lon":9.2,"city":"Dettingen","postcode":null,"country":"DE","website":null,"beers":[]},
+ {"id":"osm:n4","name":"Adler Brauerei","lat":47.8,"lon":8.3,"city":"Bonndorf","postcode":null,"country":"DE","website":null,"beers":[]}
+]

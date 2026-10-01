@@ -187,7 +187,7 @@ Leitplanken:
 - [ ] R4 **Regional-Finder:** `src/domain/regional.ts` (Zellen, Haversine, `rankRegional`), Screen
       `regional` (Einstieg im DNA-Screen + Segment „In der Nähe“ in Matches), Standort oder PLZ,
       Radius-Chips, Liste mit Match-% und Entfernung, Brauerei-Sheet mit Route-Link, Probierliste;
-      angefasste Regionalbiere (`r:<id>`) lokal als Snapshot im Katalog-Overlay. E2E mit Geolocation (L)
+      angefasste Regionalbiere (`r-<EAN>`) lokal als Snapshot im Katalog-Overlay. E2E mit Geolocation (L)
 - [ ] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
       Achievement „Lokalpatriot“, Share-Card-Zeile (M)
 - [ ] R6 **„Bier fehlt? Eintragen“:** `beer_submissions` mit Freigabe-Queue, Limit je anonymer Session (M)

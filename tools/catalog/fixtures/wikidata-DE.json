@@ -1,0 +1,5 @@
+[
+ {"id":"wd:Q1","name":"Eichbaum-Brauerei","lat":49.49,"lon":8.48,"country":"DE","website":null,"dissolved":false,"founded":1679,"city":"Mannheim"},
+ {"id":"wd:Q2","name":"Alte Brauerei","lat":50,"lon":10,"country":"DE","website":null,"dissolved":true},
+ {"id":"wd:Q3","name":"Klosterbrauerei Andechs","lat":47.97,"lon":11.18,"country":"DE","website":"https://andechs.de","dissolved":false,"founded":1455,"city":"Andechs"}
+]
