@@ -1,4 +1,5 @@
-import { DownloadSimpleIcon, MoonStarsIcon, UploadSimpleIcon } from '@phosphor-icons/react'
+import { ChatCircleTextIcon, DownloadSimpleIcon, MoonStarsIcon, UploadSimpleIcon } from '@phosphor-icons/react'
+import { useState } from 'react'
 import { serializeProfile } from '../../state/storage'
 import { useProfileImport } from '../useProfileImport'
 import { BEER_BY_ID } from '../../data/beers'
@@ -8,6 +9,7 @@ import { progressMessage } from '../../domain/quips'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
+import { FeedbackSheet } from '../components/FeedbackSheet'
 import { RATING_COLOR, RATING_ICON } from '../ratingStyle'
 import page from './page.module.css'
 import { BeerBottle } from '../components/BeerBottle'
@@ -17,6 +19,7 @@ import { SyncSection } from './SyncSection'
 import { hasCloudAccount, syncActions } from '../../sync/useCloudSync'
 
 export function Profile() {
+  const [feedback, setFeedback] = useState(false)
   const { state, dispatch, go, openDetail, withTabs, toast } = useApp()
   const { counts, decoded, archetype, avatar, achievements } = useDerived()
   const { ratings, dark, buddyNo } = state.profile
@@ -129,6 +132,14 @@ export function Profile() {
           </span>
         </button>
         <SyncSection />
+        <button type="button" className={styles.setting} onClick={() => setFeedback(true)}>
+          <ChatCircleTextIcon weight="bold" size={20} />
+          <span className={styles.settingText}>
+            <span className={styles.settingLabel}>{COPY.feedback.entry}</span>
+            <span className={styles.settingSub}>{COPY.feedback.entrySub}</span>
+          </span>
+        </button>
+        {feedback && <FeedbackSheet onClose={() => setFeedback(false)} />}
         <h2 className={styles.h2}>{COPY.profile.backup}</h2>
         <button type="button" className={styles.setting} onClick={exportProfile}>
           <DownloadSimpleIcon weight="bold" size={20} />

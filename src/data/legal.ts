@@ -71,6 +71,14 @@ export const PRIVACY: LegalSection[] = [
     ],
   },
   {
+    title: 'Feedback („Wünsch dir was!“)',
+    paragraphs: [
+      'Schickst du eine Idee oder einen Fehler ab, speichern wir bei Supabase (Server in Frankfurt am Main) deinen Text, die Art (Idee/Fehler), die App-Version und den groben Gerätetyp (z. B. „iOS · App“) – ohne Konto, ohne Namen, ohne deine Bewertungen. Supabase verarbeitet dabei technisch nötige Verbindungsdaten wie die IP-Adresse.',
+      'Ein Bot veröffentlicht den Text anschließend als Eintrag (Issue) im öffentlichen GitHub-Projekt von PilsBuddy (GitHub, Inc., USA). Dort ist er für alle lesbar und bleibt stehen; schreib deshalb keine persönlichen Daten hinein. Die Kopie bei Supabase löschen wir 30 Tage nach der Veröffentlichung. Weil wir nicht wissen, von wem ein Text stammt, können wir einzelne Einsendungen nur über ihren Wortlaut finden.',
+      'Rechtsgrundlage ist deine Einwilligung durch das Abschicken (Art. 6 Abs. 1 lit. a DSGVO).',
+    ],
+  },
+  {
     title: 'Buddy-Link',
     paragraphs: [
       'Wenn du einen Buddy-Link teilst, stecken deine Buddy-Nummer und deine Bewertungen im Link selbst. Wir speichern ihn nicht; wer den Link hat, kann deinen Geschmack sehen. Teile ihn also nur mit Leuten, die das dürfen.',
