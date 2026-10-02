@@ -1454,7 +1454,7 @@
     "city": "Calgary",
     "style": "Amber",
     "abv": 5.6,
-    "source": "https://www.toolshedbrewing.com/beers/red-rage",
+    "source": "https://toolshedbrewing.com/calgary-tool-shed-brewing-company-beer",
     "verified": "2026-10-02",
     "note": "roasty red ale",
     "adjust": [
@@ -1462,7 +1462,7 @@
         "axis": "maltiness",
         "delta": 10,
         "reason": "roasty like coffee, toasty like fresh bread",
-        "source": "https://www.toolshedbrewing.com/beers/red-rage"
+        "source": "https://toolshedbrewing.com/calgary-tool-shed-brewing-company-beer"
       }
     ],
     "de": {
