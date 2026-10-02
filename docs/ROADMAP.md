@@ -21,7 +21,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 3. [ ] **Q2** Live-Migration per CI vor dem Deploy – #37, ⏸ braucht die ausdrückliche Freigabe des Maintainers
        (Auto-Modus blockiert „Blind Apply“) und das Secret `SUPABASE_ACCESS_TOKEN`; bis dahin übersprungen
 4. [x] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card) (#42, live 2026-10-02)
-5. [ ] **I1** Englische Version – automatisch nach Browsersprache, umschaltbar (#46)
+5. [x] **I1** Englische Version – automatisch nach Browsersprache, umschaltbar (#46) (#48, live 2026-10-02)
 6. [ ] **R8** Bierbibliothek mit Filtern
 7. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 8. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
@@ -247,11 +247,13 @@ Vorlage: Job `schema-dry-run` in PilzBuddy/TrailBuddy (`tool/db_migrate.sh`, `sc
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
-- [ ] I1 **Englische Version:** Sprache beim Start aus gespeicherter Wahl, sonst Browsersprache (Deutsch, sonst
+- [x] I1 **Englische Version:** Sprache beim Start aus gespeicherter Wahl, sonst Browsersprache (Deutsch, sonst
       Englisch); Wechsel im Profil und auf dem Welcome-Screen speichert und lädt neu. Komplett übersetzt: Oberfläche
       (`copy.en.ts`, gleiche Schlüssel per Typ erzwungen), Achievements, Rechtstexte (deutsche Fassung verbindlich),
       Texte der 60 kuratierten Biere (`beers.en.json`). Stilnamen bleiben deutsch; Biere aus der Datenbank bleiben
       deutsch, bis sie eine Übersetzung bekommen (L)
+      - umgesetzt (2026-10-02, #48): Wechsel über Neuladen (Sprache je Sitzung fest), `?lang=en` für Links;
+        E2E-Kontexte auf `de-DE` gepinnt + eigener Englisch-Schritt; Bundle ~206 kB gzip
 
 ## Stufe E – Minispiele (vorgezogen vor C, Wunsch 2026-10-01)
 
