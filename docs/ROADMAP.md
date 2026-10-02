@@ -22,7 +22,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 4. [x] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card) (#42, live 2026-10-02)
 5. [x] **I1** Englische Version – automatisch nach Browsersprache, umschaltbar (#46) (#48, live 2026-10-02)
 6. [x] **Q3** Release-Pipeline: Smoke nach jedem Deploy, Release + Rollback, Gate in CI statt lokal (2026-10-02)
-7. [ ] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production`
+7. [x] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production` (2026-10-02)
 8. [ ] **R8** Bierbibliothek mit Filtern
 9. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 10. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
@@ -243,7 +243,7 @@ Vorlage: Job `schema-dry-run` in PilzBuddy/TrailBuddy (`tool/db_migrate.sh`, `sc
         `tool/db/` (upgrade_check.sh, grants_check.sql, schema_check.sh, seed_existing.sql). Befund: live hatten
         anon/authenticated alle Rechte auf allen Tabellen (nur RLS schützte) → Migration `explicit_grants`, neue Tabellen
         ohne Standardrechte; live geprüft (Rechte, App-Queries, Prod-Smoke)
-- [ ] Q2 **Live-Migration per CI:** Job `live-db` (`supabase db push --linked`, Edge Functions, Rechte-Check live) nur bei
+- [x] Q2 **Live-Migration per CI:** Job `live-db` (`supabase db push --linked`, Edge Functions, Rechte-Check live) nur bei
       geänderten Migrationen/Functions, vor dem Deploy, mit Approve im Environment `production`; dazu `live-check`
       (Dry-Run + Advisors, read-only) bei jedem Push und `catalog-import.yml` statt lokalem Import. Secret
       `SUPABASE_ACCESS_TOKEN`. Freigegeben 2026-10-02 (S)

@@ -171,10 +171,98 @@ jobs:
           path: /tmp/pilsbuddy-*.png
           retention-days: 7
 
+  # Q2 – the live project, only on main. live-check: read-only (dry-run + advisors) on every push. live-db: applies
+  # new migrations / deploys changed edge functions, only when this push changed them, and only after the
+  # maintainer approves in the environment „production“. Schema before app: deploy waits for it.
+  # Without the secret SUPABASE_ACCESS_TOKEN both say so in the summary and stay green.
+  live-check:
+    name: Live database check
+    needs: [db, upgrade]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      db: ${{ steps.changes.outputs.db }}
+      functions: ${{ steps.changes.outputs.functions }}
+      enabled: ${{ steps.guard.outputs.enabled }}
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: What changed on the backend
+        id: changes
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = 0000000000000000000000000000000000000000 ]; then BEFORE=HEAD~1; fi
+          files=$(git diff --name-only "$BEFORE" "$GITHUB_SHA")
+          db=false; grep -q '^supabase/migrations/' <<<"$files" && db=true
+          fns=$(grep '^supabase/functions/' <<<"$files" | cut -d/ -f3 | grep -v '^_' | sort -u | tr '\n' ' ' || true)
+          echo "db=$db" >> "$GITHUB_OUTPUT"
+          echo "functions=${fns% }" >> "$GITHUB_OUTPUT"
+          echo "Migrationen geändert: **$db** · Edge Functions: **${fns:-keine}**" >> "$GITHUB_STEP_SUMMARY"
+      - name: Skip without SUPABASE_ACCESS_TOKEN
+        id: guard
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::warning::No SUPABASE_ACCESS_TOKEN secret – live database not checked, migrations not applied."
+            echo "Kein \`SUPABASE_ACCESS_TOKEN\` – Live-Datenbank nicht geprüft." >> "$GITHUB_STEP_SUMMARY"
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.guard.outputs.enabled == 'true'
+        uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+      - if: steps.guard.outputs.enabled == 'true'
+        run: supabase link --project-ref rwqpljpnotnyovvuxjgl
+      - name: Pending migrations (dry run)
+        if: steps.guard.outputs.enabled == 'true'
+        run: supabase db push --linked --dry-run 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Advisors
+        if: steps.guard.outputs.enabled == 'true'
+        run: bash tool/db/live_advisors.sh | tee -a "$GITHUB_STEP_SUMMARY"
+
+  live-db:
+    name: Live database (migrations · functions)
+    needs: live-check
+    if: needs.live-check.outputs.enabled == 'true' && (needs.live-check.outputs.db == 'true' || needs.live-check.outputs.functions != '')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production # waits for the maintainer's approval
+    concurrency:
+      group: live-db
+      cancel-in-progress: false
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      FUNCTIONS: ${{ needs.live-check.outputs.functions }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+      - run: supabase link --project-ref rwqpljpnotnyovvuxjgl
+      - name: Apply migrations
+        if: needs.live-check.outputs.db == 'true'
+        run: supabase db push --linked --yes 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Deploy edge functions
+        if: env.FUNCTIONS != ''
+        run: for f in $FUNCTIONS; do supabase functions deploy "$f" --use-api --project-ref rwqpljpnotnyovvuxjgl; done
+      - name: Rights as intended (live)
+        run: supabase db query --linked -f tool/db/grants_check.sql
+      - name: Nothing pending, advisors clean
+        run: |
+          supabase db push --linked --dry-run 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          bash tool/db/live_advisors.sh | tee -a "$GITHUB_STEP_SUMMARY"
+
   deploy:
     name: Deploy to Cloudflare
-    needs: [e2e, db, sync-e2e, upgrade]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [e2e, db, sync-e2e, upgrade, live-check, live-db]
+    # live-db is skipped when nothing changed on the backend – that must not block the deploy
+    if: ${{ !failure() && !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     # shared with rollback.yml: never two deploys at once
     concurrency:
@@ -249,7 +337,7 @@ jobs:
   # Something after the merge broke (checks on main, deploy, smoke, release): one issue, not silence.
   alert:
     name: Alert on failure
-    needs: [check, db, upgrade, sync-e2e, e2e, deploy, smoke, release]
+    needs: [check, db, upgrade, sync-e2e, e2e, live-check, live-db, deploy, smoke, release]
     if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:

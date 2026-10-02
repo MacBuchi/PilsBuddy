@@ -35,8 +35,10 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   `src/state/lang.ts`, which the text bank needs before anything else loads. Navigation is not persisted.
 - Backend: Supabase project `PilsBuddy` (ref `rwqpljpnotnyovvuxjgl`). Schema changes only as new files in
   `supabase/migrations/` + pgTAP tests in `supabase/tests/` (`supabase db start && supabase test db`); after
-  merge apply with `supabase db push`. RLS on every table; `supabase db advisors --linked` must stay clean
-  (except the two intended 0012 „anonymous access“ WARNs, see `supabase/README.md`).
+  the merge CI applies them (job „Live database (migrations · functions)“: `db push`, changed edge functions,
+  live rights check – it waits for the maintainer's approval in the environment `production`; never apply by
+  hand). RLS on every table; the live advisors (`tool/db/live_advisors.sh`, job „Live database check“ on every
+  push to main) must stay clean except the two intended 0012 „anonymous access“ WARNs (see `supabase/README.md`).
   Migrations already on `main` are live – never edit them, add a new one. A new table needs explicit grants
   (the API roles get nothing by default) plus an entry in `tool/db/grants_check.sql` and a guarded block in
   `tool/db/seed_existing.sql`; CI job „DB upgrade path“ (`tool/db/upgrade_check.sh`) replays main → data → new

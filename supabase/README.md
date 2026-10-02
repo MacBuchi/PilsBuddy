@@ -64,7 +64,9 @@ gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = 
    (openbeer) streng: Ort passt, oder gleicher Name und Brauerei ohne bekannten Ort.
    Bricht ab bei < 1000 Brauereien (unvollständiger Download).
 3. Lokal prüfen: `for f in tools/catalog/out/*.sql; do psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$f"; done`
-4. Live (nur nach OK): dieselbe Schleife mit `supabase db query --linked -f "$f"`. Jede Datei ist eine
+4. Live: Workflow „Regional catalogue (import)“ (`gh workflow run catalog-import.yml` = Probelauf mit Report,
+   `-f apply=true` = Import nach Freigabe im Environment `production`; nimmt die Artefakte des letzten fetch-
+   und Website-Laufs). Er spielt die Dateien per `supabase db query --linked -f "$f"` ein. Jede Datei ist eine
    Transaktion; Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
    setzt Brauereien/Biere, die nicht mehr in den Quellen sind, auf `published = false` (Zeilen bleiben) – außer
    den freigegebenen Meldungen aus der App (Quelle 5, Brauereien `app-…`).
@@ -85,11 +87,14 @@ supabase db start            # lokale DB (Docker) mit allen Migrationen
 supabase test db             # RLS-Tests in supabase/tests/
 supabase db advisors --local # Sicherheits-/Performance-Hinweise
 supabase start -x studio,imgproxy,vector,logflare,supavisor,mailpit,realtime,storage-api   # + Auth + Functions
-supabase functions deploy sync-code   # nach dem Merge
-supabase db push             # nach dem Merge: Migrationen ins Projekt (vorher: supabase link --project-ref rwqpljpnotnyovvuxjgl)
-# hängt `db push` (Host nur per IPv6): supabase db query --linked -f migrations/<datei>.sql, dann
-# insert into supabase_migrations.schema_migrations (version, name) values ('<ts>', '<name>');
 ```
+
+**Live-Auslieferung (Q2):** nicht von Hand. Nach dem Merge auf `main` prüft der CI-Job „Live database check“
+(read-only: `db push --dry-run`, `tool/db/live_advisors.sh`). Hat der Push Migrationen oder Edge Functions
+geändert, wartet „Live database (migrations · functions)“ auf die Freigabe im Environment `production`
+(Reviewer: Maintainer), spielt dann `supabase db push --linked` und `supabase functions deploy <name> --use-api`
+ein und prüft live `tool/db/grants_check.sql` und die Advisors – erst danach deployt CI die App. Secret:
+`SUPABASE_ACCESS_TOKEN` (ohne Secret überspringen beide Jobs sichtbar).
 
 App gegen den lokalen Stack + Zwei-Geräte-Test:
 

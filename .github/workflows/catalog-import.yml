@@ -1,0 +1,102 @@
+name: Regional catalogue (import)
+
+# Builds the regional catalogue import from the artifacts of the fetch/crawl workflows (catalog.yml,
+# catalog-web.yml) and – only with apply=true and the maintainer's approval in the environment „production“ –
+# writes it into the live database. Without apply it is a dry run: report in the summary, SQL as artifact.
+#   gh workflow run catalog-import.yml                    → dry run with the latest successful downloads
+#   gh workflow run catalog-import.yml -f apply=true      → the same, then import after approval
+# Artifacts are kept 14 days; older downloads need a new fetch run.
+on:
+  workflow_dispatch:
+    inputs:
+      fetch_run:
+        description: Run id of „Regional catalogue (fetch)“ (empty = latest successful)
+        default: ''
+      web_run:
+        description: Run id of „Regional catalogue (brewery websites)“ (empty = latest successful)
+        default: ''
+      apply:
+        description: Import into the live database (after approval)
+        type: boolean
+        default: false
+
+concurrency:
+  group: catalog-import
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    name: Build import
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      FETCH_RUN: ${{ inputs.fetch_run }}
+      WEB_RUN: ${{ inputs.web_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Download raw data
+        run: |
+          latest() { gh run list --repo "$GITHUB_REPOSITORY" --workflow "$1" --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty'; }
+          FETCH_RUN=${FETCH_RUN:-$(latest catalog.yml)}
+          WEB_RUN=${WEB_RUN:-$(latest catalog-web.yml)}
+          [ -n "$FETCH_RUN" ] || { echo "::error::no successful fetch run"; exit 1; }
+          mkdir -p tools/catalog/raw
+          gh run download "$FETCH_RUN" --repo "$GITHUB_REPOSITORY" -n catalog-raw -D tools/catalog/raw
+          if [ -n "$WEB_RUN" ]; then
+            for n in 0 1 2 3; do gh run download "$WEB_RUN" --repo "$GITHUB_REPOSITORY" -n "catalog-web-$n" -D tools/catalog/raw || true; done
+          fi
+          echo "Rohdaten: fetch-Run $FETCH_RUN, Website-Run ${WEB_RUN:-keiner}" >> "$GITHUB_STEP_SUMMARY"
+      - run: npm run catalog:build
+      - name: Report
+        run: |
+          { echo '```'; cat tools/catalog/out/report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          ls tools/catalog/out/*.sql | wc -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-import
+          path: tools/catalog/out
+          retention-days: 14
+
+  apply:
+    name: Import into the live database
+    needs: build
+    if: inputs.apply
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production # waits for the maintainer's approval
+    concurrency:
+      group: live-db
+      cancel-in-progress: false
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: catalog-import
+          path: out
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+      - run: supabase link --project-ref rwqpljpnotnyovvuxjgl
+      - name: Import (idempotent, file by file)
+        run: |
+          for f in out/*.sql; do
+            echo "$f"
+            for try in 1 2 3; do supabase db query --linked -f "$f" > /dev/null && break; [ "$try" = 3 ] && exit 1; sleep 10; done
+          done
+      - name: Counts after the import
+        run: |
+          supabase db query --linked "select (select count(*) from breweries where published) as breweries,
+            (select count(*) from regional_beers where published) as beers, (select count(*) from places) as places" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
