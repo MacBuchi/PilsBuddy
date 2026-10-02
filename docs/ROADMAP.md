@@ -16,7 +16,7 @@ Arbeitsliste für die Umsetzung (Absprache 2026-10-02): oben anfangen, je Zeile 
 mergen, live prüfen, hier abhaken – dann die nächste. Neue Wünsche werden hier einsortiert, nicht nebenher gebaut.
 Details stehen beim jeweiligen Paket weiter unten.
 
-1. [ ] **R6** „Bier fehlt? Eintragen“ – Meldung → Issue → Label `freigegeben` → Katalog
+1. [x] **R6** „Bier fehlt? Eintragen“ – Meldung → Issue → Label `freigegeben` → Katalog (#38, live 2026-10-02)
 2. [ ] **Q1** Integrationstest Patch-Kompatibilität (Upgrade-Pfad mit Bestand, Live-Rechte, App-Queries) – #37
 3. [ ] **Q2** Live-Migration per CI vor dem Deploy – #37, ⏸ braucht die ausdrückliche Freigabe des Maintainers
        (Auto-Modus blockiert „Blind Apply“) und das Secret `SUPABASE_ACCESS_TOKEN`; bis dahin übersprungen
@@ -214,12 +214,15 @@ Leitplanken:
         zweiten Gerät (Sync/Import) fehlen die Snapshots, diese Bewertungen werden dort ignoriert
 - [ ] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
       Achievement „Lokalpatriot“, Share-Card-Zeile (M)
-- [ ] R6 **„Bier fehlt? Eintragen“** (vor R5 gezogen, Wunsch 2026-10-02): Brauerei Pflicht (aus dem Finder oder
+- [x] R6 **„Bier fehlt? Eintragen“** (vor R5 gezogen, Wunsch 2026-10-02): Brauerei Pflicht (aus dem Finder oder
       frei mit PLZ/Ort), dazu ein Link oder die Daten (Name, Stil, Alkohol). Tabelle `beer_submissions` (anonym, nur
       `insert`, Trigger-Limit global + keine Doppelmeldung, 5 je Gerät und Tag) → `tool/beer_bot.py` legt je Meldung
       ein Issue `bier-meldung` an; Label `freigegeben` trägt das (im Issue korrigierbare) Bier als Quelle 5 in
       `regional_beers` ein, eine neue Brauerei als `app-<Issue>` mit Koordinaten aus `places`. Kein Konto statt
       „Limit je anonymer Session“ (Sessions gibt es nur mit Sync) (M)
+      - umgesetzt (2026-10-02, #38): Workflow „Beer Reports“ (alle 2 h + bei Label), unklare Issues bekommen einen
+        Kommentar und verlieren das Label; Katalog-Rebuild lässt Quelle 5 / `app-…` veröffentlicht. Offen: gecachte
+        Finder-Zellen zeigen ein freigegebenes Bier erst nach bis zu 30 Tagen
 - [ ] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
 - [ ] R8 **Bierbibliothek** (Wunsch 2026-10-02): alle Biere durchsuchen und filtern – Name, PLZ/Region, Stil,
       Alkohol, eigene Bewertung; vorkategorisiert nach Stilgruppen (hell · dunkel · Weizen · Hopfen · alkoholfrei).
