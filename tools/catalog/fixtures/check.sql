@@ -7,13 +7,22 @@ declare
   n_places int := (select count(*) from public.places);
   eichbaum text[] := (select array_agg(name order by rank) from public.regional_beers where brewery_id = 'osm-n1');
 begin
-  if n_breweries <> 5 then raise exception 'breweries: % (want 5)', n_breweries; end if;
-  if n_beers <> 8 then raise exception 'beers: % (want 8)', n_beers; end if;
-  if n_places <> 4 then raise exception 'places: % (want 4)', n_places; end if;
+  if n_breweries <> 9 then raise exception 'breweries: % (want 9)', n_breweries; end if;
+  if n_beers <> 10 then raise exception 'beers: % (want 10)', n_beers; end if;
+  if n_places <> 7 then raise exception 'places: % (want 7)', n_places; end if;
   if eichbaum <> array['Ureich Premium Pils', 'Eichbaum Export', 'Kurpfälzer Naturradler'] then
     raise exception 'Eichbaum main beers: %', eichbaum;
   end if;
   if (select founded from public.breweries where id = 'osm-n1') <> 1679 then raise exception 'Wikidata not merged'; end if;
+  -- N5: Open Brewery DB joins OSM by name, places a brewery without coordinates at its ZIP, fl oz become ml
+  if (select sources from public.breweries where id = 'osm-n9001') <> '{osm,obdb}' then raise exception 'Open Brewery DB not merged'; end if;
+  if (select round(lat::numeric, 2) from public.breweries where id = 'obdb-a1b2c3d4-0000-4000-8000-000000000001') <> 42.27 then
+    raise exception 'ZIP fallback missing';
+  end if;
+  if (select pack->>'ml' from public.regional_beers where id = 'r-0083783375213') <> '355' then raise exception 'fl oz pack wrong'; end if;
+  if (select string_agg(country, ',' order by country) from public.places where postcode in ('J3L', '95928')) <> 'CA,US' then
+    raise exception 'North American places missing';
+  end if;
 end $$;
 reset role;
 -- the second import changed nothing

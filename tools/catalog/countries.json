@@ -1,0 +1,35 @@
+{
+  "DE": {
+    "wikidata": "Q183",
+    "off": "en:germany",
+    "lang": "de",
+    "osm": ["DE-BW", "DE-BY", "DE-BE", "DE-BB", "DE-HB", "DE-HH", "DE-HE", "DE-MV", "DE-NI", "DE-NW", "DE-RP", "DE-SL", "DE-SN", "DE-ST", "DE-SH", "DE-TH"],
+    "openbeer": ["by-bayern", "oberfranken", "oberbayern", "de-deutschland"],
+    "minBreweries": 1000
+  },
+  "AT": { "wikidata": "Q40", "off": "en:austria", "lang": "de", "openbeer": ["at-austria"], "minBreweries": 100 },
+  "CH": { "wikidata": "Q39", "off": "en:switzerland", "lang": "de", "minBreweries": 100 },
+  "CA": {
+    "wikidata": "Q16",
+    "off": "en:canada",
+    "lang": "en",
+    "obdb": "canada",
+    "osm": ["CA-AB", "CA-BC", "CA-MB", "CA-NB", "CA-NL", "CA-NS", "CA-NT", "CA-NU", "CA-ON", "CA-PE", "CA-QC", "CA-SK", "CA-YT"],
+    "openbeer": ["ca-canada"],
+    "minBreweries": 150
+  },
+  "US": {
+    "wikidata": "Q30",
+    "off": "en:united-states",
+    "lang": "en",
+    "obdb": "united_states",
+    "osm": [
+      "US-AL", "US-AK", "US-AZ", "US-AR", "US-CA", "US-CO", "US-CT", "US-DE", "US-DC", "US-FL", "US-GA", "US-HI", "US-ID",
+      "US-IL", "US-IN", "US-IA", "US-KS", "US-KY", "US-LA", "US-ME", "US-MD", "US-MA", "US-MI", "US-MN", "US-MS", "US-MO",
+      "US-MT", "US-NE", "US-NV", "US-NH", "US-NJ", "US-NM", "US-NY", "US-NC", "US-ND", "US-OH", "US-OK", "US-OR", "US-PA",
+      "US-RI", "US-SC", "US-SD", "US-TN", "US-TX", "US-UT", "US-VT", "US-VA", "US-WA", "US-WV", "US-WI", "US-WY"
+    ],
+    "openbeer": ["us-united-states", "or-oregon", "co-colorado"],
+    "minBreweries": 3000
+  }
+}

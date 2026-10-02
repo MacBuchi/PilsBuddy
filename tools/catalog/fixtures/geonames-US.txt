@@ -1,0 +1,2 @@
+US	95928	Chico	California	CA					39.7285	-121.8375	4
+US	49001	Kalamazoo	Michigan	MI					42.2734	-85.5873	4

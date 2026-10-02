@@ -10,8 +10,9 @@ import {
   parsePlaces,
   pickMainBeers,
   stableHash,
+  tooFew,
 } from './merge'
-import type { Brewery, OffRow, OsmRow, WikidataRow } from './merge'
+import type { Brewery, ObdbRow, OffRow, OsmRow, WikidataRow } from './merge'
 
 const osm = (o: Partial<OsmRow> & Pick<OsmRow, 'id' | 'name' | 'lat' | 'lon'>): OsmRow => ({
   city: null, postcode: null, country: null, website: null, ...o,
@@ -32,10 +33,15 @@ describe('normName', () => {
     expect(normName('Löwenbräu')).toBe(normName('Loewenbraeu'))
     expect(normName('Brauhaus zum Löwen')).toBe('loewen')
   })
+  it('drops English and French company words too', () => {
+    expect(normName('Sierra Nevada Brewing Co.')).toBe(normName('Sierra Nevada Brewing Company'))
+    expect(normName('Rogue Ales & Spirits, Inc.')).toBe('rogue spirits')
+    expect(normName('Microbrasserie Charlevoix Ltée')).toBe('charlevoix')
+  })
 })
 
 describe('mergeBreweries', () => {
-  const none = { DE: [], AT: [], CH: [] }
+  const none = { DE: [], AT: [], CH: [], CA: [], US: [] }
   it('collapses the same brewery mapped twice and merges Wikidata by tag or name + distance', () => {
     const merged = mergeBreweries(
       {
@@ -74,6 +80,44 @@ describe('mergeBreweries', () => {
     expect(b.country).toBe('AT')
     const [c] = mergeBreweries({ ...none, CH: [osm({ id: 'osm:n2', name: 'Feldschlösschen', lat: 47.5, lon: 7.8, country: 'Schweiz' })] }, none)
     expect(c.country).toBe('CH')
+  })
+
+  const obdb = (o: Partial<ObdbRow> & Pick<ObdbRow, 'id' | 'name'>): ObdbRow => ({
+    lat: null, lon: null, city: null, postcode: null, website: null, ...o,
+  })
+  const UUID = (n: number) => `0000000${n}-aaaa-4bbb-8ccc-dddddddddddd`
+  it('adds Open Brewery DB breweries, merges them into OSM by name and places them at their postcode', () => {
+    const merged = mergeBreweries(
+      { ...none, US: [osm({ id: 'osm:n1', name: 'Sierra Nevada Brewing Co.', lat: 39.7246, lon: -121.8164 })] },
+      none,
+      {
+        US: [
+          obdb({ id: `obdb:${UUID(1)}`, name: 'Sierra Nevada Brewing Company', lat: 39.725, lon: -121.817, website: 'http://www.sierranevada.com' }),
+          obdb({ id: `obdb:${UUID(2)}`, name: "Bell's Brewery", postcode: '49001-1234', city: 'Kalamazoo' }),
+          obdb({ id: `obdb:${UUID(3)}`, name: 'Nowhere Brewing', postcode: '99999' }),
+          obdb({ id: 'obdb:not-a-uuid', name: 'Broken', lat: 40, lon: -100 }),
+        ],
+        CA: [obdb({ id: `obdb:${UUID(4)}`, name: '33 Acres Brewing Company', postcode: 'V5Y 1M8' })],
+      },
+      [
+        { country: 'US', postcode: '49001', name: 'Kalamazoo', lat: 42.27, lon: -85.59 },
+        { country: 'US', postcode: '49001', name: 'Kalamazoo East', lat: 42.29, lon: -85.55 },
+        { country: 'CA', postcode: 'V5Y', name: 'Vancouver', lat: 49.26, lon: -123.11 },
+      ],
+    )
+    expect(merged.map((b) => b.id)).toEqual([`obdb-${UUID(2)}`, `obdb-${UUID(4)}`, 'osm-n1'])
+    const [bells, acres, sierra] = merged
+    expect(sierra).toMatchObject({ sources: ['osm', 'obdb'], website: 'http://www.sierranevada.com', country: 'US' })
+    expect(bells).toMatchObject({ sources: ['obdb'], lat: 42.28, lon: -85.57, postcode: '49001-1234', country: 'US' })
+    expect(acres).toMatchObject({ country: 'CA', lat: 49.26, lon: -123.11 })
+  })
+})
+
+describe('tooFew', () => {
+  it('names every country below its minimum, so no country is unpublished by a broken download', () => {
+    const bs = [brewery({ id: 'osm-n1', name: 'A' }), brewery({ id: 'osm-n2', name: 'B', country: 'US' })]
+    expect(tooFew(bs, 1)).toEqual(['AT: 0 < 1', 'CH: 0 < 1', 'CA: 0 < 1'])
+    expect(tooFew(bs)).toContain('US: 1 < 3000')
   })
 })
 
@@ -319,6 +363,11 @@ describe('parsePlaces', () => {
       { country: 'DE', postcode: '74906', name: 'Fürfeld', lat: 49.2123, lon: 9.06 },
     ])
   })
+  it('reads US ZIP codes and Canadian FSAs', () => {
+    const tsv = ['US\t95928\tChico\tCalifornia\tCA\t\t\t\t\t39.7285\t-121.8375\t4', 'US\t9592\tKaputt\t\t\t\t\t\t\t1\t1\t4', 'CA\tJ3L\tChambly\tQuebec\tQC\t\t\t\t\t45.45\t-73.29\t6', 'CA\tJ3L 2C7\tChambly\t\t\t\t\t\t\t1\t1\t6'].join('\n')
+    expect(parsePlaces(tsv, 'US').map((p) => p.postcode)).toEqual(['95928'])
+    expect(parsePlaces(tsv, 'CA').map((p) => p.postcode)).toEqual(['J3L'])
+  })
 })
 
 describe('importSql', () => {
@@ -329,17 +378,25 @@ describe('importSql', () => {
   )
 
   it('writes ordered, transactional upsert files and unpublishes what is gone', () => {
-    expect(files.map((f) => f.name)).toEqual(['10-breweries-001.sql', '20-beers-001.sql', '30-unpublish.sql', '40-places-001.sql'])
-    for (const f of files) expect(f.sql).toMatch(/^begin;\n[\s\S]*commit;\n$/)
-    expect(files[0].sql).toContain("'O''Brien''s Bräu'")
-    expect(files[0].sql).toContain("'{\"osm\",\"wikidata\"}'::text[]")
-    expect(files[0].sql).toContain('on conflict (id) do update set name = excluded.name')
-    expect(files[1].sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', true)`)
-    expect(files[2].sql).toContain(`id <> all('{"r-4001"}'::text[])`)
+    expect(files.map((f) => f.name)).toEqual(['05-guard.sql', '10-breweries-001.sql', '20-beers-001.sql', '30-unpublish.sql', '40-places-001.sql'])
+    const [, brew, beer, unpublish, places] = files
+    for (const f of [brew, beer, unpublish, places]) expect(f.sql).toMatch(/^begin;\n[\s\S]*commit;\n$/)
+    expect(brew.sql).toContain("'O''Brien''s Bräu'")
+    expect(brew.sql).toContain("'{\"osm\",\"wikidata\"}'::text[]")
+    expect(brew.sql).toContain('on conflict (id) do update set name = excluded.name')
+    expect(beer.sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', true)`)
+    expect(unpublish.sql).toContain(`id <> all('{"r-4001"}'::text[])`)
     // app reports (R6) survive a rebuild
-    expect(files[2].sql).toContain('source <> 5 and id <> all(')
-    expect(files[2].sql).toContain("id not like 'app-%' and id <> all(")
-    expect(files[3].sql).toContain('on conflict (country, postcode, name)')
+    expect(unpublish.sql).toContain('source <> 5 and id <> all(')
+    expect(unpublish.sql).toContain("id not like 'app-%' and id <> all(")
+    expect(places.sql).toContain('on conflict (country, postcode, name)')
+  })
+
+  it('starts with a guard against a country that came back short', () => {
+    const guard = files[0].sql
+    expect(guard).toContain("(values ('DE', 1), ('AT', 0), ('CH', 0), ('CA', 0), ('US', 0))")
+    expect(guard).toContain('if r.count < r.live * 0.9 then')
+    expect(guard).toContain("where published and id not like 'app-%'")
   })
 
   it('splits large imports into batches', () => {

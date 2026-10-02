@@ -155,6 +155,12 @@ describe('parsePack', () => {
     ['0,5 l', 'en:can,en:aluminium', { ml: 500, can: true }],
     ['500ml Dose', null, { ml: 500, can: true }],
     ['0,5 l', 'de:bügelflasche', { ml: 500, swing: true }],
+    ['12 fl oz', 'en:can', { ml: 355, can: true }],
+    ['16 FL OZ (1 PT)', null, { ml: 473 }],
+    ['6 x 12 fl. oz', 'en:glass-bottle', { ml: 355 }],
+    ['12 fl oz (355 ml)', null, { ml: 355 }],
+    ['22 oz', null, { ml: 651 }],
+    ['64 fl oz', null, undefined],
     ['30 l', null, undefined],
     ['', '', undefined],
   ] as const)('%s / %s', (q, p, want) => {

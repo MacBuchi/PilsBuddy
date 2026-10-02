@@ -1,11 +1,15 @@
-// Regional catalogue (R1): raw OSM / Wikidata / Open Food Facts / GeoNames rows → breweries, their main
-// beers and postcodes, plus the idempotent import SQL. Pure and deterministic – build.ts does the I/O.
+// Regional catalogue (R1, N5): raw OSM / Wikidata / Open Brewery DB / Open Food Facts / GeoNames rows → breweries,
+// their main beers and postcodes, plus the idempotent import SQL. Pure and deterministic – build.ts does the I/O.
 import { parsePack } from '../../src/domain/bottles/pack'
+import { parsePostcode } from '../../src/domain/postcode'
 import { normalizeStyle, STYLE_PROFILES } from '../../src/domain/styleProfile'
 import type { Pack } from '../../src/domain/types'
+import COUNTRY_TABLE from './countries.json'
 
-export type Country = 'DE' | 'AT' | 'CH'
-export const COUNTRIES: readonly Country[] = ['DE', 'AT', 'CH']
+/** countries.json – shared with the fetch scripts (lib.mjs) */
+export type Country = keyof typeof COUNTRY_TABLE
+export const COUNTRIES = Object.keys(COUNTRY_TABLE) as Country[]
+export const COUNTRY_INFO: Record<Country, { lang: string; minBreweries: number }> = COUNTRY_TABLE
 
 /** raw/osm-XX.json (fetch-osm.mjs) */
 export interface OsmRow {
@@ -57,6 +61,17 @@ export interface OpenbeerRow {
   abv: number | null
   /** style tags („maerzen|festbier“, „weisse_dunkel“, „Alkoholfrei“) */
   styles: string
+}
+
+/** raw/obdb-XX.json (fetch-obdb.mjs): Open Brewery DB, coordinates missing for some rows */
+export interface ObdbRow {
+  id: string
+  name: string | null
+  lat: number | null
+  lon: number | null
+  city: string | null
+  postcode: string | null
+  website: string | null
 }
 
 /** raw/web-N.json (crawl.ts): a beer found on the brewery's own website */
@@ -129,9 +144,9 @@ export interface Place {
 // names and distances
 // ---------------------------------------------------------------------------------------------
 
-const LEGAL = /\b(gmbh|ag|kg|co|ohg|eg|e\.?\s?k|mbh|ug|haftungsbeschraenkt|sarl|sa)\b/g
+const LEGAL = /\b(gmbh|ag|kg|co|ohg|eg|e\.?\s?k|mbh|ug|haftungsbeschraenkt|sarl|sa|inc|llc|ltd|ltee|corp|company|limited)\b/g
 const FILLER =
-  /\b(privat|privatbrauerei|familienbrauerei|brauerei|brauereigasthof|brauereigaststaette|brauhaus|hausbrauerei|braeu|braeuhaus|brau|bier|biere|beer|brewery|brewing|brew|craft|gasthaus|gasthof|wirtshaus|und|the|der|die|das|zum|zur|zu|am|im|von|st)\b/g
+  /\b(privat|privatbrauerei|familienbrauerei|brauerei|brauereigasthof|brauereigaststaette|brauhaus|hausbrauerei|braeu|braeuhaus|brau|bier|biere|bieres|beer|beers|brewery|breweries|brewing|brew|brewpub|brewhouse|brewers|taproom|ales|microbrasserie|brasserie|brasseurs|craft|gasthaus|gasthof|wirtshaus|und|the|der|die|das|zum|zur|zu|am|im|von|st)\b/g
 
 /** Lower-case, no umlaut variants, no legal forms / filler words – for name matching. */
 export function normName(s: unknown): string {
@@ -184,10 +199,26 @@ const asCountry = (c: string | null | undefined, fallback: Country): Country =>
 export const breweryId = (sourceId: string) => sourceId.toLowerCase().replace(':', '-')
 
 // ---------------------------------------------------------------------------------------------
-// breweries: OSM first, Wikidata merged in by wikidata tag or same name < 500 m
+// breweries: OSM first, Wikidata merged in by wikidata tag or same name < 500 m, then Open Brewery DB by name
 // ---------------------------------------------------------------------------------------------
 
-export function mergeBreweries(osm: Record<Country, OsmRow[]>, wikidata: Record<Country, WikidataRow[]>): Brewery[] {
+/** Centre of a postcode (all GeoNames places with it) – for Open Brewery DB rows without coordinates. */
+function postcodeCentres(places: Place[]): Map<string, { lat: number; lon: number }> {
+  const sum = new Map<string, { lat: number; lon: number; n: number }>()
+  for (const p of places) {
+    const k = `${p.country}|${p.postcode}`
+    const s = sum.get(k) ?? { lat: 0, lon: 0, n: 0 }
+    sum.set(k, { lat: s.lat + p.lat, lon: s.lon + p.lon, n: s.n + 1 })
+  }
+  return new Map([...sum].map(([k, s]) => [k, { lat: round(s.lat / s.n, 4), lon: round(s.lon / s.n, 4) }]))
+}
+
+export function mergeBreweries(
+  osm: Partial<Record<Country, OsmRow[]>>,
+  wikidata: Partial<Record<Country, WikidataRow[]>>,
+  obdb: Partial<Record<Country, ObdbRow[]>> = {},
+  places: Place[] = [],
+): Brewery[] {
   const out: (Brewery & { key: string })[] = []
   const byKey = new Map<string, (typeof out)[number][]>()
   const add = (b: (typeof out)[number]) => {
@@ -253,7 +284,51 @@ export function mergeBreweries(osm: Record<Country, OsmRow[]>, wikidata: Record<
       })
     }
   }
+  const centres = postcodeCentres(places)
+  for (const c of COUNTRIES) {
+    for (const o of obdb[c] ?? []) {
+      const name = text(o.name, 200)
+      const uuid = o.id.replace(/^obdb:/, '')
+      if (!name || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(uuid)) continue
+      const hasCoords = o.lat != null && o.lon != null && Number.isFinite(o.lat) && Number.isFinite(o.lon) && !(o.lat === 0 && o.lon === 0)
+      const code = parsePostcode(o.postcode ?? '')
+      const at = hasCoords ? { lat: o.lat!, lon: o.lon! } : code ? centres.get(`${c}|${code}`) : undefined
+      if (!at) continue
+      const key = normName(name)
+      // a postcode centre is a few km off – the name has to carry the match there
+      const hit = near(key, at, hasCoords ? 1 : 5)
+      if (hit) {
+        if (!hit.sources.includes('obdb')) hit.sources.push('obdb')
+        hit.website ??= website(o.website)
+        hit.city ??= text(o.city, 120)
+        hit.postcode ??= text(o.postcode, 12)
+        continue
+      }
+      add({
+        id: breweryId(`obdb:${uuid}`),
+        name,
+        lat: at.lat,
+        lon: at.lon,
+        city: text(o.city, 120),
+        postcode: text(o.postcode, 12),
+        country: c,
+        website: website(o.website),
+        founded: null,
+        sources: ['obdb'],
+        key,
+        qid: null,
+      })
+    }
+  }
   return out.map(({ key: _key, ...b }) => b).sort((a, b) => a.id.localeCompare(b.id))
+}
+
+/** Countries with fewer breweries than a complete download has – a broken download must not unpublish them. */
+export function tooFew(breweries: Brewery[], min?: number): string[] {
+  const n = (c: Country) => breweries.filter((b) => b.country === c).length
+  return COUNTRIES.filter((c) => n(c) < (min ?? COUNTRY_INFO[c].minBreweries)).map(
+    (c) => `${c}: ${n(c)} < ${min ?? COUNTRY_INFO[c].minBreweries}`,
+  )
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -567,6 +642,9 @@ export function parseOpenbeer(textContent: string, ref: string): OpenbeerRow[] {
 // GeoNames postcodes (TSV: country, postcode, place, admin…, lat, lon, accuracy)
 // ---------------------------------------------------------------------------------------------
 
+/** places.postcode per country – GeoNames has Canada as FSAs (the first three characters) only. */
+const POSTCODE: Record<Country, RegExp> = { DE: /^[0-9]{5}$/, AT: /^[0-9]{4}$/, CH: /^[0-9]{4}$/, CA: /^[A-Z][0-9][A-Z]$/, US: /^[0-9]{5}$/ }
+
 export function parsePlaces(tsv: string, country: Country): Place[] {
   const out = new Map<string, Place>()
   for (const line of tsv.split('\n')) {
@@ -576,7 +654,7 @@ export function parsePlaces(tsv: string, country: Country): Place[] {
     const name = text(f[2], 120)
     const lat = Number(f[9])
     const lon = Number(f[10])
-    if (!/^[0-9]{4,5}$/.test(postcode) || !name || !Number.isFinite(lat) || !Number.isFinite(lon)) continue
+    if (!POSTCODE[country].test(postcode) || !name || !Number.isFinite(lat) || !Number.isFinite(lon)) continue
     const k = `${postcode}|${name}`
     if (!out.has(k)) out.set(k, { country, postcode, name, lat: round(lat, 4), lon: round(lon, 4) })
   }
@@ -614,11 +692,28 @@ export interface ImportFile {
   sql: string
 }
 
+/** A country may lose at most this share of its published breweries in one import. */
+export const MAX_DROP = 0.1
+
 /** Import SQL as ordered files (each one transaction, small enough for `supabase db query`). */
 export function importSql(breweries: Brewery[], beers: RegionalBeer[], places: Place[], batch = 500): ImportFile[] {
   const files: ImportFile[] = []
   const pad = (i: number) => String(i + 1).padStart(3, '0')
   const tx = (sql: string) => `begin;\n${sql}commit;\n`
+  // first file: stop before anything is written when a country lost more than MAX_DROP of what is live – a
+  // download can come back short without failing (2026-10: Overpass left out Saxony and Hesse)
+  const counts = COUNTRIES.map((c) => `(${lit(c)}, ${breweries.filter((b) => b.country === c).length})`).join(', ')
+  files.push({
+    name: '05-guard.sql',
+    sql:
+      `do $$\ndeclare r record;\nbegin\n` +
+      `  for r in select n.country, n.count, coalesce(l.count, 0) as live from (values ${counts}) as n (country, count)\n` +
+      `    left join (select country, count(*) as count from public.breweries where published and id not like 'app-%' group by country) l using (country)\n` +
+      `  loop\n` +
+      `    if r.count < r.live * ${1 - MAX_DROP} then\n` +
+      `      raise exception 'breweries %: % in the import, % published – incomplete download?', r.country, r.count, r.live;\n` +
+      `    end if;\n  end loop;\nend $$;\n`,
+  })
   chunks(breweries, batch).forEach((rows, i) =>
     files.push({
       name: `10-breweries-${pad(i)}.sql`,

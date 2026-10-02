@@ -106,6 +106,36 @@ describe('extractBeers', () => {
     expect(beerName('Sommerfest')).toBeNull()
   })
 
+  it('reads English brewery pages with their own filters', () => {
+    const html = `
+      <h1>Our Beers</h1>
+      <h2>60 Minute IPA</h2><p>6.0% ABV · 60 IBU</p>
+      <h2>Son of a Peach Wheat Ale</h2><p>ABV: 5.2%</p>
+      <h2>Old Rasputin Russian Imperial Stout</h2>
+      <h3>Bigfoot Barley Wine</h3><p>9.6% abv</p>
+      <h2>Join us for Oktoberfest 2026</h2>
+      <h2>IPA Growler Fills</h2>
+      <h2>Hard Seltzer Lager</h2>
+      <h2>Rosé Wine Sour</h2>
+      <h2>Shop all Pale Ale merch</h2>
+      <h2>Lager 6-pack 12 oz cans</h2>
+      <h2>Our IPA is back!</h2>`
+    expect(extractBeers(html, 'en')).toEqual([
+      { name: '60 Minute IPA', abv: 6 },
+      { name: 'Son of a Peach Wheat Ale', abv: 5.2 },
+      { name: 'Old Rasputin Russian Imperial Stout', abv: null },
+      { name: 'Bigfoot Barley Wine', abv: 9.6 },
+    ])
+    // the German profile still drops what it dropped before
+    expect(beerName('Son of a Peach Wheat Ale')).toBeNull()
+    expect(beerName('All Day IPA', null, 'en')).toEqual({ name: 'All Day IPA', abv: null })
+  })
+
+  it('finds English beer pages', () => {
+    const html = `<a href="/our-beers">Our Beers</a><a href="/on-tap">On Tap</a><a href="/store">Beer Store</a><a href="/careers">Careers</a>`
+    expect(beerLinks(html, 'https://brewery.com/')).toEqual(['https://brewery.com/on-tap', 'https://brewery.com/our-beers'])
+  })
+
   it('decodes entities', () => {
     expect(textOf('Wei&szlig;bier &amp; mehr')).toBe('Weißbier & mehr')
   })

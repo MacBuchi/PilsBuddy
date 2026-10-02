@@ -1,0 +1,4 @@
+[
+ {"id":"obdb:5128df48-79fc-4f0f-8b52-d06be54d0cec","name":"Sierra Nevada Brewing Company","lat":39.7249,"lon":-121.8167,"city":"Chico","postcode":"95928-6431","state":"California","website":"http://www.sierranevada.com","type":"regional"},
+ {"id":"obdb:a1b2c3d4-0000-4000-8000-000000000001","name":"Bell's Brewery","lat":null,"lon":null,"city":"Kalamazoo","postcode":"49001","state":"Michigan","website":null,"type":"regional"}
+]

@@ -26,7 +26,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (#52, live 2026-10-02)
 9. [x] **R8** Bierbibliothek mit Filtern (#53, 2026-10-02)
 10. [ ] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada (#56) ·
-    N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler + Live-Import
+    N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60) + Live-Import
 11. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 12. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
@@ -286,8 +286,14 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
       - umgesetzt (#59): Migration `north_america` (CA/US, `obdb-<uuid>`, FSA), `src/domain/postcode.ts` kürzt eine
         kanadische PLZ auf dem Gerät auf die FSA; gibt es die PLZ in mehreren Ländern, kommt das Land der
         Browsersprache zuerst, die anderen sind einen Tipp entfernt (Finder und Bibliothek)
-- [ ] N5 **Pipeline + Crawler CA/US** (L): zentrale Ländertabelle, Open Brewery DB, OSM je Bundesstaat,
+- [x] N5 **Pipeline + Crawler CA/US** (L): zentrale Ländertabelle, Open Brewery DB, OSM je Bundesstaat,
       Wikidata/OFF/openbeer/GeoNames, englischer Crawler; Live-Import nach Freigabe
+      - umgesetzt (#60): `tools/catalog/countries.json` steuert Skripte, Merge und Workflow; `fetch-obdb.mjs`
+        (Brauereien ohne Koordinaten an der Mitte ihrer PLZ), GeoNames US-ZIP + kanadische FSA, `fl oz` im Gebinde,
+        englische Firmenwörter beim Namensabgleich, Crawler-Sprachprofil je Land (englische Filter, „6.5% ABV“,
+        Zahl am Namensanfang), 12 Shards, Mindestzahl Brauereien je Land; OSM-Abruf parallel je Land/Teil, unvollständige Overpass-Antworten
+        werden wiederholt, `05-guard.sql` bricht den Import ab, wenn ein Land > 10 % seiner Brauereien verliert. Live-Import (fetch → import → Websites →
+        import) läuft erst nach Freigabe im Environment `production`
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

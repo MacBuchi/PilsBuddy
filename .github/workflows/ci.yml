@@ -81,7 +81,7 @@ jobs:
           supabase start -x studio,imgproxy,vector,logflare,supavisor,mailpit,realtime,storage-api,edge-runtime
           rmdir supabase/migrations && mv /tmp/migrations supabase/migrations
       - name: Katalog-Fixture bauen
-        run: npm run catalog:build -- --raw tools/catalog/fixtures --out /tmp/regional --min-breweries 1
+        run: npm run catalog:build -- --raw tools/catalog/fixtures --out /tmp/regional --min-breweries 0
       - name: Basis → Bestand → neue Migrationen → Rechte + App-Queries
         env:
           # via env, not interpolated into the script: a branch name is chosen from outside
@@ -111,7 +111,7 @@ jobs:
       - name: Regional catalogue import (fixture, twice → idempotent)
         run: |
           eval "$(supabase status -o env | grep -E '^DB_URL=')"
-          npm run catalog:build -- --raw tools/catalog/fixtures --out /tmp/regional --min-breweries 1
+          npm run catalog:build -- --raw tools/catalog/fixtures --out /tmp/regional --min-breweries 0
           for _ in 1 2; do for f in /tmp/regional/*.sql; do psql "$DB_URL" -q -v ON_ERROR_STOP=1 -f "$f"; done; done
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f tools/catalog/fixtures/check.sql
       - uses: ./.github/actions/playwright

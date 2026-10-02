@@ -1,7 +1,9 @@
 name: Regional catalogue (fetch)
 
-# Stufe R: downloads breweries/beers from OpenStreetMap, Wikidata and Open Food Facts on a runner
-# (stable network, polite rate limits) and uploads the raw files + the coverage report as an artifact.
+# Stufe R/N: downloads breweries/beers from OpenStreetMap, Open Brewery DB, Wikidata and Open Food Facts on runners
+# (stable network, polite rate limits) and uploads the raw files + the coverage report as the artifact catalog-raw.
+# OpenStreetMap runs as one job per country part in parallel (Overpass limits per IP; 82 areas in a row took > 2 h),
+# the other sources in one job; „Bundle“ puts it together. Countries and sources: tools/catalog/countries.json.
 # Nothing is written to the database here. Trigger: gh workflow run catalog.yml --ref <branch>
 on:
   workflow_dispatch:
@@ -14,47 +16,109 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  fetch:
+  plan:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    outputs:
+      osm: ${{ steps.matrix.outputs.osm }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: OpenStreetMap (probe + DE/AT/CH)
-        run: |
-          node tools/catalog/fetch-osm.mjs
-          for c in DE AT CH; do node tools/catalog/fetch-osm.mjs --country $c; done
-      - name: Wikidata (probe + DE/AT/CH)
-        if: ${{ !cancelled() }}
+      - id: matrix
+        run: echo "osm=$(node tools/catalog/lib.mjs osm-matrix)" >> "$GITHUB_OUTPUT"
+
+  osm:
+    name: OpenStreetMap ${{ matrix.country }} ${{ matrix.part }}/${{ matrix.parts }}
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.osm) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - env:
+          COUNTRY: ${{ matrix.country }}
+          PART: ${{ matrix.part }}
+          PARTS: ${{ matrix.parts }}
+        run: node tools/catalog/fetch-osm.mjs --country "$COUNTRY" --part "$PART" --parts "$PARTS"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-part-osm-${{ matrix.country }}-${{ matrix.part }}
+          path: tools/catalog/raw/osm-${{ matrix.country }}.part${{ matrix.part }}.json
+          retention-days: 2
+
+  sources:
+    name: Open Brewery DB, Wikidata, Open Food Facts, GeoNames, openbeer
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: OpenStreetMap probe region
+        run: node tools/catalog/fetch-osm.mjs
+      - name: Open Brewery DB (MIT, US + Canada)
+        run: node tools/catalog/fetch-obdb.mjs
+      - name: Wikidata (probe + every country)
         run: |
           node tools/catalog/fetch-wikidata.mjs
-          for c in DE AT CH; do node tools/catalog/fetch-wikidata.mjs --country $c; sleep 2; done
+          read -ra countries <<< "$(node tools/catalog/lib.mjs countries)"
+          for c in "${countries[@]}"; do node tools/catalog/fetch-wikidata.mjs --country "$c"; sleep 2; done
           node tools/catalog/fetch-wikidata.mjs --beers
-      - name: Open Food Facts (daily export, DE/AT/CH)
-        if: ${{ !cancelled() }}
+      - name: Open Food Facts (daily export, every country)
         run: node tools/catalog/fetch-off.mjs
-      - name: GeoNames postcodes (CC-BY 4.0, DE/AT/CH)
-        if: ${{ !cancelled() }}
+      - name: GeoNames postcodes (CC-BY 4.0; Canada as FSA)
         run: |
-          for c in DE AT CH; do
-            curl -sSfL --retry 5 -A 'PilsBuddy-catalog' -o /tmp/$c.zip https://download.geonames.org/export/zip/$c.zip
-            unzip -p /tmp/$c.zip $c.txt > tools/catalog/raw/geonames-$c.txt
-            wc -l tools/catalog/raw/geonames-$c.txt
+          read -ra countries <<< "$(node tools/catalog/lib.mjs countries)"
+          for c in "${countries[@]}"; do
+            curl -sSfL --retry 5 -A 'PilsBuddy-catalog' -o "/tmp/$c.zip" "https://download.geonames.org/export/zip/$c.zip"
+            unzip -p "/tmp/$c.zip" "$c.txt" > "tools/catalog/raw/geonames-$c.txt"
+            wc -l "tools/catalog/raw/geonames-$c.txt"
           done
-      - name: openbeer / beer.db (Public Domain, DE + AT beer lists)
-        if: ${{ !cancelled() }}
+      - name: openbeer / beer.db (Public Domain beer lists)
         run: |
-          for r in by-bayern oberfranken oberbayern at-austria de-deutschland; do
-            git clone -q --depth 1 https://github.com/openbeer/$r tools/catalog/raw/openbeer/$r
+          read -ra repos <<< "$(node tools/catalog/lib.mjs openbeer)"
+          for r in "${repos[@]}"; do
+            git clone -q --depth 1 "https://github.com/openbeer/$r" "tools/catalog/raw/openbeer/$r"
           done
+          # artifacts refuse ? * : < > | " in paths (or-oregon has „breweries_??.txt“) – those files are brewery lists anyway
+          find tools/catalog/raw/openbeer -name '*[?*:<>|"]*' -print -delete
           find tools/catalog/raw/openbeer -name '*.txt' | wc -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-part-sources
+          path: |
+            tools/catalog/raw/*.json
+            tools/catalog/raw/geonames-*.txt
+            tools/catalog/raw/openbeer/**/*.txt
+          retention-days: 2
+
+  bundle:
+    name: Bundle
+    needs: [osm, sources]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: catalog-part-*
+          merge-multiple: true
+          path: tools/catalog/raw
+      - name: Join the OpenStreetMap parts
+        run: node tools/catalog/fetch-osm.mjs --join
       - name: Coverage report
-        if: ${{ !cancelled() }}
         run: node tools/catalog/probe-report.mjs | tee tools/catalog/raw/report.txt >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: catalog-raw
           path: |

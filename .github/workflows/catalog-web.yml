@@ -17,11 +17,12 @@ concurrency:
 jobs:
   crawl:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3]
+        # ~10k sites with Canada and the USA – 12 shards keep each well inside the time limit
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,9 +30,9 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Crawl shard ${{ matrix.shard }} of 4
+      - name: Crawl shard ${{ matrix.shard }} of 12
         shell: bash -o pipefail {0}
-        run: npx tsx tools/catalog/crawl.ts --shard ${{ matrix.shard }} --shards 4 ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
+        run: npx tsx tools/catalog/crawl.ts --shard ${{ matrix.shard }} --shards 12 ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: catalog-web-${{ matrix.shard }}
