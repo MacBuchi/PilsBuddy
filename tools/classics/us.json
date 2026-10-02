@@ -772,7 +772,8 @@
     "city": "Paso Robles",
     "style": "Blonde Ale",
     "abv": 4.7,
-    "source": "https://www.firestonewalker.com/beer/805/",
+    "ibu": 15,
+    "source": "https://www.firestonewalker.com/beer/805-bottle/",
     "verified": "2026-10-02",
     "note": "Central Coast blonde, named after the area code",
     "de": {
@@ -1713,7 +1714,7 @@
     "style": "Wheat Ale",
     "abv": 5.8,
     "ibu": 26,
-    "source": "https://bellsbeer.com/homebrew-central/homebrewing-oberon-tips-on-cloning-bells-american-wheat-ale/",
+    "source": "https://bellsbeer.com/beers/oberon-ale/",
     "verified": "2026-10-02",
     "note": "American wheat ale, no spices or fruit",
     "de": {
