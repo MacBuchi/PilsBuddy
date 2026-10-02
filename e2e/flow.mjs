@@ -229,6 +229,19 @@ await step('regional beer stays on the Probierliste after a reload', async () =>
   await see('Rund um 74906')
   await m.getByText('Bier-DNA', { exact: true }).click()
 })
+await step('regional mode: switch in the finder → every third swipe card is from nearby', async () => {
+  await m.getByRole('button', { name: /Biere aus deiner Nähe/ }).click()
+  await m.getByText(/\d+ Biere? · \d+ Brauereie?n? im Umkreis/).waitFor({ timeout: 20000 })
+  await m.getByLabel(/Regional-Modus im Swipe-Deck/).check()
+  await m.getByLabel('Zurück').click()
+  await m.getByText('Swipen', { exact: true }).click()
+  const badge = m.getByText(/^Aus deiner Nähe · /)
+  await badge.first().waitFor({ timeout: 4000 })
+  await page.screenshot({ path: `${out}-regional-deck.png` })
+  for (let i = 0; i < 3; i++) await page.keyboard.press('k')
+  await badge.first().waitFor({ timeout: 4000 })
+  await m.getByText('Bier-DNA', { exact: true }).click()
+})
 let buddyLink = ''
 await step('buddy invite copies a link', async () => {
   await m.getByText('Matches', { exact: true }).click()

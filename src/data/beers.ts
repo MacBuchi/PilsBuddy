@@ -33,6 +33,15 @@ export function rememberRegional(row: RegionalBeerRow, brewery: RegionalBrewery 
   return beer
 }
 
+/**
+ * Makes a regional beer of the Regional-Modus pool known for this session (deck card, Detail) without
+ * keeping a snapshot – that happens only once the user rates or opens it (`rememberRegional`).
+ */
+export function knowRegional(row: RegionalBeerRow, brewery: RegionalBrewery | Omit<RegionalBrewery, 'beers'>): Beer {
+  if (!byId[row.id]) byId[row.id] = toRegionalBeer(row, brewery)
+  return byId[row.id]
+}
+
 /** Deck order: reference beers first (they cover diverse profiles), then the rest. */
 export const DECK_ORDER: readonly string[] = [
   ...BEERS.filter((b) => b.reference).map((b) => b.id),

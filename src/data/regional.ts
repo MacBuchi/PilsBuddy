@@ -16,6 +16,7 @@ import { SUPABASE_KEY, SUPABASE_URL } from '../sync/config'
 export const CELLS_KEY = 'pilsbuddy.regional.cells'
 export const SNAPS_KEY = 'pilsbuddy.regional.beers'
 export const PREFS_KEY = 'pilsbuddy.regional.prefs'
+export const POOL_KEY = 'pilsbuddy.regional.pool'
 const VERSION = 1
 
 export const CELL_TTL_MS = 30 * 24 * 3600 * 1000
@@ -23,6 +24,7 @@ export const CELL_TTL_MS = 30 * 24 * 3600 * 1000
 const BATCH = 6
 const MAX_CELLS = 200
 const MAX_SNAPS = 300
+const MAX_POOL = 60
 
 type FetchFn = typeof fetch
 
@@ -140,6 +142,8 @@ export interface RegionalPrefs {
   /** How the user found their spot last time; a position is never stored, a typed postcode is. */
   mode: 'geo' | 'plz' | null
   place: Place | null
+  /** R5 Regional-Modus: beers of the last finder result join the swipe deck. */
+  deck: boolean
 }
 
 export function readPrefs(): RegionalPrefs {
@@ -150,6 +154,7 @@ export function readPrefs(): RegionalPrefs {
     radius: (RADII as readonly number[]).includes(p?.radius as number) ? (p!.radius as Radius) : 25,
     mode: p?.mode === 'geo' || (p?.mode === 'plz' && okPlace) ? p.mode : null,
     place: okPlace ? { label: place.label.slice(0, 90), lat: place.lat, lon: place.lon } : null,
+    deck: p?.deck === true,
   }
 }
 
@@ -187,9 +192,38 @@ export function writeSnapshot(row: RegionalBeerRow, brewery: RegionalBrewery | O
   write(SNAPS_KEY, Object.fromEntries(kept.map((s) => [s.row.id, s])))
 }
 
-/** „Profil zurücksetzen“: postcode, radius, snapshots and cached cells go too. */
+/* ---------- pool for the Regional-Modus (R5) ---------- */
+
+export interface PoolItem {
+  row: RegionalBeerRow
+  brewery: Omit<RegionalBrewery, 'beers'>
+  km: number
+}
+
+/**
+ * The beers of the last finder result (nearest first), kept on the device for the swipe deck. Like the
+ * cached cells it says which breweries are around the user – it never leaves the device.
+ */
+export function writePool(items: readonly PoolItem[]): void {
+  const kept = [...items].sort((a, b) => a.km - b.km || a.row.id.localeCompare(b.row.id)).slice(0, MAX_POOL)
+  write(POOL_KEY, kept.map((i) => ({ row: i.row, brewery: withoutBeers(i.brewery), km: Math.round(i.km * 10) / 10 })))
+}
+
+export function readPool(): PoolItem[] {
+  const raw = read<unknown[]>(POOL_KEY)
+  if (!Array.isArray(raw)) return []
+  const out: PoolItem[] = []
+  for (const i of raw.slice(0, MAX_POOL) as { row?: unknown; brewery?: unknown; km?: unknown }[]) {
+    const row = sanitizeBeerRow(i?.row)
+    const brewery = sanitizeBrewery(i?.brewery)
+    if (row && brewery && typeof i.km === 'number' && Number.isFinite(i.km) && i.km >= 0 && i.km <= 500) out.push({ row, brewery: withoutBeers(brewery), km: i.km })
+  }
+  return out
+}
+
+/** „Profil zurücksetzen“: postcode, radius, snapshots, pool and cached cells go too. */
 export function forgetRegional(): void {
-  for (const key of [CELLS_KEY, SNAPS_KEY, PREFS_KEY]) {
+  for (const key of [CELLS_KEY, SNAPS_KEY, PREFS_KEY, POOL_KEY]) {
     try {
       localStorage.removeItem(key)
     } catch {

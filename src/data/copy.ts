@@ -153,6 +153,7 @@ export const COPY = {
   deck: {
     forYou: 'Für dich · {pct} %',
     horizon: 'Mal was anderes',
+    regional: 'Aus deiner Nähe · {km}',
   },
   tryList: {
     label: 'Vorgemerkt · {n}',
@@ -186,6 +187,7 @@ export const COPY = {
     iAm: 'Ich bin',
     topLiked: 'Meine Herzbiere',
     topNext: 'Als Nächstes probiere ich',
+    regional: 'Mein Bier aus der Region',
     decoded: '{pct} % entschlüsselt',
     footer: 'Finde deinen Bier-Typ auf',
     text: 'Ich bin „{name}“ – sagt meine Bier-DNA. Und du?',
@@ -300,6 +302,8 @@ export const COPY = {
   },
   regional: {
     title: 'Biere aus deiner Nähe',
+    deckMode: 'Regional-Modus im Swipe-Deck',
+    deckModeHint: 'Jede 3. Karte kommt aus diesem Umkreis – die passendsten zuerst.',
     dnaCta: 'Biere aus deiner Nähe',
     dnaCtaGo: 'Finden',
     intro: 'Regionale Brauereien, sortiert nach deiner Bier-DNA. Dein Standort bleibt auf dem Gerät.',

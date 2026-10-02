@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { evaluateAchievements, keptPromises, newlyUnlocked, progressOf } from './achievements'
+import { evaluateAchievements, keptPromises, newlyUnlocked, progressOf, regionalLikes, unlockedIds } from './achievements'
 import type { Progress } from './achievements'
 import type { RatingCounts } from './types'
 
 const c = (p: Partial<RatingCounts>): RatingCounts => ({ LIKE: 0, DISLIKE: 0, KNOW: 0, UNKNOWN: 0, WANT_TO_TRY: 0, total: 0, ...p })
-const pr = (counts: Partial<RatingCounts>, decoded = 0, kept = 0): Progress => ({ counts: c(counts), decoded, kept, quartettWins: 0 })
+const pr = (counts: Partial<RatingCounts>, decoded = 0, kept = 0): Progress => ({ counts: c(counts), decoded, kept, quartettWins: 0, regionalLikes: 0 })
 
 describe('achievements', () => {
   it('nothing unlocked at start', () => {
@@ -49,5 +49,15 @@ describe('achievements', () => {
     const after = progressOf({}, { quartett: { won: 3 } })
     expect(newlyUnlocked(before, after).map((x) => x.id)).toEqual(['quartett-koenig'])
     expect(progressOf({}).quartettWins).toBe(0)
+  })
+})
+
+describe('Lokalpatriot (R5)', () => {
+  it('needs three regional beers with a heart – other verdicts and curated beers do not count', () => {
+    const r = (id: string, rating: 'LIKE' | 'KNOW') => [id, { rating, at: 1 }] as const
+    const two = Object.fromEntries([r('r-1', 'LIKE'), r('r-2', 'LIKE'), r('r-3', 'KNOW'), r('jever', 'LIKE')])
+    expect(regionalLikes(two)).toBe(2)
+    expect(unlockedIds(progressOf(two))).not.toContain('lokalpatriot')
+    expect(unlockedIds(progressOf({ ...two, 'r-app7': { rating: 'LIKE', at: 2 } }))).toContain('lokalpatriot')
   })
 })

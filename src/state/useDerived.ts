@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { evaluateAchievements, keptPromises } from '../domain/achievements'
+import { evaluateAchievements, progressOf } from '../domain/achievements'
 import type { Achievement } from '../domain/achievements'
 import { avatarExtras, buildAvatar } from '../domain/avatar'
 import type { AvatarSpec } from '../domain/avatar'
@@ -29,7 +29,7 @@ export function useDerived(): Derived {
   return useMemo(() => {
     const dna = computeDNA(ratings)
     const archetype = archetypeFor(dna)
-    const achievements = evaluateAchievements({ counts: dna.counts, decoded: dna.decoded, kept: keptPromises(ratings), quartettWins: games.quartett.won })
+    const achievements = evaluateAchievements(progressOf(ratings, games))
     const unlocked = achievements.filter((a) => a.unlocked).map((a) => a.id)
     const now = Math.max(sessionStart, ...Object.values(ratings).map((e) => e.at))
     const extras = avatarExtras(ratings, dna.taste, unlocked, now)

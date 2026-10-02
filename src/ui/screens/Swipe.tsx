@@ -10,9 +10,12 @@ import {
 } from '@phosphor-icons/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { getBeer } from '../../data/beers'
+import { BEER_BY_ID, DECK_ORDER, getBeer, knowRegional, rememberRegional } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
+import { readPool, readPrefs } from '../../data/regional'
 import { buildDeck } from '../../domain/deck'
+import type { NearbyBeer } from '../../domain/deck'
+import { formatKm } from '../../domain/regional'
 import { progressMessage, quipAfterRating } from '../../domain/quips'
 import type { Beer, Rating } from '../../domain/types'
 import { useApp } from '../../state/AppContext'
@@ -61,13 +64,17 @@ export function Swipe() {
   const { state, rate, go, openDetail, dispatch, withTabs } = useApp()
   const { ratings, onboarded } = state.profile
   const { counts, decoded, avatar, candidates, archetype } = useDerived()
-  const cards = useMemo(() => buildDeck(ratings), [ratings])
+  // R5 Regional-Modus: the last finder result, read once per visit (the finder lives on another screen)
+  const [pool] = useState(() => (readPrefs().deck ? readPool() : []))
+  const nearby = useMemo<NearbyBeer[]>(() => pool.map((p) => ({ beer: knowRegional(p.row, p.brewery), km: p.km })), [pool])
+  const cards = useMemo(() => buildDeck(ratings, DECK_ORDER, BEER_BY_ID, nearby), [ratings, nearby])
   const queue = cards.map((c) => getBeer(c.id))
   const badges = useMemo(() => {
     const out: Record<string, CardBadge> = {}
     for (const c of cards.slice(0, 3)) {
       if (c.pick === 'forYou') out[c.id] = { text: fill(COPY.deck.forYou, { pct: c.pct ?? 0 }), color: RATING_COLOR.LIKE }
       if (c.pick === 'horizon') out[c.id] = { text: COPY.deck.horizon, color: RATING_COLOR.WANT_TO_TRY }
+      if (c.pick === 'regional') out[c.id] = { text: fill(COPY.deck.regional, { km: formatKm(c.km ?? 0) }), color: RATING_COLOR.KNOW }
     }
     return out
   }, [cards])
@@ -77,14 +84,23 @@ export function Swipe() {
   const [toast, setToast] = useState<LocalToast | null>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
+  // a regional card the user rates or opens stays known after a reload (snapshot)
+  const keep = useCallback(
+    (id: string) => {
+      const p = pool.find((x) => x.row.id === id)
+      if (p) rememberRegional(p.row, p.brewery)
+    },
+    [pool],
+  )
   const onCommit = useCallback(
     (beer: Beer, rating: Rating) => {
+      keep(beer.id)
       rate(beer.id, rating)
       clearTimeout(toastTimer.current)
       setToast({ text: quipAfterRating({ rating, beer, before: ratings, archetype }), color: RATING_COLOR[rating], key: Date.now() })
       toastTimer.current = setTimeout(() => setToast(null), 2400)
     },
-    [ratings, rate, archetype],
+    [ratings, rate, archetype, keep],
   )
 
   useEffect(() => () => clearTimeout(toastTimer.current), [])
@@ -180,7 +196,10 @@ export function Swipe() {
             total={cards.length + counts.total}
             badges={badges}
             onCommit={onCommit}
-            onTap={(b) => openDetail(b.id)}
+            onTap={(b) => {
+              keep(b.id)
+              openDetail(b.id)
+            }}
             coachOffset={coachActive && coach.direction ? COACH_OFFSET[coach.direction] : null}
           />
         )}

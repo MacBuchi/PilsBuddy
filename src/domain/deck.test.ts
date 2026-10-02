@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { BEERS, DECK_ORDER, REFERENCE_COUNT, getBeer } from '../data/beers'
+import { BEERS, BEER_BY_ID, DECK_ORDER, REFERENCE_COUNT, getBeer } from '../data/beers'
 import { DECODE_TARGET } from './dna'
-import { buildDeck } from './deck'
+import { buildDeck, isRegionalId } from './deck'
+import { toRegionalBeer } from './regionalBeer'
 import type { Rating, Ratings } from './types'
 
 const rate = (ids: string[], rating: Rating = 'LIKE'): Ratings =>
@@ -66,5 +67,55 @@ describe('buildDeck', () => {
   it('is deterministic', () => {
     const r = rate([...referenceIds, 'warsteiner'])
     expect(buildDeck(r)).toEqual(buildDeck(r))
+  })
+})
+
+describe('Regional-Modus (R5)', () => {
+  const brewery = { id: 'osm-n1', name: 'Löwenbräu Hintertupfing', lat: 49.2, lon: 9.1, city: 'Hintertupfing', postcode: '74906', country: 'DE' as const, website: null, founded: null }
+  const row = (id: string, style: string) => ({ id, name: `Hiesiges ${style}`, style, abv: null, pack: null, rank: 0, source: 1, source_ref: null })
+  const nearby = [
+    { beer: toRegionalBeer(row('r-pils', 'Pils'), brewery), km: 12 },
+    { beer: toRegionalBeer(row('r-dunkel', 'Dunkles'), brewery), km: 3 },
+    { beer: toRegionalBeer(row('r-weizen', 'Weißbier'), brewery), km: 30 },
+  ]
+  const lookup = { ...BEER_BY_ID, ...Object.fromEntries(nearby.map((n) => [n.beer.id, n.beer])) }
+  const afterOnboarding = rate(referenceIds)
+
+  it('every third card is regional; the own cards keep their order (reference set first)', () => {
+    const deck = buildDeck({}, DECK_ORDER, lookup, nearby)
+    expect(deck.slice(0, 9).map((c) => c.pick === 'regional')).toEqual([false, false, true, false, false, true, false, false, true])
+    const own = deck.filter((c) => c.pick !== 'regional')
+    expect(own).toEqual(buildDeck({}))
+    expect(deck).toHaveLength(BEERS.length + nearby.length)
+  })
+
+  it('orders regional cards by match, carries pct and distance', () => {
+    const regional = buildDeck(afterOnboarding, DECK_ORDER, lookup, nearby).filter((c) => c.pick === 'regional')
+    expect(regional.map((c) => c.pct)).toEqual([...regional.map((c) => c.pct!)].sort((a, b) => b - a))
+    expect(regional.find((c) => c.id === 'r-dunkel')?.km).toBe(3)
+  })
+
+  it('keeps its rhythm while the deck is rebuilt after each swipe', () => {
+    let ratings: Ratings = { ...afterOnboarding }
+    const seen: string[] = []
+    for (let i = 0; i < 9; i++) {
+      const top = buildDeck(ratings, DECK_ORDER, lookup, nearby)[0]
+      seen.push(top.pick)
+      ratings = { ...ratings, [top.id]: { rating: 'KNOW', at: 1000 + i } }
+    }
+    const at = seen.flatMap((p, i) => (p === 'regional' ? [i] : []))
+    expect(at).toHaveLength(3)
+    expect(at[1] - at[0]).toBe(3)
+    expect(at[2] - at[1]).toBe(3)
+  })
+
+  it('skips rated or duplicate nearby beers, and is a no-op without them', () => {
+    const deck = buildDeck({ 'r-pils': { rating: 'LIKE', at: 1 } }, DECK_ORDER, lookup, [...nearby, nearby[1]])
+    expect(deck.filter((c) => c.pick === 'regional').map((c) => c.id).sort()).toEqual(['r-dunkel', 'r-weizen'])
+    expect(buildDeck(afterOnboarding, DECK_ORDER, lookup, [])).toEqual(buildDeck(afterOnboarding))
+  })
+
+  it('no curated id looks regional', () => {
+    expect(DECK_ORDER.filter(isRegionalId)).toEqual([])
   })
 })
