@@ -17,7 +17,7 @@ export function AvatarScreen() {
   const [busy, setBusy] = useState(false)
 
   const share = async () => {
-    const text = `Ich bin „${P.name}“ – sagt meine Bier-DNA. ${COPY.app.tagline}`
+    const text = fill(COPY.avatar.shareText, { name: P.name, tagline: COPY.app.tagline })
     setBusy(true)
     try {
       const data = shareCardData(dna, archetype, avatar, state.profile.ratings, candidates.slice(0, 3))

@@ -1,0 +1,391 @@
+{
+  "countries": {
+    "Deutschland": "Germany",
+    "Österreich": "Austria",
+    "Schweiz": "Switzerland",
+    "Mexiko": "Mexico",
+    "Schottland": "Scotland",
+    "Irland": "Ireland",
+    "Belgien": "Belgium",
+    "Tschechien": "Czechia",
+    "Niederlande": "Netherlands",
+    "Italien": "Italy"
+  },
+  "regions": {
+    "München": "Munich",
+    "Köln": "Cologne",
+    "Thüringen": "Thuringia",
+    "Schwarzwald": "Black Forest",
+    "Mexiko-Stadt": "Mexico City",
+    "Sachsen": "Saxony",
+    "Niederrhein": "Lower Rhine",
+    "Rom": "Rome",
+    "Kalifornien": "California",
+    "Hessen": "Hesse",
+    "Oberbayern": "Upper Bavaria",
+    "Budweis": "České Budějovice",
+    "Pilsen": "Plzeň"
+  },
+  "beers": {
+    "jever": {
+      "description": "Frisian-bitter Pils with a strong hop bite and a very dry finish.",
+      "humorousBio": "Bitter. Dry. Not a beer for people who like their beer to apologise.",
+      "disLikeQuip": "You and Jever have a complicated past.",
+      "tags": ["bitter", "dry", "Frisian-blunt"]
+    },
+    "augustiner": {
+      "description": "Munich Helles with a soft malt note and gentle hops – the classic in the swing-top bottle.",
+      "humorousBio": "Needs no marketing. Has a queue.",
+      "disLikeQuip": "Brave. In Munich, people would be staring at you now.",
+      "tags": ["easy-drinking", "malty", "cult status"]
+    },
+    "paulaner-weisse": {
+      "description": "Cloudy Hefeweizen with banana, clove and a creamy head.",
+      "humorousBio": "Tastes of banana without ever having seen one.",
+      "disLikeQuip": "No banana for you. More for the beer garden.",
+      "tags": ["fruity", "yeasty", "beer garden"]
+    },
+    "becks": {
+      "description": "Bremen Pils, mildly bitter and exported worldwide.",
+      "humorousBio": "The mate who is already at every party. Somehow, always.",
+      "disLikeQuip": "Beck's will get over it. It has plenty of friends.",
+      "tags": ["mildly bitter", "crowd-friendly", "green bottle"]
+    },
+    "koestritzer": {
+      "description": "Thuringian Schwarzbier with roasted malt, coffee and chocolate notes – yet surprisingly light.",
+      "humorousBio": "Looks like Guinness, drinks like Pils. A double agent.",
+      "disLikeQuip": "The double agent has been exposed. Mission aborted.",
+      "tags": ["roasty", "dark", "lighter than you think"]
+    },
+    "ratsherrn": {
+      "description": "Hamburg Pale Ale with citrus and grapefruit aromas from American hop varieties.",
+      "humorousBio": "Smells of grapefruit and self-confidence.",
+      "disLikeQuip": "Too much grapefruit? We get it. Hamburg doesn't.",
+      "tags": ["fruity", "hoppy", "craft"]
+    },
+    "corona": {
+      "description": "Light Mexican lager, traditionally with a lime wedge in the neck.",
+      "humorousBio": "Without lime, just a beer. With lime, still just a beer.",
+      "disLikeQuip": "Not even with lime. Consistent.",
+      "tags": ["light", "lime", "beach"]
+    },
+    "schlenkerla": {
+      "description": "Bamberg Rauchbier from malt kilned over beechwood. Divisive since 1405.",
+      "humorousBio": "Tastes like a campfire with opinions.",
+      "disLikeQuip": "Understandable. You two never really stood a chance.",
+      "tags": ["smoky", "malty", "divisive"]
+    },
+    "rothaus": {
+      "description": "Black Forest Pils in the 0.33 l bottle with the pine cone. Balanced between hops and malt.",
+      "humorousBio": "Small bottle, big fan club. Sold out exactly when you need it most.",
+      "disLikeQuip": "Tannenzäpfle is sad now. Somewhere in the Black Forest, a pine cone falls.",
+      "tags": ["balanced", "easy-drinking", "Black Forest"]
+    },
+    "punk-ipa": {
+      "description": "The IPA that brought the craft beer boom to Europe. Tropical fruit, resin, bitterness.",
+      "humorousBio": "Caused a riot in 2007 and is now in the supermarket. Like all of us.",
+      "disLikeQuip": "Punk is dead. At least for you.",
+      "tags": ["hoppy", "tropical", "craft classic"]
+    },
+    "frueh": {
+      "description": "Top-fermented Kölsch from the Stange glass. Light, fresh, refilled without asking.",
+      "humorousBio": "Comes in 0.2 l. Comes often, though.",
+      "disLikeQuip": "Lid on the glass. The waiter got the message.",
+      "tags": ["light", "Stange", "Cologne"]
+    },
+    "guinness": {
+      "description": "Irish dry stout with roasted notes, a creamy nitrogen head and a dry finish.",
+      "humorousBio": "Takes 119.5 seconds to pour. And you're supposed to wait. The cheek.",
+      "disLikeQuip": "Waited 119.5 seconds – for a no.",
+      "tags": ["roasty", "creamy", "pub"]
+    },
+    "salvator": {
+      "description": "The original Doppelbock. Malty, sweet, strong – the monks' Lenten beer since the 17th century.",
+      "humorousBio": "Liquid bread. Invented by monks who cheated while fasting.",
+      "disLikeQuip": "The monks are fasting without you now.",
+      "tags": ["malty", "strong", "strong-beer season"]
+    },
+    "duvel": {
+      "description": "Belgian strong golden ale. Looks like a Pils, but has 8.5 % and a huge head.",
+      "humorousBio": "Its name means “devil”. And that's not a joke.",
+      "disLikeQuip": "The devil takes it personally. He has time.",
+      "tags": ["strong", "lively", "devil's brew"]
+    },
+    "krombacher": {
+      "description": "Mild Pils brewed with rock spring water, one of Germany's best-selling beers.",
+      "humorousBio": "Tastes of weekends and barbecue smoke. For everyone. Really everyone.",
+      "disLikeQuip": "Krombacher will cope. It has a few million other fans.",
+      "tags": ["mild", "easy-drinking", "crowd-pleaser"]
+    },
+    "tegernseer": {
+      "description": "Upper Bavarian Helles, soft and round, one of the most drinkable beers in the country.",
+      "humorousBio": "Soft as a Sunday morning by the lake. No alarm clock.",
+      "disLikeQuip": "A no for Lake Tegernsee. The ducks are appalled.",
+      "tags": ["soft", "malty", "Bavarian"]
+    },
+    "astra": {
+      "description": "St. Pauli's neighbourhood beer. Mildly bitter Pils with the heart-and-anchor logo.",
+      "humorousBio": "Harbour front, heart, anchor. Not a beer for small talk.",
+      "disLikeQuip": "Astra takes it on the chin. Rule of the Kiez: no cheap shots.",
+      "tags": ["Kiez", "mild", "honest"]
+    },
+    "veltins": {
+      "description": "Fresh, clear Sauerland Pils with a fine hop note.",
+      "humorousBio": "Fresh, clear, uncomplicated. Like a firm handshake.",
+      "disLikeQuip": "No handshake today. The Sauerland stays silent.",
+      "tags": ["fresh", "easy-drinking", "clear"]
+    },
+    "stoertebeker": {
+      "description": "Cloudy Kellerbier from the Baltic coast with a soft yeast and malt note.",
+      "humorousBio": "Unfiltered. Has nothing to hide – except yeast.",
+      "disLikeQuip": "Störtebeker will plunder someone else now.",
+      "tags": ["unfiltered", "malty", "Baltic Sea"]
+    },
+    "bitburger": {
+      "description": "Finely bitter Pils from the Eifel with a pronounced hop note. “Bitte ein Bit.”",
+      "humorousBio": "Wears a suit. Even at the weekend.",
+      "disLikeQuip": "No Bit, please. Noted.",
+      "tags": ["finely bitter", "classic", "Eifel"]
+    },
+    "radeberger": {
+      "description": "Saxon Pilsner in the Bohemian style, finely bitter with a noble hop bite.",
+      "humorousBio": "Finely bitter and a little proud of its own history. Rightly so.",
+      "disLikeQuip": "Radeberger politely withdraws. Saxon composure.",
+      "tags": ["finely bitter", "Saxon", "tradition"]
+    },
+    "flensburger": {
+      "description": "North German Pils with a strong hop bite and the famous plop of the swing top.",
+      "humorousBio": "Goes plop. Doesn't say much. Means it, though.",
+      "disLikeQuip": "No plop for you. Flensburg just shrugs.",
+      "tags": ["bitter", "dry", "swing top"]
+    },
+    "urquell": {
+      "description": "The world's first Pilsner, brewed with Saaz hops since 1842. Full-bodied and spicy.",
+      "humorousBio": "The original. And it knows it.",
+      "disLikeQuip": "The original is unimpressed. It has survived worse.",
+      "tags": ["full-bodied", "hoppy", "old-timer"]
+    },
+    "warsteiner": {
+      "description": "Mild Sauerland Pils in the tulip glass. A queen among beers, says the advert.",
+      "humorousBio": "Has a crown in its logo and still no airs and graces.",
+      "disLikeQuip": "The crown is crooked. But it stays on.",
+      "tags": ["mild", "clear", "tulip glass"]
+    },
+    "erdinger": {
+      "description": "The world's largest wheat beer brewery. Mild, lively, with a fine yeast note.",
+      "humorousBio": "The wheat beer even your aunt knows. From TV.",
+      "disLikeQuip": "Your aunt will be disappointed.",
+      "tags": ["mild", "lively", "wheat beer starter"]
+    },
+    "weihenstephaner": {
+      "description": "From the world's oldest brewery. Full-bodied Hefeweizen with banana and clove, much decorated.",
+      "humorousBio": "In business since 1040. More experience than you and me combined.",
+      "disLikeQuip": "First no since 1040. The abbey archive has been informed.",
+      "tags": ["full-bodied", "award-winning", "abbey beer"]
+    },
+    "gaffel": {
+      "description": "A slightly hoppier Kölsch with a dry finish.",
+      "humorousBio": "The Kölsch for people who still know what they're drinking at carnival.",
+      "disLikeQuip": "Gaffel goes to carnival without you. Alaaf anyway.",
+      "tags": ["fresh", "hop-forward", "carnival"]
+    },
+    "uerige": {
+      "description": "Düsseldorf's most bitter Altbier. Copper-coloured, well hopped, malt-forward.",
+      "humorousBio": "“Dat lecker Dröppke”, says Düsseldorf. Cologne disagrees.",
+      "disLikeQuip": "No lecker Dröppke. Cologne quietly applauds.",
+      "tags": ["bitter", "copper", "old town"]
+    },
+    "diebels": {
+      "description": "Mild Altbier classic from the Lower Rhine with a round malt body.",
+      "humorousBio": "The Alt that gets on with everyone. Even with Kölsch drinkers.",
+      "disLikeQuip": "Even Diebels can't please everyone. Surprise.",
+      "tags": ["mild", "malty", "Lower Rhine"]
+    },
+    "heineken": {
+      "description": "Dutch lager with a slightly sweet note. In the same green bottle worldwide.",
+      "humorousBio": "Is everywhere. Tastes the same everywhere. That's the plan.",
+      "disLikeQuip": "Heineken is everywhere. Just not with you.",
+      "tags": ["international", "mild", "green bottle"]
+    },
+    "stella": {
+      "description": "Belgian premium lager with a light malt sweetness, served in a chalice.",
+      "humorousBio": "Comes in a chalice. Feels like a champagne reception, but it's lager.",
+      "disLikeQuip": "No champagne reception today. The chalice stays empty.",
+      "tags": ["chalice", "mild", "Belgium"]
+    },
+    "leffe": {
+      "description": "Belgian abbey beer, sweetish, malty, with clove and vanilla.",
+      "humorousBio": "Tastes like a dessert dressed up as a beer.",
+      "disLikeQuip": "Dessert declined. Disciplined.",
+      "tags": ["sweet", "abbey beer", "vanilla"]
+    },
+    "celebrator": {
+      "description": "Dark Doppelbock with chocolate, dried fruit and roasted malt. With a plastic goat on the neck.",
+      "humorousBio": "Has a little goat on the bottle. Needs no further arguments.",
+      "disLikeQuip": "The goat saw that. The goat never forgets.",
+      "tags": ["dark", "chocolate", "goat included"]
+    },
+    "drunken-sailor": {
+      "description": "Munich IPA with mango, grapefruit and plenty of bitterness. Craft from Bavaria, minus the purity-law debate.",
+      "humorousBio": "Bavarian craft beer. Yes, that exists. And it's loud.",
+      "disLikeQuip": "The sailor sails on. Without you on board.",
+      "tags": ["hoppy", "mango", "Bavarian craft"]
+    },
+    "sternburg": {
+      "description": "Leipzig export with a light malt sweetness. The corner-shop beer par excellence.",
+      "humorousBio": "Costs less than the deposit on it. And is still proud.",
+      "disLikeQuip": "You turned down a beer that costs less than its deposit. Respect.",
+      "tags": ["cheap", "corner shop", "Leipzig"]
+    },
+    "oettinger": {
+      "description": "Bavarian discount Pils, mild and uncomplicated. No advertising, but cheap.",
+      "humorousBio": "Doesn't advertise. Doesn't have to. Everyone knows it from uni anyway.",
+      "disLikeQuip": "Oettinger is used to rejection. Just not on price.",
+      "tags": ["cheap", "mild", "student beer"]
+    },
+    "hasseroeder": {
+      "description": "Harz Pils in a hexagonal bottle with a robust hop note.",
+      "humorousBio": "Hexagonal bottle. Because anyone can do round.",
+      "disLikeQuip": "Six corners, zero chances.",
+      "tags": ["robust", "Harz", "hexagon"]
+    },
+    "wernesgruener": {
+      "description": "Pils from the Vogtland with a pronounced but soft hop bitterness.",
+      "humorousBio": "Calls itself a legend. And who would argue with that.",
+      "disLikeQuip": "You argued with a legend. Brave.",
+      "tags": ["hop-forward", "Vogtland", "legend"]
+    },
+    "hofbraeu": {
+      "description": "The Helles from the Hofbräuhaus – a bit hoppier than other Munich Helles.",
+      "humorousBio": "Photographed by more tourists per day than the Eiffel Tower. Or so it feels.",
+      "disLikeQuip": "One Prosit fewer. The tourists will drink it.",
+      "tags": ["litre stein", "tourists", "Munich"]
+    },
+    "andechser-doppelbock": {
+      "description": "Dark abbey Doppelbock from the Holy Mountain. Malty, warm, with caramel and plum.",
+      "humorousBio": "Brewed by monks. You can tell they have time.",
+      "disLikeQuip": "The monks are praying for you. They have the time.",
+      "tags": ["abbey", "malty", "caramel"]
+    },
+    "moenchshof-keller": {
+      "description": "Franconian Kellerbier, unfiltered, amber, with a strong malt body.",
+      "humorousBio": "Unfiltered and proud of it. Like a good friend after the third beer.",
+      "disLikeQuip": "Unfiltered and unloved. Harsh.",
+      "tags": ["unfiltered", "Franconian", "amber"]
+    },
+    "einbecker-urbock": {
+      "description": "From the town that gave Bock beer its name. Dark, malty, with a fine hop bitterness.",
+      "humorousBio": "Invented Bock beer. Mentions it now and then.",
+      "disLikeQuip": "The inventor of Bock is offended. For the first time since 1378.",
+      "tags": ["Bock inventor", "malty", "Lower Saxony"]
+    },
+    "jever-fun": {
+      "description": "Alcohol-free Pils with Jever's typical bitterness – just without the excuse.",
+      "humorousBio": "As bitter as its big brother, but drives you home afterwards.",
+      "disLikeQuip": "Not even without alcohol? That's honest.",
+      "tags": ["alcohol-free", "bitter", "designated driver"]
+    },
+    "erdinger-af": {
+      "description": "Alcohol-free wheat beer, lively and slightly sweet. Popular with people in running shoes.",
+      "humorousBio": "Drunk after the marathon. By people who mention it.",
+      "disLikeQuip": "No isotonic thirst-quenching today. The running club has been informed.",
+      "tags": ["alcohol-free", "lively", "athletes"]
+    },
+    "clausthaler": {
+      "description": "One of the classic alcohol-free beers – mildly bitter and unexcited.",
+      "humorousBio": "Not always, but more and more often. You know the one.",
+      "disLikeQuip": "Not always. And for you, apparently never.",
+      "tags": ["alcohol-free", "mild", "classic"]
+    },
+    "schneider-tap7": {
+      "description": "Amber wheat beer with clove, caramel and bread crust. The original among the darker ones.",
+      "humorousBio": "Wheat beer, but with life experience.",
+      "disLikeQuip": "Too dark for a wheat beer? Schneider takes it with dignity.",
+      "tags": ["amber", "spicy", "caramel"]
+    },
+    "franziskaner": {
+      "description": "Mild Munich Hefeweizen, fruity and creamy.",
+      "humorousBio": "Wears a habit, but brings good vibes.",
+      "disLikeQuip": "The monk on the label briefly looks away.",
+      "tags": ["mild", "fruity", "beer garden"]
+    },
+    "augustiner-edelstoff": {
+      "description": "Augustiner's export: full-bodied, soft, dangerously drinkable.",
+      "humorousBio": "Its name means “noble stuff”, and it takes that seriously.",
+      "disLikeQuip": "You turned down the Edelstoff. Munich will talk about it.",
+      "tags": ["full-bodied", "easy-drinking", "cult status"]
+    },
+    "schoenramer-pils": {
+      "description": "Upper Bavarian Pils with plenty of hops – a favourite of beer nerds.",
+      "humorousBio": "Bavarian, but bitter. That really exists.",
+      "disLikeQuip": "The beer nerds' favourite. They're writing a blog post now.",
+      "tags": ["bitter", "hoppy", "insider tip"]
+    },
+    "brlo-pale-ale": {
+      "description": "Berlin Pale Ale with citrus and resin, brewed in a brewery made of shipping containers.",
+      "humorousBio": "From Berlin. Has a podcast. Probably.",
+      "disLikeQuip": "Berlin heard you. Berlin doesn't care.",
+      "tags": ["craft", "citrusy", "Berlin"]
+    },
+    "maisel-pale-ale": {
+      "description": "Fruity Pale Ale from Bayreuth with apricot, mango and caramel.",
+      "humorousBio": "Craft from Franconia. With friends, it says itself.",
+      "disLikeQuip": "Maisel still has plenty of friends. Don't worry.",
+      "tags": ["craft", "fruity", "Franconia"]
+    },
+    "sierra-nevada": {
+      "description": "The forefather of American Pale Ale: Cascade hops, pine, grapefruit.",
+      "humorousBio": "Invented craft beer before it was cool.",
+      "disLikeQuip": "You turned down the grandad of craft. He won't tell anyone.",
+      "tags": ["hoppy", "Cascade", "craft pioneer"]
+    },
+    "peroni": {
+      "description": "Light Italian lager, fresh and uncomplicated.",
+      "humorousBio": "Wears sunglasses. Even indoors.",
+      "disLikeQuip": "No dolce vita today. Ciao.",
+      "tags": ["light", "fresh", "Italy"]
+    },
+    "budvar": {
+      "description": "Bohemian lager with Saaz hops and long maturation. The real Budweiser.",
+      "humorousBio": "Has been fighting an American over its own name for decades.",
+      "disLikeQuip": "Budvar has been through worse. Lawyers, for example.",
+      "tags": ["Bohemian", "rounded", "name dispute"]
+    },
+    "kozel-dark": {
+      "description": "Czech dark lager: caramel, coffee, low alcohol.",
+      "humorousBio": "Dark, sweet, light. And there's a goat as well.",
+      "disLikeQuip": "Another goat that won't forget you.",
+      "tags": ["dark", "caramel", "light"]
+    },
+    "chimay-blue": {
+      "description": "Dark Trappist beer with plum, caramel and pepper. Gets better with age.",
+      "humorousBio": "Brewed by monks and ages like wine. You, less so.",
+      "disLikeQuip": "The Trappists remain silent. But they always do.",
+      "tags": ["Trappist", "strong", "plum"]
+    },
+    "licher": {
+      "description": "Hessian Pils from the heart of nature, says the advert.",
+      "humorousBio": "Comes from the heart of nature. Nature didn't object.",
+      "disLikeQuip": "Nature has a heart. You, apparently, less so.",
+      "tags": ["mildly bitter", "Hesse", "nature"]
+    },
+    "luebzer": {
+      "description": "North German Pils from Mecklenburg, fresh and clear.",
+      "humorousBio": "Mecklenburg in a bottle. Taciturn, but reliable.",
+      "disLikeQuip": "Lübzer says nothing about it. As always.",
+      "tags": ["fresh", "Mecklenburg", "Baltic Sea"]
+    },
+    "ur-krostitzer": {
+      "description": "Finely bitter Pils from northern Saxony with a tradition going back to the 16th century.",
+      "humorousBio": "Has a Swedish king on the label. Better not ask why.",
+      "disLikeQuip": "The Swedish king is disappointed. He moves on.",
+      "tags": ["finely bitter", "Saxony", "tradition"]
+    },
+    "berliner-weisse": {
+      "description": "Sour light beer – traditionally with a shot of syrup (red or green) and a straw.",
+      "humorousBio": "Comes with a straw and syrup. And isn't the least bit ashamed.",
+      "disLikeQuip": "Not even with syrup? Red and green are both offended.",
+      "tags": ["sour", "with syrup", "straw"]
+    }
+  }
+}

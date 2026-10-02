@@ -9,6 +9,9 @@ import '@fontsource/unifrakturcook/700.css'
 import './index.css'
 import App from './App.tsx'
 import { refreshCatalog } from './data/catalog'
+import { LANG } from './state/lang'
+
+document.documentElement.lang = LANG
 
 const BottleGallery = import.meta.env.DEV ? lazy(() => import('./ui/dev/BottleGallery')) : null
 const gallery = BottleGallery && new URLSearchParams(location.search).get('gallery') === 'bottles'

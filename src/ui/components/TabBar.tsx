@@ -17,7 +17,7 @@ const TABS = TAB_SCREENS.map((screen) => ({ screen, label: COPY.tabs[screen], Ic
 export function TabBar() {
   const { state, go } = useApp()
   return (
-    <nav className={styles.bar} aria-label="Hauptnavigation">
+    <nav className={styles.bar} aria-label={COPY.nav.main}>
       {TABS.map(({ screen, label, Icon }) => {
         const active = state.screen === screen
         return (

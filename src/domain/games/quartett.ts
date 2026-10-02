@@ -1,3 +1,4 @@
+import { COPY } from '../../data/copy'
 import type { Beer, TasteAxis } from '../types'
 
 /**
@@ -16,15 +17,15 @@ export interface QuartettStat {
 
 /** The rows on every card; for all of them the higher value wins. */
 export const QUARTETT_STATS: readonly QuartettStat[] = [
-  { key: 'abv', label: 'Alkohol' },
-  { key: 'bitterness', label: 'Bittere' },
-  { key: 'hopIntensity', label: 'Hopfen' },
-  { key: 'maltiness', label: 'Malz' },
-  { key: 'sweetness', label: 'Süße' },
-  { key: 'body', label: 'Körper' },
-  { key: 'dryness', label: 'Trockenheit' },
-  { key: 'drinkability', label: 'Süffigkeit' },
-  { key: 'character', label: 'Charakter' },
+  { key: 'abv', label: COPY.quartett.stats.abv },
+  { key: 'bitterness', label: COPY.quartett.stats.bitterness },
+  { key: 'hopIntensity', label: COPY.quartett.stats.hopIntensity },
+  { key: 'maltiness', label: COPY.quartett.stats.maltiness },
+  { key: 'sweetness', label: COPY.quartett.stats.sweetness },
+  { key: 'body', label: COPY.quartett.stats.body },
+  { key: 'dryness', label: COPY.quartett.stats.dryness },
+  { key: 'drinkability', label: COPY.quartett.stats.drinkability },
+  { key: 'character', label: COPY.quartett.stats.character },
 ]
 
 export type Player = 0 | 1

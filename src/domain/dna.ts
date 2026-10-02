@@ -1,4 +1,5 @@
 import { BEER_BY_ID } from '../data/beers'
+import { COPY } from '../data/copy'
 import { TASTE_AXES } from './types'
 import type { BeerDNA, Rating, RatingCounts, Ratings, TasteAxis, TasteVector } from './types'
 
@@ -90,11 +91,11 @@ export function computeDNA(ratings: Ratings, lookup = BEER_BY_ID): BeerDNA {
 
 /** The five axes shown as bars on the DNA screen, in display order (Designsystem §4c). */
 export const DISPLAY_AXES: { axis: TasteAxis; label: string; color: string }[] = [
-  { axis: 'bitterness', label: 'Herb', color: '#5FB25A' },
-  { axis: 'hopIntensity', label: 'Hopfig', color: '#8DB23A' },
-  { axis: 'maltiness', label: 'Malzig', color: '#C98A3C' },
-  { axis: 'drinkability', label: 'Süffig', color: '#4C9FD6' },
-  { axis: 'character', label: 'Charakter', color: '#E5534B' },
+  { axis: 'bitterness', label: COPY.dnaAxes.bitterness, color: '#5FB25A' },
+  { axis: 'hopIntensity', label: COPY.dnaAxes.hopIntensity, color: '#8DB23A' },
+  { axis: 'maltiness', label: COPY.dnaAxes.maltiness, color: '#C98A3C' },
+  { axis: 'drinkability', label: COPY.dnaAxes.drinkability, color: '#4C9FD6' },
+  { axis: 'character', label: COPY.dnaAxes.character, color: '#E5534B' },
 ]
 
 /** Index into DISPLAY_AXES of the user's strongest visible axis. */

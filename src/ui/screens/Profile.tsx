@@ -1,4 +1,4 @@
-import { ChatCircleTextIcon, DownloadSimpleIcon, MoonStarsIcon, UploadSimpleIcon } from '@phosphor-icons/react'
+import { ChatCircleTextIcon, DownloadSimpleIcon, MoonStarsIcon, TranslateIcon, UploadSimpleIcon } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { serializeProfile } from '../../state/storage'
 import { useProfileImport } from '../useProfileImport'
@@ -8,6 +8,7 @@ import { forgetRegional } from '../../data/regional'
 import { COPY, fill } from '../../data/copy'
 import { progressMessage } from '../../domain/quips'
 import { useApp } from '../../state/AppContext'
+import { LANG, switchLang } from '../../state/lang'
 import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { FeedbackSheet } from '../components/FeedbackSheet'
@@ -98,7 +99,7 @@ export function Profile() {
         <h2 className={styles.h2}>{COPY.profile.achievements}</h2>
         <div className={styles.achGrid}>
           {achievements.map((a) => (
-            <div key={a.id} className={`${styles.ach} ${a.unlocked ? styles.achOn : ''}`} aria-label={`${a.title}: ${a.desc}${a.unlocked ? '' : ' (noch nicht)'}`}>
+            <div key={a.id} className={`${styles.ach} ${a.unlocked ? styles.achOn : ''}`} aria-label={`${a.title}: ${a.desc}${a.unlocked ? '' : COPY.profile.achLocked}`}>
               <span className={styles.achIcon}>{ACH_ICON[a.icon]}</span>
               <span className={styles.achTitle}>{a.title}</span>
               <span className={styles.achDesc}>{a.desc}</span>
@@ -132,6 +133,14 @@ export function Profile() {
           <span className={`${styles.track} ${dark ? styles.trackOn : ''}`}>
             <span className={styles.knob} style={{ left: dark ? 22 : 2 }} />
           </span>
+        </button>
+        <button type="button" className={styles.setting} onClick={() => switchLang(LANG === 'de' ? 'en' : 'de')} lang={LANG}>
+          <TranslateIcon weight="bold" size={20} />
+          <span className={styles.settingText}>
+            <span className={styles.settingLabel}>{COPY.language.label}</span>
+            <span className={styles.settingSub}>{COPY.language.sub}</span>
+          </span>
+          <span className={styles.langCode}>{COPY.language.code}</span>
         </button>
         <SyncSection />
         <button type="button" className={styles.setting} onClick={() => setFeedback(true)}>

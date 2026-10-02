@@ -1,3 +1,4 @@
+import { COPY } from '../data/copy'
 import { haversineKm } from './geo'
 import type { LatLon } from './geo'
 import { compatibility } from './matching'
@@ -58,7 +59,7 @@ export function rankRegional(user: TasteVector, breweries: readonly RegionalBrew
 /** „800 m“, „4,2 km“, „37 km“ – with a no-break space, so the unit never wraps alone. */
 export function formatKm(km: number): string {
   if (km < 1) return `${Math.max(100, Math.round(km * 10) * 100)}\u00a0m`
-  if (km < 10) return `${km.toFixed(1).replace('.', ',')}\u00a0km`
+  if (km < 10) return `${km.toFixed(1).replace('.', COPY.app.decimal)}\u00a0km`
   return `${Math.round(km)}\u00a0km`
 }
 

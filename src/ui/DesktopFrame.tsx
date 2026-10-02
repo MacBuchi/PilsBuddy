@@ -1,5 +1,5 @@
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon, CardsIcon, DnaIcon, GameControllerIcon, HeartIcon, UserCircleIcon } from '@phosphor-icons/react'
-import { COPY } from '../data/copy'
+import { COPY, fill } from '../data/copy'
 import { DISPLAY_AXES } from '../domain/dna'
 import { matchReason } from '../domain/matching'
 import { TAB_SCREENS } from '../state/reducer'
@@ -34,12 +34,12 @@ export function DesktopLeft() {
         <div className={styles.brandText}>
           <span className={styles.wordmark}>{COPY.app.name}</span>
           <span className="t-label" style={{ fontSize: 10 }}>
-            Bier-Dating · v0.1
+            {COPY.app.subtitle}
           </span>
         </div>
       </div>
       {onboarded && (
-        <nav className={styles.nav} aria-label="Bereiche">
+        <nav className={styles.nav} aria-label={COPY.nav.areas}>
           {TAB_SCREENS.map((k) => {
             const Icon = ICONS[k]
             const active = state.screen === k
@@ -53,7 +53,7 @@ export function DesktopLeft() {
         </nav>
       )}
       <div className={styles.box}>
-        <span className="t-label">Steuerung</span>
+        <span className="t-label">{COPY.desktop.controls}</span>
         <div className={styles.keys}>
           {KEYS.map((k) => (
             <span key={k.label} className={styles.key}>
@@ -62,7 +62,7 @@ export function DesktopLeft() {
             </span>
           ))}
         </div>
-        <span className={styles.hint}>Karte ziehen oder Tasten. Tippen öffnet das Bier.</span>
+        <span className={styles.hint}>{COPY.desktop.hint}</span>
       </div>
     </aside>
   )
@@ -80,8 +80,8 @@ export function DesktopRight() {
       <div className={styles.box}>
         <div className={styles.tendency}>
           <div>
-            <span className="t-label">Live-Tendenz</span>
-            <div className={styles.persona}>{hasData ? COPY.personas[archetype].name : 'Noch keine Tendenz'}</div>
+            <span className="t-label">{COPY.desktop.tendency}</span>
+            <div className={styles.persona}>{hasData ? COPY.personas[archetype].name : COPY.desktop.noTendency}</div>
           </div>
           <BuddyAvatar spec={avatar} size={56} />
         </div>
@@ -106,7 +106,7 @@ export function DesktopRight() {
               <span className={styles.nextName}>
                 {top.beer.fullName} · {top.pct} %
               </span>
-              <span className={styles.nextReason}>„{matchReason(dna.taste, top.beer)}“</span>
+              <span className={styles.nextReason}>{fill(COPY.app.quote, { text: matchReason(dna.taste, top.beer) })}</span>
             </div>
           </div>
         </div>

@@ -19,8 +19,8 @@ export default defineConfig({
   define: { __APP_BUILD__: JSON.stringify(buildId()) },
   build: {
     // One app chunk on purpose: the service worker caches what was loaded, so everything the app needs
-    // offline (screens, games, beer data) is in it – ~160 kB gzip. supabase-js and legal stay lazy.
-    chunkSizeWarningLimit: 650,
+    // offline (screens, games, beer data, both languages) is in it – ~210 kB gzip. supabase-js and legal stay lazy.
+    chunkSizeWarningLimit: 720,
   },
   css: {
     // Keyframes live once in index.css; modules must reference them by their global name.

@@ -6,7 +6,7 @@ import { syncActions, useSyncStatus } from '../../sync/useCloudSync'
 import { SyncJoinSheet } from '../components/SyncJoinSheet'
 import styles from './Profile.module.css'
 
-const time = (at: number) => new Date(at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+const time = (at: number) => new Date(at).toLocaleTimeString(COPY.app.locale, { hour: '2-digit', minute: '2-digit' })
 
 /** Profile › „Auf allen Geräten“: opt-in switch, the Sync-Code, joining another device's account. */
 export function SyncSection() {

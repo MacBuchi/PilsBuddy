@@ -43,13 +43,13 @@ export interface RegionalBrewery {
 const SOURCES: Record<number, { name: string; url?: (ref: string) => string }> = {
   1: { name: 'Open Food Facts', url: (ref) => `https://world.openfoodfacts.org/product/${encodeURIComponent(ref)}` },
   2: { name: 'Wikidata', url: (ref) => `https://www.wikidata.org/wiki/${encodeURIComponent(ref)}` },
-  3: { name: 'Website der Brauerei' },
+  3: { name: COPY.regional.sourceWebsite },
   4: { name: 'beer.db (openbeer)', url: (ref) => `https://github.com/openbeer/${ref}` },
   // R6: reported in the app and approved; the ref is the link given with the report
-  5: { name: 'Meldung aus der App', url: (ref) => safeUrl(ref) ?? '' },
+  5: { name: COPY.regional.sourceApp, url: (ref) => safeUrl(ref) ?? '' },
 }
 
-const COUNTRY_NAME: Record<Country, string> = { DE: 'Deutschland', AT: 'Österreich', CH: 'Schweiz' }
+const COUNTRY_NAME: Record<Country, string> = COPY.countries
 
 const text = (v: unknown, max: number): string | null => (typeof v === 'string' && v.trim() && v.length <= max ? v.trim() : null)
 const num = (v: unknown, min: number, max: number): number | null => {

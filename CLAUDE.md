@@ -16,8 +16,12 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   through the seeded PRNG there – same seed, same game; the UI passes the seed in.
 - `UNKNOWN` never influences the taste vector; `DISLIKE` is negative; `WANT_TO_TRY` is interest,
   not preference. Don't "fix" that.
-- Copy lives in `src/data/copy.ts`; beers in `src/data/beers.json` (8 axes, 0–100, `reference: true`
-  marks the onboarding deck). Adding beers needs no code change. Rows in the DB table `beers` add/replace
+- Copy lives in `src/data/copy.ts` (German) and `src/data/copy.en.ts` (English, same keys – the `Copy` type enforces
+  it, `copy.test.ts` checks placeholders). A new text needs both. The language is fixed per session
+  (`src/state/lang.ts`: stored choice, else browser language; switching reloads), so modules may read `COPY` at load.
+  English beer texts: `src/data/beers.en.json` (one entry per curated beer, test-enforced); style names stay German.
+  Unit tests run in German; e2e contexts pin `locale: 'de-DE'` (Playwright defaults to en-US).
+  Beers live in `src/data/beers.json` (8 axes, 0–100, `reference: true` marks the onboarding deck). Adding beers needs no code change. Rows in the DB table `beers` add/replace
   beers at runtime (`src/data/catalog.ts`, cached, applied on the next start) – so never assume a beer id from
   ratings, sync or a buddy link exists in `BEER_BY_ID`.
 - Bottles are generated (`src/domain/bottles/`, skill `pilsbuddy-flaschendesign`): no SVG file per beer. A beer
@@ -27,7 +31,8 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   lightningcss transformer with `cssModules.animation: false` – keep that).
 - Semantic action colours (like/nope/try/know/unknown) are identical in light and dark mode.
 - Screens are absolute-positioned inside `AppShell`; use `var(--safe-top)` / `var(--safe-bottom)`.
-- Persistence is `src/state/storage.ts` only (versioned localStorage). Navigation is not persisted.
+- Persistence is `src/state/storage.ts` only (versioned localStorage) – plus the language choice in
+  `src/state/lang.ts`, which the text bank needs before anything else loads. Navigation is not persisted.
 - Backend: Supabase project `PilsBuddy` (ref `rwqpljpnotnyovvuxjgl`). Schema changes only as new files in
   `supabase/migrations/` + pgTAP tests in `supabase/tests/` (`supabase db start && supabase test db`); after
   merge apply with `supabase db push`. RLS on every table; `supabase db advisors --linked` must stay clean

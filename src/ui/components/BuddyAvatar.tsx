@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
+import { COPY, fill } from '../../data/copy'
 import { buildAvatar } from '../../domain/avatar'
 import type { AvatarSpec, Eyes, Mouth } from '../../domain/avatar'
 import type { ArchetypeId } from '../../domain/types'
@@ -57,7 +58,7 @@ export function BuddyAvatar({ spec, archetype = 'logo', decoded = 100, size = 12
       className={className}
       style={{ position: 'relative', width: size, height: size, flex: 'none' }}
       role="img"
-      aria-label={`Bier-Buddy ${A.archetype}`}
+      aria-label={fill(COPY.app.buddyAria, { archetype: A.archetype })}
     >
       <div style={abs(0, 0, 120, 120, { transform: `scale(${size / 120})`, transformOrigin: '0 0' })}>
         {A.stage === 'stammgast' && (

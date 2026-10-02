@@ -12,7 +12,7 @@ const out = process.argv[3] ?? '/tmp/sync'
 const browser = await chromium.launch()
 const errors = []
 const device = async () => {
-  const ctx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2 })
+  const ctx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2, locale: 'de-DE' })
   const page = await ctx.newPage()
   page.on('pageerror', (e) => errors.push(String(e)))
   return { page, m: page.locator('main') }
