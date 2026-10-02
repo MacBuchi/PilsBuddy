@@ -40,6 +40,45 @@ jobs:
       - run: supabase db start
       - run: supabase db lint --local --fail-on error
       - run: supabase test db
+      - name: Rechte wie vorgesehen (Frischinstallation)
+        run: psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -v ON_ERROR_STOP=1 -q -f tool/db/grants_check.sql
+
+  # Q1 – patch compatibility: the way production goes. Base branch's migrations on a stack with the live
+  # project's old default privileges, data like live, then only the new migrations of this change; then
+  # rights (grants_check.sql) and the app's own queries (schema_check.sh). Details: tool/db/upgrade_check.sh.
+  upgrade:
+    name: DB upgrade path (Bestand + neue Migrationen)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # base branch + history for the „already live“ checks
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.109.1
+      - name: Leeren Stack starten (ohne Migrationen)
+        run: |
+          mv supabase/migrations /tmp/migrations && mkdir supabase/migrations
+          supabase start -x studio,imgproxy,vector,logflare,supavisor,mailpit,realtime,storage-api,edge-runtime
+          rmdir supabase/migrations && mv /tmp/migrations supabase/migrations
+      - name: Katalog-Fixture bauen
+        run: npm run catalog:build -- --raw tools/catalog/fixtures --out /tmp/regional --min-breweries 1
+      - name: Basis → Bestand → neue Migrationen → Rechte + App-Queries
+        env:
+          # via env, not interpolated into the script: a branch name is chosen from outside
+          BASE_REF: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
+          CATALOG_SQL: /tmp/regional
+        run: |
+          # a new branch pushed has no „before“ – compare with its parent then
+          if [ -z "$BASE_REF" ] || [ "$BASE_REF" = 0000000000000000000000000000000000000000 ]; then BASE_REF=HEAD~1; fi
+          eval "$(supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=')"
+          SUPABASE_URL=$API_URL SUPABASE_KEY=$PUBLISHABLE_KEY BASE_REF=$BASE_REF bash tool/db/upgrade_check.sh
 
   sync-e2e:
     name: Backend E2E (sync · catalogue, local Supabase)
@@ -126,7 +165,7 @@ jobs:
 
   deploy:
     name: Deploy to Cloudflare
-    needs: [e2e, db, sync-e2e]
+    needs: [e2e, db, sync-e2e, upgrade]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:

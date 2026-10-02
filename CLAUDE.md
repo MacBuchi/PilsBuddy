@@ -32,6 +32,10 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   `supabase/migrations/` + pgTAP tests in `supabase/tests/` (`supabase db start && supabase test db`); after
   merge apply with `supabase db push`. RLS on every table; `supabase db advisors --linked` must stay clean
   (except the two intended 0012 „anonymous access“ WARNs, see `supabase/README.md`).
+  Migrations already on `main` are live – never edit them, add a new one. A new table needs explicit grants
+  (the API roles get nothing by default) plus an entry in `tool/db/grants_check.sql` and a guarded block in
+  `tool/db/seed_existing.sql`; CI job „DB upgrade path“ (`tool/db/upgrade_check.sh`) replays main → data → new
+  migrations and runs the app's queries (`tool/db/schema_check.sh`).
   The app must keep working fully offline/without the backend (localStorage stays the source of truth).
   Sync code lives in `src/sync/` (pure merge in `merge.ts` with tests; supabase-js only via lazy `cloud.ts`).
   Edge functions in `supabase/functions/`; the two-device flow `e2e/sync.mjs` runs in CI against a local stack.

@@ -15,6 +15,14 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 | `feedback` | In-App-Feedback („Wünsch dir was!“): Typ, Text, Build, grober Gerätetyp – anonym; `tool/feedback_bot.py` (Workflow „Feedback Bot“, alle 2 h) macht daraus Issues und löscht verarbeitete Zeilen nach 30 Tagen | nur `insert` (vier Spalten) für alle, Trigger: max. 30 je 10 min, gleicher Text 1× am Tag; lesen nur service_role |
 | `beer_submissions` | R6 „Bier fehlt? Eintragen“: Brauerei (`brewery_id` oder Name + PLZ/Ort), Link oder Name/Stil/ABV, Notiz, Build, Gerätetyp – anonym; `tool/beer_bot.py` (Workflow „Beer Reports“, alle 2 h) macht daraus Issues `bier-meldung`, das Label `freigegeben` trägt das (im Issue korrigierbare) Bier als `r-app<Issue>` (Quelle 5) ein, eine neue Brauerei als `app-<Issue>` am PLZ-Mittelpunkt; verarbeitete Zeilen nach 30 Tagen gelöscht | nur `insert` (zehn Spalten) für alle, Trigger: max. 20 je 10 min, gleiches Bier 1× pro Woche; dazu 5 je Gerät und Tag in der App; lesen nur service_role |
 
+**Rechte & Upgrade-Pfad (Q1):** Neue Tabellen bekommen für anon/authenticated **keine** Rechte mehr per Default
+(`20261003130000_explicit_grants.sql` – das Live-Projekt gab vorher `arwdDxtm` auf jede neue Tabelle, lokal nur
+`Dxtm`). Jede Migration vergibt, was die App braucht; `tool/db/grants_check.sql` kennt die erlaubten Rechte je
+Tabelle und schlägt bei allem anderen an. CI-Job „DB upgrade path“: leerer Stack mit den alten Live-Standardrechten
+→ Migrationen von `main` → Bestand (Katalog-Fixture, `tool/db/seed_existing.sql`) → nur die neuen Migrationen →
+Rechte-Check + App-Queries (`tool/db/schema_check.sh`, liest die Abfragen aus `src/`). Außerdem: ausgelieferte
+Migrationen unverändert, neue Versionen nach der letzten ausgelieferten.
+
 **Bierkatalog (B3):** Die Tabelle enthält *nur* Biere, die neu sind oder ein gebündeltes Bier ersetzen sollen
 (gleiche `id`) – keine Kopie des ganzen JSON, sonst würde ein alter DB-Stand spätere JSON-Änderungen überdecken.
 Pflege per Studio/SQL; `data` braucht alle Felder eines Biers (siehe `e2e/catalog-seed.sql`), `image` nur als
