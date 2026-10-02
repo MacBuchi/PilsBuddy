@@ -173,6 +173,7 @@ export function Profile() {
         <button type="button" className={styles.legalLink} onClick={() => go('legal')}>
           {COPY.profile.legal}
         </button>
+        <p className={styles.version}>{COPY.profile.version.replace('{version}', __APP_VERSION__)}</p>
       </section>
     </div>
   )

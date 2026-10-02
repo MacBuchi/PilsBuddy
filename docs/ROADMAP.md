@@ -5,8 +5,8 @@ Stand: 2026-10-02 · Live: <https://pilsbuddy.mcbuchi.de> · MVP (Phasen 1–12 
 Reihenfolge folgt der Produktpriorität des Konzepts: erst Spaß & Nutzbarkeit lokal (A), dann
 Backend (B), dann Pils-Match (C), dann optionale KI (D). Vorgezogen auf Wunsch: Minispiele (E1) und
 **Biere aus deiner Nähe (R) – nächste Stufe**, danach E2–E6, C2/C3, D. Jedes Paket ist für sich releasebar und
-endet mit dem Gate: `npm run build` · `npm test` · `npm run lint` · `e2e/flow.mjs` · Screenshots
-mobil + desktop · `npm run deploy` · Häkchen hier setzen · Commit.
+endet mit dem Gate – seit Q3 komplett in CI: Lint · Test · Build · E2E (Screenshots als Artefakt) · DB-Tests ·
+Upgrade-Pfad, nach dem Merge Deploy · Prod-Smoke · Release. Das Häkchen setzt der Paket-PR selbst.
 
 Aufwand: S ≈ ½ Tag · M ≈ 1–2 Tage · L ≈ 3+ Tage.
 
@@ -18,13 +18,14 @@ Details stehen beim jeweiligen Paket weiter unten.
 
 1. [x] **R6** „Bier fehlt? Eintragen“ – Meldung → Issue → Label `freigegeben` → Katalog (#38, live 2026-10-02)
 2. [x] **Q1** Integrationstest Patch-Kompatibilität (Upgrade-Pfad mit Bestand, Live-Rechte, App-Queries) – #37 (#40, live 2026-10-02)
-3. [ ] **Q2** Live-Migration per CI vor dem Deploy – #37, ⏸ braucht die ausdrückliche Freigabe des Maintainers
-       (Auto-Modus blockiert „Blind Apply“) und das Secret `SUPABASE_ACCESS_TOKEN`; bis dahin übersprungen
+3. [ ] ~~**Q2** Live-Migration per CI~~ – freigegeben 2026-10-02, jetzt Punkt 7
 4. [x] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card) (#42, live 2026-10-02)
 5. [x] **I1** Englische Version – automatisch nach Browsersprache, umschaltbar (#46) (#48, live 2026-10-02)
-6. [ ] **R8** Bierbibliothek mit Filtern
-7. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
-8. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
+6. [x] **Q3** Release-Pipeline: Smoke nach jedem Deploy, Release + Rollback, Gate in CI statt lokal (2026-10-02)
+7. [ ] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production`
+8. [ ] **R8** Bierbibliothek mit Filtern
+9. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
+10. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -242,8 +243,14 @@ Vorlage: Job `schema-dry-run` in PilzBuddy/TrailBuddy (`tool/db_migrate.sh`, `sc
         `tool/db/` (upgrade_check.sh, grants_check.sql, schema_check.sh, seed_existing.sql). Befund: live hatten
         anon/authenticated alle Rechte auf allen Tabellen (nur RLS schützte) → Migration `explicit_grants`, neue Tabellen
         ohne Standardrechte; live geprüft (Rechte, App-Queries, Prod-Smoke)
-- [ ] Q2 **Live-Migration per CI:** Job `migrate` (`supabase db push --linked`, nur `SUPABASE_ACCESS_TOKEN`) nach Q1,
-      vor dem Deploy; eigene Concurrency-Gruppe; ohne Secret sichtbar übersprungen. Braucht Freigabe (S)
+- [ ] Q2 **Live-Migration per CI:** Job `live-db` (`supabase db push --linked`, Edge Functions, Rechte-Check live) nur bei
+      geänderten Migrationen/Functions, vor dem Deploy, mit Approve im Environment `production`; dazu `live-check`
+      (Dry-Run + Advisors, read-only) bei jedem Push und `catalog-import.yml` statt lokalem Import. Secret
+      `SUPABASE_ACCESS_TOKEN`. Freigegeben 2026-10-02 (S)
+- [x] Q3 **Release-Pipeline (Wunsch 2026-10-02):** Gate komplett in CI (actionlint, Bundle-Budget, Screenshots immer als
+      Artefakt), Auto-Merge; nach dem Deploy Prod-Smoke gegen den neuen Commit (`/version.json`), dann GitHub Release
+      `v<Datum>.<Run>` mit Notes und `dist.zip`, Version im Profil; `rollback.yml` spielt ein früheres Release ein;
+      Fehler nach dem Merge → Issue `release-failed`. Roadmap-Haken im Paket-PR statt eigenem PR (S)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

@@ -1,8 +1,10 @@
 # End-to-end check
 
 Drives the whole core flow in a headless iPhone-sized Chromium: welcome → onboarding → swipes →
-DNA → avatar → match → detail → tabs → reload resumes → reset. Playwright is deliberately not a
-project dependency; run it ad hoc:
+DNA → avatar → match → detail → tabs → reload resumes → reset. In CI it runs on every PR (job „E2E flow“, screenshots
+always uploaded as artifact `screenshots`), after every deploy against production and nightly
+(`.github/workflows/prod-smoke.yml`); Playwright comes from `.github/actions/playwright`. It is
+deliberately not a project dependency; to debug locally, run it ad hoc:
 
 ```sh
 npm run dev                                   # in one terminal

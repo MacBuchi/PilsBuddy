@@ -48,9 +48,14 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   must be described in the privacy text `src/data/legal.ts` in the same PR.
 - Regional beers (Stufe R): taste only via `tasteFromStyle` (shown as „Stil-Schätzung“), never hand-invented;
   the user's location never leaves the device – query only coarse grid cells (or the typed postcode).
-- Work follows `docs/ROADMAP.md`: keep its order (A0 → A1 → A2 → A9 → …), tick the checkbox of a
-  package when it is live, and run the gate (build, test, lint, `e2e/flow.mjs`, screenshots,
-  `npm run deploy`) before ticking.
-- One package = one branch + PR. Merge it yourself once the gate is green, deploy from `main`,
-  then smoke-test https://pilsbuddy.mcbuchi.de (E2E against production) before moving on –
-  locally or with `gh workflow run prod-smoke.yml` (runs the same flow from GitHub Actions).
+- Work follows `docs/ROADMAP.md`: keep its order (A0 → A1 → A2 → A9 → …). One package = one branch + PR that
+  also ticks its roadmap checkbox (with the PR number) – no separate roadmap PR.
+- The gate runs in CI, not locally. Locally: write code, run the affected `vitest` files and `npm run typecheck`
+  (UI work: `npm run dev`). Then push, open the PR and `gh pr merge --auto --squash --delete-branch` (never
+  `--admin`). Visual review: the `screenshots` artifact of the „E2E flow“ job (`gh run download <run> -n screenshots`).
+  Never rename CI jobs – branch protection requires the exact names.
+- After the merge, CI on `main` deploys, smoke-tests production (waits until `/version.json` reports the commit)
+  and creates the GitHub Release `v<date>.<run>` (notes from the PRs, `dist.zip`). A package is live when its
+  release exists. Anything failing after the merge opens an issue labelled `release-failed` – fix that before the
+  next package (fix forward, or `gh workflow run rollback.yml [-f tag=…]`, which redeploys an earlier release).
+  Nightly `prod-smoke.yml` does the same against production.

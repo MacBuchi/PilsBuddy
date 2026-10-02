@@ -1,34 +1,69 @@
 name: Production smoke test
 
-# Runs the full E2E flow against the live site – after a manual deploy (npm run deploy)
-# trigger it with: gh workflow run prod-smoke.yml
+# Runs the full E2E flow against the live site.
+# - after every deploy from CI (workflow_call with expect_sha: waits until production serves that commit)
+# - nightly, and by hand: gh workflow run prod-smoke.yml
+# A failed nightly run opens (or comments on) an issue labelled release-failed.
 on:
+  workflow_call:
+    inputs:
+      url:
+        type: string
+        default: https://pilsbuddy.mcbuchi.de/
+      expect_sha:
+        description: Wait until /version.json reports this commit
+        type: string
+        default: ''
   workflow_dispatch:
     inputs:
       url:
         description: Base URL
         default: https://pilsbuddy.mcbuchi.de/
+      expect_sha:
+        description: Wait until /version.json reports this commit (optional)
+        default: ''
   schedule:
     - cron: '17 6 * * *'
+
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BASE_URL: ${{ inputs.url || 'https://pilsbuddy.mcbuchi.de/' }}
+      EXPECT_SHA: ${{ inputs.expect_sha }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Install Playwright next to the flow script
+      - name: Wait for the deployed commit
+        if: env.EXPECT_SHA != ''
         run: |
-          mkdir -p /tmp/pw
-          npm i --prefix /tmp/pw playwright@1.56.1
-          npx --prefix /tmp/pw playwright install --with-deps chromium
-          cp e2e/flow.mjs /tmp/pw/
+          for i in $(seq 1 30); do
+            got=$(curl -fsS -H 'cache-control: no-cache' "${BASE_URL%/}/version.json?t=$(date +%s)" | jq -r .sha || true)
+            echo "attempt $i: production serves ${got:-nothing}"
+            [ "$got" = "$EXPECT_SHA" ] && exit 0
+            sleep 10
+          done
+          echo "::error::production does not serve $EXPECT_SHA after 5 minutes"
+          exit 1
+      - uses: ./.github/actions/playwright
+        with:
+          scripts: e2e/flow.mjs
       - name: Run flow against production
-        run: node /tmp/pw/flow.mjs "${{ inputs.url || 'https://pilsbuddy.mcbuchi.de/' }}" /tmp/pilsbuddy
+        run: node /tmp/pw/flow.mjs "$BASE_URL" /tmp/pilsbuddy
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: smoke-screenshots
           path: /tmp/pilsbuddy-*.png
+      - name: Open an issue
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash tool/release_alert.sh "Nächtlicher Prod-Smoke fehlgeschlagen"
