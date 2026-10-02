@@ -79,12 +79,30 @@ describe('loadRegion', () => {
 })
 
 describe('findPostcode', () => {
+  const F = (rows: unknown[]) => api(rows) as unknown as typeof fetch
   it('sends only the typed postcode and returns its centre', async () => {
-    const f = api([{ postcode: '74906', name: 'Bad Rappenau', lat: 49.2386, lon: 9.1016 }])
-    expect(await findPostcode(' 74906 ', f as unknown as typeof fetch)).toEqual({ label: '74906 Bad Rappenau', lat: 49.2386, lon: 9.1016 })
+    const f = api([{ country: 'DE', postcode: '74906', name: 'Bad Rappenau', lat: 49.2386, lon: 9.1016 }])
+    expect(await findPostcode(' 74906 ', f as unknown as typeof fetch, 'de-DE')).toEqual([{ label: '74906 Bad Rappenau', lat: 49.2386, lon: 9.1016 }])
     expect(f.mock.calls[0][0]).toContain('postcode=eq.74906')
-    expect(await findPostcode('abc', f as unknown as typeof fetch)).toBeNull()
-    expect(await findPostcode('99999', api([]) as unknown as typeof fetch)).toBeNull()
+    expect(await findPostcode('abc', f as unknown as typeof fetch, 'de-DE')).toEqual([])
+    expect(await findPostcode('99999', F([]), 'de-DE')).toEqual([])
+  })
+
+  it('cuts a Canadian postcode to its FSA before asking', async () => {
+    const f = api([{ country: 'CA', postcode: 'J3L', name: 'Chambly', lat: 45.45, lon: -73.29 }])
+    expect(await findPostcode('j3l 2c7', f as unknown as typeof fetch, 'fr-CA')).toEqual([{ label: 'J3L Chambly', lat: 45.45, lon: -73.29 }])
+    expect(f.mock.calls[0][0]).toContain('postcode=eq.J3L&')
+    expect(f.mock.calls[0][0]).not.toContain('2C7')
+  })
+
+  it('offers every country for a shared code, the browser region first', async () => {
+    const rows = [
+      { country: 'DE', postcode: '10115', name: 'Berlin', lat: 52.53, lon: 13.38 },
+      { country: 'US', postcode: '10115', name: 'New York', lat: 40.81, lon: -73.96 },
+      { country: 'XX', postcode: '10115', name: 'Nowhere', lat: 0, lon: 0 },
+    ]
+    expect((await findPostcode('10115', F(rows), 'de-DE')).map((p) => p.label)).toEqual(['10115 Berlin (Deutschland)', '10115 New York (USA)'])
+    expect((await findPostcode('10115', F(rows), 'en-US')).map((p) => p.label)).toEqual(['10115 New York (USA)', '10115 Berlin (Deutschland)'])
   })
 })
 

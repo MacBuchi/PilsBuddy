@@ -79,6 +79,14 @@ describe('sanitizeBrewery', () => {
     expect(sanitizeBrewery({ id: 'osm-n1', name: 'X', lat: 49, lon: 8, country: 'FR' })).toBeNull()
     expect(sanitizeBrewery({ id: 'osm-n1', name: 'X', lat: 49, lon: 8, country: 'DE', website: 'javascript:alert(1)' })?.website).toBeNull()
   })
+
+  it('takes Canadian and US breweries, also with an Open Brewery DB id (N4)', () => {
+    const us = sanitizeBrewery({ id: 'obdb-5128df48-79fc-4f0f-8b52-d06be54d0cec', name: 'Sierra Nevada', lat: 39.72, lon: -121.82, country: 'US' })
+    expect(us?.country).toBe('US')
+    expect(sanitizeBrewery({ id: 'osm-n7', name: 'Unibroue', lat: 45.45, lon: -73.28, country: 'CA' })?.country).toBe('CA')
+    expect(sanitizeBrewery({ id: 'obdb-123', name: 'X', lat: 1, lon: 1, country: 'US' })).toBeNull()
+    expect(toRegionalBeer({ id: 'r-x1', name: 'Pale', style: 'Pale Ale', abv: 5.6, pack: null, rank: 0, source: 2, source_ref: 'Q1' }, us!).country).toBe('USA')
+  })
 })
 
 describe('toRegionalBeer', () => {

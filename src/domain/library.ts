@@ -135,5 +135,5 @@ export function groupCounts(beers: readonly Beer[], f: LibraryFilter, ratings: R
   return out
 }
 
-/** A typed postcode (DE 5 digits, AT/CH 4) – the library then looks for breweries around it. */
-export const isPostcode = (q: string) => /^\s*[0-9]{4,5}\s*$/.test(q)
+/** A typed postcode (DE/US 5 digits, AT/CH 4, a Canadian FSA) – the library then looks for breweries around it. */
+export { isPostcode } from './postcode'

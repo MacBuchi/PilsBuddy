@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { BEER_BY_ID, formatAbv, rememberRegional } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
 import { findPostcode, searchNear, searchRegional } from '../../data/regional'
-import type { RegionalFound } from '../../data/regional'
+import type { Place, RegionalFound } from '../../data/regional'
 import { ABV_BANDS, filterLibrary, groupCounts, isPostcode, matchesFilter, NO_FILTER, STYLE_GROUPS } from '../../domain/library'
 import type { LibraryFilter, RatingFilter } from '../../domain/library'
 import { toRegionalBeer } from '../../domain/regionalBeer'
@@ -27,7 +27,7 @@ let kept: LibraryFilter = NO_FILTER
 type Remote =
   | { state: 'idle' }
   | { state: 'loading'; query: string }
-  | { state: 'done'; query: string; found: RegionalFound[]; place: string | null }
+  | { state: 'done'; query: string; found: RegionalFound[]; place: Place | null; others: Place[] }
   | { state: 'error'; query: string; text: string }
 
 const beerWord = (n: number) => COPY.regional.beerWord[n === 1 ? 0 : 1]
@@ -61,10 +61,10 @@ export function Library() {
     const t = setTimeout(() => {
       setRemote({ state: 'loading', query })
       const run = async (): Promise<Remote> => {
-        if (!isPostcode(query)) return { state: 'done', query, found: await searchRegional(query), place: null }
-        const place = await findPostcode(query)
+        if (!isPostcode(query)) return { state: 'done', query, found: await searchRegional(query), place: null, others: [] }
+        const [place, ...others] = await findPostcode(query)
         if (!place) return { state: 'error', query, text: COPY.library.noPlz }
-        return { state: 'done', query, found: await searchNear(place, RADIUS), place: place.label }
+        return { state: 'done', query, found: await searchNear(place, RADIUS), place, others }
       }
       run()
         .catch((): Remote => ({ state: 'error', query, text: COPY.library.regionalOffline }))
@@ -75,6 +75,18 @@ export function Library() {
       clearTimeout(t)
     }
   }, [query, wantRemote])
+
+  // the same code in another country (10115 Berlin / New York): search around that one instead
+  const switchPlace = (p: Place) => {
+    if (remote.state !== 'done' || !remote.place) return
+    const { query: q, place, others } = remote
+    const rest = [place, ...others.filter((o) => o !== p)]
+    setRemote({ state: 'loading', query: q })
+    searchNear(p, RADIUS)
+      .then((found): Remote => ({ state: 'done', query: q, found, place: p, others: rest }))
+      .catch((): Remote => ({ state: 'error', query: q, text: COPY.library.regionalOffline }))
+      .then(setRemote)
+  }
 
   // the API already matched the text (also on brewery and town) – the other filters apply here
   const regional = useMemo(() => {
@@ -188,8 +200,18 @@ export function Library() {
       {wantRemote && remote.state === 'done' && remote.query === query && (
         <>
           <div className="t-label">
-            {remote.place ? fill(COPY.library.regionalNear, { place: remote.place, n: regional.length }) : fill(COPY.library.regional, { n: regional.length })}
+            {remote.place ? fill(COPY.library.regionalNear, { place: remote.place.label, n: regional.length }) : fill(COPY.library.regional, { n: regional.length })}
           </div>
+          {remote.others.length > 0 && (
+            <div className={finder.others}>
+              <span>{COPY.regional.otherPlace}</span>
+              {remote.others.map((p) => (
+                <button key={p.label} type="button" className={finder.radius} onClick={() => switchPlace(p)}>
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          )}
           {regional.length > 0 && <p className={finder.note}>{COPY.regional.estimateNote}</p>}
           {regional.map(({ beer, item }) =>
             row(beer, () => openDetail(rememberRegional(item.row, item.brewery).id), `${item.brewery.name} · ${item.brewery.city ?? beer.region}`),

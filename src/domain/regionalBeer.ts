@@ -1,5 +1,6 @@
 import { COPY, fill, pick } from '../data/copy'
 import { hashId } from './hash'
+import type { PlaceCountry } from './postcode'
 import { STYLE_PROFILES, styleColor, styleProfile, tasteFromStyle } from './styleProfile'
 import type { Beer, Pack } from './types'
 
@@ -10,7 +11,10 @@ import type { Beer, Pack } from './types'
  * `data/beers.ts` can rebuild remembered regional beers at start-up.
  */
 
-export type Country = 'DE' | 'AT' | 'CH'
+export type Country = PlaceCountry
+const COUNTRIES: readonly unknown[] = ['DE', 'AT', 'CH', 'CA', 'US'] satisfies Country[]
+/** OSM, Wikidata or app ids, or an Open Brewery DB UUID (N4). */
+const BREWERY_ID = /^((osm-[nwr]|wd-q|app-)[0-9]{1,20}|obdb-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/
 
 export interface RegionalBeerRow {
   id: string
@@ -103,11 +107,11 @@ export function sanitizeBeerRow(v: unknown): RegionalBeerRow | null {
 export function sanitizeBrewery(v: unknown): RegionalBrewery | null {
   if (!v || typeof v !== 'object') return null
   const b = v as Record<string, unknown>
-  const id = typeof b.id === 'string' && /^(osm-[nwr]|wd-q|app-)[0-9]{1,20}$/.test(b.id) ? b.id : null
+  const id = typeof b.id === 'string' && BREWERY_ID.test(b.id) ? b.id : null
   const name = text(b.name, 200)
   const lat = num(b.lat, -90, 90)
   const lon = num(b.lon, -180, 180)
-  const country = b.country === 'DE' || b.country === 'AT' || b.country === 'CH' ? b.country : null
+  const country = COUNTRIES.includes(b.country) ? (b.country as Country) : null
   if (!id || !name || lat === null || lon === null || !country) return null
   const rows = Array.isArray(b.regional_beers) ? b.regional_beers : Array.isArray(b.beers) ? b.beers : []
   const beers = rows
