@@ -88,6 +88,8 @@ jobs:
           for r in "${repos[@]}"; do
             git clone -q --depth 1 "https://github.com/openbeer/$r" "tools/catalog/raw/openbeer/$r"
           done
+          # artifacts refuse ? * : < > | " in paths (or-oregon has „breweries_??.txt“) – those files are brewery lists anyway
+          find tools/catalog/raw/openbeer -name '*[?*:<>|"]*' -print -delete
           find tools/catalog/raw/openbeer -name '*.txt' | wc -l
       - uses: actions/upload-artifact@v4
         with:
