@@ -51,22 +51,26 @@ await step('tap opens detail and back', async () => {
   await m.getByLabel('Zurück').click()
   await see('übrig')
 })
+// the deck holds every curated beer, so the count follows beers.json – read it instead of pinning it
+const left = async () => Number((await m.getByText(/^\d+ übrig$/).first().textContent()).match(/\d+/)[0])
+const start = await left()
+const after6 = `${start - 6} übrig`, after5 = `${start - 5} übrig`
 await step('6 swipes via keyboard + buttons', async () => {
   for (const k of ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']) { await page.keyboard.press(k); await page.waitForTimeout(450) }
   await m.getByLabel('Kenne ich', { exact: true }).click(); await page.waitForTimeout(450)
   await m.getByLabel('Mag ich', { exact: true }).click(); await page.waitForTimeout(450)
   await see('DNA auswerten')
-  await see('54 übrig')
+  await see(after6)
 })
 await step('undo via button and Backspace', async () => {
   await m.getByLabel('Zurückholen').click()
-  await see('Zurückgeholt'); await see('55 übrig')
+  await see('Zurückgeholt'); await see(after5)
   await page.keyboard.press('ArrowRight'); await page.waitForTimeout(450)
-  await see('54 übrig')
+  await see(after6)
   await page.keyboard.press('Backspace'); await page.waitForTimeout(450)
-  await see('55 übrig')
+  await see(after5)
   await page.keyboard.press('ArrowRight'); await page.waitForTimeout(450)
-  await see('54 übrig')
+  await see(after6)
 })
 await step('analyze → dna', async () => {
   await m.getByText('DNA auswerten').click()
