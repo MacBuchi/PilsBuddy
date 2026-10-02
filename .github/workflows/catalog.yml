@@ -26,7 +26,8 @@ jobs:
       - name: OpenStreetMap (probe + every country)
         run: |
           node tools/catalog/fetch-osm.mjs
-          for c in $(node tools/catalog/lib.mjs countries); do node tools/catalog/fetch-osm.mjs --country $c; done
+          read -ra countries <<< "$(node tools/catalog/lib.mjs countries)"
+          for c in "${countries[@]}"; do node tools/catalog/fetch-osm.mjs --country "$c"; done
       - name: Open Brewery DB (MIT, US + Canada)
         if: ${{ !cancelled() }}
         run: node tools/catalog/fetch-obdb.mjs
@@ -34,7 +35,8 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           node tools/catalog/fetch-wikidata.mjs
-          for c in $(node tools/catalog/lib.mjs countries); do node tools/catalog/fetch-wikidata.mjs --country $c; sleep 2; done
+          read -ra countries <<< "$(node tools/catalog/lib.mjs countries)"
+          for c in "${countries[@]}"; do node tools/catalog/fetch-wikidata.mjs --country "$c"; sleep 2; done
           node tools/catalog/fetch-wikidata.mjs --beers
       - name: Open Food Facts (daily export, every country)
         if: ${{ !cancelled() }}
@@ -42,16 +44,18 @@ jobs:
       - name: GeoNames postcodes (CC-BY 4.0; Canada as FSA)
         if: ${{ !cancelled() }}
         run: |
-          for c in $(node tools/catalog/lib.mjs countries); do
-            curl -sSfL --retry 5 -A 'PilsBuddy-catalog' -o /tmp/$c.zip https://download.geonames.org/export/zip/$c.zip
-            unzip -p /tmp/$c.zip $c.txt > tools/catalog/raw/geonames-$c.txt
-            wc -l tools/catalog/raw/geonames-$c.txt
+          read -ra countries <<< "$(node tools/catalog/lib.mjs countries)"
+          for c in "${countries[@]}"; do
+            curl -sSfL --retry 5 -A 'PilsBuddy-catalog' -o "/tmp/$c.zip" "https://download.geonames.org/export/zip/$c.zip"
+            unzip -p "/tmp/$c.zip" "$c.txt" > "tools/catalog/raw/geonames-$c.txt"
+            wc -l "tools/catalog/raw/geonames-$c.txt"
           done
       - name: openbeer / beer.db (Public Domain beer lists)
         if: ${{ !cancelled() }}
         run: |
-          for r in $(node tools/catalog/lib.mjs openbeer); do
-            git clone -q --depth 1 https://github.com/openbeer/$r tools/catalog/raw/openbeer/$r
+          read -ra repos <<< "$(node tools/catalog/lib.mjs openbeer)"
+          for r in "${repos[@]}"; do
+            git clone -q --depth 1 "https://github.com/openbeer/$r" "tools/catalog/raw/openbeer/$r"
           done
           find tools/catalog/raw/openbeer -name '*.txt' | wc -l
       - name: Coverage report
