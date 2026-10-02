@@ -1,4 +1,5 @@
 import { DECK_ORDER } from '../data/beers'
+import { COPY, fill } from '../data/copy'
 import { isRegionalId } from './deck'
 import { countRatings, decodedPercent } from './dna'
 import type { RatingCounts, Ratings } from './types'
@@ -39,8 +40,10 @@ export function progressOf(ratings: Ratings, games?: GamesProgress): Progress {
   }
 }
 
+type AchievementId = keyof typeof COPY.achievements
+
 export interface AchievementDef {
-  id: string
+  id: AchievementId
   title: string
   desc: string
   /** Phosphor icon name, resolved in the UI. */
@@ -55,48 +58,26 @@ export interface Achievement extends AchievementDef {
 }
 
 /** Light gamification only – a handful of badges, none of them nagging. */
-export const ACHIEVEMENTS: AchievementDef[] = [
-  { id: 'first-date', title: 'Erstes Date', desc: '1 Bier gedatet', icon: 'heart', test: (c) => c.total >= 1 },
-  { id: 'pils-neuling', title: 'Pils-Neuling', desc: '10 Biere gedatet', icon: 'beer-stein', test: (c) => c.total >= 10 },
-  { id: 'hohe-ansprueche', title: 'Hohe Ansprüche', desc: '5 Körbe verteilt', icon: 'crown', test: (c) => c.DISLIKE >= 5 },
-  { id: 'neugiernase', title: 'Neugiernase', desc: '3× Probieren', icon: 'binoculars', test: (c) => c.WANT_TO_TRY >= 3 },
-  { id: 'ehrlich', title: 'Ehrlich', desc: '3× „Kenn ich nicht“', icon: 'hand-waving', test: (c) => c.UNKNOWN >= 3 },
-  { id: 'entschluesselt', title: 'Entschlüsselt', desc: 'DNA zu 100 %', icon: 'dna', test: (_c, dec) => dec >= 100, moment: true },
-  {
-    id: 'wort-gehalten',
-    title: 'Wort gehalten',
-    desc: '3 von der Probierliste probiert',
-    icon: 'handshake',
-    test: (_c, _d, p) => p.kept >= 3,
-    moment: true,
-  },
-  { id: 'hopfen-herz', title: 'Hopfen-Herz', desc: '15 Herzen vergeben', icon: 'fire', test: (c) => c.LIKE >= 15, moment: true },
-  { id: 'pils-fluesterer', title: 'Pils-Flüsterer', desc: '25 Biere gedatet', icon: 'medal', test: (c) => c.total >= 25, moment: true },
-  {
-    id: 'kasten-kenner',
-    title: 'Kasten-Kenner',
-    desc: `Alle ${DECK_ORDER.length} Biere gedatet`,
-    icon: 'package',
-    test: (c) => c.total >= DECK_ORDER.length,
-    moment: true,
-  },
-  {
-    id: 'quartett-koenig',
-    title: 'Quartett-König',
-    desc: '3× den Kneipen-Bot geschlagen',
-    icon: 'cards',
-    test: (_c, _d, p) => p.quartettWins >= 3,
-    moment: true,
-  },
-  {
-    id: 'lokalpatriot',
-    title: 'Lokalpatriot',
-    desc: '3 Biere aus deiner Nähe mit Herz',
-    icon: 'map-pin',
-    test: (_c, _d, p) => p.regionalLikes >= 3,
-    moment: true,
-  },
+const DEFS: Omit<AchievementDef, 'title' | 'desc'>[] = [
+  { id: 'first-date', icon: 'heart', test: (c) => c.total >= 1 },
+  { id: 'pils-neuling', icon: 'beer-stein', test: (c) => c.total >= 10 },
+  { id: 'hohe-ansprueche', icon: 'crown', test: (c) => c.DISLIKE >= 5 },
+  { id: 'neugiernase', icon: 'binoculars', test: (c) => c.WANT_TO_TRY >= 3 },
+  { id: 'ehrlich', icon: 'hand-waving', test: (c) => c.UNKNOWN >= 3 },
+  { id: 'entschluesselt', icon: 'dna', test: (_c, dec) => dec >= 100, moment: true },
+  { id: 'wort-gehalten', icon: 'handshake', test: (_c, _d, p) => p.kept >= 3, moment: true },
+  { id: 'hopfen-herz', icon: 'fire', test: (c) => c.LIKE >= 15, moment: true },
+  { id: 'pils-fluesterer', icon: 'medal', test: (c) => c.total >= 25, moment: true },
+  { id: 'kasten-kenner', icon: 'package', test: (c) => c.total >= DECK_ORDER.length, moment: true },
+  { id: 'quartett-koenig', icon: 'cards', test: (_c, _d, p) => p.quartettWins >= 3, moment: true },
+  { id: 'lokalpatriot', icon: 'map-pin', test: (_c, _d, p) => p.regionalLikes >= 3, moment: true },
 ]
+
+export const ACHIEVEMENTS: AchievementDef[] = DEFS.map((a) => ({
+  ...a,
+  title: COPY.achievements[a.id].title,
+  desc: fill(COPY.achievements[a.id].desc, { n: DECK_ORDER.length }),
+}))
 
 const passes = (a: AchievementDef, p: Progress) => a.test(p.counts, p.decoded, p)
 

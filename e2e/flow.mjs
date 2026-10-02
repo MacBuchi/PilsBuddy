@@ -7,6 +7,7 @@ const browser = await chromium.launch()
 const ctx = await browser.newContext({
   ...devices['iPhone 14'],
   deviceScaleFactor: 2,
+  locale: 'de-DE', // the steps read German texts; English has its own step (I1)
   permissions: ['clipboard-read', 'clipboard-write', 'geolocation'],
   geolocation: { latitude: 49.2386, longitude: 9.1016 }, // Bad Rappenau – real regional data (R4)
 })
@@ -288,6 +289,31 @@ await step('buddy link: new user is invited, onboards, sees the comparison', asy
   await see('Du + Buddy #')
   await see('Bier-DNA-Match')
   await page.screenshot({ path: `${out}-buddy.png` })
+})
+await step('English: an English browser gets the English app, the welcome link switches languages', async () => {
+  const enCtx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2, locale: 'en-US' })
+  const en = await enCtx.newPage()
+  en.on('pageerror', (e) => errors.push(String(e)))
+  const em = en.locator('main')
+  const enSee = (t) => em.getByText(t, { exact: false }).first().waitFor({ timeout: 4000 })
+  await en.goto(base, { waitUntil: 'load' })
+  await enSee('Date beers first')
+  if ((await en.locator('html').getAttribute('lang')) !== 'en') throw new Error('html lang is not en')
+  // the link on the welcome screen switches (and remembers) the language
+  await Promise.all([en.waitForEvent('load'), em.getByText('Deutsch', { exact: true }).click()])
+  await enSee('Erst Biere daten')
+  await Promise.all([en.waitForEvent('load'), em.getByText('English', { exact: true }).click()])
+  await enSee('Date beers first')
+  await em.getByText("Let's go").click()
+  await em.getByText('I am at least 18').click()
+  await em.getByText('Start the first date').click()
+  for (let i = 0; i < 3; i++) { await en.keyboard.press('ArrowRight'); await en.waitForTimeout(450) }
+  await enSee('left')
+  await enSee("Don't know")
+  await en.screenshot({ path: `${out}-english.png` })
+  await en.reload({ waitUntil: 'load' })
+  await enSee('left')
+  await enCtx.close()
 })
 if (errors.length) console.log('PAGE ERRORS:\n' + errors.join('\n'))
 else console.log('no page errors')

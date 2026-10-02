@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from '@phosphor-icons/react'
 import { COPY, fill } from '../../data/copy'
 import { useApp } from '../../state/AppContext'
+import { LANG, switchLang } from '../../state/lang'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
 import { useState } from 'react'
@@ -54,9 +55,14 @@ export function Welcome() {
           {COPY.sync.join}
         </button>
         {joining && <SyncJoinSheet onClose={() => setJoining(false)} onJoined={() => go('howto')} />}
-        <button type="button" className={`${styles.restore} ${styles.legal}`} onClick={() => go('legal')}>
-          {COPY.profile.legal}
-        </button>
+        <div className={styles.links}>
+          <button type="button" className={`${styles.restore} ${styles.legal}`} onClick={() => go('legal')}>
+            {COPY.profile.legal}
+          </button>
+          <button type="button" className={`${styles.restore} ${styles.legal}`} lang={LANG === 'de' ? 'en' : 'de'} onClick={() => switchLang(LANG === 'de' ? 'en' : 'de')}>
+            {COPY.language.other}
+          </button>
+        </div>
       </div>
     </div>
   )

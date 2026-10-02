@@ -36,7 +36,7 @@ export function Detail() {
         <div className={styles.foam} />
         <div className={styles.scallop} />
         <BeerBottle beer={beer} className={styles.art} />
-        <button type="button" className={styles.back} onClick={back} aria-label="Zurück">
+        <button type="button" className={styles.back} onClick={back} aria-label={COPY.nav.back}>
           <ArrowLeftIcon weight="bold" />
         </button>
         <div className={styles.matchPill}>
@@ -47,7 +47,7 @@ export function Detail() {
       <div className={styles.body}>
         <div className={styles.titleBlock}>
           <h1 className={styles.title}>{beer.fullName}</h1>
-          <p className={styles.line}>„{beer.humorousBio}“</p>
+          <p className={styles.line}>{fill(COPY.app.quote, { text: beer.humorousBio })}</p>
         </div>
 
         <div className={styles.facts}>

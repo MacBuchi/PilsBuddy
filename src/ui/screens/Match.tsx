@@ -66,7 +66,7 @@ export function Match() {
       <div className={styles.names}>{fill(COPY.match.you, { name: beer.name })}</div>
       <div className={styles.pct}>{shown} %</div>
       <div className={styles.compat}>{COPY.match.compat}</div>
-      <p className={styles.reason}>„{matchReason(dna.taste, beer)}“</p>
+      <p className={styles.reason}>{fill(COPY.app.quote, { text: matchReason(dna.taste, beer) })}</p>
       <div style={{ flex: 1 }} />
       <Button block onClick={() => openDetail(beer.id)} style={{ border: 0, boxShadow: '0 5px 0 var(--gold-shadow)' }}>
         {COPY.match.cta}

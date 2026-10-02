@@ -1,7 +1,7 @@
 import { ArrowLeftIcon } from '@phosphor-icons/react'
 import { useEffect } from 'react'
 import { COPY, fill } from '../../data/copy'
-import { LEGAL_UPDATED, OPERATOR, PRIVACY } from '../../data/legal'
+import { LEGAL_NOTE, LEGAL_UPDATED, OPERATOR, PRIVACY } from '../../data/legal'
 import { useApp } from '../../state/AppContext'
 import page from './page.module.css'
 import styles from './Legal.module.css'
@@ -49,6 +49,7 @@ export default function Legal() {
 
       <section className={styles.section} id="datenschutz">
         <h2 className={styles.h2}>{COPY.legal.privacy}</h2>
+        {LEGAL_NOTE && <p className={styles.p}>{LEGAL_NOTE}</p>}
         {PRIVACY.map((s) => (
           <div key={s.title} className={styles.block}>
             <h3 className={styles.h3}>{s.title}</h3>

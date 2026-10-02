@@ -12,6 +12,7 @@ const browser = await chromium.launch()
 const ctx = await browser.newContext({
   ...devices['iPhone 14'],
   deviceScaleFactor: 2,
+  locale: 'de-DE', // the steps read German texts; English has its own step (I1)
   geolocation: { latitude: 49.4875, longitude: 8.4660 }, // Mannheim, Wasserturm
   permissions: ['geolocation'],
 })

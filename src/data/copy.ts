@@ -2,12 +2,39 @@
  * Text bank. Everything the user reads lives here so tone and wording can be
  * swapped without touching components. Tone: charmant, selbstironisch, nie gemein.
  */
-import type { ArchetypeId, Rating } from '../domain/types'
+import type { ArchetypeId, Rating, TasteAxis } from '../domain/types'
+import { LANG } from '../state/lang'
+import { EN } from './copy.en'
 
-export const COPY = {
+const DE = {
   app: {
     name: 'PilsBuddy',
     tagline: 'Erst Biere daten. Dann Buddies finden.',
+    /** BCP 47 tag for dates and number formats. */
+    locale: 'de-DE',
+    decimal: ',',
+    subtitle: 'Bier-Dating · v0.1',
+    quote: '„{text}“',
+    buddyAria: 'Bier-Buddy {archetype}',
+  },
+  nav: {
+    main: 'Hauptnavigation',
+    areas: 'Bereiche',
+    back: 'Zurück',
+  },
+  desktop: {
+    controls: 'Steuerung',
+    hint: 'Karte ziehen oder Tasten. Tippen öffnet das Bier.',
+    tendency: 'Live-Tendenz',
+    noTendency: 'Noch keine Tendenz',
+  },
+  language: {
+    label: 'Sprache',
+    sub: 'Deutsch · tippen für English',
+    /** Shown on the switch: the language this session runs in. */
+    code: 'DE',
+    /** Link on the welcome screen, in the other language. */
+    other: 'English',
   },
   welcome: {
     cta: "Los geht's",
@@ -275,6 +302,7 @@ export const COPY = {
     cta: 'Mein Bier-Match zeigen',
     shared: "Link kopiert. Zeig's deinen Buddies.",
     shareFailed: 'Teilen hat nicht geklappt. Erzähl es einfach weiter.',
+    shareText: 'Ich bin „{name}“ – sagt meine Bier-DNA. {tagline}',
   },
   match: {
     label: 'Dein nächstes Match',
@@ -333,6 +361,8 @@ export const COPY = {
     errNothing: 'Ohne Verbindung finden wir hier noch nichts. Später nochmal versuchen.',
     tryCta: 'Probieren',
     onList: 'Vorgemerkt',
+    sourceWebsite: 'Website der Brauerei',
+    sourceApp: 'Meldung aus der App',
     website: 'Website',
     route: 'Route',
     since: 'seit {year}',
@@ -376,6 +406,7 @@ export const COPY = {
     buddyNo: 'Buddy #{n}',
     stats: { total: 'gedatet', likes: 'Herzen', nopes: 'Körbe', tries: 'Probier-liste' },
     achievements: 'Achievements',
+    achLocked: ' (noch nicht)',
     relations: 'Deine Bier-Beziehungen',
     noRelations: 'Noch keine Beziehungen. Du bist Single. Bier-technisch.',
     dark: 'Kneipen-Modus',
@@ -491,6 +522,17 @@ export const COPY = {
     quitConfirm: 'Spiel abbrechen? Es zählt nicht.',
     cardBack: 'PilsBuddy Quartett',
     cards: '{n} Karten',
+    stats: {
+      abv: 'Alkohol',
+      bitterness: 'Bittere',
+      hopIntensity: 'Hopfen',
+      maltiness: 'Malz',
+      sweetness: 'Süße',
+      body: 'Körper',
+      dryness: 'Trockenheit',
+      drinkability: 'Süffigkeit',
+      character: 'Charakter',
+    } satisfies Record<'abv' | TasteAxis, string>,
     end: {
       won: 'Gewonnen! Der Bot bestellt sich erstmal ein Wasser.',
       lost: 'Verloren. Der Bot hat heute einen Lauf.',
@@ -583,6 +625,29 @@ export const COPY = {
     drinkability: 'süffigem',
     character: 'charakterstarkem',
   },
+  /** Short labels of the five axes shown as bars (DNA, desktop). */
+  dnaAxes: {
+    bitterness: 'Herb',
+    hopIntensity: 'Hopfig',
+    maltiness: 'Malzig',
+    drinkability: 'Süffig',
+    character: 'Charakter',
+  },
+  countries: { DE: 'Deutschland', AT: 'Österreich', CH: 'Schweiz' },
+  achievements: {
+    'first-date': { title: 'Erstes Date', desc: '1 Bier gedatet' },
+    'pils-neuling': { title: 'Pils-Neuling', desc: '10 Biere gedatet' },
+    'hohe-ansprueche': { title: 'Hohe Ansprüche', desc: '5 Körbe verteilt' },
+    neugiernase: { title: 'Neugiernase', desc: '3× Probieren' },
+    ehrlich: { title: 'Ehrlich', desc: '3× „Kenn ich nicht“' },
+    entschluesselt: { title: 'Entschlüsselt', desc: 'DNA zu 100 %' },
+    'wort-gehalten': { title: 'Wort gehalten', desc: '3 von der Probierliste probiert' },
+    'hopfen-herz': { title: 'Hopfen-Herz', desc: '15 Herzen vergeben' },
+    'pils-fluesterer': { title: 'Pils-Flüsterer', desc: '25 Biere gedatet' },
+    'kasten-kenner': { title: 'Kasten-Kenner', desc: 'Alle {n} Biere gedatet' },
+    'quartett-koenig': { title: 'Quartett-König', desc: '3× den Kneipen-Bot geschlagen' },
+    lokalpatriot: { title: 'Lokalpatriot', desc: '3 Biere aus deiner Nähe mit Herz' },
+  },
   error: {
     label: 'Fehler 0,0 %',
     title: 'Die Leitung ist trocken.',
@@ -654,6 +719,21 @@ export const COPY = {
     close: 'Schließen',
   },
 } as const
+
+/** Same shape in every language: literal texts widen to string, rating ids stay literal. */
+type Widen<T> = T extends string
+  ? T extends Rating ? T : string
+  : T extends readonly (infer U)[]
+    ? readonly Widen<U>[]
+    : T extends object
+      ? { readonly [K in keyof T]: Widen<T[K]> }
+      : T
+export type Copy = Widen<typeof DE>
+
+export const COPY_BY_LANG = { de: DE as Copy, en: EN }
+
+/** The texts of this session's language (fixed at start, see state/lang.ts). */
+export const COPY: Copy = COPY_BY_LANG[LANG]
 
 /** Tiny template helper: fill("{n} übrig", { n: 3 }) → "3 übrig" */
 export function fill(template: string, vars: Record<string, string | number>): string {

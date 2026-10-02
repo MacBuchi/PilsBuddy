@@ -1,4 +1,4 @@
-import { COPY } from '../../data/copy'
+import { COPY, fill } from '../../data/copy'
 import { formatAbv } from '../../data/beers'
 import type { Beer, Rating } from '../../domain/types'
 import { textOnBeer } from '../color'
@@ -74,7 +74,7 @@ export function BeerCard({ beer, position, stamps = {}, smoothStamps = false, ba
           <span className={styles.name}>{beer.name}</span>
           <span className={styles.region}>{beer.region}</span>
         </div>
-        <p className={styles.line}>„{beer.humorousBio}“</p>
+        <p className={styles.line}>{fill(COPY.app.quote, { text: beer.humorousBio })}</p>
         <div className={styles.tags}>
           {beer.tags.map((t) => (
             <span key={t} className={styles.tag}>

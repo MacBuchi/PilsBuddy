@@ -8,7 +8,7 @@ import { chromium, devices } from 'playwright'
 const base = process.argv[2] ?? 'http://localhost:5179/'
 const out = process.argv[3] ?? '/tmp/catalog'
 const browser = await chromium.launch()
-const ctx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2 })
+const ctx = await browser.newContext({ ...devices['iPhone 14'], deviceScaleFactor: 2, locale: 'de-DE' })
 const page = await ctx.newPage()
 const errors = []
 page.on('pageerror', (e) => errors.push(String(e)))

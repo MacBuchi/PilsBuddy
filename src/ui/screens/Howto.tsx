@@ -19,7 +19,7 @@ export function Howto() {
 
   return (
     <div className={styles.screen}>
-      <Button variant="icon" aria-label="Zurück" onClick={() => go('welcome')}>
+      <Button variant="icon" aria-label={COPY.nav.back} onClick={() => go('welcome')}>
         <ArrowLeftIcon weight="bold" />
       </Button>
 
