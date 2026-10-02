@@ -2,7 +2,7 @@ import { ArrowSquareOutIcon, CrosshairIcon, MapPinIcon, NavigationArrowIcon, Plu
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { formatAbv, rememberRegional } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
-import { findPostcode, loadRegion, readPrefs, writePrefs } from '../../data/regional'
+import { findPostcode, loadRegion, readPrefs, writePool, writePrefs } from '../../data/regional'
 import type { RegionalPrefs, RegionLoad } from '../../data/regional'
 import { hashId } from '../../domain/hash'
 import { formatKm, RADII, rankRegional, routeUrl } from '../../domain/regional'
@@ -128,6 +128,16 @@ export function RegionalFinder() {
     () => (origin && ready ? rankRegional(dna.taste, loaded.breweries, origin, prefs.radius) : null),
     [dna.taste, loaded, ready, origin, prefs.radius],
   )
+  // R5: the result is the pool the Regional-Modus mixes into the swipe deck
+  useEffect(() => {
+    if (!result) return
+    writePool(
+      result.beers.flatMap((h) => {
+        const row = h.brewery.beers.find((b) => b.id === h.beer.id)
+        return row ? [{ row, brewery: h.brewery, km: h.km }] : []
+      }),
+    )
+  }, [result])
   const notice = error ?? (ready && loaded.offline ? (loaded.breweries.length ? COPY.regional.errOffline : COPY.regional.errNothing) : null)
   const ratings = state.profile.ratings
 
@@ -177,6 +187,14 @@ export function RegionalFinder() {
           </button>
         ))}
       </div>
+
+      <label className={styles.deckToggle}>
+        <input type="checkbox" checked={prefs.deck} onChange={(e) => savePrefs({ deck: e.target.checked })} />
+        <span>
+          <strong>{COPY.regional.deckMode}</strong>
+          <span className={styles.deckHint}>{COPY.regional.deckModeHint}</span>
+        </span>
+      </label>
 
       {notice && (
         <div className={styles.error} role="status">

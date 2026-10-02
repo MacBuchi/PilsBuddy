@@ -95,8 +95,9 @@ export async function renderShareCard(data: ShareCardData, url: string): Promise
   const afterName = 280 + (nameLines.length - 1) * 92
 
   // sunburst + avatar
-  // two-line personas get a slightly smaller avatar so everything still fits
-  const R = nameLines.length > 1 ? 160 : 190
+  // two-line personas and the extra regional line (R5) get a slightly smaller avatar so everything still fits
+  const compact = !!data.regional
+  const R = (nameLines.length > 1 ? 160 : 190) - (compact ? 30 : 0)
   const cy = afterName + R + 50
   ctx.save()
   ctx.beginPath()
@@ -173,11 +174,11 @@ export async function renderShareCard(data: ShareCardData, url: string): Promise
     ctx.textAlign = 'right'
     ctx.font = `700 28px ${MONO}`
     ctx.fillText(String(b.value), 970, y + 10)
-    y += 54
+    y += compact ? 46 : 54
   }
 
   // top beers
-  y += 30
+  y += compact ? 18 : 30
   ctx.textAlign = 'center'
   ctx.fillStyle = MUT
   ctx.font = `700 24px ${MONO}`
@@ -186,6 +187,18 @@ export async function renderShareCard(data: ShareCardData, url: string): Promise
   ctx.font = `800 38px ${DISPLAY}`
   ctx.textAlign = 'center'
   ctx.fillText(data.top.map((t) => `${t.name} ${t.pct} %`).join('  ·  '), CARD_W / 2, y + 50, CARD_W - 160)
+
+  // R5: favourite beer from the region
+  if (data.regional) {
+    y += 104
+    ctx.fillStyle = MUT
+    ctx.font = `700 24px ${MONO}`
+    spaced(ctx, COPY.share.regional.toUpperCase(), CARD_W / 2, y, 4)
+    ctx.fillStyle = INK
+    ctx.font = `800 34px ${DISPLAY}`
+    ctx.textAlign = 'center'
+    ctx.fillText(data.regional, CARD_W / 2, y + 46, CARD_W - 160)
+  }
 
   // footer
   ctx.fillStyle = MUT

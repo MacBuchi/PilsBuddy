@@ -278,3 +278,36 @@
   font: 800 14px/1 var(--font-display);
   color: var(--gold-text);
 }
+
+/* R5 Regional-Modus switch */
+.deckToggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  cursor: pointer;
+}
+
+.deckToggle input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 1px 0 0;
+  accent-color: var(--ink-fixed);
+}
+
+.deckToggle strong {
+  display: block;
+  font: 800 15px/1.25 var(--font-display);
+  color: var(--ink);
+}
+
+.deckHint {
+  display: block;
+  margin-top: 2px;
+  font: 500 13px/1.35 var(--font-display);
+  color: var(--mut);
+}

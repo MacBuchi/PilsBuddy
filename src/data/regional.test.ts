@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CELL_TTL_MS, CELLS_KEY, fetchCells, findPostcode, forgetRegional, loadRegion, readPrefs, readSnapshots, writePrefs, writeSnapshot } from './regional'
+import { CELL_TTL_MS, CELLS_KEY, fetchCells, findPostcode, forgetRegional, loadRegion, POOL_KEY, readPool, readPrefs, readSnapshots, writePool, writePrefs, writeSnapshot } from './regional'
 
 const MANNHEIM = { lat: 49.49, lon: 8.47 }
 const eichbaum = {
@@ -91,11 +91,11 @@ describe('findPostcode', () => {
 describe('prefs and snapshots', () => {
   it('prefs fall back to 25 km and never hold a position', () => {
     stubStorage()
-    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null })
-    writePrefs({ radius: 50, mode: 'geo', place: null })
-    expect(readPrefs()).toEqual({ radius: 50, mode: 'geo', place: null })
-    writePrefs({ radius: 7 as 10, mode: 'plz', place: null })
-    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null })
+    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null, deck: false })
+    writePrefs({ radius: 50, mode: 'geo', place: null, deck: true })
+    expect(readPrefs()).toEqual({ radius: 50, mode: 'geo', place: null, deck: true })
+    writePrefs({ radius: 7 as 10, mode: 'plz', place: null, deck: 'ja' as unknown as boolean })
+    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null, deck: false })
   })
 
   it('remembers touched beers with their brewery facts, newest wins', () => {
@@ -110,9 +110,22 @@ describe('prefs and snapshots', () => {
     expect(snaps[0].brewery).not.toHaveProperty('beers')
   })
 
-  it('„Profil zurücksetzen“ forgets postcode and snapshots', () => {
+  it('keeps the last finder result as pool for the Regional-Modus, nearest first, checked on read', () => {
     const stored = stubStorage()
-    writePrefs({ radius: 10, mode: 'plz', place: { label: '74906 Bad Rappenau', lat: 49.2, lon: 9.1 } })
+    const row = (id: string) => ({ id, name: id, style: 'Pils', abv: 4.9, pack: null, rank: 0, source: 1, source_ref: null })
+    const brewery = { ...eichbaum, beers: [row('r-x1')], country: 'DE' as const }
+    writePool([{ row: row('r-far'), brewery, km: 40.04 }, { row: row('r-near'), brewery, km: 2.26 }])
+    const pool = readPool()
+    expect(pool.map((p) => [p.row.id, p.km])).toEqual([['r-near', 2.3], ['r-far', 40]])
+    expect(pool[0].brewery).not.toHaveProperty('beers')
+    stored.set(POOL_KEY, JSON.stringify({ v: 1, data: [{ row: row('kaputt'), brewery, km: 1 }, { row: row('r-ok'), brewery, km: -1 }, { row: row('r-ok2'), brewery, km: 5 }] }))
+    expect(readPool().map((p) => p.row.id)).toEqual(['r-ok2'])
+  })
+
+  it('„Profil zurücksetzen“ forgets postcode, snapshots and pool', () => {
+    const stored = stubStorage()
+    writePrefs({ radius: 10, mode: 'plz', place: { label: '74906 Bad Rappenau', lat: 49.2, lon: 9.1 }, deck: true })
+    writePool([{ row: { id: 'r-4000000000001', name: 'X', style: null, abv: null, pack: null, rank: 0, source: 1, source_ref: '1' }, brewery: { ...eichbaum, country: 'DE' }, km: 3 }])
     writeSnapshot({ id: 'r-4000000000001', name: 'X', style: null, abv: null, pack: null, rank: 0, source: 1, source_ref: '1' }, { ...eichbaum, beers: [], country: 'DE' })
     forgetRegional()
     expect(stored.size).toBe(0)
