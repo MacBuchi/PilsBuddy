@@ -1,0 +1,20 @@
+name: Feature request
+description: Eine Idee für PilsBuddy (auch aus der App über „Wünsch dir was!“)
+title: "Feature request: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Was fehlt dir?
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+  - type: input
+    id: platform
+    attributes:
+      label: Platform

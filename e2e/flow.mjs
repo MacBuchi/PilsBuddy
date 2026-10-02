@@ -120,10 +120,32 @@ await step('spiele: bier-quartett, one round against the bot', async () => {
 })
 await step('impressum & datenschutz from profile, back', async () => {
   await m.getByRole('button', { name: 'Impressum & Datenschutz' }).click()
-  await see('Kurz gesagt'); await see('Geräte-Sync (nur wenn du ihn einschaltest)')
+  await see('Kurz gesagt'); await see('Geräte-Sync (nur wenn du ihn einschaltest)'); await see('Feedback („Wünsch dir was!“)')
   await page.screenshot({ path: `${out}-legal.png` })
   await m.getByLabel('Zurück').click()
   await see('Erstes Date')
+})
+await step('feedback: sheet validates, sends type + text + build (request stubbed – no real issue)', async () => {
+  let sent = null
+  await page.route('**/rest/v1/feedback', (r) => {
+    sent = r.request().postDataJSON()
+    return r.fulfill({ status: 201, body: '' })
+  })
+  await m.getByRole('button', { name: /Wünsch dir was!/ }).click()
+  await see('ohne Namen öffentlich')
+  await m.getByRole('radio', { name: /Fehler/ }).click()
+  await m.getByLabel('Deine Nachricht').fill('ab')
+  await m.getByRole('button', { name: 'Abschicken' }).click()
+  await see('Ein paar Worte mehr')
+  await m.getByLabel('Deine Nachricht').fill('E2E: Flow-Test, bitte ignorieren')
+  await page.screenshot({ path: `${out}-feedback.png` })
+  await m.getByRole('button', { name: 'Abschicken' }).click()
+  await see('Prost & danke!')
+  if (sent?.type !== 'bug' || sent?.message !== 'E2E: Flow-Test, bitte ignorieren' || !sent?.app_version || !/ · (App|Browser)$/.test(sent?.platform ?? ''))
+    throw new Error('unexpected payload ' + JSON.stringify(sent))
+  if (Object.keys(sent).sort().join() !== 'app_version,message,platform,type') throw new Error('extra fields ' + Object.keys(sent))
+  await m.getByRole('button', { name: 'Schließen' }).click()
+  await page.unroute('**/rest/v1/feedback')
 })
 await step('probierliste: tried → verdict removes it', async () => {
   await m.getByText('Matches', { exact: true }).click()

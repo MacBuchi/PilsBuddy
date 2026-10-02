@@ -12,6 +12,7 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 | `regional_beers` | bis zu 5 Hauptbiere je Brauerei (`id` = `r-<EAN>` / `r-q<n>`, Stil, ABV, Gebinde, `source` + kurze `source_ref`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
 | `beer_sources` | die wenigen Quellen (Open Food Facts, Wikidata, Website, openbeer) mit Lizenz und Link-Vorlage | öffentlich lesbar, nur per Migration |
 | `places` | Postleitzahlen DE/AT/CH mit Ort und Mittelpunkt (GeoNames) | öffentlich lesbar, schreiben nur der Import |
+| `feedback` | In-App-Feedback („Wünsch dir was!“): Typ, Text, Build, grober Gerätetyp – anonym; `tool/feedback_bot.py` (Workflow „Feedback Bot“, alle 2 h) macht daraus Issues und löscht verarbeitete Zeilen nach 30 Tagen | nur `insert` (vier Spalten) für alle, Trigger: max. 30 je 10 min, gleicher Text 1× am Tag; lesen nur service_role |
 
 **Bierkatalog (B3):** Die Tabelle enthält *nur* Biere, die neu sind oder ein gebündeltes Bier ersetzen sollen
 (gleiche `id`) – keine Kopie des ganzen JSON, sonst würde ein alter DB-Stand spätere JSON-Änderungen überdecken.

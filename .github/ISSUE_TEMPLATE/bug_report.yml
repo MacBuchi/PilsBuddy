@@ -1,0 +1,21 @@
+name: Bug report
+description: Etwas funktioniert nicht (auch aus der App über „Wünsch dir was!“)
+title: "Bug report: "
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Was ist passiert, und was hast du davor gemacht?
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      placeholder: "iOS · App"
