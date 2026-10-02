@@ -60,7 +60,7 @@ jobs:
       - name: Report
         run: |
           { echo '```'; cat tools/catalog/out/report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
-          ls tools/catalog/out/*.sql | wc -l
+          find tools/catalog/out -name '*.sql' | wc -l
       - uses: actions/upload-artifact@v4
         with:
           name: catalog-import
