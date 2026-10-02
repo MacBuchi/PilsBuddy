@@ -5,9 +5,10 @@ on:
     branches: [main]
   pull_request:
 
-# A PR's newer push replaces the older run; on main every run finishes (deploy, smoke, release).
+# A PR's newer push replaces the older run. On main every run is its own group (a run waiting for the promote
+# approval must not hold back the next merge); deploys are serialised per target by job-level groups.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -258,16 +259,23 @@ jobs:
           supabase db push --linked --dry-run 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           bash tool/db/live_advisors.sh | tee -a "$GITHUB_STEP_SUMMARY"
 
+  # Skipped jobs (live-db without backend changes) propagate down the chain, hence the explicit conditions.
+  # Q4 – every merge goes to beta first, users get it only after „Promote“:
+  # deploy (beta.pilsbuddy.mcbuchi.de) → beta smoke → pre-release → promote (waits for the maintainer's approval
+  # in the environment „production“) → same dist to pilsbuddy.mcbuchi.de → production smoke → release = latest.
+  # An approval that is still pending when the next merge arrives is cancelled – only the newest build is promoted.
   deploy:
-    name: Deploy to Cloudflare
+    name: Deploy beta
     needs: [e2e, db, sync-e2e, upgrade, live-check, live-db]
     # live-db is skipped when nothing changed on the backend – that must not block the deploy
     if: ${{ !failure() && !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    # shared with rollback.yml: never two deploys at once
     concurrency:
-      group: deploy
+      group: deploy-beta
       cancel-in-progress: false
+    environment:
+      name: beta
+      url: https://beta.pilsbuddy.mcbuchi.de/
     outputs:
       enabled: ${{ steps.guard.outputs.enabled }}
     env:
@@ -278,44 +286,38 @@ jobs:
         id: guard
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
-            echo "No CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secret – skipping deploy (use npm run deploy locally)."
+            echo "No CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secret – skipping deploy."
             echo "enabled=false" >> "$GITHUB_OUTPUT"
           else
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
       - if: steps.guard.outputs.enabled == 'true'
-        uses: actions/checkout@v4
-      - if: steps.guard.outputs.enabled == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - if: steps.guard.outputs.enabled == 'true'
-        run: npm ci
+        uses: actions/checkout@v4 # wrangler.jsonc
       - if: steps.guard.outputs.enabled == 'true'
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
       - if: steps.guard.outputs.enabled == 'true'
-        run: npx -y wrangler@4 deploy
+        run: npx -y wrangler@4 deploy --env beta
 
-  # After every deploy: the E2E flow against production, once it serves this commit (version.json).
-  smoke:
-    name: Production smoke
+  smoke-beta:
+    name: Beta smoke
     needs: deploy
-    if: needs.deploy.outputs.enabled == 'true'
+    if: ${{ !failure() && !cancelled() && needs.deploy.outputs.enabled == 'true' }}
     permissions:
       contents: read
       issues: write
     uses: ./.github/workflows/prod-smoke.yml
     with:
+      url: https://beta.pilsbuddy.mcbuchi.de/
       expect_sha: ${{ github.sha }}
 
-  # Live and smoke-tested → tag + GitHub Release (notes from the merged PRs, the built dist as asset).
-  release:
-    name: Release
-    needs: [check, smoke]
+  # On beta and smoke-tested → tag + GitHub pre-release (notes from the merged PRs, the built dist as asset).
+  prerelease:
+    name: Pre-release
+    needs: [check, smoke-beta]
+    if: ${{ !failure() && !cancelled() && needs.smoke-beta.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -328,16 +330,67 @@ jobs:
           name: dist
           path: dist
       - run: cd dist && zip -qr ../dist.zip .
-      - name: Create release
+      - name: Create pre-release
         run: |
           gh release create "$VERSION" dist.zip --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --title "$VERSION" --generate-notes
+            --title "$VERSION" --generate-notes --prerelease
+          echo "Pre-release [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) on https://beta.pilsbuddy.mcbuchi.de – promote = approve the job Promote to production" >> "$GITHUB_STEP_SUMMARY"
+
+  promote:
+    name: Promote to production
+    needs: [check, prerelease]
+    if: ${{ !failure() && !cancelled() && needs.prerelease.result == 'success' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: production # waits for the maintainer's approval
+      url: https://pilsbuddy.mcbuchi.de/
+    # a newer merge replaces a promotion that is still waiting; shared with rollback.yml
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: true
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4 # wrangler.jsonc
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - run: npx -y wrangler@4 deploy
+
+  smoke:
+    name: Production smoke
+    needs: promote
+    if: ${{ !failure() && !cancelled() && needs.promote.result == 'success' }}
+    permissions:
+      contents: read
+      issues: write
+    uses: ./.github/workflows/prod-smoke.yml
+    with:
+      expect_sha: ${{ github.sha }}
+
+  release:
+    name: Release
+    needs: [check, smoke]
+    if: ${{ !failure() && !cancelled() && needs.smoke.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - name: Pre-release → release (latest)
+        run: |
+          gh release edit "$VERSION" --repo "$GITHUB_REPOSITORY" --prerelease=false --latest
           echo "Released [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) – live on https://pilsbuddy.mcbuchi.de" >> "$GITHUB_STEP_SUMMARY"
 
-  # Something after the merge broke (checks on main, deploy, smoke, release): one issue, not silence.
+  # Something after the merge broke (checks on main, beta, promote, smoke, release): one issue, not silence.
+  # A promotion cancelled by a newer merge is not a failure.
   alert:
     name: Alert on failure
-    needs: [check, db, upgrade, sync-e2e, e2e, live-check, live-db, deploy, smoke, release]
+    needs: [check, db, upgrade, sync-e2e, e2e, live-check, live-db, deploy, smoke-beta, prerelease, promote, smoke, release]
     if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:

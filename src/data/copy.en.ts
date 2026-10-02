@@ -413,6 +413,7 @@ export const EN: Copy = {
     resetFailed: "Deleting in the cloud didn't work – are you online? Nothing has been deleted here yet.",
     legal: 'Legal notice & privacy',
     version: 'Version {version}',
+    versionBeta: 'Version {version} · Beta – test build, not released yet',
     backup: 'Back up & move',
     exportLabel: 'Export profile',
     exportSub: 'As a file – for a new phone or after a browser clean-up.',

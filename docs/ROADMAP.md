@@ -6,7 +6,7 @@ Reihenfolge folgt der Produktpriorität des Konzepts: erst Spaß & Nutzbarkeit l
 Backend (B), dann Pils-Match (C), dann optionale KI (D). Vorgezogen auf Wunsch: Minispiele (E1) und
 **Biere aus deiner Nähe (R) – nächste Stufe**, danach E2–E6, C2/C3, D. Jedes Paket ist für sich releasebar und
 endet mit dem Gate – seit Q3 komplett in CI: Lint · Test · Build · E2E (Screenshots als Artefakt) · DB-Tests ·
-Upgrade-Pfad, nach dem Merge Deploy · Prod-Smoke · Release. Das Häkchen setzt der Paket-PR selbst.
+Upgrade-Pfad, nach dem Merge Beta-Deploy · Smoke · Pre-Release, nach Freigabe Promote · Prod-Smoke · Release. Das Häkchen setzt der Paket-PR selbst.
 
 Aufwand: S ≈ ½ Tag · M ≈ 1–2 Tage · L ≈ 3+ Tage.
 
@@ -18,14 +18,15 @@ Details stehen beim jeweiligen Paket weiter unten.
 
 1. [x] **R6** „Bier fehlt? Eintragen“ – Meldung → Issue → Label `freigegeben` → Katalog (#38, live 2026-10-02)
 2. [x] **Q1** Integrationstest Patch-Kompatibilität (Upgrade-Pfad mit Bestand, Live-Rechte, App-Queries) – #37 (#40, live 2026-10-02)
-3. [ ] ~~**Q2** Live-Migration per CI~~ – freigegeben 2026-10-02, jetzt Punkt 7
+3. [ ] ~~**Q2** Live-Migration per CI~~ – freigegeben 2026-10-02, jetzt Punkt 7 (#51)
 4. [x] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card) (#42, live 2026-10-02)
 5. [x] **I1** Englische Version – automatisch nach Browsersprache, umschaltbar (#46) (#48, live 2026-10-02)
-6. [x] **Q3** Release-Pipeline: Smoke nach jedem Deploy, Release + Rollback, Gate in CI statt lokal (2026-10-02)
-7. [x] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production` (2026-10-02)
-8. [ ] **R8** Bierbibliothek mit Filtern
-9. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
-10. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
+6. [x] **Q3** Release-Pipeline: Smoke nach jedem Deploy, Release + Rollback, Gate in CI statt lokal (#50, live 2026-10-02)
+7. [x] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production` (#51, 2026-10-02)
+8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (2026-10-02)
+9. [ ] **R8** Bierbibliothek mit Filtern
+10. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
+11. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -251,6 +252,9 @@ Vorlage: Job `schema-dry-run` in PilzBuddy/TrailBuddy (`tool/db_migrate.sh`, `sc
       Artefakt), Auto-Merge; nach dem Deploy Prod-Smoke gegen den neuen Commit (`/version.json`), dann GitHub Release
       `v<Datum>.<Run>` mit Notes und `dist.zip`, Version im Profil; `rollback.yml` spielt ein früheres Release ein;
       Fehler nach dem Merge → Issue `release-failed`. Roadmap-Haken im Paket-PR statt eigenem PR (S)
+- [x] Q4 **Promote (Wunsch 2026-10-02):** jeder Merge geht auf beta.pilsbuddy.mcbuchi.de (Worker `pilsbuddy-beta`, gleiche
+      DB) → Beta-Smoke → GitHub-Pre-Release; Job „Promote to production“ wartet auf das Approve im Environment
+      `production`, deployt dasselbe `dist`, Prod-Smoke, Release wird „Latest“. Version im Profil zeigt „Beta“ (S)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

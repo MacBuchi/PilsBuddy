@@ -7,5 +7,17 @@
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"
+  },
+  // Pre-release (Q4): every merge to main lands here first; production only after „Promote“ (ci.yml).
+  // wrangler deploy --env beta
+  "env": {
+    "beta": {
+      "name": "pilsbuddy-beta",
+      "routes": [{ "pattern": "beta.pilsbuddy.mcbuchi.de", "custom_domain": true }],
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "single-page-application"
+      }
+    }
   }
 }

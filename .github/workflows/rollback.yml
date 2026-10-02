@@ -3,7 +3,7 @@ name: Rollback
 # Puts an earlier release back live: deploys the dist.zip attached to that GitHub Release (exactly what was
 # tested then, no rebuild) and smoke-tests it. Database migrations are NOT rolled back – an app version older
 # than the live schema must still work with it (migrations only add, see CLAUDE.md).
-# gh workflow run rollback.yml                      → the release before the latest
+# gh workflow run rollback.yml                      → the release before the latest (pre-releases skipped)
 # gh workflow run rollback.yml -f tag=v2026.10.02.57
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
     name: Deploy release
     runs-on: ubuntu-latest
     concurrency:
-      group: deploy
+      group: deploy-production
       cancel-in-progress: false
     outputs:
       sha: ${{ steps.pick.outputs.sha }}
@@ -35,7 +35,7 @@ jobs:
       - id: pick
         run: |
           if [ -z "$TAG" ]; then
-            TAG=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 2 --json tagName --jq '.[1].tagName // empty')
+            TAG=$(gh release list --repo "$GITHUB_REPOSITORY" --exclude-pre-releases --limit 2 --json tagName --jq '.[1].tagName // empty')
           fi
           [ -n "$TAG" ] || { echo "::error::no release to roll back to"; exit 1; }
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern dist.zip
