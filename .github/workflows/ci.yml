@@ -111,7 +111,7 @@ jobs:
         run: |
           eval "$(supabase status -o env | grep -E '^DB_URL=')"
           npm run catalog:build -- --raw tools/catalog/fixtures --out /tmp/regional --min-breweries 1
-          for run in 1 2; do for f in /tmp/regional/*.sql; do psql "$DB_URL" -q -v ON_ERROR_STOP=1 -f "$f"; done; done
+          for _ in 1 2; do for f in /tmp/regional/*.sql; do psql "$DB_URL" -q -v ON_ERROR_STOP=1 -f "$f"; done; done
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f tools/catalog/fixtures/check.sql
       - uses: ./.github/actions/playwright
         with:
