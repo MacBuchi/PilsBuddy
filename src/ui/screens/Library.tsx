@@ -126,7 +126,8 @@ export function Library() {
         <MagnifyingGlassIcon weight="bold" size={20} />
         <input
           className={styles.searchInput}
-          type="search"
+          type="text"
+          inputMode="search"
           enterKeyHint="search"
           placeholder={COPY.library.search}
           aria-label={COPY.library.search}
