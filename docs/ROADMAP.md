@@ -23,8 +23,8 @@ Details stehen beim jeweiligen Paket weiter unten.
 5. [x] **I1** Englische Version – automatisch nach Browsersprache, umschaltbar (#46) (#48, live 2026-10-02)
 6. [x] **Q3** Release-Pipeline: Smoke nach jedem Deploy, Release + Rollback, Gate in CI statt lokal (#50, live 2026-10-02)
 7. [x] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production` (#51, 2026-10-02)
-8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (2026-10-02)
-9. [ ] **R8** Bierbibliothek mit Filtern
+8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (#52, live 2026-10-02)
+9. [x] **R8** Bierbibliothek mit Filtern (#53, 2026-10-02)
 10. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 11. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
@@ -228,9 +228,13 @@ Leitplanken:
         Kommentar und verlieren das Label; Katalog-Rebuild lässt Quelle 5 / `app-…` veröffentlicht. Offen: gecachte
         Finder-Zellen zeigen ein freigegebenes Bier erst nach bis zu 30 Tagen
 - [ ] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
-- [ ] R8 **Bierbibliothek** (Wunsch 2026-10-02): alle Biere durchsuchen und filtern – Name, PLZ/Region, Stil,
+- [x] R8 **Bierbibliothek** (Wunsch 2026-10-02): alle Biere durchsuchen und filtern – Name, PLZ/Region, Stil,
       Alkohol, eigene Bewertung; vorkategorisiert nach Stilgruppen (hell · dunkel · Weizen · Hopfen · alkoholfrei).
       Kuratierte Biere offline; Regionalbiere ohne Standort per Name/PLZ-Suche aus `regional_beers` (M)
+      - umgesetzt (2026-10-02, #53): Screen `library` (Einstieg als Suchfeld oben in Matches), Logik in
+        `src/domain/library.ts` (Stilgruppen, Alkohol-Bänder, Bewertung inkl. „unbewertet“). Offline: kuratierte +
+        angefasste Regionalbiere; ab 3 Zeichen sucht `searchRegional` Bier-, Brauerei- und Ortsnamen, eine PLZ die
+        Brauereien im Umkreis von 25 km. Keine Migration; die beiden Abfragen stehen in `schema_check.sh`
 
 ### Stufe Q – Qualität der Datenbank-Auslieferung (Wunsch 2026-10-02, #37)
 

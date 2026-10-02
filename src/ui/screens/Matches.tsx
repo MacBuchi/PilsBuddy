@@ -1,4 +1,4 @@
-import { HourglassMediumIcon } from '@phosphor-icons/react'
+import { HourglassMediumIcon, MagnifyingGlassIcon } from '@phosphor-icons/react'
 import { useMemo, useState } from 'react'
 import { BEER_BY_ID, getBeer } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
@@ -17,6 +17,7 @@ import { RegionalFinder } from '../components/RegionalFinder'
 import { useBuddyInvite } from '../useBuddyInvite'
 import { RATING_COLOR } from '../ratingStyle'
 import styles from './Matches.module.css'
+import library from './Library.module.css'
 
 const SEGMENTS: { k: MatchTab; label: string; beta: boolean }[] = [
   { k: 'biere', label: COPY.matches.tabBeers, beta: false },
@@ -26,7 +27,7 @@ const SEGMENTS: { k: MatchTab; label: string; beta: boolean }[] = [
 ]
 
 export function Matches() {
-  const { state, dispatch, openDetail, toast, withTabs, rate } = useApp()
+  const { state, dispatch, go, openDetail, toast, withTabs, rate } = useApp()
   const [tried, setTried] = useState<Beer | null>(null)
   const invite = useBuddyInvite()
   const buddy = state.profile.buddy
@@ -51,6 +52,14 @@ export function Matches() {
   return (
     <div className={`${page.page} ${withTabs ? page.withTabs : ''}`} style={{ paddingLeft: 20, paddingRight: 20 }}>
       <h1 className={page.h1}>{COPY.matches.title}</h1>
+
+      <button type="button" className={`${library.search} ${library.entry}`} onClick={() => go('library')}>
+        <MagnifyingGlassIcon weight="bold" size={20} />
+        <span className={library.entryText}>
+          <b>{COPY.library.entry}</b>
+          <span>{COPY.library.entrySub}</span>
+        </span>
+      </button>
 
       <div className={styles.segments} role="tablist">
         {SEGMENTS.map((s) => {

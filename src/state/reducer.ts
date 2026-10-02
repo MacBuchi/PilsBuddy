@@ -16,6 +16,7 @@ export type Screen =
   | 'games'
   | 'quartett'
   | 'regional'
+  | 'library'
 
 export type MatchTab = 'biere' | 'probieren' | 'naehe' | 'menschen'
 

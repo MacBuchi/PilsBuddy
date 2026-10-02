@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CELL_TTL_MS, CELLS_KEY, fetchCells, findPostcode, forgetRegional, loadRegion, POOL_KEY, readPool, readPrefs, readSnapshots, writePool, writePrefs, writeSnapshot } from './regional'
+import { CELL_TTL_MS, CELLS_KEY, fetchCells, findPostcode, forgetRegional, loadRegion, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
 
 const MANNHEIM = { lat: 49.49, lon: 8.47 }
 const eichbaum = {
@@ -129,5 +129,39 @@ describe('prefs and snapshots', () => {
     writeSnapshot({ id: 'r-4000000000001', name: 'X', style: null, abv: null, pack: null, rank: 0, source: 1, source_ref: '1' }, { ...eichbaum, beers: [], country: 'DE' })
     forgetRegional()
     expect(stored.size).toBe(0)
+  })
+})
+
+describe('library search (R8)', () => {
+  it('only letters, digits and hyphens reach the filter; under 3 characters nothing is sent', () => {
+    expect(searchPattern('Ureich Pils')).toBe('*Ureich*Pils*')
+    expect(searchPattern('a),or=(id.neq.x')).toBe('*a*or*id*neq*x*')
+    expect(searchPattern('Bräu-Stüberl')).toBe('*Bräu-Stüberl*')
+    expect(searchPattern(' ab ')).toBeNull()
+    expect(searchPattern('*%,.')).toBeNull()
+  })
+
+  it('finds beers by name and by brewery/town, each beer once, without any position', async () => {
+    const beerHit = { ...eichbaum.regional_beers[0], breweries: { ...eichbaum, regional_beers: undefined } }
+    const f = vi.fn(async (url: string) => new Response(JSON.stringify(url.includes('/regional_beers?') ? [beerHit, { id: 'bad' }] : [eichbaum]), { status: 200 }))
+    const found = await searchRegional('ureich', f as unknown as typeof fetch)
+    expect(found.map((x) => [x.row.id, x.brewery.name])).toEqual([['r-4000000000001', 'Privatbrauerei Eichbaum']])
+    const urls = f.mock.calls.map((c) => decodeURIComponent(c[0]))
+    expect(urls[0]).toContain('name=ilike.*ureich*')
+    expect(urls[1]).toContain('or=(name.ilike.*ureich*,city.ilike.*ureich*)')
+    expect(urls.join()).not.toMatch(/lat\.|lon\./)
+    expect(await searchRegional('ur', f as unknown as typeof fetch)).toEqual([])
+    expect(f).toHaveBeenCalledTimes(2)
+  })
+
+  it('throws when the API is down, so the screen can say so', async () => {
+    await expect(searchRegional('ureich', offline() as unknown as typeof fetch)).rejects.toThrow()
+  })
+
+  it('postcode search keeps the breweries inside the radius', async () => {
+    stubStorage()
+    const far = { ...eichbaum, id: 'osm-n2', lat: 49.99, lon: 8.47, regional_beers: [{ ...eichbaum.regional_beers[0], id: 'r-4000000000002' }] }
+    const found = await searchNear(MANNHEIM, 10, api([eichbaum, far]) as unknown as typeof fetch)
+    expect(found.map((x) => x.row.id)).toEqual(['r-4000000000001'])
   })
 })

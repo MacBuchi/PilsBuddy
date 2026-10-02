@@ -12,6 +12,7 @@ import { Dna } from './ui/screens/Dna'
 import { Games } from './ui/screens/Games'
 import { ErrorBoundary } from './ui/screens/ErrorScreen'
 import { Howto } from './ui/screens/Howto'
+import { Library } from './ui/screens/Library'
 import { Match } from './ui/screens/Match'
 import { Matches } from './ui/screens/Matches'
 import { Profile } from './ui/screens/Profile'
@@ -62,6 +63,7 @@ function Screens() {
         {s === 'games' && <Games />}
         {s === 'quartett' && <Quartett />}
         {s === 'regional' && <Regional />}
+        {s === 'library' && <Library />}
         {s === 'legal' && (
           <Suspense fallback={null}>
             <Legal />
