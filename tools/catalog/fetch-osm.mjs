@@ -25,18 +25,30 @@ if (joinParts) {
 // the main instance answers 504 under load – rotate through public mirrors
 const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter']
 
+/**
+ * Overpass answers 200 with a `remark` and partial data when a query runs out of time or memory, and a mirror without
+ * the area index answers 200 with nothing – both must not count as a result (2026-10: Saxony and Hesse came back
+ * empty). An empty area is asked at every mirror before it is believed.
+ */
 async function overpass(query) {
-  for (let round = 0; ; round++) {
+  let empty = null
+  for (let round = 0; round < 3; round++) {
     for (const url of ENDPOINTS) {
       try {
-        return await getJson(url, { method: 'POST', body: new URLSearchParams({ data: query }), signal: AbortSignal.timeout(360_000) }, 2)
+        const data = await getJson(url, { method: 'POST', body: new URLSearchParams({ data: query }), signal: AbortSignal.timeout(360_000) }, 2)
+        if (data.remark && /error|timed? ?out|memory/i.test(data.remark)) throw new Error(`remark: ${data.remark.slice(0, 160)}`)
+        if (data.elements.length) return data
+        console.log(`${url}: empty`)
+        if (empty && round >= 1) return empty
+        empty = data
       } catch (err) {
         console.log(`${url}: ${err.message}`)
-        if (round >= 2 && url === ENDPOINTS.at(-1)) throw err
       }
     }
     await sleep(30_000)
   }
+  if (empty) return empty
+  throw new Error('Overpass: no complete answer from any mirror')
 }
 
 const filters = ['["craft"="brewery"]', '["microbrewery"="yes"]', '["industrial"="brewery"]']
@@ -58,10 +70,8 @@ for (const area of areas) {
   const query = `[out:json][timeout:300];${area ?? ''}(${filters.map((f) => `nwr${f}${scope};`).join('')});out center tags;`
   const data = await overpass(query)
   for (const el of data.elements) elements.set(`${el.type}${el.id}`, el)
-  if (areas.length > 1) {
-    console.log(`${area.match(/"([A-Z-]+)"\]/)[1]}: ${elements.size}`)
-    await sleep(3000)
-  }
+  if (area) console.log(`${area.match(/"([A-Z-]+)"\]/)[1]}: ${data.elements.length} (total ${elements.size})`)
+  if (areas.length > 1) await sleep(3000)
 }
 const rows = [...elements.values()]
   .map((el) => {

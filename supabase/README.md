@@ -72,7 +72,8 @@ stehen zentral in `tools/catalog/countries.json`; Skripte, Merge und Workflow le
 4. Live: Workflow „Regional catalogue (import)“ (`gh workflow run catalog-import.yml` = Probelauf mit Report,
    `-f apply=true` = Import nach Freigabe im Environment `production`; nimmt die Artefakte des letzten fetch-
    und Website-Laufs). Er spielt die Dateien per `supabase db query --linked -f "$f"` ein. Jede Datei ist eine
-   Transaktion; Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
+   Transaktion; zuerst prüft `05-guard.sql`, dass kein Land mehr als 10 % seiner veröffentlichten Brauereien verliert
+   (sonst Abbruch vor dem ersten Schreiben – ein Download kann still unvollständig sein); Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
    setzt Brauereien/Biere, die nicht mehr in den Quellen sind, auf `published = false` (Zeilen bleiben) – außer
    den freigegebenen Meldungen aus der App (Quelle 5, Brauereien `app-…`).
 

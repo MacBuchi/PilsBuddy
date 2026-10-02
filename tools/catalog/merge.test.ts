@@ -378,17 +378,25 @@ describe('importSql', () => {
   )
 
   it('writes ordered, transactional upsert files and unpublishes what is gone', () => {
-    expect(files.map((f) => f.name)).toEqual(['10-breweries-001.sql', '20-beers-001.sql', '30-unpublish.sql', '40-places-001.sql'])
-    for (const f of files) expect(f.sql).toMatch(/^begin;\n[\s\S]*commit;\n$/)
-    expect(files[0].sql).toContain("'O''Brien''s Bräu'")
-    expect(files[0].sql).toContain("'{\"osm\",\"wikidata\"}'::text[]")
-    expect(files[0].sql).toContain('on conflict (id) do update set name = excluded.name')
-    expect(files[1].sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', true)`)
-    expect(files[2].sql).toContain(`id <> all('{"r-4001"}'::text[])`)
+    expect(files.map((f) => f.name)).toEqual(['05-guard.sql', '10-breweries-001.sql', '20-beers-001.sql', '30-unpublish.sql', '40-places-001.sql'])
+    const [, brew, beer, unpublish, places] = files
+    for (const f of [brew, beer, unpublish, places]) expect(f.sql).toMatch(/^begin;\n[\s\S]*commit;\n$/)
+    expect(brew.sql).toContain("'O''Brien''s Bräu'")
+    expect(brew.sql).toContain("'{\"osm\",\"wikidata\"}'::text[]")
+    expect(brew.sql).toContain('on conflict (id) do update set name = excluded.name')
+    expect(beer.sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', true)`)
+    expect(unpublish.sql).toContain(`id <> all('{"r-4001"}'::text[])`)
     // app reports (R6) survive a rebuild
-    expect(files[2].sql).toContain('source <> 5 and id <> all(')
-    expect(files[2].sql).toContain("id not like 'app-%' and id <> all(")
-    expect(files[3].sql).toContain('on conflict (country, postcode, name)')
+    expect(unpublish.sql).toContain('source <> 5 and id <> all(')
+    expect(unpublish.sql).toContain("id not like 'app-%' and id <> all(")
+    expect(places.sql).toContain('on conflict (country, postcode, name)')
+  })
+
+  it('starts with a guard against a country that came back short', () => {
+    const guard = files[0].sql
+    expect(guard).toContain("(values ('DE', 1), ('AT', 0), ('CH', 0), ('CA', 0), ('US', 0))")
+    expect(guard).toContain('if r.count < r.live * 0.9 then')
+    expect(guard).toContain("where published and id not like 'app-%'")
   })
 
   it('splits large imports into batches', () => {

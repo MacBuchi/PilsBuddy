@@ -692,11 +692,28 @@ export interface ImportFile {
   sql: string
 }
 
+/** A country may lose at most this share of its published breweries in one import. */
+export const MAX_DROP = 0.1
+
 /** Import SQL as ordered files (each one transaction, small enough for `supabase db query`). */
 export function importSql(breweries: Brewery[], beers: RegionalBeer[], places: Place[], batch = 500): ImportFile[] {
   const files: ImportFile[] = []
   const pad = (i: number) => String(i + 1).padStart(3, '0')
   const tx = (sql: string) => `begin;\n${sql}commit;\n`
+  // first file: stop before anything is written when a country lost more than MAX_DROP of what is live – a
+  // download can come back short without failing (2026-10: Overpass left out Saxony and Hesse)
+  const counts = COUNTRIES.map((c) => `(${lit(c)}, ${breweries.filter((b) => b.country === c).length})`).join(', ')
+  files.push({
+    name: '05-guard.sql',
+    sql:
+      `do $$\ndeclare r record;\nbegin\n` +
+      `  for r in select n.country, n.count, coalesce(l.count, 0) as live from (values ${counts}) as n (country, count)\n` +
+      `    left join (select country, count(*) as count from public.breweries where published and id not like 'app-%' group by country) l using (country)\n` +
+      `  loop\n` +
+      `    if r.count < r.live * ${1 - MAX_DROP} then\n` +
+      `      raise exception 'breweries %: % in the import, % published – incomplete download?', r.country, r.count, r.live;\n` +
+      `    end if;\n  end loop;\nend $$;\n`,
+  })
   chunks(breweries, batch).forEach((rows, i) =>
     files.push({
       name: `10-breweries-${pad(i)}.sql`,

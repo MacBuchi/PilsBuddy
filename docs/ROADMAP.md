@@ -291,7 +291,8 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
       - umgesetzt (#60): `tools/catalog/countries.json` steuert Skripte, Merge und Workflow; `fetch-obdb.mjs`
         (Brauereien ohne Koordinaten an der Mitte ihrer PLZ), GeoNames US-ZIP + kanadische FSA, `fl oz` im Gebinde,
         englische Firmenwörter beim Namensabgleich, Crawler-Sprachprofil je Land (englische Filter, „6.5% ABV“,
-        Zahl am Namensanfang), 12 Shards, Mindestzahl Brauereien je Land. Live-Import (fetch → import → Websites →
+        Zahl am Namensanfang), 12 Shards, Mindestzahl Brauereien je Land; OSM-Abruf parallel je Land/Teil, unvollständige Overpass-Antworten
+        werden wiederholt, `05-guard.sql` bricht den Import ab, wenn ein Land > 10 % seiner Brauereien verliert. Live-Import (fetch → import → Websites →
         import) läuft erst nach Freigabe im Environment `production`
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
