@@ -19,12 +19,21 @@ export const PROBE = { lat: 49.2386, lon: 9.1016, radiusKm: 50 }
  */
 export const COUNTRIES = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'countries.json'), 'utf8'))
 
-// `node tools/catalog/lib.mjs countries|openbeer` prints the lists the workflow loops over
+/** One OSM job per country, big ones split so a job stays well inside its time limit: ≤ 17 areas per part. */
+export function osmParts() {
+  return Object.entries(COUNTRIES).flatMap(([country, c]) => {
+    const parts = Math.ceil((c.osm?.length ?? 1) / 17)
+    return Array.from({ length: parts }, (_, part) => ({ country, part, parts }))
+  })
+}
+
+// `node tools/catalog/lib.mjs countries|openbeer|osm-matrix` prints the lists the workflow loops over
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   const what = process.argv[2]
   if (what === 'countries') console.log(Object.keys(COUNTRIES).join(' '))
+  else if (what === 'osm-matrix') console.log(JSON.stringify(osmParts()))
   else if (what === 'openbeer') console.log(Object.values(COUNTRIES).flatMap((c) => c.openbeer ?? []).join(' '))
-  else throw new Error('usage: lib.mjs countries|openbeer')
+  else throw new Error('usage: lib.mjs countries|openbeer|osm-matrix')
 }
 
 /** `--key value` arguments. */

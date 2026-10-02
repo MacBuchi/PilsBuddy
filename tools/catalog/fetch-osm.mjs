@@ -1,9 +1,27 @@
 // Breweries from OpenStreetMap (ODbL) via Overpass.
 //   node tools/catalog/fetch-osm.mjs              → probe region (R0)
 //   node tools/catalog/fetch-osm.mjs --country DE → whole country (DE, CA, US state by state – one query times out)
-import { args, bboxAround, COUNTRIES, getJson, PROBE, sleep, writeRaw } from './lib.mjs'
+//   node tools/catalog/fetch-osm.mjs --country US --part 0 --parts 3 → a third of the states → raw/osm-US.part0.json
+//   node tools/catalog/fetch-osm.mjs --join      → raw/osm-XX.part*.json → raw/osm-XX.json
+// The workflow runs one job per country part (own runner, own IP – Overpass limits per IP), see osmParts in lib.mjs.
+import { readdirSync, rmSync } from 'node:fs'
+import { join } from 'node:path'
+import { args, bboxAround, COUNTRIES, getJson, PROBE, RAW, readRaw, sleep, writeRaw } from './lib.mjs'
 
-const { country } = args()
+const { country, part, parts, join: joinParts } = args()
+
+if (joinParts) {
+  const files = readdirSync(RAW).filter((f) => /^osm-[A-Z]{2}\.part\d+\.json$/.test(f)).sort()
+  const byCountry = new Map()
+  for (const f of files) byCountry.set(f.slice(4, 6), [...(byCountry.get(f.slice(4, 6)) ?? []), f])
+  for (const [c, fs] of byCountry) {
+    const rows = new Map()
+    for (const f of fs) for (const r of readRaw(f)) rows.set(r.id, r)
+    writeRaw(`osm-${c}.json`, [...rows.values()])
+    for (const f of fs) rmSync(join(RAW, f))
+  }
+  process.exit(0)
+}
 // the main instance answers 504 under load – rotate through public mirrors
 const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter']
 
@@ -23,11 +41,12 @@ async function overpass(query) {
 
 const filters = ['["craft"="brewery"]', '["microbrewery"="yes"]', '["industrial"="brewery"]']
 if (country && !COUNTRIES[country]) throw new Error(`unknown country ${country}`)
-const areas = !country
+const all = !country
   ? [null]
   : COUNTRIES[country].osm
     ? COUNTRIES[country].osm.map((s) => `area["ISO3166-2"="${s}"]->.a;`)
     : [`area["ISO3166-1"="${country}"][admin_level=2]->.a;`]
+const areas = parts ? all.filter((_, i) => i % Number(parts) === Number(part)) : all
 
 const elements = new Map()
 for (const area of areas) {
@@ -64,4 +83,4 @@ const rows = [...elements.values()]
     }
   })
   .filter((r) => r.lat != null)
-writeRaw(`osm-${country ?? 'probe'}.json`, rows)
+writeRaw(`osm-${country ?? 'probe'}${parts ? `.part${part}` : ''}.json`, rows)
