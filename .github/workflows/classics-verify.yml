@@ -1,0 +1,26 @@
+name: Classics sources
+
+# Stufe N: fetches the source URL of every researched classic (tools/classics/*.json) and checks that ABV/IBU appear
+# there. A report for the next manual check (step summary + artifact), never a gate – many brewery sites block bots.
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore: [main]
+    paths: ['tools/classics/**']
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check sources
+        run: node tools/classics/verify.mjs --out classics-sources.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: classics-sources
+          path: classics-sources.md
+          retention-days: 14

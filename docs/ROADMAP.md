@@ -25,7 +25,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 7. [x] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production` (#51, 2026-10-02)
 8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (#52, live 2026-10-02)
 9. [x] **R8** Bierbibliothek mit Filtern (#53, 2026-10-02)
-10. [ ] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada ·
+10. [ ] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada (#PR_N2) ·
     N3 Klassiker USA · N4 Regionalkatalog Schema + Client · N5 Pipeline + Crawler + Live-Import
 11. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 12. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
@@ -274,7 +274,10 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
       California Common, Bitter, Brown Ale, Scotch Ale, Double IPA, Hazy IPA, Milk Stout, Imperial Stout,
       Barleywine, Saison, Tripel, Dubbel, Quadrupel, Sour Ale – Profile nach BJCP 2021, Muster vor dem
       `ale`-Auffang, Flaschenregeln und Stilgruppen (#55)
-- [ ] N2 **Klassiker Kanada** (M): Recherchedatei mit Quelle je Feld, Ableitung `classicTaste`, Texte DE + EN
+- [x] N2 **Klassiker Kanada** (M): Recherchedatei mit Quelle je Feld, Ableitung `classicTaste`, Texte DE + EN
+      - umgesetzt (#PR_N2): 48 Biere aus allen Provinzen + Yukon in `tools/classics/ca.json`, `npm run classics:build`
+        schreibt `beers.json`/`beers.en.json`, Test rechnet jedes Profil nach; Workflow „Classics sources“ prüft die
+        Quellen. Auswahl, CSV-Korrekturen und Quellen: `docs/research/NORDAMERIKA.md`
 - [ ] N3 **Klassiker USA** (M): wie N2
 - [ ] N4 **Regionalkatalog CA/US – Schema + Client** (M): Länder-CHECKs, Brauerei-IDs `obdb-…`, PLZ-Format
       ZIP/FSA, Auswahl bei gleicher PLZ in DE und USA, Datenschutztext
