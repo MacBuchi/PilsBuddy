@@ -45,6 +45,8 @@ const SOURCES: Record<number, { name: string; url?: (ref: string) => string }> =
   2: { name: 'Wikidata', url: (ref) => `https://www.wikidata.org/wiki/${encodeURIComponent(ref)}` },
   3: { name: 'Website der Brauerei' },
   4: { name: 'beer.db (openbeer)', url: (ref) => `https://github.com/openbeer/${ref}` },
+  // R6: reported in the app and approved; the ref is the link given with the report
+  5: { name: 'Meldung aus der App', url: (ref) => safeUrl(ref) ?? '' },
 }
 
 const COUNTRY_NAME: Record<Country, string> = { DE: 'Deutschland', AT: 'Österreich', CH: 'Schweiz' }
@@ -101,7 +103,7 @@ export function sanitizeBeerRow(v: unknown): RegionalBeerRow | null {
 export function sanitizeBrewery(v: unknown): RegionalBrewery | null {
   if (!v || typeof v !== 'object') return null
   const b = v as Record<string, unknown>
-  const id = typeof b.id === 'string' && /^(osm-[nwr]|wd-q)[0-9]{1,20}$/.test(b.id) ? b.id : null
+  const id = typeof b.id === 'string' && /^(osm-[nwr]|wd-q|app-)[0-9]{1,20}$/.test(b.id) ? b.id : null
   const name = text(b.name, 200)
   const lat = num(b.lat, -90, 90)
   const lon = num(b.lon, -180, 180)
@@ -138,7 +140,7 @@ export function sourceUrl(row: RegionalBeerRow, brewery: Pick<RegionalBrewery, '
       return undefined
     }
   }
-  return src?.url && row.source_ref ? src.url(row.source_ref) : undefined
+  return (src?.url && row.source_ref && src.url(row.source_ref)) || undefined
 }
 
 /** The regional beer as an app `Beer`: taste, colour and bottle all follow from style, ABV and container. */

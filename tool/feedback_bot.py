@@ -31,6 +31,8 @@ USER_AGENT = "pilsbuddy-feedback-bot/1.0 (+https://github.com/MacBuchi/PilsBuddy
 
 
 def supabase_url() -> str:
+    if os.environ.get("SUPABASE_URL"):  # local stack for tests; the workflows never set it
+        return os.environ["SUPABASE_URL"]
     with open(CONFIG, encoding="utf-8") as f:
         m = re.search(r"VITE_SUPABASE_URL \?\? '([^']+)'", f.read())
     if not m or not m.group(1).startswith("https://"):
@@ -38,10 +40,10 @@ def supabase_url() -> str:
     return m.group(1)
 
 
-def api(method: str, path: str, body=None):
+def api(method: str, path: str, body=None, prefer: str = "return=minimal"):
     key = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
     # Cloudflare in front of Supabase blocks the default Python-urllib agent.
-    headers = {"apikey": key, "Content-Type": "application/json", "User-Agent": USER_AGENT, "Prefer": "return=minimal"}
+    headers = {"apikey": key, "Content-Type": "application/json", "User-Agent": USER_AGENT, "Prefer": prefer}
     # Legacy service_role keys are JWTs and also go into Authorization; sb_secret_* keys only use apikey.
     if key.startswith("eyJ"):
         headers["Authorization"] = f"Bearer {key}"
@@ -120,6 +122,7 @@ def self_test() -> None:
     assert "### App version\n\na74e951" in body and "### Platform\n\niOS · App" in body, body
     assert issue_label(row) == "bug" and issue_label({**row, "type": "feature"}) == "enhancement"
     assert issue_title({**row, "type": "feature", "message": "Kurz"}) == "Feature request: Kurz"
+    os.environ.pop("SUPABASE_URL", None)
     assert supabase_url() == "https://rwqpljpnotnyovvuxjgl.supabase.co"
     print("self-test ok")
 

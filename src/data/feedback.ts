@@ -29,7 +29,7 @@ export function platformOf(userAgent: string, standalone: boolean): string {
   return `${os} · ${standalone ? 'App' : 'Browser'}`
 }
 
-function currentPlatform(): string {
+export function currentPlatform(): string {
   try {
     const standalone =
       window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true

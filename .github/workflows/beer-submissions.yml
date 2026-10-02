@@ -1,0 +1,66 @@
+name: Beer Reports
+
+# R6 „Bier fehlt? Eintragen“ (tool/beer_bot.py):
+# - every two hours: new rows of public.beer_submissions → one issue each (label `bier-meldung`), old rows deleted
+# - label `freigegeben` on such an issue: the (possibly corrected) issue goes into the regional catalogue
+# Only people with triage rights can set labels, so the label is the approval. Without
+# SUPABASE_SERVICE_ROLE_KEY the run says so in its summary and stays green.
+on:
+  schedule:
+    - cron: "53 */2 * * *" # every two hours, half an hour after the feedback bot
+  workflow_dispatch:
+  issues:
+    types: [labeled]
+
+# runs share the table and the catalogue – one at a time, none cancelled halfway
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  reports:
+    name: Meldungen → Issues
+    if: github.event_name != 'issues'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Self-test (no network)
+        run: python3 tool/beer_bot.py --self-test
+      - name: Key present?
+        id: key
+        env:
+          KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: echo "have=$([ -n "$KEY" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: No key, no run
+        if: steps.key.outputs.have == 'false'
+        run: echo "### Bier-Bot übersprungen – \`SUPABASE_SERVICE_ROLE_KEY\` fehlt" >> "$GITHUB_STEP_SUMMARY"
+      - name: Reports → issues
+        if: steps.key.outputs.have == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 tool/beer_bot.py
+
+  approve:
+    name: Freigegebenes Bier eintragen
+    if: >-
+      github.event_name == 'issues' && github.event.label.name == 'freigegeben' &&
+      contains(github.event.issue.labels.*.name, 'bier-meldung') && github.event.issue.state == 'open'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Self-test (no network)
+        run: python3 tool/beer_bot.py --self-test
+      - name: Issue → catalogue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # via env, not interpolated into the script
+          ISSUE: ${{ github.event.issue.number }}
+        run: python3 tool/beer_bot.py approve "$ISSUE"

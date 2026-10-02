@@ -1,6 +1,6 @@
 # PilsBuddy – Roadmap nach dem MVP
 
-Stand: 2026-10-01 · Live: <https://pilsbuddy.mcbuchi.de> · MVP (Phasen 1–12 des Briefs) ist fertig.
+Stand: 2026-10-02 · Live: <https://pilsbuddy.mcbuchi.de> · MVP (Phasen 1–12 des Briefs) ist fertig.
 
 Reihenfolge folgt der Produktpriorität des Konzepts: erst Spaß & Nutzbarkeit lokal (A), dann
 Backend (B), dann Pils-Match (C), dann optionale KI (D). Vorgezogen auf Wunsch: Minispiele (E1) und
@@ -9,6 +9,21 @@ endet mit dem Gate: `npm run build` · `npm test` · `npm run lint` · `e2e/flow
 mobil + desktop · `npm run deploy` · Häkchen hier setzen · Commit.
 
 Aufwand: S ≈ ½ Tag · M ≈ 1–2 Tage · L ≈ 3+ Tage.
+
+## Fahrplan – die nächsten PRs in dieser Reihenfolge
+
+Arbeitsliste für die Umsetzung (Absprache 2026-10-02): oben anfangen, je Zeile ein Branch + PR, Gate,
+mergen, live prüfen, hier abhaken – dann die nächste. Neue Wünsche werden hier einsortiert, nicht nebenher gebaut.
+Details stehen beim jeweiligen Paket weiter unten.
+
+1. [ ] **R6** „Bier fehlt? Eintragen“ – Meldung → Issue → Label `freigegeben` → Katalog
+2. [ ] **Q1** Integrationstest Patch-Kompatibilität (Upgrade-Pfad mit Bestand, Live-Rechte, App-Queries) – #37
+3. [ ] **Q2** Live-Migration per CI vor dem Deploy – #37, ⏸ braucht die ausdrückliche Freigabe des Maintainers
+       (Auto-Modus blockiert „Blind Apply“) und das Secret `SUPABASE_ACCESS_TOKEN`; bis dahin übersprungen
+4. [ ] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card)
+5. [ ] **R8** Bierbibliothek mit Filtern
+6. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
+7. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -119,8 +134,8 @@ Akzeptanz: Undo im Deck und nach Detail-Bewertung; Zähler/DNA gehen zurück.
 
 - [x] `reducer.test.ts`, `SwipeDeck.test.tsx` (64 Tests gesamt)
 - [x] GitHub Actions `ci.yml`: Lint · Test · Build → E2E-Flow gegen `vite preview` → Deploy (nur `main`)
-- [ ] Auto-Deploy aktivieren: Repo-Secrets `CLOUDFLARE_API_TOKEN` (Vorlage „Edit Cloudflare Workers“)
-      und `CLOUDFLARE_ACCOUNT_ID` setzen – bis dahin überspringt der Job und `npm run deploy` gilt
+- [x] Auto-Deploy aktivieren: Repo-Secrets `CLOUDFLARE_API_TOKEN` (Vorlage „Edit Cloudflare Workers“)
+      und `CLOUDFLARE_ACCOUNT_ID` gesetzt (2026-10-01) – `main` deployt per CI
 - [x] Dark-Mode-Kanten gesperrter Achievements, `aria-live` am Bottom-Toast, Fokus-Ring + Enter auf der Karte
 
 ## Stufe B – Backend (Supabase, Free Tier) – nach A0–A4
@@ -199,8 +214,27 @@ Leitplanken:
         zweiten Gerät (Sync/Import) fehlen die Snapshots, diese Bewertungen werden dort ignoriert
 - [ ] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
       Achievement „Lokalpatriot“, Share-Card-Zeile (M)
-- [ ] R6 **„Bier fehlt? Eintragen“:** `beer_submissions` mit Freigabe-Queue, Limit je anonymer Session (M)
+- [ ] R6 **„Bier fehlt? Eintragen“** (vor R5 gezogen, Wunsch 2026-10-02): Brauerei Pflicht (aus dem Finder oder
+      frei mit PLZ/Ort), dazu ein Link oder die Daten (Name, Stil, Alkohol). Tabelle `beer_submissions` (anonym, nur
+      `insert`, Trigger-Limit global + keine Doppelmeldung, 5 je Gerät und Tag) → `tool/beer_bot.py` legt je Meldung
+      ein Issue `bier-meldung` an; Label `freigegeben` trägt das (im Issue korrigierbare) Bier als Quelle 5 in
+      `regional_beers` ein, eine neue Brauerei als `app-<Issue>` mit Koordinaten aus `places`. Kein Konto statt
+      „Limit je anonymer Session“ (Sessions gibt es nur mit Sync) (M)
 - [ ] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
+- [ ] R8 **Bierbibliothek** (Wunsch 2026-10-02): alle Biere durchsuchen und filtern – Name, PLZ/Region, Stil,
+      Alkohol, eigene Bewertung; vorkategorisiert nach Stilgruppen (hell · dunkel · Weizen · Hopfen · alkoholfrei).
+      Kuratierte Biere offline; Regionalbiere ohne Standort per Name/PLZ-Suche aus `regional_beers` (M)
+
+### Stufe Q – Qualität der Datenbank-Auslieferung (Wunsch 2026-10-02, #37)
+
+Vorlage: Job `schema-dry-run` in PilzBuddy/TrailBuddy (`tool/db_migrate.sh`, `schema_check.sh`, `grants_check.sql`).
+
+- [ ] Q1 **Integrationstest Patch-Kompatibilität:** neuer CI-Job – Stack mit den Migrationen von `origin/main`,
+      realistische Daten (Katalog-Fixture, Sync, Feedback, Meldungen), dann nur die neuen Migrationen des PRs;
+      Live-Standardrechte (anon/authenticated bekommen alles auf neuen Tabellen) lokal nachgestellt +
+      `grants_check.sql`; alle App-Queries per PostgREST gegen das aufgerüstete Schema; dazu Frischinstallation (M)
+- [ ] Q2 **Live-Migration per CI:** Job `migrate` (`supabase db push --linked`, nur `SUPABASE_ACCESS_TOKEN`) nach Q1,
+      vor dem Deploy; eigene Concurrency-Gruppe; ohne Secret sichtbar übersprungen. Braucht Freigabe (S)
 
 ## Stufe E – Minispiele (vorgezogen vor C, Wunsch 2026-10-01)
 
