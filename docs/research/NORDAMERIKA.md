@@ -17,6 +17,10 @@ Weitere Regeln:
 
 Kanada (N2): 48 Biere – Ontario 14, Québec 11, Britisch-Kolumbien 11, Alberta 4, New Brunswick 2, Neuschottland 2, Saskatchewan, Manitoba, Neufundland und Yukon je 1.
 
+USA (N3): 50 Biere aus 23 Bundesstaaten – Colorado 9, Kalifornien 6, Michigan, Missouri und Wisconsin je 4, New York 3,
+Massachusetts, Oregon und Pennsylvanien je 2, je eins aus Alaska, Delaware, Florida, Georgia, Hawaii, Illinois, Indiana,
+Iowa, Louisiana, Maine, Ohio, Rhode Island, Texas und Vermont. Dazu kommt das schon kuratierte Sierra Nevada Pale Ale.
+
 ### Korrekturen gegenüber der CSV
 
 | CSV | Richtig |
@@ -27,6 +31,11 @@ Kanada (N2): 48 Biere – Ontario 14, Québec 11, Britisch-Kolumbien 11, Alberta
 | Driftwood Fat Tug 100 IBU | „80+ IBU“ laut Brauerei-Angaben im Handel |
 | Parallel 49 Trash Panda 6,5 % | 5,5 % / 55 IBU laut Launch-Artikel |
 | Strange Fellows Talisman 4,0 % | 4,2 % / 29 IBU |
+| Rogue Dead Guy „Maibock“ | ein Ale im Stil eines Maibocks (Brauerei) – Stil `Bock`, 6,8 % / 40 IBU |
+| Anchor Steam | seit 2023 nicht mehr gebraut; die Brauerei gehört seit 2024 Hamdi Ulukaya, ein Neustart ist angekündigt, aber noch nicht da – nicht aufgenommen |
+| Fat Tire „Amber Ale“ | 2023 neu eingestellt: „Fat Tire Classic Ale“, 5,2 % / 15 IBU, heller und frischer; das alte Amber-Rezept gibt es nur noch im Mischkarton |
+| Odell 90 Shilling „Scotch Ale“ | die Brauerei nennt es Amber Ale (5,3 % / 32 IBU) – Stil `Amber` |
+| Alaskan Amber „Amber Ale“ | laut Brauerei ein Altbier („alt-style“) – Stil `Altbier` |
 | Steamworks Pilsner, Brockton IPA, Juxtapose, Black Tusk, 101 Pilsner, Saison du Pinacle … | ersetzt durch bekanntere Biere derselben Region (u. a. English Bay Pale Ale, Molson Export, Labatt 50, Blanche de Chambly, Maudite, Iceberg, Yukon Gold) |
 
 ## Quellen und Prüfung
@@ -59,6 +68,9 @@ taste = tasteFromStyle(Stil, ABV, IBU) + Σ adjust
   - „less sweet than Westmalle“ (La Buteuse)
 - Jedes Delta trägt Begründung und URL.
 - Der Test `tools/classics/classics.test.ts` rechnet jedes Profil nach. Wer in `beers.json` von Hand nachbessert, bekommt einen roten Test.
+
+Abweichungen in N3, alle mit Zitat der Brauerei: 420 „low perceived bitterness“, Pseudo Sue „mild bitterness“,
+Purple Haze „tartly sweet“, Dragon's Milk „sweet undertones of vanilla“, Milk Stout Nitro „super smooth & creamy“.
 
 Ändern: Datensatz in `tools/classics/<land>.json` bearbeiten, dann `npm run classics:build`.
 

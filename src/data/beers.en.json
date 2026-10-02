@@ -28,7 +28,8 @@
     "Pilsen": "Plzeň",
     "Neuschottland": "Nova Scotia",
     "Britisch-Kolumbien": "British Columbia",
-    "Neufundland": "Newfoundland"
+    "Neufundland": "Newfoundland",
+    "Pennsylvanien": "Pennsylvania"
   },
   "beers": {
     "jever": {
@@ -678,6 +679,306 @@
       "humorousBio": "Has seen more prairie barbecues than any cowboy.",
       "disLikeQuip": "Heads are shaking in Pil Country right now.",
       "tags": ["lager", "prairie", "since 1926"]
+    },
+    "bud-light": {
+      "description": "Light lager from St. Louis, since 1982 – for decades the best-selling beer in the US.",
+      "humorousBio": "Has seen more Super Bowl ads than any football team.",
+      "disLikeQuip": "No Bud for you. The ad agency is crying.",
+      "tags": ["light", "easy-drinking", "classic"]
+    },
+    "budweiser": {
+      "description": "American lager since 1876, brewed with rice and aged on beechwood chips.",
+      "humorousBio": "Calls itself the “King of Beers”. The Czechs beg to differ.",
+      "disLikeQuip": "The king has been dethroned. At least by you.",
+      "tags": ["lager", "mild", "since 1876"]
+    },
+    "coors-light": {
+      "description": "Very light lager from Golden, Colorado – brewed with Rocky Mountain water.",
+      "humorousBio": "The mountains on the can turn blue when it is cold enough. Ambitious.",
+      "disLikeQuip": "The mountains stay white. From shock.",
+      "tags": ["light", "ice-cold", "Rockies"]
+    },
+    "miller-lite": {
+      "description": "The light beer that started it all in 1975: light, pale, little bitterness.",
+      "humorousBio": "Has been arguing for 50 years: “tastes great” or “less filling”?",
+      "disLikeQuip": "Neither “tastes great” nor “less filling”. Just no.",
+      "tags": ["light", "pioneer", "Milwaukee"]
+    },
+    "michelob-ultra": {
+      "description": "Very light, low-carb lager – the beer of weekend athletes.",
+      "humorousBio": "Best enjoyed after a half-marathon. Or instead of one.",
+      "disLikeQuip": "Ultra-rejected. The gym nods approvingly.",
+      "tags": ["light", "low-calorie", "sporty"]
+    },
+    "coors-banquet": {
+      "description": "The Coors original since 1873: golden lager, a little fuller than its light sibling.",
+      "humorousBio": "Named after the miners who drank it at their banquets.",
+      "disLikeQuip": "No banquet for you. The miners eat alone.",
+      "tags": ["lager", "original", "since 1873"]
+    },
+    "miller-high-life": {
+      "description": "Clear, fizzy lager from Milwaukee in the clear bottle – since 1903.",
+      "humorousBio": "Calls itself “the Champagne of Beers”. Without a trace of irony.",
+      "disLikeQuip": "No champagne today. Not even the Milwaukee kind.",
+      "tags": ["fizzy", "mild", "since 1903"]
+    },
+    "pbr": {
+      "description": "Simple American lager that went from working-class beer to hipster cult.",
+      "humorousBio": "Won a blue ribbon in 1893 and still talks about it.",
+      "disLikeQuip": "No blue ribbon for you.",
+      "tags": ["lager", "cult", "cheap"]
+    },
+    "yuengling-lager": {
+      "description": "Amber lager with caramel malt from America’s oldest brewery (1829).",
+      "humorousBio": "Older than most US states. And proud of it.",
+      "disLikeQuip": "Pottsville is disappointed. For the first time since 1829.",
+      "tags": ["amber", "caramel", "since 1829"]
+    },
+    "blue-moon": {
+      "description": "Belgian-inspired white beer with Valencia orange peel and coriander – served with an orange slice.",
+      "humorousBio": "Invented in a baseball stadium in 1995. Still a home run.",
+      "disLikeQuip": "Once in a blue moon … or never.",
+      "tags": ["witbier", "orange", "cloudy"]
+    },
+    "sam-adams-boston-lager": {
+      "description": "Vienna-style amber lager with Hallertau hops – a trailblazer of the US craft wave.",
+      "humorousBio": "Named after a founding father who supposedly was a maltster himself.",
+      "disLikeQuip": "Boston is not amused. Tea party cancelled.",
+      "tags": ["amber", "Hallertau", "craft pioneer"]
+    },
+    "shiner-bock": {
+      "description": "Dark, slightly sweet lager from a Texas town of 2,000, founded by German immigrants.",
+      "humorousBio": "Called a bock, but more of a little bock. Texas doesn’t mind.",
+      "disLikeQuip": "In Texas they just say: “Well, bless your heart.”",
+      "tags": ["dark", "mild", "Texas"]
+    },
+    "narragansett-lager": {
+      "description": "New England lager since 1890 – Quint crushes the can in “Jaws”.",
+      "humorousBio": "Greets everyone with “Hi Neighbor!”. Sharks included.",
+      "disLikeQuip": "You’re gonna need a bigger boat. And a different beer.",
+      "tags": ["lager", "New England", "cult"]
+    },
+    "genesee-cream-ale": {
+      "description": "Mild, smooth cream ale from Rochester, since 1960 – gold at the World Beer Cup.",
+      "humorousBio": "Top-fermented, cold-aged, shamelessly smooth.",
+      "disLikeQuip": "Rochester has written you off.",
+      "tags": ["creamy", "mild", "since 1960"]
+    },
+    "torpedo": {
+      "description": "Big IPA from Chico, dry-hopped with the brewery’s own “Hop Torpedo”: citrus, pine, resin.",
+      "humorousBio": "Named after a device that fires hops into beer. Sounds dangerous, and it is.",
+      "disLikeQuip": "Torpedo missed. Target changed.",
+      "tags": ["hoppy", "pine", "California"]
+    },
+    "stone-ipa": {
+      "description": "West Coast IPA from San Diego: bone-dry, resinous, properly bitter.",
+      "humorousBio": "Guarded by a gargoyle. It doesn’t let just anyone in.",
+      "disLikeQuip": "The gargoyle saw you. And turned away.",
+      "tags": ["West Coast", "bitter", "resinous"]
+    },
+    "two-hearted": {
+      "description": "IPA from Michigan hopped only with Centennial: grapefruit, pine, flowers.",
+      "humorousBio": "Voted America’s best beer several times. Still uses only one hop.",
+      "disLikeQuip": "Two hearts broken. At least.",
+      "tags": ["Centennial", "hoppy", "Michigan"]
+    },
+    "pliny-the-elder": {
+      "description": "Legendary double IPA from Sonoma County: full-bodied, hop-forward, pine, citrus and stone fruit.",
+      "humorousBio": "Named after a Roman who described hops. Fans queue around the block for it.",
+      "disLikeQuip": "Pliny would have written a footnote about this. A sad one.",
+      "tags": ["double IPA", "cult", "pine"]
+    },
+    "goose-ipa": {
+      "description": "English-inspired IPA from Chicago: fruity hops on a solid malt backbone.",
+      "humorousBio": "Never wanted to be West Coast. Chicago is windy enough.",
+      "disLikeQuip": "The goose waddles off, offended.",
+      "tags": ["IPA", "balanced", "Chicago"]
+    },
+    "all-day-ipa": {
+      "description": "Session IPA at 4.7 %: plenty of hop aroma, light enough to last all day.",
+      "humorousBio": "The name says it all. Whoever named it was thirsty.",
+      "disLikeQuip": "All day? Not even five minutes.",
+      "tags": ["session", "hoppy", "light"]
+    },
+    "black-butte-porter": {
+      "description": "Porter from Bend, Oregon: chocolate, coffee, creamy mouthfeel.",
+      "humorousBio": "The dark rock of Oregon since 1988.",
+      "disLikeQuip": "The volcano rumbles. Quietly, but audibly.",
+      "tags": ["porter", "chocolate", "creamy"]
+    },
+    "fat-tire": {
+      "description": "Bright, balanced ale from Fort Collins: subtle malt, slightly fruity hops, crisp finish.",
+      "humorousBio": "Born after a bike tour through Belgium. Slimmed down in 2023.",
+      "disLikeQuip": "A flat. Of all things, on the fat tire.",
+      "tags": ["balanced", "crisp", "bicycle"]
+    },
+    "firestone-805": {
+      "description": "Light blonde ale from California’s Central Coast: subtle malt, a touch of hops.",
+      "humorousBio": "Named after the area code. Still never calls back.",
+      "disLikeQuip": "The number you have dialled is not available.",
+      "tags": ["blonde", "light", "California"]
+    },
+    "dogfish-60-minute": {
+      "description": "IPA from Delaware, hopped continuously for a full hour: citrus, grass, balanced bitterness.",
+      "humorousBio": "The hopping machine now sits in the Smithsonian. No joke.",
+      "disLikeQuip": "Boiled for 60 minutes, rejected in 6 seconds.",
+      "tags": ["IPA", "citrus", "Delaware"]
+    },
+    "lagunitas-ipa": {
+      "description": "Californian IPA with a touch of caramel malt rounding out four hop varieties.",
+      "humorousBio": "Has a dog on the label and no hurry.",
+      "disLikeQuip": "The dog is looking at you. It doesn’t understand.",
+      "tags": ["IPA", "balanced", "California"]
+    },
+    "dales-pale-ale": {
+      "description": "Robust pale ale from Colorado with caramel malt and resinous hops – the first craft beer in a can.",
+      "humorousBio": "Made cans respectable in 2002. Bottles are still sulking.",
+      "disLikeQuip": "Can closed, chapter closed.",
+      "tags": ["hoppy", "can", "Colorado"]
+    },
+    "milk-stout-nitro": {
+      "description": "Milk stout on nitrogen: velvety, creamy, coffee and milk chocolate.",
+      "humorousBio": "Has to be poured hard. Likes it rough, but is soft inside.",
+      "disLikeQuip": "The cascade in the glass collapses.",
+      "tags": ["creamy", "nitro", "chocolate"]
+    },
+    "sweetwater-420": {
+      "description": "Pale ale from Atlanta: lemon, grapefruit, pine, barely perceptible bitterness.",
+      "humorousBio": "First brewed on April 20th. Coincidence, says the brewery.",
+      "disLikeQuip": "The vibe is gone. Very chill about it, though.",
+      "tags": ["hoppy", "crisp", "Atlanta"]
+    },
+    "jai-alai": {
+      "description": "IPA from Tampa: tangerine, candied orange peel, a hint of caramel.",
+      "humorousBio": "Named after the fastest ball game in the world. Goes down just as quickly.",
+      "disLikeQuip": "The ball flies past you. At 190 mph.",
+      "tags": ["orange", "hoppy", "Florida"]
+    },
+    "spotted-cow": {
+      "description": "Naturally cloudy farmhouse ale with flaked barley and Wisconsin malt – sold only there.",
+      "humorousBio": "Never leaves Wisconsin. People drive across the state line for it.",
+      "disLikeQuip": "The cow has grown extra spots. From shock.",
+      "tags": ["cloudy", "mild", "Wisconsin"]
+    },
+    "julius": {
+      "description": "Hazy New England IPA from Massachusetts: juicy, mango, peach, hardly any bitterness.",
+      "humorousBio": "Looks like orange juice. Isn’t. Sadly or luckily.",
+      "disLikeQuip": "Julius isn’t Caesar, but he was betrayed too.",
+      "tags": ["hazy", "juicy", "New England"]
+    },
+    "heady-topper": {
+      "description": "Double IPA from Vermont, forefather of hazy hop bombs – “drink from the can”.",
+      "humorousBio": "The can says: drink from the can. Argue with that and the Alchemist will hear of it.",
+      "disLikeQuip": "The Alchemist turns your rejection into gold. For someone else.",
+      "tags": ["double IPA", "Vermont", "cult"]
+    },
+    "alaskan-amber": {
+      "description": "Amber alt-style ale from Juneau, based on a gold-rush-era recipe.",
+      "humorousBio": "A Düsseldorf altbier that emigrated to Alaska.",
+      "disLikeQuip": "It just got a little colder in Juneau.",
+      "tags": ["alt", "malty", "Alaska"]
+    },
+    "purple-haze": {
+      "description": "Lager from Louisiana with real raspberries: fruity, tart-sweet, with a purple sheen.",
+      "humorousBio": "Named after Hendrix. Prefers New Orleans jazz, though.",
+      "disLikeQuip": "’Scuse me, while I kiss this beer goodbye.",
+      "tags": ["raspberry", "fruity", "Louisiana"]
+    },
+    "tank-7": {
+      "description": "Strong American saison from Kansas City: fruit, spice, grapefruit hops.",
+      "humorousBio": "Named after the fermenter nobody liked – until this beer came out of it.",
+      "disLikeQuip": "Back into the tank with it.",
+      "tags": ["saison", "spicy", "strong"]
+    },
+    "three-philosophers": {
+      "description": "Quadrupel from Cooperstown blended with Belgian kriek: dark fruit, cherry, malt.",
+      "humorousBio": "Three philosophers, one beer, no consensus.",
+      "disLikeQuip": "The three philosophers are still debating why.",
+      "tags": ["quad", "cherry", "strong"]
+    },
+    "allagash-white": {
+      "description": "Belgian-style witbier from Maine with oats, coriander and Curaçao orange peel.",
+      "humorousBio": "Brought witbier to America before anyone knew how to pronounce it.",
+      "disLikeQuip": "Maine is polite. Maine says nothing.",
+      "tags": ["witbier", "coriander", "cloudy"]
+    },
+    "dead-guy": {
+      "description": "Ale from Oregon in the style of a German Maibock: malty, caramel, hearty.",
+      "humorousBio": "A skeleton on the label, life in the glass.",
+      "disLikeQuip": "The dead guy is now even deader.",
+      "tags": ["Maibock-style", "caramel", "Oregon"]
+    },
+    "dragons-milk": {
+      "description": "Stout from Michigan, aged three months in bourbon barrels: coffee, chocolate, vanilla, oak.",
+      "humorousBio": "Dragons don’t give milk. This one gives 11 percent.",
+      "disLikeQuip": "The dragon breathes fire. In your direction.",
+      "tags": ["bourbon barrel", "vanilla", "strong"]
+    },
+    "zombie-dust": {
+      "description": "Intensely hopped pale ale from Indiana, Citra only: citrus, tropical fruit.",
+      "humorousBio": "A pale ale that acts like an IPA and looks like a comic book.",
+      "disLikeQuip": "The zombies have lost interest in your brain.",
+      "tags": ["Citra", "hoppy", "cult"]
+    },
+    "odell-90-shilling": {
+      "description": "Copper amber ale from Fort Collins, medium-bodied and smooth – Odell’s flagship.",
+      "humorousBio": "Named after an old Scottish tax. Costs less these days.",
+      "disLikeQuip": "90 shillings refunded. No change given.",
+      "tags": ["amber", "smooth", "Colorado"]
+    },
+    "edmund-fitzgerald": {
+      "description": "Robust porter from Cleveland: roasted malt, coffee, chocolate, noticeable bitterness.",
+      "humorousBio": "Named after the freighter that sank in Lake Superior in 1975. A serious beer.",
+      "disLikeQuip": "Gordon Lightfoot would write a song about this.",
+      "tags": ["porter", "roasty", "Ohio"]
+    },
+    "brooklyn-lager": {
+      "description": "Vienna-style amber lager from New York, with a logo by Milton Glaser.",
+      "humorousBio": "The designer of the “I ♥ NY” logo drew this one too.",
+      "disLikeQuip": "I ♥ NY. This beer, not so much.",
+      "tags": ["amber", "Vienna-style", "New York"]
+    },
+    "kona-big-wave": {
+      "description": "Light golden ale from Hawaii with tropical hop aroma from Galaxy and Citra.",
+      "humorousBio": "Wears an aloha shirt. Even in winter.",
+      "disLikeQuip": "The big wave rolls on without you.",
+      "tags": ["golden ale", "tropical", "Hawaii"]
+    },
+    "prima-pils": {
+      "description": "German-style pils from Pennsylvania: floral hops, crisp bitterness.",
+      "humorousBio": "Founded by two friends who learned to brew in Germany. You can taste it.",
+      "disLikeQuip": "Prima is something else.",
+      "tags": ["pils", "floral", "Pennsylvania"]
+    },
+    "sculpin": {
+      "description": "West Coast IPA from San Diego: apricot, peach, mango, firm bitterness.",
+      "humorousBio": "Named after a fish with venomous spines. Tasty, but careful.",
+      "disLikeQuip": "The fish stung you. Or you stung it.",
+      "tags": ["West Coast", "fruity", "bitter"]
+    },
+    "yeti": {
+      "description": "Imperial stout from Denver: big roast, caramel and a huge hit of American hops.",
+      "humorousBio": "Nobody has ever seen him, but everyone has heard of him.",
+      "disLikeQuip": "The yeti retreats. Footprints in the snow remain.",
+      "tags": ["imperial stout", "roasty", "strong"]
+    },
+    "pseudo-sue": {
+      "description": "Pale ale from Iowa, hopped with Citra only: delicate body, mild finish.",
+      "humorousBio": "Named after a T. rex skeleton. Hardly bites, though.",
+      "disLikeQuip": "Goliath has toppled. Because of you.",
+      "tags": ["Citra", "pale ale", "Iowa"]
+    },
+    "oberon": {
+      "description": "American wheat ale from Michigan: spicy hops, mild fruit – no spices added.",
+      "humorousBio": "Summer in Michigan starts when Oberon hits the shelves.",
+      "disLikeQuip": "Summer has been cancelled.",
+      "tags": ["wheat", "summer", "Michigan"]
+    },
+    "voodoo-ranger-ipa": {
+      "description": "IPA from Fort Collins with tropical hops – the best-selling craft IPA in the US.",
+      "humorousBio": "The skeleton in the cloak is the mascot. The hops are the magic.",
+      "disLikeQuip": "The ranger puts a mild curse on you.",
+      "tags": ["IPA", "tropical", "best seller"]
     }
   }
 }

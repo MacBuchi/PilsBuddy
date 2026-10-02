@@ -5,7 +5,7 @@ import { styleColor } from '../../src/domain/styleProfile'
 import type { Beer } from '../../src/domain/types'
 
 /** One research file per country, in deck order. */
-export const CLASSIC_FILES = ['ca.json'] as const
+export const CLASSIC_FILES = ['ca.json', 'us.json'] as const
 
 interface Texts {
   description: string
@@ -44,6 +44,8 @@ export const REGION_EN: Record<string, string> = {
   'Britisch-Kolumbien': 'British Columbia',
   Neuschottland: 'Nova Scotia',
   Neufundland: 'Newfoundland',
+  Kalifornien: 'California',
+  Pennsylvanien: 'Pennsylvania',
 }
 
 /** The curated beer for a research record; a hand-made bottle or reference flag of an existing entry stays. */

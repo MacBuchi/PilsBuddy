@@ -1,0 +1,1775 @@
+[
+  {
+    "id": "bud-light",
+    "name": "Bud Light",
+    "fullName": "Bud Light",
+    "brewery": "Anheuser-Busch",
+    "country": "USA",
+    "region": "Missouri",
+    "city": "St. Louis",
+    "style": "Light Lager",
+    "abv": 4.2,
+    "source": "https://en.wikipedia.org/wiki/Bud_Light",
+    "verified": "2026-10-02",
+    "note": "since 1982",
+    "de": {
+      "description": "Leichtes Lager aus St. Louis, seit 1982 – jahrzehntelang das meistverkaufte Bier der USA.",
+      "humorousBio": "Hat mehr Super-Bowl-Werbung gesehen als jedes Footballteam.",
+      "disLikeQuip": "Kein Bud für dich. Die Werbeagentur weint.",
+      "tags": [
+        "leicht",
+        "süffig",
+        "Klassiker"
+      ]
+    },
+    "en": {
+      "description": "Light lager from St. Louis, since 1982 – for decades the best-selling beer in the US.",
+      "humorousBio": "Has seen more Super Bowl ads than any football team.",
+      "disLikeQuip": "No Bud for you. The ad agency is crying.",
+      "tags": [
+        "light",
+        "easy-drinking",
+        "classic"
+      ]
+    }
+  },
+  {
+    "id": "budweiser",
+    "name": "Budweiser",
+    "fullName": "Budweiser",
+    "brewery": "Anheuser-Busch",
+    "country": "USA",
+    "region": "Missouri",
+    "city": "St. Louis",
+    "style": "American Lager",
+    "abv": 5.0,
+    "source": "https://en.wikipedia.org/wiki/Budweiser",
+    "verified": "2026-10-02",
+    "note": "beechwood aging, since 1876",
+    "de": {
+      "description": "Amerikanisches Lager seit 1876, mit Reis gebraut und auf Buchenholzspänen gereift.",
+      "humorousBio": "Nennt sich „King of Beers“. Die Tschechen sehen das anders.",
+      "disLikeQuip": "Der König ist abgesetzt. Zumindest bei dir.",
+      "tags": [
+        "Lager",
+        "mild",
+        "seit 1876"
+      ]
+    },
+    "en": {
+      "description": "American lager since 1876, brewed with rice and aged on beechwood chips.",
+      "humorousBio": "Calls itself the “King of Beers”. The Czechs beg to differ.",
+      "disLikeQuip": "The king has been dethroned. At least by you.",
+      "tags": [
+        "lager",
+        "mild",
+        "since 1876"
+      ]
+    }
+  },
+  {
+    "id": "coors-light",
+    "name": "Coors Light",
+    "fullName": "Coors Light",
+    "brewery": "Molson Coors",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Golden",
+    "style": "Light Lager",
+    "abv": 4.2,
+    "ibu": 10,
+    "source": "https://origlio.com/products/coors/coors-light",
+    "verified": "2026-10-02",
+    "note": "distributor sheet",
+    "de": {
+      "description": "Sehr leichtes Lager aus Golden, Colorado – mit Wasser aus den Rocky Mountains.",
+      "humorousBio": "Die Berge auf der Dose werden blau, wenn es kalt genug ist. Ehrgeizig.",
+      "disLikeQuip": "Die Berge bleiben weiß. Vor Schreck.",
+      "tags": [
+        "leicht",
+        "eiskalt",
+        "Rockies"
+      ]
+    },
+    "en": {
+      "description": "Very light lager from Golden, Colorado – brewed with Rocky Mountain water.",
+      "humorousBio": "The mountains on the can turn blue when it is cold enough. Ambitious.",
+      "disLikeQuip": "The mountains stay white. From shock.",
+      "tags": [
+        "light",
+        "ice-cold",
+        "Rockies"
+      ]
+    }
+  },
+  {
+    "id": "miller-lite",
+    "name": "Miller Lite",
+    "fullName": "Miller Lite",
+    "brewery": "Molson Coors",
+    "country": "USA",
+    "region": "Wisconsin",
+    "city": "Milwaukee",
+    "style": "Light Lager",
+    "abv": 4.2,
+    "ibu": 6,
+    "source": "https://www.origlio.com/products/miller/miller-lite/",
+    "verified": "2026-10-02",
+    "note": "distributor sheet, 96 kcal",
+    "de": {
+      "description": "Das Light Beer, das 1975 alles ins Rollen brachte: leicht, hell, wenig Bittere.",
+      "humorousBio": "Streitet seit 50 Jahren: „Tastes great“ oder „less filling“?",
+      "disLikeQuip": "Weder „tastes great“ noch „less filling“. Einfach nein.",
+      "tags": [
+        "leicht",
+        "Pionier",
+        "Milwaukee"
+      ]
+    },
+    "en": {
+      "description": "The light beer that started it all in 1975: light, pale, little bitterness.",
+      "humorousBio": "Has been arguing for 50 years: “tastes great” or “less filling”?",
+      "disLikeQuip": "Neither “tastes great” nor “less filling”. Just no.",
+      "tags": [
+        "light",
+        "pioneer",
+        "Milwaukee"
+      ]
+    }
+  },
+  {
+    "id": "michelob-ultra",
+    "name": "Michelob Ultra",
+    "fullName": "Michelob Ultra",
+    "brewery": "Anheuser-Busch",
+    "country": "USA",
+    "region": "Missouri",
+    "city": "St. Louis",
+    "style": "Light Lager",
+    "abv": 4.2,
+    "source": "https://www.harristeeter.com/p/michelob-ultra-american-light-lager-beer/0001820020059",
+    "verified": "2026-10-02",
+    "note": "2.6 g carbs",
+    "de": {
+      "description": "Sehr leichtes Lager mit wenig Kohlenhydraten – das Bier der Freizeitsportler.",
+      "humorousBio": "Trinkt sich am liebsten nach dem Halbmarathon. Oder statt.",
+      "disLikeQuip": "Ultra-abgelehnt. Das Fitnessstudio nickt.",
+      "tags": [
+        "leicht",
+        "kalorienarm",
+        "sportlich"
+      ]
+    },
+    "en": {
+      "description": "Very light, low-carb lager – the beer of weekend athletes.",
+      "humorousBio": "Best enjoyed after a half-marathon. Or instead of one.",
+      "disLikeQuip": "Ultra-rejected. The gym nods approvingly.",
+      "tags": [
+        "light",
+        "low-calorie",
+        "sporty"
+      ]
+    }
+  },
+  {
+    "id": "coors-banquet",
+    "name": "Coors Banquet",
+    "fullName": "Coors Banquet",
+    "brewery": "Molson Coors",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Golden",
+    "style": "American Lager",
+    "abv": 5.0,
+    "ibu": 15,
+    "source": "https://www.teamcone.net/?p=24688",
+    "verified": "2026-10-02",
+    "note": "distributor",
+    "de": {
+      "description": "Das Original von Coors seit 1873: goldenes Lager, etwas voller als die Light-Variante.",
+      "humorousBio": "Heißt nach den Bergleuten, die es zum Festmahl tranken.",
+      "disLikeQuip": "Kein Bankett für dich. Die Bergleute essen allein.",
+      "tags": [
+        "Lager",
+        "Original",
+        "seit 1873"
+      ]
+    },
+    "en": {
+      "description": "The Coors original since 1873: golden lager, a little fuller than its light sibling.",
+      "humorousBio": "Named after the miners who drank it at their banquets.",
+      "disLikeQuip": "No banquet for you. The miners eat alone.",
+      "tags": [
+        "lager",
+        "original",
+        "since 1873"
+      ]
+    }
+  },
+  {
+    "id": "miller-high-life",
+    "name": "High Life",
+    "fullName": "Miller High Life",
+    "brewery": "Molson Coors",
+    "country": "USA",
+    "region": "Wisconsin",
+    "city": "Milwaukee",
+    "style": "American Lager",
+    "abv": 4.6,
+    "ibu": 7,
+    "source": "https://vinepair.com/articles/miller-high-life-abv-calories-guide",
+    "verified": "2026-10-02",
+    "note": "since 1903, \"Champagne of Beers\"",
+    "de": {
+      "description": "Klares, spritziges Lager aus Milwaukee in der Klarglasflasche – seit 1903.",
+      "humorousBio": "Nennt sich „Champagne of Beers“. Ohne Spur von Ironie.",
+      "disLikeQuip": "Kein Champagner heute. Auch nicht der aus Milwaukee.",
+      "tags": [
+        "spritzig",
+        "mild",
+        "seit 1903"
+      ]
+    },
+    "en": {
+      "description": "Clear, fizzy lager from Milwaukee in the clear bottle – since 1903.",
+      "humorousBio": "Calls itself “the Champagne of Beers”. Without a trace of irony.",
+      "disLikeQuip": "No champagne today. Not even the Milwaukee kind.",
+      "tags": [
+        "fizzy",
+        "mild",
+        "since 1903"
+      ]
+    }
+  },
+  {
+    "id": "pbr",
+    "name": "PBR",
+    "fullName": "Pabst Blue Ribbon",
+    "brewery": "Pabst Brewing",
+    "country": "USA",
+    "region": "Wisconsin",
+    "city": "Milwaukee",
+    "style": "American Lager",
+    "abv": 4.7,
+    "ibu": 10,
+    "source": "https://www.teamcone.net/?p=25041",
+    "verified": "2026-10-02",
+    "note": "distributor",
+    "de": {
+      "description": "Einfaches amerikanisches Lager, das vom Arbeiterbier zum Hipster-Kult wurde.",
+      "humorousBio": "Hat 1893 ein blaues Band gewonnen und redet bis heute davon.",
+      "disLikeQuip": "Kein blaues Band für dich.",
+      "tags": [
+        "Lager",
+        "Kult",
+        "günstig"
+      ]
+    },
+    "en": {
+      "description": "Simple American lager that went from working-class beer to hipster cult.",
+      "humorousBio": "Won a blue ribbon in 1893 and still talks about it.",
+      "disLikeQuip": "No blue ribbon for you.",
+      "tags": [
+        "lager",
+        "cult",
+        "cheap"
+      ]
+    }
+  },
+  {
+    "id": "yuengling-lager",
+    "name": "Yuengling",
+    "fullName": "Yuengling Traditional Lager",
+    "brewery": "D. G. Yuengling & Son",
+    "country": "USA",
+    "region": "Pennsylvanien",
+    "city": "Pottsville",
+    "style": "Amber",
+    "abv": 4.5,
+    "ibu": 12,
+    "source": "https://www.yuengling.com/our-beer/traditional-lager/",
+    "verified": "2026-10-02",
+    "note": "America's oldest brewery (1829), amber, caramelized",
+    "de": {
+      "description": "Bernsteinfarbenes Lager mit Karamellmalz aus Amerikas ältester Brauerei (1829).",
+      "humorousBio": "Älter als die meisten US-Bundesstaaten. Und stolz darauf.",
+      "disLikeQuip": "Pottsville ist enttäuscht. Seit 1829 zum ersten Mal.",
+      "tags": [
+        "bernstein",
+        "Karamell",
+        "seit 1829"
+      ]
+    },
+    "en": {
+      "description": "Amber lager with caramel malt from America’s oldest brewery (1829).",
+      "humorousBio": "Older than most US states. And proud of it.",
+      "disLikeQuip": "Pottsville is disappointed. For the first time since 1829.",
+      "tags": [
+        "amber",
+        "caramel",
+        "since 1829"
+      ]
+    }
+  },
+  {
+    "id": "blue-moon",
+    "name": "Blue Moon",
+    "fullName": "Blue Moon Belgian White",
+    "brewery": "Blue Moon Brewing (Molson Coors)",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Denver",
+    "style": "Witbier",
+    "abv": 5.4,
+    "source": "https://www.bluemoonbrewingcompany.com/en-US/beers/blue-moon-belgian-white",
+    "verified": "2026-10-02",
+    "note": "Valencia orange peel + coriander, born in a ballpark (Coors Field 1995)",
+    "de": {
+      "description": "Belgisch inspiriertes Weißbier mit Valencia-Orangenschale und Koriander – serviert mit Orangenscheibe.",
+      "humorousBio": "Wurde 1995 in einem Baseballstadion erfunden. Trifft trotzdem.",
+      "disLikeQuip": "Once in a blue moon … oder eben nie.",
+      "tags": [
+        "Witbier",
+        "Orange",
+        "trüb"
+      ]
+    },
+    "en": {
+      "description": "Belgian-inspired white beer with Valencia orange peel and coriander – served with an orange slice.",
+      "humorousBio": "Invented in a baseball stadium in 1995. Still a home run.",
+      "disLikeQuip": "Once in a blue moon … or never.",
+      "tags": [
+        "witbier",
+        "orange",
+        "cloudy"
+      ]
+    }
+  },
+  {
+    "id": "sam-adams-boston-lager",
+    "name": "Boston Lager",
+    "fullName": "Samuel Adams Boston Lager",
+    "brewery": "Boston Beer Company",
+    "country": "USA",
+    "region": "Massachusetts",
+    "city": "Boston",
+    "style": "Amber",
+    "abv": 5.0,
+    "ibu": 30,
+    "source": "https://www.origlio.com/products/sam-adams/sam-adams-boston-lager/",
+    "verified": "2026-10-02",
+    "note": "Vienna-style amber lager, Bavarian hops",
+    "de": {
+      "description": "Bernsteinfarbenes Lager nach Wiener Art mit Hallertauer Hopfen – Wegbereiter der US-Craft-Welle.",
+      "humorousBio": "Benannt nach einem Gründervater, der angeblich selbst Mälzer war.",
+      "disLikeQuip": "Boston ist nicht amüsiert. Tea Party ist abgesagt.",
+      "tags": [
+        "bernstein",
+        "Hallertau",
+        "Craft-Pionier"
+      ]
+    },
+    "en": {
+      "description": "Vienna-style amber lager with Hallertau hops – a trailblazer of the US craft wave.",
+      "humorousBio": "Named after a founding father who supposedly was a maltster himself.",
+      "disLikeQuip": "Boston is not amused. Tea party cancelled.",
+      "tags": [
+        "amber",
+        "Hallertau",
+        "craft pioneer"
+      ]
+    }
+  },
+  {
+    "id": "shiner-bock",
+    "name": "Shiner Bock",
+    "fullName": "Shiner Bock",
+    "brewery": "Spoetzl Brewery",
+    "country": "USA",
+    "region": "Texas",
+    "city": "Shiner",
+    "style": "Amber",
+    "abv": 4.4,
+    "ibu": 13,
+    "source": "https://shiner.com/beer/shiner-bock/",
+    "verified": "2026-10-02",
+    "note": "roasted malt, slightly sweet, lightly hopped",
+    "de": {
+      "description": "Dunkles, leicht süßes Lager aus einem 2 000-Seelen-Ort in Texas, gegründet von deutschen Einwanderern.",
+      "humorousBio": "Heißt Bock, ist aber eher ein Böckchen. Texas sieht das locker.",
+      "disLikeQuip": "In Texas sagt man dazu nur: „Well, bless your heart.“",
+      "tags": [
+        "dunkel",
+        "mild",
+        "Texas"
+      ]
+    },
+    "en": {
+      "description": "Dark, slightly sweet lager from a Texas town of 2,000, founded by German immigrants.",
+      "humorousBio": "Called a bock, but more of a little bock. Texas doesn’t mind.",
+      "disLikeQuip": "In Texas they just say: “Well, bless your heart.”",
+      "tags": [
+        "dark",
+        "mild",
+        "Texas"
+      ]
+    }
+  },
+  {
+    "id": "narragansett-lager",
+    "name": "Narragansett",
+    "fullName": "Narragansett Lager",
+    "brewery": "Narragansett Brewing",
+    "country": "USA",
+    "region": "Rhode Island",
+    "city": "Providence",
+    "style": "American Lager",
+    "abv": 5.0,
+    "ibu": 12,
+    "source": "https://www.origlio.com/products/narragansett/narragansett-lager/",
+    "verified": "2026-10-02",
+    "note": "Hi Neighbor!, Jaws",
+    "de": {
+      "description": "Neuengland-Lager seit 1890 – Quint zerdrückt die Dose im Film „Der weiße Hai“.",
+      "humorousBio": "Grüßt jeden mit „Hi Neighbor!“. Auch Haie.",
+      "disLikeQuip": "Du brauchst ein größeres Boot. Und ein anderes Bier.",
+      "tags": [
+        "Lager",
+        "Neuengland",
+        "Kult"
+      ]
+    },
+    "en": {
+      "description": "New England lager since 1890 – Quint crushes the can in “Jaws”.",
+      "humorousBio": "Greets everyone with “Hi Neighbor!”. Sharks included.",
+      "disLikeQuip": "You’re gonna need a bigger boat. And a different beer.",
+      "tags": [
+        "lager",
+        "New England",
+        "cult"
+      ]
+    }
+  },
+  {
+    "id": "genesee-cream-ale",
+    "name": "Genny Cream",
+    "fullName": "Genesee Cream Ale",
+    "brewery": "Genesee Brewing",
+    "country": "USA",
+    "region": "New York",
+    "city": "Rochester",
+    "style": "Cream Ale",
+    "abv": 5.1,
+    "source": "https://www.foodrepublic.com/2185095/best-selling-beer-1980s-genesee-cream/",
+    "verified": "2026-10-02",
+    "note": "since 1960, six-row + Apollo, 2x WBC gold",
+    "de": {
+      "description": "Mildes, weiches Cream Ale aus Rochester, seit 1960 – Gold beim World Beer Cup.",
+      "humorousBio": "Obergärig, kalt gelagert, unverschämt cremig.",
+      "disLikeQuip": "Rochester hat dich abgehakt.",
+      "tags": [
+        "cremig",
+        "mild",
+        "seit 1960"
+      ]
+    },
+    "en": {
+      "description": "Mild, smooth cream ale from Rochester, since 1960 – gold at the World Beer Cup.",
+      "humorousBio": "Top-fermented, cold-aged, shamelessly smooth.",
+      "disLikeQuip": "Rochester has written you off.",
+      "tags": [
+        "creamy",
+        "mild",
+        "since 1960"
+      ]
+    }
+  },
+  {
+    "id": "torpedo",
+    "name": "Torpedo",
+    "fullName": "Sierra Nevada Torpedo Extra IPA",
+    "brewery": "Sierra Nevada Brewing",
+    "country": "USA",
+    "region": "Kalifornien",
+    "city": "Chico",
+    "style": "IPA",
+    "abv": 7.2,
+    "ibu": 65,
+    "source": "https://sierranevada.com/brews/torpedo",
+    "verified": "2026-10-02",
+    "note": "Hop Torpedo dry-hopping, Citra/Crystal/Magnum",
+    "de": {
+      "description": "Kräftiges IPA aus Chico, kalt gehopft mit dem hauseigenen „Hop Torpedo“: Zitrus, Kiefer, Harz.",
+      "humorousBio": "Wurde nach einem Gerät benannt, das Hopfen in Bier schießt. Klingt gefährlich, ist es auch.",
+      "disLikeQuip": "Torpedo verfehlt. Ziel gewechselt.",
+      "tags": [
+        "hopfig",
+        "Kiefer",
+        "Kalifornien"
+      ]
+    },
+    "en": {
+      "description": "Big IPA from Chico, dry-hopped with the brewery’s own “Hop Torpedo”: citrus, pine, resin.",
+      "humorousBio": "Named after a device that fires hops into beer. Sounds dangerous, and it is.",
+      "disLikeQuip": "Torpedo missed. Target changed.",
+      "tags": [
+        "hoppy",
+        "pine",
+        "California"
+      ]
+    }
+  },
+  {
+    "id": "stone-ipa",
+    "name": "Stone IPA",
+    "fullName": "Stone IPA",
+    "brewery": "Stone Brewing",
+    "country": "USA",
+    "region": "Kalifornien",
+    "city": "Escondido",
+    "style": "IPA",
+    "abv": 6.9,
+    "ibu": 71,
+    "source": "https://www.stonebrewing.com/beer/year-round-releases/stone-ipa",
+    "verified": "2026-10-02",
+    "note": "West Coast, Centennial/Chinook/Columbus",
+    "de": {
+      "description": "West-Coast-IPA aus San Diego: knochentrocken, harzig, ordentlich bitter.",
+      "humorousBio": "Hat einen Gargoyle als Wächter. Der lässt nicht jeden rein.",
+      "disLikeQuip": "Der Gargoyle hat dich gesehen. Und sich abgewandt.",
+      "tags": [
+        "West Coast",
+        "bitter",
+        "harzig"
+      ]
+    },
+    "en": {
+      "description": "West Coast IPA from San Diego: bone-dry, resinous, properly bitter.",
+      "humorousBio": "Guarded by a gargoyle. It doesn’t let just anyone in.",
+      "disLikeQuip": "The gargoyle saw you. And turned away.",
+      "tags": [
+        "West Coast",
+        "bitter",
+        "resinous"
+      ]
+    }
+  },
+  {
+    "id": "two-hearted",
+    "name": "Two Hearted",
+    "fullName": "Bell's Two Hearted IPA",
+    "brewery": "Bell's Brewery",
+    "country": "USA",
+    "region": "Michigan",
+    "city": "Kalamazoo",
+    "style": "IPA",
+    "abv": 7.0,
+    "ibu": 55,
+    "source": "https://bellsbeer.com/beers/two-hearted-ale/",
+    "verified": "2026-10-02",
+    "note": "55–60 IBU, 100% Centennial, AHA #1 beer",
+    "de": {
+      "description": "IPA aus Michigan, nur mit Centennial gehopft: Grapefruit, Kiefer, Blüten.",
+      "humorousBio": "Mehrfach zum besten Bier Amerikas gewählt. Hat trotzdem nur einen Hopfen.",
+      "disLikeQuip": "Zwei Herzen gebrochen. Mindestens.",
+      "tags": [
+        "Centennial",
+        "hopfig",
+        "Michigan"
+      ]
+    },
+    "en": {
+      "description": "IPA from Michigan hopped only with Centennial: grapefruit, pine, flowers.",
+      "humorousBio": "Voted America’s best beer several times. Still uses only one hop.",
+      "disLikeQuip": "Two hearts broken. At least.",
+      "tags": [
+        "Centennial",
+        "hoppy",
+        "Michigan"
+      ]
+    }
+  },
+  {
+    "id": "pliny-the-elder",
+    "name": "Pliny the Elder",
+    "fullName": "Pliny the Elder",
+    "brewery": "Russian River Brewing",
+    "country": "USA",
+    "region": "Kalifornien",
+    "city": "Windsor",
+    "style": "Double IPA",
+    "abv": 8.0,
+    "source": "https://www.russianriverbrewing.com/brew/pliny-the-elder/",
+    "verified": "2026-10-02",
+    "note": "full-bodied, hop-forward DIPA; pine, citrus, stone fruit",
+    "de": {
+      "description": "Legendäres Double IPA aus Sonoma County: vollmundig, hopfenbetont, Kiefer, Zitrus und Steinobst.",
+      "humorousBio": "Benannt nach einem Römer, der den Hopfen beschrieb. Die Fans stehen dafür Schlange.",
+      "disLikeQuip": "Plinius hätte darüber eine Fußnote geschrieben. Eine traurige.",
+      "tags": [
+        "Double IPA",
+        "Kult",
+        "Kiefer"
+      ]
+    },
+    "en": {
+      "description": "Legendary double IPA from Sonoma County: full-bodied, hop-forward, pine, citrus and stone fruit.",
+      "humorousBio": "Named after a Roman who described hops. Fans queue around the block for it.",
+      "disLikeQuip": "Pliny would have written a footnote about this. A sad one.",
+      "tags": [
+        "double IPA",
+        "cult",
+        "pine"
+      ]
+    }
+  },
+  {
+    "id": "goose-ipa",
+    "name": "Goose IPA",
+    "fullName": "Goose Island IPA",
+    "brewery": "Goose Island Beer Co.",
+    "country": "USA",
+    "region": "Illinois",
+    "city": "Chicago",
+    "style": "IPA",
+    "abv": 5.9,
+    "source": "https://www.gooseisland.com/beers/goose-ipa",
+    "verified": "2026-10-02",
+    "note": "Pilgrim/Celeia/Cascade/Centennial",
+    "de": {
+      "description": "Englisch inspiriertes IPA aus Chicago: fruchtiger Hopfen, solides Malz.",
+      "humorousBio": "Wollte nie West Coast sein. Chicago ist schließlich windig genug.",
+      "disLikeQuip": "Die Gans watschelt beleidigt davon.",
+      "tags": [
+        "IPA",
+        "ausgewogen",
+        "Chicago"
+      ]
+    },
+    "en": {
+      "description": "English-inspired IPA from Chicago: fruity hops on a solid malt backbone.",
+      "humorousBio": "Never wanted to be West Coast. Chicago is windy enough.",
+      "disLikeQuip": "The goose waddles off, offended.",
+      "tags": [
+        "IPA",
+        "balanced",
+        "Chicago"
+      ]
+    }
+  },
+  {
+    "id": "all-day-ipa",
+    "name": "All Day IPA",
+    "fullName": "Founders All Day IPA",
+    "brewery": "Founders Brewing",
+    "country": "USA",
+    "region": "Michigan",
+    "city": "Grand Rapids",
+    "style": "IPA",
+    "abv": 4.7,
+    "ibu": 42,
+    "source": "https://foundersbrewing.com/our-beer/all-day-ipa/",
+    "verified": "2026-10-02",
+    "note": "session IPA",
+    "de": {
+      "description": "Session IPA mit 4,7 %: voller Hopfenduft, leicht genug für den ganzen Tag.",
+      "humorousBio": "Der Name ist Programm. Der Programmierer war durstig.",
+      "disLikeQuip": "All Day? Nicht mal fünf Minuten.",
+      "tags": [
+        "Session",
+        "hopfig",
+        "leicht"
+      ]
+    },
+    "en": {
+      "description": "Session IPA at 4.7 %: plenty of hop aroma, light enough to last all day.",
+      "humorousBio": "The name says it all. Whoever named it was thirsty.",
+      "disLikeQuip": "All day? Not even five minutes.",
+      "tags": [
+        "session",
+        "hoppy",
+        "light"
+      ]
+    }
+  },
+  {
+    "id": "black-butte-porter",
+    "name": "Black Butte",
+    "fullName": "Black Butte Porter",
+    "brewery": "Deschutes Brewery",
+    "country": "USA",
+    "region": "Oregon",
+    "city": "Bend",
+    "style": "Porter",
+    "abv": 5.5,
+    "ibu": 30,
+    "source": "https://deschutesbrewery.com/products/black-butte-porter",
+    "verified": "2026-10-02",
+    "note": "chocolate, coffee, creamy",
+    "de": {
+      "description": "Porter aus Bend, Oregon: Schokolade, Kaffee, cremiges Mundgefühl.",
+      "humorousBio": "Seit 1988 der dunkle Fels in der Brandung von Oregon.",
+      "disLikeQuip": "Der Vulkan grollt. Leise, aber hörbar.",
+      "tags": [
+        "Porter",
+        "Schokolade",
+        "cremig"
+      ]
+    },
+    "en": {
+      "description": "Porter from Bend, Oregon: chocolate, coffee, creamy mouthfeel.",
+      "humorousBio": "The dark rock of Oregon since 1988.",
+      "disLikeQuip": "The volcano rumbles. Quietly, but audibly.",
+      "tags": [
+        "porter",
+        "chocolate",
+        "creamy"
+      ]
+    }
+  },
+  {
+    "id": "fat-tire",
+    "name": "Fat Tire",
+    "fullName": "Fat Tire Classic Ale",
+    "brewery": "New Belgium Brewing",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Fort Collins",
+    "style": "Pale Ale",
+    "abv": 5.2,
+    "ibu": 15,
+    "source": "https://www.newbelgium.com/beer/fat-tire/",
+    "verified": "2026-10-02",
+    "note": "2023 reformulated: crisp, bright, subtle malt; original amber only in variety packs",
+    "de": {
+      "description": "Helles, ausgewogenes Ale aus Fort Collins: dezentes Malz, leicht fruchtiger Hopfen, frischer Abgang.",
+      "humorousBio": "Entstand nach einer Fahrradtour durch Belgien. Hat 2023 abgespeckt.",
+      "disLikeQuip": "Plattfuß. Ausgerechnet beim fetten Reifen.",
+      "tags": [
+        "ausgewogen",
+        "frisch",
+        "Fahrrad"
+      ]
+    },
+    "en": {
+      "description": "Bright, balanced ale from Fort Collins: subtle malt, slightly fruity hops, crisp finish.",
+      "humorousBio": "Born after a bike tour through Belgium. Slimmed down in 2023.",
+      "disLikeQuip": "A flat. Of all things, on the fat tire.",
+      "tags": [
+        "balanced",
+        "crisp",
+        "bicycle"
+      ]
+    }
+  },
+  {
+    "id": "firestone-805",
+    "name": "805",
+    "fullName": "Firestone Walker 805",
+    "brewery": "Firestone Walker Brewing",
+    "country": "USA",
+    "region": "Kalifornien",
+    "city": "Paso Robles",
+    "style": "Blonde Ale",
+    "abv": 4.7,
+    "source": "https://www.firestonewalker.com/beer/805/",
+    "verified": "2026-10-02",
+    "note": "Central Coast blonde, named after the area code",
+    "de": {
+      "description": "Leichtes Blonde Ale von der kalifornischen Central Coast: dezentes Malz, ein Hauch Hopfen.",
+      "humorousBio": "Heißt wie die Telefonvorwahl. Ruft trotzdem nie zurück.",
+      "disLikeQuip": "Kein Anschluss unter dieser Nummer.",
+      "tags": [
+        "Blonde",
+        "leicht",
+        "Kalifornien"
+      ]
+    },
+    "en": {
+      "description": "Light blonde ale from California’s Central Coast: subtle malt, a touch of hops.",
+      "humorousBio": "Named after the area code. Still never calls back.",
+      "disLikeQuip": "The number you have dialled is not available.",
+      "tags": [
+        "blonde",
+        "light",
+        "California"
+      ]
+    }
+  },
+  {
+    "id": "dogfish-60-minute",
+    "name": "60 Minute IPA",
+    "fullName": "Dogfish Head 60 Minute IPA",
+    "brewery": "Dogfish Head Craft Brewery",
+    "country": "USA",
+    "region": "Delaware",
+    "city": "Milton",
+    "style": "IPA",
+    "abv": 6.0,
+    "ibu": 60,
+    "source": "https://www.dogfish.com/drink/beer/60-minute-ipa",
+    "verified": "2026-10-02",
+    "note": "continuously hopped, 60+ additions in 60 min",
+    "de": {
+      "description": "IPA aus Delaware, eine Stunde lang ununterbrochen gehopft: Zitrus, Gras, ausgewogene Bittere.",
+      "humorousBio": "Das Hopfgerät dafür steht heute im Smithsonian. Kein Witz.",
+      "disLikeQuip": "60 Minuten gekocht, 6 Sekunden abgelehnt.",
+      "tags": [
+        "IPA",
+        "Zitrus",
+        "Delaware"
+      ]
+    },
+    "en": {
+      "description": "IPA from Delaware, hopped continuously for a full hour: citrus, grass, balanced bitterness.",
+      "humorousBio": "The hopping machine now sits in the Smithsonian. No joke.",
+      "disLikeQuip": "Boiled for 60 minutes, rejected in 6 seconds.",
+      "tags": [
+        "IPA",
+        "citrus",
+        "Delaware"
+      ]
+    }
+  },
+  {
+    "id": "lagunitas-ipa",
+    "name": "Lagunitas IPA",
+    "fullName": "Lagunitas IPA",
+    "brewery": "Lagunitas Brewing",
+    "country": "USA",
+    "region": "Kalifornien",
+    "city": "Petaluma",
+    "style": "IPA",
+    "abv": 6.2,
+    "source": "https://lagunitas.com/beer/ipa/",
+    "verified": "2026-10-02",
+    "note": "caramel malt mellows the hops; Cascade/Centennial/Chinook/Simcoe",
+    "de": {
+      "description": "Kalifornisches IPA mit etwas Karamellmalz, das vier Hopfensorten abrundet.",
+      "humorousBio": "Hat einen Hund auf dem Etikett und keine Eile.",
+      "disLikeQuip": "Der Hund schaut dich an. Er versteht es nicht.",
+      "tags": [
+        "IPA",
+        "ausgewogen",
+        "Kalifornien"
+      ]
+    },
+    "en": {
+      "description": "Californian IPA with a touch of caramel malt rounding out four hop varieties.",
+      "humorousBio": "Has a dog on the label and no hurry.",
+      "disLikeQuip": "The dog is looking at you. It doesn’t understand.",
+      "tags": [
+        "IPA",
+        "balanced",
+        "California"
+      ]
+    }
+  },
+  {
+    "id": "dales-pale-ale",
+    "name": "Dale's Pale Ale",
+    "fullName": "Oskar Blues Dale's Pale Ale",
+    "brewery": "Oskar Blues Brewery",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Longmont",
+    "style": "Pale Ale",
+    "abv": 6.5,
+    "ibu": 65,
+    "source": "https://oskarblues.com/beer/dales-pale/",
+    "verified": "2026-10-02",
+    "note": "first craft beer in a can (2002)",
+    "de": {
+      "description": "Kräftiges Pale Ale aus Colorado mit Karamellmalz und harzigem Hopfen – das erste Craft Beer in der Dose.",
+      "humorousBio": "Hat 2002 die Dose salonfähig gemacht. Die Flasche ist bis heute beleidigt.",
+      "disLikeQuip": "Dose zu, Kapitel zu.",
+      "tags": [
+        "hopfig",
+        "Dose",
+        "Colorado"
+      ]
+    },
+    "en": {
+      "description": "Robust pale ale from Colorado with caramel malt and resinous hops – the first craft beer in a can.",
+      "humorousBio": "Made cans respectable in 2002. Bottles are still sulking.",
+      "disLikeQuip": "Can closed, chapter closed.",
+      "tags": [
+        "hoppy",
+        "can",
+        "Colorado"
+      ]
+    }
+  },
+  {
+    "id": "milk-stout-nitro",
+    "name": "Milk Stout Nitro",
+    "fullName": "Left Hand Milk Stout Nitro",
+    "brewery": "Left Hand Brewing",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Longmont",
+    "style": "Milk Stout",
+    "abv": 6.0,
+    "ibu": 25,
+    "source": "https://lefthandbrewing.com/beers/milk-stout-nitro/",
+    "verified": "2026-10-02",
+    "note": "first US nitro beer in a bottle",
+    "adjust": [
+      {
+        "axis": "body",
+        "delta": 10,
+        "reason": "super smooth & creamy (nitro)",
+        "source": "https://lefthandbrewing.com/beers/milk-stout-nitro/"
+      }
+    ],
+    "de": {
+      "description": "Milk Stout mit Stickstoff: samtig, cremig, Kaffee und Milchschokolade.",
+      "humorousBio": "Muss hart ins Glas gegossen werden. Mag es grob, ist aber ganz weich.",
+      "disLikeQuip": "Die Kaskade im Glas fällt in sich zusammen.",
+      "tags": [
+        "cremig",
+        "Nitro",
+        "Schokolade"
+      ]
+    },
+    "en": {
+      "description": "Milk stout on nitrogen: velvety, creamy, coffee and milk chocolate.",
+      "humorousBio": "Has to be poured hard. Likes it rough, but is soft inside.",
+      "disLikeQuip": "The cascade in the glass collapses.",
+      "tags": [
+        "creamy",
+        "nitro",
+        "chocolate"
+      ]
+    }
+  },
+  {
+    "id": "sweetwater-420",
+    "name": "420",
+    "fullName": "SweetWater 420 Extra Pale Ale",
+    "brewery": "SweetWater Brewing",
+    "country": "USA",
+    "region": "Georgia",
+    "city": "Atlanta",
+    "style": "Pale Ale",
+    "abv": 5.7,
+    "ibu": 39,
+    "source": "https://sweetwaterbrew.com/brews/420-extra-pale-ale/",
+    "verified": "2026-10-02",
+    "note": "low perceived bitterness; first brewed 4/20/1997",
+    "adjust": [
+      {
+        "axis": "bitterness",
+        "delta": -20,
+        "reason": "low perceived bitterness",
+        "source": "https://sweetwaterbrew.com/brews/420-extra-pale-ale/"
+      }
+    ],
+    "de": {
+      "description": "Helles Pale Ale aus Atlanta: Zitrone, Grapefruit, Kiefer, kaum spürbare Bittere.",
+      "humorousBio": "Zum ersten Mal gebraut am 20. April. Zufall, sagt die Brauerei.",
+      "disLikeQuip": "Die Stimmung ist dahin. Ganz entspannt natürlich.",
+      "tags": [
+        "hopfig",
+        "frisch",
+        "Atlanta"
+      ]
+    },
+    "en": {
+      "description": "Pale ale from Atlanta: lemon, grapefruit, pine, barely perceptible bitterness.",
+      "humorousBio": "First brewed on April 20th. Coincidence, says the brewery.",
+      "disLikeQuip": "The vibe is gone. Very chill about it, though.",
+      "tags": [
+        "hoppy",
+        "crisp",
+        "Atlanta"
+      ]
+    }
+  },
+  {
+    "id": "jai-alai",
+    "name": "Jai Alai",
+    "fullName": "Cigar City Jai Alai IPA",
+    "brewery": "Cigar City Brewing",
+    "country": "USA",
+    "region": "Florida",
+    "city": "Tampa",
+    "style": "IPA",
+    "abv": 7.5,
+    "ibu": 70,
+    "source": "https://cigarcitybrewing.com/beer/jai-alai/",
+    "verified": "2026-10-02",
+    "note": "tangerine, candied orange peel",
+    "de": {
+      "description": "IPA aus Tampa: Mandarine, kandierte Orangenschale, ein Hauch Karamell.",
+      "humorousBio": "Benannt nach dem schnellsten Ballsport der Welt. Trinkt sich ähnlich flott.",
+      "disLikeQuip": "Der Ball fliegt an dir vorbei. Mit 300 km/h.",
+      "tags": [
+        "Orange",
+        "hopfig",
+        "Florida"
+      ]
+    },
+    "en": {
+      "description": "IPA from Tampa: tangerine, candied orange peel, a hint of caramel.",
+      "humorousBio": "Named after the fastest ball game in the world. Goes down just as quickly.",
+      "disLikeQuip": "The ball flies past you. At 190 mph.",
+      "tags": [
+        "orange",
+        "hoppy",
+        "Florida"
+      ]
+    }
+  },
+  {
+    "id": "spotted-cow",
+    "name": "Spotted Cow",
+    "fullName": "New Glarus Spotted Cow",
+    "brewery": "New Glarus Brewing",
+    "country": "USA",
+    "region": "Wisconsin",
+    "city": "New Glarus",
+    "style": "Cream Ale",
+    "abv": 4.8,
+    "source": "https://en.wikipedia.org/wiki/New_Glarus_Brewing_Company",
+    "verified": "2026-10-02",
+    "note": "brewery: naturally cloudy farmhouse ale with flaked barley; style = cream ale; only sold in Wisconsin",
+    "de": {
+      "description": "Naturtrübes Farmhouse Ale mit Gerstenflocken und Malz aus Wisconsin – nur dort erhältlich.",
+      "humorousBio": "Verlässt Wisconsin nie. Die Leute fahren dafür über die Grenze.",
+      "disLikeQuip": "Die Kuh hat noch mehr Flecken bekommen. Vor Schreck.",
+      "tags": [
+        "trüb",
+        "mild",
+        "Wisconsin"
+      ]
+    },
+    "en": {
+      "description": "Naturally cloudy farmhouse ale with flaked barley and Wisconsin malt – sold only there.",
+      "humorousBio": "Never leaves Wisconsin. People drive across the state line for it.",
+      "disLikeQuip": "The cow has grown extra spots. From shock.",
+      "tags": [
+        "cloudy",
+        "mild",
+        "Wisconsin"
+      ]
+    }
+  },
+  {
+    "id": "julius",
+    "name": "Julius",
+    "fullName": "Tree House Julius",
+    "brewery": "Tree House Brewing",
+    "country": "USA",
+    "region": "Massachusetts",
+    "city": "Charlton",
+    "style": "Hazy IPA",
+    "abv": 6.8,
+    "source": "https://treehousebrew.com/julius-ipa",
+    "verified": "2026-10-02",
+    "note": "New England hazy IPA",
+    "de": {
+      "description": "Trübes New-England-IPA aus Massachusetts: saftig, Mango, Pfirsich, kaum Bittere.",
+      "humorousBio": "Sieht aus wie Orangensaft. Ist es nicht. Leider oder zum Glück.",
+      "disLikeQuip": "Julius ist nicht Cäsar, aber auch er wurde verraten.",
+      "tags": [
+        "Hazy",
+        "saftig",
+        "Neuengland"
+      ]
+    },
+    "en": {
+      "description": "Hazy New England IPA from Massachusetts: juicy, mango, peach, hardly any bitterness.",
+      "humorousBio": "Looks like orange juice. Isn’t. Sadly or luckily.",
+      "disLikeQuip": "Julius isn’t Caesar, but he was betrayed too.",
+      "tags": [
+        "hazy",
+        "juicy",
+        "New England"
+      ]
+    }
+  },
+  {
+    "id": "heady-topper",
+    "name": "Heady Topper",
+    "fullName": "The Alchemist Heady Topper",
+    "brewery": "The Alchemist",
+    "country": "USA",
+    "region": "Vermont",
+    "city": "Stowe",
+    "style": "Double IPA",
+    "abv": 8.0,
+    "source": "https://alchemistbeer.com/about/heady-topper/",
+    "verified": "2026-10-02",
+    "note": "drink from the can",
+    "de": {
+      "description": "Double IPA aus Vermont, Urvater der trüben Hopfenbomben – „trink aus der Dose“.",
+      "humorousBio": "Steht auf der Dose: aus der Dose trinken. Wer widerspricht, bekommt es mit dem Alchemisten zu tun.",
+      "disLikeQuip": "Der Alchemist verwandelt deine Ablehnung in Gold. Für jemand anderen.",
+      "tags": [
+        "Double IPA",
+        "Vermont",
+        "Kult"
+      ]
+    },
+    "en": {
+      "description": "Double IPA from Vermont, forefather of hazy hop bombs – “drink from the can”.",
+      "humorousBio": "The can says: drink from the can. Argue with that and the Alchemist will hear of it.",
+      "disLikeQuip": "The Alchemist turns your rejection into gold. For someone else.",
+      "tags": [
+        "double IPA",
+        "Vermont",
+        "cult"
+      ]
+    }
+  },
+  {
+    "id": "alaskan-amber",
+    "name": "Alaskan Amber",
+    "fullName": "Alaskan Amber",
+    "brewery": "Alaskan Brewing",
+    "country": "USA",
+    "region": "Alaska",
+    "city": "Juneau",
+    "style": "Altbier",
+    "abv": 5.3,
+    "ibu": 18,
+    "source": "https://www.alaskanbeer.com/our-beers/amber/",
+    "verified": "2026-10-02",
+    "note": "alt-style ale, gold-rush era recipe",
+    "de": {
+      "description": "Bernsteinfarbenes Altbier aus Juneau nach einem Rezept aus der Goldrauschzeit.",
+      "humorousBio": "Ein Düsseldorfer Altbier, das nach Alaska ausgewandert ist.",
+      "disLikeQuip": "In Juneau ist es jetzt noch ein bisschen kälter.",
+      "tags": [
+        "Alt",
+        "malzig",
+        "Alaska"
+      ]
+    },
+    "en": {
+      "description": "Amber alt-style ale from Juneau, based on a gold-rush-era recipe.",
+      "humorousBio": "A Düsseldorf altbier that emigrated to Alaska.",
+      "disLikeQuip": "It just got a little colder in Juneau.",
+      "tags": [
+        "alt",
+        "malty",
+        "Alaska"
+      ]
+    }
+  },
+  {
+    "id": "purple-haze",
+    "name": "Purple Haze",
+    "fullName": "Abita Purple Haze",
+    "brewery": "Abita Brewing",
+    "country": "USA",
+    "region": "Louisiana",
+    "city": "Covington",
+    "style": "Lager",
+    "abv": 4.2,
+    "ibu": 13,
+    "source": "https://abita.com/brew/purple-haze/",
+    "verified": "2026-10-02",
+    "note": "lager with raspberries added after filtration",
+    "adjust": [
+      {
+        "axis": "sweetness",
+        "delta": 10,
+        "reason": "tartly sweet taste from real raspberries",
+        "source": "https://abita.com/brew/purple-haze/"
+      }
+    ],
+    "de": {
+      "description": "Lager aus Louisiana mit echten Himbeeren: fruchtig, herb-süß, mit lila Schimmer.",
+      "humorousBio": "Benannt nach Hendrix. Spielt aber lieber Jazz in New Orleans.",
+      "disLikeQuip": "’Scuse me, while I kiss this beer goodbye.",
+      "tags": [
+        "Himbeere",
+        "fruchtig",
+        "Louisiana"
+      ]
+    },
+    "en": {
+      "description": "Lager from Louisiana with real raspberries: fruity, tart-sweet, with a purple sheen.",
+      "humorousBio": "Named after Hendrix. Prefers New Orleans jazz, though.",
+      "disLikeQuip": "’Scuse me, while I kiss this beer goodbye.",
+      "tags": [
+        "raspberry",
+        "fruity",
+        "Louisiana"
+      ]
+    }
+  },
+  {
+    "id": "tank-7",
+    "name": "Tank 7",
+    "fullName": "Boulevard Tank 7",
+    "brewery": "Boulevard Brewing",
+    "country": "USA",
+    "region": "Missouri",
+    "city": "Kansas City",
+    "style": "Saison",
+    "abv": 8.5,
+    "ibu": 38,
+    "source": "https://www.boulevard.com/beverage/tank-7/",
+    "verified": "2026-10-02",
+    "note": "American saison, grapefruit hops",
+    "de": {
+      "description": "Starkes amerikanisches Saison aus Kansas City: Frucht, Würze, Grapefruit-Hopfen.",
+      "humorousBio": "Benannt nach dem Gärtank, den keiner mochte – bis dieses Bier herauskam.",
+      "disLikeQuip": "Zurück in den Tank damit.",
+      "tags": [
+        "Saison",
+        "würzig",
+        "stark"
+      ]
+    },
+    "en": {
+      "description": "Strong American saison from Kansas City: fruit, spice, grapefruit hops.",
+      "humorousBio": "Named after the fermenter nobody liked – until this beer came out of it.",
+      "disLikeQuip": "Back into the tank with it.",
+      "tags": [
+        "saison",
+        "spicy",
+        "strong"
+      ]
+    }
+  },
+  {
+    "id": "three-philosophers",
+    "name": "Three Philosophers",
+    "fullName": "Ommegang Three Philosophers",
+    "brewery": "Brewery Ommegang",
+    "country": "USA",
+    "region": "New York",
+    "city": "Cooperstown",
+    "style": "Quadrupel",
+    "abv": 9.7,
+    "source": "https://www.ommegang.com/beerinfo/three-philosophers/",
+    "verified": "2026-10-02",
+    "note": "blend of quadrupel and Belgian kriek",
+    "de": {
+      "description": "Quadrupel aus Cooperstown, verschnitten mit belgischem Kriek: dunkle Frucht, Kirsche, Malz.",
+      "humorousBio": "Drei Philosophen, ein Bier, keine Einigung.",
+      "disLikeQuip": "Die drei Philosophen diskutieren noch, warum.",
+      "tags": [
+        "Quad",
+        "Kirsche",
+        "stark"
+      ]
+    },
+    "en": {
+      "description": "Quadrupel from Cooperstown blended with Belgian kriek: dark fruit, cherry, malt.",
+      "humorousBio": "Three philosophers, one beer, no consensus.",
+      "disLikeQuip": "The three philosophers are still debating why.",
+      "tags": [
+        "quad",
+        "cherry",
+        "strong"
+      ]
+    }
+  },
+  {
+    "id": "allagash-white",
+    "name": "Allagash White",
+    "fullName": "Allagash White",
+    "brewery": "Allagash Brewing",
+    "country": "USA",
+    "region": "Maine",
+    "city": "Portland",
+    "style": "Witbier",
+    "abv": 5.2,
+    "ibu": 20,
+    "source": "https://www.allagash.com/beer/wheat/white/",
+    "verified": "2026-10-02",
+    "note": "oats, coriander, Curaçao orange peel",
+    "de": {
+      "description": "Belgisches Witbier aus Maine mit Hafer, Koriander und Curaçao-Orangenschale.",
+      "humorousBio": "Hat Witbier nach Amerika gebracht, als noch keiner wusste, wie man es ausspricht.",
+      "disLikeQuip": "Maine ist höflich. Maine sagt nichts.",
+      "tags": [
+        "Witbier",
+        "Koriander",
+        "trüb"
+      ]
+    },
+    "en": {
+      "description": "Belgian-style witbier from Maine with oats, coriander and Curaçao orange peel.",
+      "humorousBio": "Brought witbier to America before anyone knew how to pronounce it.",
+      "disLikeQuip": "Maine is polite. Maine says nothing.",
+      "tags": [
+        "witbier",
+        "coriander",
+        "cloudy"
+      ]
+    }
+  },
+  {
+    "id": "dead-guy",
+    "name": "Dead Guy",
+    "fullName": "Rogue Dead Guy Ale",
+    "brewery": "Rogue Ales",
+    "country": "USA",
+    "region": "Oregon",
+    "city": "Newport",
+    "style": "Bock",
+    "abv": 6.8,
+    "ibu": 40,
+    "source": "https://www.rogue.com/shop/beer/core/dead-guy-ale/",
+    "verified": "2026-10-02",
+    "note": "ale in the style of a German Maibock",
+    "de": {
+      "description": "Ale aus Oregon im Stil eines deutschen Maibocks: malzig, Karamell, kräftig.",
+      "humorousBio": "Ein Skelett auf dem Etikett, Leben im Glas.",
+      "disLikeQuip": "Der tote Typ ist jetzt noch toter.",
+      "tags": [
+        "Maibock-Art",
+        "Karamell",
+        "Oregon"
+      ]
+    },
+    "en": {
+      "description": "Ale from Oregon in the style of a German Maibock: malty, caramel, hearty.",
+      "humorousBio": "A skeleton on the label, life in the glass.",
+      "disLikeQuip": "The dead guy is now even deader.",
+      "tags": [
+        "Maibock-style",
+        "caramel",
+        "Oregon"
+      ]
+    }
+  },
+  {
+    "id": "dragons-milk",
+    "name": "Dragon's Milk",
+    "fullName": "New Holland Dragon's Milk",
+    "brewery": "New Holland Brewing",
+    "country": "USA",
+    "region": "Michigan",
+    "city": "Holland",
+    "style": "Imperial Stout",
+    "abv": 11.0,
+    "source": "https://dragonsmilk.com/beer/dragons-milk/",
+    "verified": "2026-10-02",
+    "note": "bourbon barrel-aged 3 months; vanilla, oak",
+    "adjust": [
+      {
+        "axis": "sweetness",
+        "delta": 10,
+        "reason": "sweet undertones of vanilla and oak",
+        "source": "https://dragonsmilk.com/beer/dragons-milk/"
+      }
+    ],
+    "de": {
+      "description": "Stout aus Michigan, drei Monate im Bourbonfass gereift: Kaffee, Schokolade, Vanille, Eiche.",
+      "humorousBio": "Drachen geben keine Milch. Dieses hier gibt 11 Prozent.",
+      "disLikeQuip": "Der Drache speit Feuer. In deine Richtung.",
+      "tags": [
+        "Bourbonfass",
+        "Vanille",
+        "stark"
+      ]
+    },
+    "en": {
+      "description": "Stout from Michigan, aged three months in bourbon barrels: coffee, chocolate, vanilla, oak.",
+      "humorousBio": "Dragons don’t give milk. This one gives 11 percent.",
+      "disLikeQuip": "The dragon breathes fire. In your direction.",
+      "tags": [
+        "bourbon barrel",
+        "vanilla",
+        "strong"
+      ]
+    }
+  },
+  {
+    "id": "zombie-dust",
+    "name": "Zombie Dust",
+    "fullName": "3 Floyds Zombie Dust",
+    "brewery": "3 Floyds Brewing",
+    "country": "USA",
+    "region": "Indiana",
+    "city": "Munster",
+    "style": "Pale Ale",
+    "abv": 6.5,
+    "ibu": 62,
+    "source": "https://www.3floyds.com/beer/zombie-dust/",
+    "verified": "2026-10-02",
+    "note": "single-hop Citra pale ale",
+    "de": {
+      "description": "Intensiv gehopftes Pale Ale aus Indiana, nur mit Citra: Zitrus, Tropenfrucht.",
+      "humorousBio": "Ein Pale Ale, das wie ein IPA auftritt und wie ein Comic aussieht.",
+      "disLikeQuip": "Die Zombies haben kein Interesse mehr an deinem Gehirn.",
+      "tags": [
+        "Citra",
+        "hopfig",
+        "Kult"
+      ]
+    },
+    "en": {
+      "description": "Intensely hopped pale ale from Indiana, Citra only: citrus, tropical fruit.",
+      "humorousBio": "A pale ale that acts like an IPA and looks like a comic book.",
+      "disLikeQuip": "The zombies have lost interest in your brain.",
+      "tags": [
+        "Citra",
+        "hoppy",
+        "cult"
+      ]
+    }
+  },
+  {
+    "id": "odell-90-shilling",
+    "name": "90 Shilling",
+    "fullName": "Odell 90 Shilling",
+    "brewery": "Odell Brewing",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Fort Collins",
+    "style": "Amber",
+    "abv": 5.3,
+    "ibu": 32,
+    "source": "https://www.odellbrewing.com/beer/90-shilling-ale/",
+    "verified": "2026-10-02",
+    "note": "brewery: amber ale (Scottish-inspired name); style Amber, not Scotch Ale",
+    "de": {
+      "description": "Kupferfarbenes Amber Ale aus Fort Collins, mittelkräftig und weich – das Flaggschiff von Odell.",
+      "humorousBio": "Heißt nach einer alten schottischen Steuer. Kostet heute weniger.",
+      "disLikeQuip": "90 Schilling zurück. Kein Wechselgeld.",
+      "tags": [
+        "bernstein",
+        "weich",
+        "Colorado"
+      ]
+    },
+    "en": {
+      "description": "Copper amber ale from Fort Collins, medium-bodied and smooth – Odell’s flagship.",
+      "humorousBio": "Named after an old Scottish tax. Costs less these days.",
+      "disLikeQuip": "90 shillings refunded. No change given.",
+      "tags": [
+        "amber",
+        "smooth",
+        "Colorado"
+      ]
+    }
+  },
+  {
+    "id": "edmund-fitzgerald",
+    "name": "Edmund Fitzgerald",
+    "fullName": "Great Lakes Edmund Fitzgerald Porter",
+    "brewery": "Great Lakes Brewing",
+    "country": "USA",
+    "region": "Ohio",
+    "city": "Cleveland",
+    "style": "Porter",
+    "abv": 6.0,
+    "ibu": 37,
+    "source": "https://www.greatlakesbrewing.com/edmund-fitzgerald/",
+    "verified": "2026-10-02",
+    "note": "robust porter",
+    "de": {
+      "description": "Kräftiger Porter aus Cleveland: Röstmalz, Kaffee, Schokolade, spürbare Bittere.",
+      "humorousBio": "Benannt nach dem Frachter, der 1975 im Lake Superior sank. Ein ernstes Bier.",
+      "disLikeQuip": "Gordon Lightfoot würde ein Lied darüber schreiben.",
+      "tags": [
+        "Porter",
+        "röstig",
+        "Ohio"
+      ]
+    },
+    "en": {
+      "description": "Robust porter from Cleveland: roasted malt, coffee, chocolate, noticeable bitterness.",
+      "humorousBio": "Named after the freighter that sank in Lake Superior in 1975. A serious beer.",
+      "disLikeQuip": "Gordon Lightfoot would write a song about this.",
+      "tags": [
+        "porter",
+        "roasty",
+        "Ohio"
+      ]
+    }
+  },
+  {
+    "id": "brooklyn-lager",
+    "name": "Brooklyn Lager",
+    "fullName": "Brooklyn Lager",
+    "brewery": "Brooklyn Brewery",
+    "country": "USA",
+    "region": "New York",
+    "city": "New York",
+    "style": "Amber",
+    "abv": 5.2,
+    "source": "https://brooklynbrewery.com/brooklyn-beers/year-round/brooklyn-lager/",
+    "verified": "2026-10-02",
+    "note": "Vienna-style amber lager, Milton Glaser logo",
+    "de": {
+      "description": "Bernsteinfarbenes Lager nach Wiener Art aus New York, mit Logo von Milton Glaser.",
+      "humorousBio": "Der Designer des „I ♥ NY“-Logos hat auch hier gezeichnet.",
+      "disLikeQuip": "I ♥ NY. Dieses Bier eher nicht.",
+      "tags": [
+        "bernstein",
+        "Wiener Art",
+        "New York"
+      ]
+    },
+    "en": {
+      "description": "Vienna-style amber lager from New York, with a logo by Milton Glaser.",
+      "humorousBio": "The designer of the “I ♥ NY” logo drew this one too.",
+      "disLikeQuip": "I ♥ NY. This beer, not so much.",
+      "tags": [
+        "amber",
+        "Vienna-style",
+        "New York"
+      ]
+    }
+  },
+  {
+    "id": "kona-big-wave",
+    "name": "Big Wave",
+    "fullName": "Kona Big Wave Golden Ale",
+    "brewery": "Kona Brewing",
+    "country": "USA",
+    "region": "Hawaii",
+    "city": "Kailua-Kona",
+    "style": "Blonde Ale",
+    "abv": 4.4,
+    "ibu": 21,
+    "source": "https://konabrewinghawaii.com/brews/big-wave-golden-ale",
+    "verified": "2026-10-02",
+    "note": "Galaxy + Citra",
+    "de": {
+      "description": "Leichtes Golden Ale aus Hawaii mit tropischem Hopfenaroma von Galaxy und Citra.",
+      "humorousBio": "Trägt Hawaiihemd. Auch im Winter.",
+      "disLikeQuip": "Die große Welle rollt ohne dich.",
+      "tags": [
+        "Golden Ale",
+        "tropisch",
+        "Hawaii"
+      ]
+    },
+    "en": {
+      "description": "Light golden ale from Hawaii with tropical hop aroma from Galaxy and Citra.",
+      "humorousBio": "Wears an aloha shirt. Even in winter.",
+      "disLikeQuip": "The big wave rolls on without you.",
+      "tags": [
+        "golden ale",
+        "tropical",
+        "Hawaii"
+      ]
+    }
+  },
+  {
+    "id": "prima-pils",
+    "name": "Prima Pils",
+    "fullName": "Victory Prima Pils",
+    "brewery": "Victory Brewing",
+    "country": "USA",
+    "region": "Pennsylvanien",
+    "city": "Downingtown",
+    "style": "Pils",
+    "abv": 5.3,
+    "source": "https://victorybeer.com/beers/prima-pils/",
+    "verified": "2026-10-02",
+    "note": "German-style pilsner",
+    "de": {
+      "description": "Deutsches Pils aus Pennsylvania: blumiger Hopfen, knackige Bittere.",
+      "humorousBio": "Gegründet von zwei Freunden, die in Deutschland Brauen gelernt haben. Man schmeckt es.",
+      "disLikeQuip": "Prima ist anders.",
+      "tags": [
+        "Pils",
+        "blumig",
+        "Pennsylvania"
+      ]
+    },
+    "en": {
+      "description": "German-style pils from Pennsylvania: floral hops, crisp bitterness.",
+      "humorousBio": "Founded by two friends who learned to brew in Germany. You can taste it.",
+      "disLikeQuip": "Prima is something else.",
+      "tags": [
+        "pils",
+        "floral",
+        "Pennsylvania"
+      ]
+    }
+  },
+  {
+    "id": "sculpin",
+    "name": "Sculpin",
+    "fullName": "Ballast Point Sculpin IPA",
+    "brewery": "Ballast Point Brewing",
+    "country": "USA",
+    "region": "Kalifornien",
+    "city": "San Diego",
+    "style": "IPA",
+    "abv": 7.0,
+    "ibu": 70,
+    "source": "https://ballastpoint.com/beer/sculpin/",
+    "verified": "2026-10-02",
+    "note": "West Coast IPA, apricot/peach/mango notes",
+    "de": {
+      "description": "West-Coast-IPA aus San Diego: Aprikose, Pfirsich, Mango, kräftige Bittere.",
+      "humorousBio": "Benannt nach einem Fisch mit giftigen Stacheln. Lecker, aber Vorsicht.",
+      "disLikeQuip": "Der Fisch hat dich gestochen. Oder du ihn.",
+      "tags": [
+        "West Coast",
+        "fruchtig",
+        "bitter"
+      ]
+    },
+    "en": {
+      "description": "West Coast IPA from San Diego: apricot, peach, mango, firm bitterness.",
+      "humorousBio": "Named after a fish with venomous spines. Tasty, but careful.",
+      "disLikeQuip": "The fish stung you. Or you stung it.",
+      "tags": [
+        "West Coast",
+        "fruity",
+        "bitter"
+      ]
+    }
+  },
+  {
+    "id": "yeti",
+    "name": "Yeti",
+    "fullName": "Great Divide Yeti Imperial Stout",
+    "brewery": "Great Divide Brewing",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Denver",
+    "style": "Imperial Stout",
+    "abv": 9.5,
+    "ibu": 75,
+    "source": "https://greatdivide.com/products/yeti/",
+    "verified": "2026-10-02",
+    "note": "huge hit of American hops",
+    "de": {
+      "description": "Imperial Stout aus Denver: viel Röstmalz, Karamell und eine Menge amerikanischer Hopfen.",
+      "humorousBio": "Keiner hat ihn je gesehen, aber jeder hat davon gehört.",
+      "disLikeQuip": "Der Yeti zieht sich zurück. Spuren im Schnee bleiben.",
+      "tags": [
+        "Imperial Stout",
+        "röstig",
+        "stark"
+      ]
+    },
+    "en": {
+      "description": "Imperial stout from Denver: big roast, caramel and a huge hit of American hops.",
+      "humorousBio": "Nobody has ever seen him, but everyone has heard of him.",
+      "disLikeQuip": "The yeti retreats. Footprints in the snow remain.",
+      "tags": [
+        "imperial stout",
+        "roasty",
+        "strong"
+      ]
+    }
+  },
+  {
+    "id": "pseudo-sue",
+    "name": "Pseudo Sue",
+    "fullName": "Toppling Goliath Pseudo Sue",
+    "brewery": "Toppling Goliath Brewing",
+    "country": "USA",
+    "region": "Iowa",
+    "city": "Decorah",
+    "style": "Pale Ale",
+    "abv": 5.8,
+    "source": "https://www.tgbrews.com/pseudo-sue",
+    "verified": "2026-10-02",
+    "note": "single-hop Citra, mild bitterness",
+    "adjust": [
+      {
+        "axis": "bitterness",
+        "delta": -10,
+        "reason": "mild bitterness in the finish",
+        "source": "https://www.tgbrews.com/pseudo-sue"
+      }
+    ],
+    "de": {
+      "description": "Pale Ale aus Iowa, nur mit Citra gehopft: zart im Körper, mild im Abgang.",
+      "humorousBio": "Benannt nach einem T-Rex-Skelett. Beißt aber kaum.",
+      "disLikeQuip": "Goliath ist umgefallen. Wegen dir.",
+      "tags": [
+        "Citra",
+        "Pale Ale",
+        "Iowa"
+      ]
+    },
+    "en": {
+      "description": "Pale ale from Iowa, hopped with Citra only: delicate body, mild finish.",
+      "humorousBio": "Named after a T. rex skeleton. Hardly bites, though.",
+      "disLikeQuip": "Goliath has toppled. Because of you.",
+      "tags": [
+        "Citra",
+        "pale ale",
+        "Iowa"
+      ]
+    }
+  },
+  {
+    "id": "oberon",
+    "name": "Oberon",
+    "fullName": "Bell's Oberon Ale",
+    "brewery": "Bell's Brewery",
+    "country": "USA",
+    "region": "Michigan",
+    "city": "Kalamazoo",
+    "style": "Wheat Ale",
+    "abv": 5.8,
+    "ibu": 26,
+    "source": "https://bellsbeer.com/homebrew-central/homebrewing-oberon-tips-on-cloning-bells-american-wheat-ale/",
+    "verified": "2026-10-02",
+    "note": "American wheat ale, no spices or fruit",
+    "de": {
+      "description": "Amerikanisches Weizen-Ale aus Michigan: würziger Hopfen, milde Frucht – ganz ohne Gewürze.",
+      "humorousBio": "Der Sommer in Michigan beginnt, wenn Oberon in die Läden kommt.",
+      "disLikeQuip": "Der Sommer ist abgesagt.",
+      "tags": [
+        "Weizen",
+        "Sommer",
+        "Michigan"
+      ]
+    },
+    "en": {
+      "description": "American wheat ale from Michigan: spicy hops, mild fruit – no spices added.",
+      "humorousBio": "Summer in Michigan starts when Oberon hits the shelves.",
+      "disLikeQuip": "Summer has been cancelled.",
+      "tags": [
+        "wheat",
+        "summer",
+        "Michigan"
+      ]
+    }
+  },
+  {
+    "id": "voodoo-ranger-ipa",
+    "name": "Voodoo Ranger",
+    "fullName": "Voodoo Ranger IPA",
+    "brewery": "New Belgium Brewing",
+    "country": "USA",
+    "region": "Colorado",
+    "city": "Fort Collins",
+    "style": "IPA",
+    "abv": 7.0,
+    "ibu": 50,
+    "source": "https://www.newbelgium.com/beer/voodoo-ranger-ipa/",
+    "verified": "2026-10-02",
+    "note": "best-selling US craft IPA",
+    "de": {
+      "description": "IPA aus Fort Collins mit tropischem Hopfen – das meistverkaufte Craft-IPA der USA.",
+      "humorousBio": "Das Skelett im Umhang ist das Maskottchen. Und der Hopfen der Zauber.",
+      "disLikeQuip": "Der Ranger verflucht dich. Ganz leicht.",
+      "tags": [
+        "IPA",
+        "tropisch",
+        "Bestseller"
+      ]
+    },
+    "en": {
+      "description": "IPA from Fort Collins with tropical hops – the best-selling craft IPA in the US.",
+      "humorousBio": "The skeleton in the cloak is the mascot. The hops are the magic.",
+      "disLikeQuip": "The ranger puts a mild curse on you.",
+      "tags": [
+        "IPA",
+        "tropical",
+        "best seller"
+      ]
+    }
+  }
+]
