@@ -259,6 +259,7 @@ jobs:
           supabase db push --linked --dry-run 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           bash tool/db/live_advisors.sh | tee -a "$GITHUB_STEP_SUMMARY"
 
+  # Skipped jobs (live-db without backend changes) propagate down the chain, hence the explicit conditions.
   # Q4 – every merge goes to beta first, users get it only after „Promote“:
   # deploy (beta.pilsbuddy.mcbuchi.de) → beta smoke → pre-release → promote (waits for the maintainer's approval
   # in the environment „production“) → same dist to pilsbuddy.mcbuchi.de → production smoke → release = latest.
@@ -303,7 +304,7 @@ jobs:
   smoke-beta:
     name: Beta smoke
     needs: deploy
-    if: needs.deploy.outputs.enabled == 'true'
+    if: ${{ !failure() && !cancelled() && needs.deploy.outputs.enabled == 'true' }}
     permissions:
       contents: read
       issues: write
@@ -316,6 +317,7 @@ jobs:
   prerelease:
     name: Pre-release
     needs: [check, smoke-beta]
+    if: ${{ !failure() && !cancelled() && needs.smoke-beta.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -332,11 +334,12 @@ jobs:
         run: |
           gh release create "$VERSION" dist.zip --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --title "$VERSION" --generate-notes --prerelease
-          echo "Pre-release [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) on https://beta.pilsbuddy.mcbuchi.de – promote = approve the job „Promote to production“" >> "$GITHUB_STEP_SUMMARY"
+          echo "Pre-release [$VERSION]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$VERSION) on https://beta.pilsbuddy.mcbuchi.de – promote = approve the job Promote to production" >> "$GITHUB_STEP_SUMMARY"
 
   promote:
     name: Promote to production
     needs: [check, prerelease]
+    if: ${{ !failure() && !cancelled() && needs.prerelease.result == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: production # waits for the maintainer's approval
@@ -359,6 +362,7 @@ jobs:
   smoke:
     name: Production smoke
     needs: promote
+    if: ${{ !failure() && !cancelled() && needs.promote.result == 'success' }}
     permissions:
       contents: read
       issues: write
@@ -369,6 +373,7 @@ jobs:
   release:
     name: Release
     needs: [check, smoke]
+    if: ${{ !failure() && !cancelled() && needs.smoke.result == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
