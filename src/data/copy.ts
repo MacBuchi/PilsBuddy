@@ -417,6 +417,8 @@ const DE = {
       'Wirklich alles vergessen? Deine Bier-DNA, Matches, alles – und dein Sync-Konto mit allen Daten in der Cloud. Verbundene Geräte behalten nur ihre eigene Kopie.',
     resetFailed: 'Löschen in der Cloud hat nicht geklappt – bist du online? Hier ist noch nichts gelöscht.',
     legal: 'Impressum & Datenschutz',
+    /** Under the legal link: the release this build belongs to. */
+    version: 'Version {version}',
     backup: 'Sichern & umziehen',
     exportLabel: 'Profil exportieren',
     exportSub: 'Als Datei – für ein neues Handy oder nach dem Browser-Putz.',

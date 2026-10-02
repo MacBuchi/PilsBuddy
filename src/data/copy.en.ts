@@ -412,6 +412,7 @@ export const EN: Copy = {
       'Really forget everything? Your beer DNA, matches, everything – and your sync account with all its data in the cloud. Connected devices keep only their own copy.',
     resetFailed: "Deleting in the cloud didn't work – are you online? Nothing has been deleted here yet.",
     legal: 'Legal notice & privacy',
+    version: 'Version {version}',
     backup: 'Back up & move',
     exportLabel: 'Export profile',
     exportSub: 'As a file – for a new phone or after a browser clean-up.',
