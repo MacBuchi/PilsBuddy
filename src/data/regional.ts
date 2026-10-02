@@ -1,4 +1,4 @@
-import { cellBounds, cellOf, cellsWithin, RADII } from '../domain/geo'
+import { cellBounds, cellOf, cellsWithin, haversineKm, RADII } from '../domain/geo'
 import type { LatLon, Radius } from '../domain/geo'
 import { sanitizeBeerRow, sanitizeBrewery } from '../domain/regionalBeer'
 import type { RegionalBeerRow, RegionalBrewery } from '../domain/regionalBeer'
@@ -230,4 +230,64 @@ export function forgetRegional(): void {
       /* nothing stored */
     }
   }
+}
+
+/* ---------- search by name (R8 Bierbibliothek) ---------- */
+
+const BEER_COLS = 'id,name,style,abv,pack,rank,source,source_ref'
+const BREWERY_COLS = 'id,name,lat,lon,city,postcode,country,website,founded'
+
+/**
+ * The typed words as an `ilike` pattern: letters, digits and hyphens only (PostgREST's filter syntax
+ * stays out of reach), the words joined by `*`. Null for less than 3 characters.
+ */
+export function searchPattern(q: string): string | null {
+  const words = q
+    .normalize('NFC')
+    .replace(/[^\p{L}\p{N}-]+/gu, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+  const joined = words.join('*')
+  return joined.replace(/\*/g, '').length >= 3 ? `*${joined.slice(0, 60)}*` : null
+}
+
+export interface RegionalFound {
+  row: RegionalBeerRow
+  brewery: Omit<RegionalBrewery, 'beers'>
+}
+
+/**
+ * Regional beers whose name, brewery or brewery town matches the text – without any position: only the
+ * typed text goes to the API. Throws if the API is unreachable.
+ */
+export async function searchRegional(q: string, fetchFn: FetchFn = fetch): Promise<RegionalFound[]> {
+  const p = searchPattern(q)
+  if (!p) return []
+  const like = encodeURIComponent(p)
+  const headers = { apikey: SUPABASE_KEY }
+  const [byBeer, byBrewery] = await Promise.all([
+    fetchFn(`${SUPABASE_URL}/rest/v1/regional_beers?select=${BEER_COLS},breweries!inner(${BREWERY_COLS})&published=eq.true&name=ilike.${like}&order=name.asc&limit=40`, { headers }),
+    fetchFn(`${SUPABASE_URL}/rest/v1/breweries?select=${SELECT}&published=eq.true&or=(name.ilike.${like},city.ilike.${like})&order=name.asc&limit=20`, { headers }),
+  ])
+  if (!byBeer.ok || !byBrewery.ok) throw new Error(`search ${byBeer.status}/${byBrewery.status}`)
+  const beerRows = (await byBeer.json()) as unknown
+  const breweryRows = (await byBrewery.json()) as unknown
+  if (!Array.isArray(beerRows) || !Array.isArray(breweryRows)) throw new Error('search: no list')
+  const out = new Map<string, RegionalFound>()
+  for (const r of beerRows as { breweries?: unknown }[]) {
+    const row = sanitizeBeerRow(r)
+    const brewery = sanitizeBrewery(r?.breweries)
+    if (row && brewery) out.set(row.id, { row, brewery: withoutBeers(brewery) })
+  }
+  for (const b of breweryRows.map(sanitizeBrewery)) {
+    if (b) for (const row of b.beers) if (!out.has(row.id)) out.set(row.id, { row, brewery: withoutBeers(b) })
+  }
+  return [...out.values()]
+}
+
+/** Regional beers of the breweries within `radius` km of a typed postcode (the library's PLZ search). */
+export async function searchNear(place: LatLon, radius: number, fetchFn: FetchFn = fetch): Promise<RegionalFound[]> {
+  const { breweries } = await loadRegion(place, radius, fetchFn)
+  return breweries.filter((b) => haversineKm(place, b) <= radius).flatMap((b) => b.beers.map((row) => ({ row, brewery: withoutBeers(b) })))
 }

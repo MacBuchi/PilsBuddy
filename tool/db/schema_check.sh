@@ -54,6 +54,8 @@ check_insert() {
 
 catalog=$(src 'rest/v1/beers?[^`]*' src/data/catalog.ts)
 regional_select=$(src "const SELECT = '[^']*'" src/data/regional.ts | cut -d"'" -f2)
+beer_cols=$(src "const BEER_COLS = '[^']*'" src/data/regional.ts | cut -d"'" -f2)
+brewery_cols=$(src "const BREWERY_COLS = '[^']*'" src/data/regional.ts | cut -d"'" -f2)
 places=$(src 'rest/v1/places?[^`]*' src/data/regional.ts | sed 's/\${code}/74906/')
 run=$(date +%s)
 
@@ -61,6 +63,10 @@ check_get "Bierkatalog (catalog.ts)" "/$catalog"
 check_get "Regional-Finder: Brauereien + Biere einer Zelle (regional.ts)" \
   "/rest/v1/breweries?select=$regional_select&published=eq.true&or=(and(lat.gte.49,lat.lt.49.5,lon.gte.9,lon.lt.9.5))&order=id.asc&limit=1000"
 check_get "Regional-Finder: PLZ (regional.ts)" "/$places"
+check_get "Bibliothek: Regionalbiere nach Name (regional.ts)" \
+  "/rest/v1/regional_beers?select=$beer_cols,breweries!inner($brewery_cols)&published=eq.true&name=ilike.*pils*&order=name.asc&limit=40"
+check_get "Bibliothek: Brauereien nach Name/Ort (regional.ts)" \
+  "/rest/v1/breweries?select=$regional_select&published=eq.true&or=(name.ilike.*brau*,city.ilike.*brau*)&order=name.asc&limit=20"
 check_get "Sync: ratings-Spalten (cloud.ts)" "/rest/v1/ratings?select=user_id,beer_id,rating,previous,at,deleted&limit=1" allow_denied
 check_get "Sync: profiles-Spalten (cloud.ts)" "/rest/v1/profiles?select=id,buddy_no,archetype,taste,decoded,dark,onboarded,visible&limit=1" allow_denied
 check_denied "Feedback nicht lesbar" "/rest/v1/feedback?select=id&limit=1"
