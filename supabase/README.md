@@ -8,10 +8,10 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 | `profiles` | ein Profil je (anonymem) Nutzer: Buddy-Nr., Archetyp, DNA, `visible` | eigenes lesen/schreiben; fremde nur bei `visible = true` (Opt-in) |
 | `ratings` | eine Zeile je Nutzer und Bier, `at` entscheidet beim Sync; `deleted` = Tombstone | nur eigene |
 | `sync_codes` | Hash des Sync-Codes je Nutzer | keine – nur die Edge Function (service_role) |
-| `breweries` | Brauereien DE/AT/CH aus OpenStreetMap + Wikidata, `id` = Quell-ID (`osm-n123`, `wd-q123`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
+| `breweries` | Brauereien DE/AT/CH/CA/US aus OpenStreetMap, Wikidata und Open Brewery DB, `id` = Quell-ID (`osm-n123`, `wd-q123`, `obdb-<uuid>`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
 | `regional_beers` | bis zu 5 Hauptbiere je Brauerei (`id` = `r-<EAN>` / `r-q<n>`, Stil, ABV, Gebinde, `source` + kurze `source_ref`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
 | `beer_sources` | die wenigen Quellen (Open Food Facts, Wikidata, Website, openbeer, 5 = Meldung aus der App) mit Lizenz und Link-Vorlage | öffentlich lesbar, nur per Migration |
-| `places` | Postleitzahlen DE/AT/CH mit Ort und Mittelpunkt (GeoNames) | öffentlich lesbar, schreiben nur der Import |
+| `places` | Postleitzahlen DE/AT/CH/US und kanadische FSA (nur die ersten 3 Zeichen) mit Ort und Mittelpunkt (GeoNames) | öffentlich lesbar, schreiben nur der Import |
 | `feedback` | In-App-Feedback („Wünsch dir was!“): Typ, Text, Build, grober Gerätetyp – anonym; `tool/feedback_bot.py` (Workflow „Feedback Bot“, alle 2 h) macht daraus Issues und löscht verarbeitete Zeilen nach 30 Tagen | nur `insert` (vier Spalten) für alle, Trigger: max. 30 je 10 min, gleicher Text 1× am Tag; lesen nur service_role |
 | `beer_submissions` | R6 „Bier fehlt? Eintragen“: Brauerei (`brewery_id` oder Name + PLZ/Ort), Link oder Name/Stil/ABV, Notiz, Build, Gerätetyp – anonym; `tool/beer_bot.py` (Workflow „Beer Reports“, alle 2 h) macht daraus Issues `bier-meldung`, das Label `freigegeben` trägt das (im Issue korrigierbare) Bier als `r-app<Issue>` (Quelle 5) ein, eine neue Brauerei als `app-<Issue>` am PLZ-Mittelpunkt; verarbeitete Zeilen nach 30 Tagen gelöscht | nur `insert` (zehn Spalten) für alle, Trigger: max. 20 je 10 min, gleiches Bier 1× pro Woche; dazu 5 je Gerät und Tag in der App; lesen nur service_role |
 

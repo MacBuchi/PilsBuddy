@@ -5,6 +5,7 @@ import { COPY, fill, pick } from '../../data/copy'
 import { findPostcode, loadRegion, readPrefs, writePool, writePrefs } from '../../data/regional'
 import type { RegionalPrefs, RegionLoad } from '../../data/regional'
 import { hashId } from '../../domain/hash'
+import { isPostcode } from '../../domain/postcode'
 import { formatKm, RADII, rankRegional, routeUrl } from '../../domain/regional'
 import type { LatLon, RegionalHit } from '../../domain/regional'
 import type { RegionalBeerRow, RegionalBrewery } from '../../domain/regionalBeer'
@@ -61,6 +62,8 @@ export function RegionalFinder() {
   const [error, setError] = useState<string | null>(null)
   const [loaded, setLoaded] = useState<(RegionLoad & { query: string }) | null>(null)
   const [plz, setPlz] = useState('')
+  /** Same code in another country (10115 Berlin / New York) – one tap switches. */
+  const [others, setOthers] = useState<Origin[]>([])
   const [more, setMore] = useState({ query: '', n: PAGE })
   const [open, setOpen] = useState<{ brewery: RegionalBrewery; km: number } | null>(null)
   // „Bier fehlt? Eintragen“ (R6): for the brewery of the sheet, or with a typed brewery
@@ -83,6 +86,7 @@ export function RegionalFinder() {
     setError(null)
     try {
       const p = await locate()
+      setOthers([])
       setOrigin({ ...p, label: COPY.regional.here })
       savePrefs({ mode: 'geo' })
     } catch (e) {
@@ -105,8 +109,9 @@ export function RegionalFinder() {
     e.preventDefault()
     setError(null)
     try {
-      const place = await findPostcode(plz)
+      const [place, ...rest] = await findPostcode(plz)
       if (!place) return setError(COPY.regional.errPlz)
+      setOthers(rest)
       setOrigin(place)
       savePrefs({ mode: 'plz', place })
     } catch {
@@ -159,19 +164,39 @@ export function RegionalFinder() {
         <form className={styles.plz} onSubmit={searchPlz}>
           <input
             className={styles.plzInput}
-            inputMode="numeric"
-            pattern="[0-9]{4,5}"
-            maxLength={5}
+            autoCapitalize="characters"
+            autoComplete="postal-code"
+            maxLength={10}
             placeholder={COPY.regional.plz}
             aria-label={COPY.regional.plz}
             value={plz}
-            onChange={(e) => setPlz(e.target.value.replace(/\D/g, ''))}
+            onChange={(e) => setPlz(e.target.value.replace(/[^0-9A-Za-z -]/g, ''))}
           />
-          <button type="submit" className={styles.plzGo} disabled={plz.length < 4}>
+          <button type="submit" className={styles.plzGo} disabled={!isPostcode(plz)}>
             {COPY.regional.plzGo}
           </button>
         </form>
       </div>
+
+      {others.length > 0 && origin && (
+        <div className={styles.others}>
+          <span>{COPY.regional.otherPlace}</span>
+          {others.map((p) => (
+            <button
+              key={p.label}
+              type="button"
+              className={styles.radius}
+              onClick={() => {
+                setOthers([origin, ...others.filter((o) => o !== p)])
+                setOrigin(p)
+                savePrefs({ mode: 'plz', place: p })
+              }}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className={styles.radii} role="radiogroup" aria-label={COPY.regional.radius}>
         {RADII.map((r) => (

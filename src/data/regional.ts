@@ -1,8 +1,10 @@
 import { cellBounds, cellOf, cellsWithin, haversineKm, RADII } from '../domain/geo'
 import type { LatLon, Radius } from '../domain/geo'
+import { orderPlaces, parsePostcode, preferredCountries } from '../domain/postcode'
 import { sanitizeBeerRow, sanitizeBrewery } from '../domain/regionalBeer'
-import type { RegionalBeerRow, RegionalBrewery } from '../domain/regionalBeer'
+import type { Country, RegionalBeerRow, RegionalBrewery } from '../domain/regionalBeer'
 import { SUPABASE_KEY, SUPABASE_URL } from '../sync/config'
+import { COPY } from './copy'
 
 /**
  * Regional catalogue on the device (Stufe R4). The backend only ever sees whole 0.5° grid cells
@@ -118,21 +120,35 @@ export async function loadRegion(origin: LatLon, radius: number, fetchFn: FetchF
 /* ---------- postcode ---------- */
 
 export interface Place extends LatLon {
-  /** „74906 Bad Rappenau“ */
+  /** „74906 Bad Rappenau“ – with the country when the code exists in more than one */
   label: string
 }
 
-/** Centre of a typed DE/AT/CH postcode, or null. Throws if the API is unreachable. */
-export async function findPostcode(plz: string, fetchFn: FetchFn = fetch): Promise<Place | null> {
-  const code = plz.trim()
-  if (!/^[0-9]{4,5}$/.test(code)) return null
-  const res = await fetchFn(`${SUPABASE_URL}/rest/v1/places?select=postcode,name,lat,lon&postcode=eq.${code}&order=country.asc,name.asc&limit=1`, {
-    headers: { apikey: SUPABASE_KEY },
-  })
+/**
+ * Places for a typed postcode, one per country, the browser's region first (10115 is Berlin and Schenectady).
+ * Only the coarse code leaves the device: a full Canadian postcode is cut to its FSA first. Empty if unknown,
+ * throws if the API is unreachable.
+ */
+export async function findPostcode(plz: string, fetchFn: FetchFn = fetch, locale = navigator.language): Promise<Place[]> {
+  const code = parsePostcode(plz)
+  if (!code) return []
+  const res = await fetchFn(
+    `${SUPABASE_URL}/rest/v1/places?select=country,postcode,name,lat,lon&postcode=eq.${code}&order=country.asc,name.asc&limit=20`,
+    { headers: { apikey: SUPABASE_KEY } },
+  )
   if (!res.ok) throw new Error(`places ${res.status}`)
-  const [p] = (await res.json()) as { postcode?: unknown; name?: unknown; lat?: unknown; lon?: unknown }[]
-  if (!p || typeof p.name !== 'string' || typeof p.lat !== 'number' || typeof p.lon !== 'number') return null
-  return { label: `${code} ${p.name.slice(0, 80)}`, lat: p.lat, lon: p.lon }
+  const rows = (await res.json()) as { country?: unknown; name?: unknown; lat?: unknown; lon?: unknown }[]
+  const ok = rows.flatMap((p) =>
+    typeof p.name === 'string' && typeof p.lat === 'number' && typeof p.lon === 'number' && Object.hasOwn(COPY.countries, p.country as string)
+      ? [{ country: p.country as Country, name: p.name.slice(0, 80), lat: p.lat, lon: p.lon }]
+      : [],
+  )
+  const places = orderPlaces(ok, preferredCountries(locale))
+  return places.map((p) => ({
+    label: places.length > 1 ? `${code} ${p.name} (${COPY.countries[p.country]})` : `${code} ${p.name}`,
+    lat: p.lat,
+    lon: p.lon,
+  }))
 }
 
 /* ---------- preferences ---------- */

@@ -50,12 +50,19 @@ def one_line(v) -> str:
     return " ".join(defuse(str(v)).split()) if v not in (None, "") else ""
 
 
+# N4: Open Brewery DB keeps its UUID
+OBDB_ID = r"obdb-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
+
+
 def catalogue_link(brewery_id: str) -> str | None:
     m = re.fullmatch(r"osm-([nwr])(\d+)", brewery_id or "")
     if m:
         return f"https://www.openstreetmap.org/{ {'n': 'node', 'w': 'way', 'r': 'relation'}[m[1]] }/{m[2]}"
     m = re.fullmatch(r"wd-q(\d+)", brewery_id or "")
-    return f"https://www.wikidata.org/wiki/Q{m[1]}" if m else None
+    if m:
+        return f"https://www.wikidata.org/wiki/Q{m[1]}"
+    m = re.fullmatch(OBDB_ID, brewery_id or "")
+    return f"https://api.openbrewerydb.org/v1/breweries/{m[1]}" if m else None
 
 
 def issue_title(row: dict) -> str:
@@ -124,7 +131,7 @@ def check(fields: dict, known_styles: list[str]) -> tuple[dict | None, str | Non
         if not 0 <= abv <= 20:
             return None, f"Alkohol „{fields['abv']}“ ist keine Zahl zwischen 0 und 20."
     brewery_id = fields.get("brewery_id")
-    if brewery_id and brewery_id != "neu" and not re.fullmatch(r"(osm-[nwr]|wd-q|app-)\d{1,20}", brewery_id):
+    if brewery_id and brewery_id != "neu" and not re.fullmatch(rf"(osm-[nwr]|wd-q|app-)\d{{1,20}}|{OBDB_ID}", brewery_id):
         return None, f"Brauerei-ID „{brewery_id}“ sieht falsch aus (`osm-n123`, `wd-q123`, `app-12` oder `{NONE}`)."
     link = fields.get("link")
     if link and not re.fullmatch(r"https?://\S{4,295}", link):
@@ -252,6 +259,9 @@ def self_test() -> None:
     assert split_place("74906 Bad Rappenau") == ("74906", "Bad Rappenau")
     assert split_place("A-6020") == ("6020", None) and split_place("Bad Rappenau") == (None, "Bad Rappenau")
     assert catalogue_link("wd-q123") == "https://www.wikidata.org/wiki/Q123" and catalogue_link("app-3") is None
+    uuid = "5128df48-79fc-4f0f-8b52-d06be54d0cec"
+    assert catalogue_link(f"obdb-{uuid}") == f"https://api.openbrewerydb.org/v1/breweries/{uuid}"
+    assert check({**fields, "brewery_id": f"obdb-{uuid}"}, known)[1] is None
     print("self-test ok")
 
 
