@@ -265,7 +265,7 @@
     "style": "Witbier",
     "abv": 5.0,
     "ibu": 10,
-    "source": "https://www.brewbound.com/news/unibroue-launches-blanche-de-chambly-in-cans",
+    "source": "https://www.unibroue.com/en-us/beers/classics/blanche-de-chambly",
     "verified": "2026-10-02",
     "note": "since 1992, SRM 4",
     "de": {
@@ -524,7 +524,7 @@
     "city": "Baie-Saint-Paul",
     "style": "Milk Stout",
     "abv": 9.0,
-    "source": "https://www.brewbound.com/breweries/MicroBrasserie_Charlevoix/beers",
+    "source": "https://kensingtonwinemarket.com/blog/3843/silky-sultry-stouts-thursday-january-21",
     "verified": "2026-10-02",
     "note": "CSV wrongly at Trou du Diable/Lac-St-Jean",
     "de": {
@@ -629,15 +629,15 @@
     "style": "Lager",
     "abv": 5.0,
     "ibu": 24,
-    "source": "https://byo.com/recipes/creemore-springs-premium-lager-clone/",
+    "source": "https://www.creemoresprings.com/en-CA/beers/year-round/premium-lager",
     "verified": "2026-10-02",
     "note": "amber Bohemian lager, hazelnut",
     "adjust": [
       {
         "axis": "maltiness",
         "delta": 20,
-        "reason": "rich malt flavour with hazelnut",
-        "source": "https://byo.com/recipes/creemore-springs-premium-lager-clone/"
+        "reason": "rich maltiness, lightly nutty",
+        "source": "https://www.creemoresprings.com/en-CA/beers/year-round/premium-lager"
       }
     ],
     "de": {
@@ -672,7 +672,7 @@
     "style": "IPA",
     "abv": 6.4,
     "ibu": 45,
-    "source": "https://muskokabrewery.com/beer/mad-tom-ipa",
+    "source": "https://muskokabrewery.com/beverages/mad-tom/",
     "verified": "2026-10-02",
     "note": "older 64 IBU",
     "de": {
@@ -784,7 +784,7 @@
     "city": "Toronto",
     "style": "Sour Ale",
     "abv": 5.6,
-    "source": "https://canadianbeernews.com/2019/11/07/bellwoods-brewery-jelly-king-dry-hopped-sour-coming-to-lcbo",
+    "source": "https://bellwoodsbrewery.com/products/jelly-king-can",
     "verified": "2026-10-02",
     "note": "dry-hopped sour, Citra/Amarillo/Cascade",
     "adjust": [
@@ -792,7 +792,7 @@
         "axis": "hopIntensity",
         "delta": 40,
         "reason": "generous dry hop with Citra, Amarillo and Cascade",
-        "source": "https://canadianbeernews.com/2019/11/07/bellwoods-brewery-jelly-king-dry-hopped-sour-coming-to-lcbo"
+        "source": "https://bellwoodsbrewery.com/products/jelly-king-can"
       }
     ],
     "de": {
@@ -827,7 +827,7 @@
     "style": "IPA",
     "abv": 7.1,
     "ibu": 80,
-    "source": "https://canadianbeernews.com/2012/05/04/amsterdam-boneshaker-ipa-coming-to-lcbo",
+    "source": "https://shop.amsterdambeer.com/products/boneshaker-ipa-473ml-can",
     "verified": "2026-10-02",
     "de": {
       "description": "Kräftiges IPA aus Toronto, durchgehend gehopft: Zitrus, Harz, Bittere mit Ansage.",
@@ -1083,9 +1083,9 @@
     "style": "IPA",
     "abv": 7.0,
     "ibu": 80,
-    "source": "https://canadianbeernews.com/2010/11/02/driftwood-fat-tug-ipa",
+    "source": "https://driftwoodbeer.com/beers/fat-tug-ipa/",
     "verified": "2026-10-02",
-    "note": "80+ IBU (CSV said 100)",
+    "note": "80+ IBU per brewery (CSV said 100)",
     "de": {
       "description": "Nordwest-IPA aus Victoria: Grapefruit, Mango, Maracuja und über 80 IBU.",
       "humorousBio": "Ein Schlepper, der Hopfen statt Schiffe zieht.",
@@ -1110,15 +1110,15 @@
   {
     "id": "red-racer-ipa",
     "name": "Red Racer IPA",
-    "fullName": "Red Racer IPA",
-    "brewery": "Central City Brewers + Distillers",
+    "fullName": "Red Racer West Coast IPA",
+    "brewery": "Homefield Brewing (Central City)",
     "country": "Kanada",
     "region": "Britisch-Kolumbien",
     "city": "Surrey",
     "style": "IPA",
     "abv": 6.5,
     "ibu": 80,
-    "source": "https://www.thesnipenews.com/2016/04/central-city-red-racer-super-stellar-ipa-beer-launch/",
+    "source": "https://homefieldbrewing.ca/products/red-racer-west-coast-ipa/",
     "verified": "2026-10-02",
     "de": {
       "description": "West-Coast-IPA aus Surrey mit 80 IBU – die Radlerin auf der Dose fährt Hopfen-Rennen.",
@@ -1139,7 +1139,8 @@
         "bitter",
         "West Coast"
       ]
-    }
+    },
+    "note": "Central City Brewers + Distillers now trades as Homefield Brewing"
   },
   {
     "id": "trash-panda",
@@ -1334,18 +1335,18 @@
   {
     "id": "red-truck-lager",
     "name": "Red Truck Lager",
-    "fullName": "Red Truck Lager",
+    "fullName": "Red Truck Road Trip Classic Lager",
     "brewery": "Red Truck Beer Company",
     "country": "Kanada",
     "region": "Britisch-Kolumbien",
     "city": "Vancouver",
     "style": "Lager",
     "abv": 5.0,
-    "source": "https://scoutmagazine.ca/red-truck-beer-company/",
+    "source": "https://redtruckbeer.com/road-trip-classic-lager/",
     "verified": "2026-10-02",
-    "note": "German/Czech hops",
+    "note": "now sold as Road Trip Classic Lager; Canadian malts, Saaz",
     "de": {
-      "description": "Lager aus Vancouver mit Präriegerste und Hopfen aus Deutschland und Tschechien.",
+      "description": "Lager aus Vancouver mit kanadischem Malz und Saazer Hopfen, kühl vergoren und lange gelagert.",
       "humorousBio": "Hat einen roten Laster vor der Tür und nichts zu verbergen.",
       "disLikeQuip": "Der rote Laster fährt einfach weiter.",
       "tags": [
@@ -1355,7 +1356,7 @@
       ]
     },
     "en": {
-      "description": "Lager from Vancouver with prairie barley and hops from Germany and Czechia.",
+      "description": "Lager from Vancouver with Canadian malt and Saaz hops, cool-fermented and long-aged.",
       "humorousBio": "Has a red truck out front and nothing to hide.",
       "disLikeQuip": "The red truck simply drives on.",
       "tags": [
@@ -1363,7 +1364,8 @@
         "Vancouver",
         "easy-drinking"
       ]
-    }
+    },
+    "ibu": 16
   },
   {
     "id": "big-rock-traditional",
@@ -1452,7 +1454,7 @@
     "city": "Calgary",
     "style": "Amber",
     "abv": 5.6,
-    "source": "https://canadianbeernews.com/2013/06/04/tool-shed-reveals-details-of-three-debut-beers",
+    "source": "https://www.toolshedbrewing.com/beers/red-rage",
     "verified": "2026-10-02",
     "note": "roasty red ale",
     "adjust": [
@@ -1460,7 +1462,7 @@
         "axis": "maltiness",
         "delta": 10,
         "reason": "roasty like coffee, toasty like fresh bread",
-        "source": "https://canadianbeernews.com/2013/06/04/tool-shed-reveals-details-of-three-debut-beers"
+        "source": "https://www.toolshedbrewing.com/beers/red-rage"
       }
     ],
     "de": {
@@ -1528,7 +1530,7 @@
     "city": "Winnipeg",
     "style": "IPA",
     "abv": 6.0,
-    "source": "https://en.wikipedia.org/wiki/Half_Pints_Brewing_Company",
+    "source": "https://halfpintsbrewing.com/beer/little-scrapper-ipa/",
     "verified": "2026-10-02",
     "note": "Amarillo + Cascade, one of four flagships",
     "de": {
@@ -1550,7 +1552,8 @@
         "Amarillo",
         "Winnipeg"
       ]
-    }
+    },
+    "ibu": 50
   },
   {
     "id": "propeller-esb",
@@ -1562,10 +1565,9 @@
     "city": "Halifax",
     "style": "Bitter",
     "abv": 5.0,
-    "ibu": 30,
-    "source": "https://canadianbeernews.com/2009/07/06/propeller-ships-esb-to-ontario-ipa-to-new-brunswick",
+    "source": "https://drinkpropeller.ca/products/esb-6-pack",
     "verified": "2026-10-02",
-    "note": "best seller, copper",
+    "note": "staple since 1997; brewery lists no IBU",
     "de": {
       "description": "Kupferfarbenes Extra Special Bitter aus Halifax: Karamellmalz, erdiger Hopfen.",
       "humorousBio": "Der Bestseller der Brauerei. Bleibt trotzdem bescheiden.",
@@ -1632,7 +1634,7 @@
     "city": "St. John's",
     "style": "Light Lager",
     "abv": 4.5,
-    "source": "https://roadsandkingdoms.com/2018/iceberg-beer-in-newfoundland/",
+    "source": "https://quidividibrewery.ca/products/iceberg-beer",
     "verified": "2026-10-02",
     "note": "brewed with iceberg water",
     "de": {
@@ -1666,21 +1668,21 @@
     "city": "Whitehorse",
     "style": "Pale Ale",
     "abv": 5.0,
-    "source": "https://canadianbeernews.com/2015/03/30/yukon-gold-pale-ale-now-available-in-ontario",
+    "source": "https://yukonbeer.com/beer/yukon-gold/",
     "verified": "2026-10-02",
-    "note": "English pale, Saaz/Sterling/Golding; best-selling draft in Yukon",
+    "note": "\"Old English Ale\", Yukon’s number one selling draught",
     "adjust": [
       {
         "axis": "bitterness",
         "delta": -30,
         "reason": "barely perceptible bitterness",
-        "source": "https://kensingtonwinemarket.com/product/847766/yukon-gold-ale"
+        "source": "https://yukonbeer.com/beer/yukon-gold/"
       },
       {
         "axis": "hopIntensity",
         "delta": -35,
         "reason": "mild hop flavours",
-        "source": "https://kensingtonwinemarket.com/product/847766/yukon-gold-ale"
+        "source": "https://yukonbeer.com/beer/yukon-gold/"
       }
     ],
     "de": {
