@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
-const FILES = ['ca.json']
+const FILES = ['ca.json', 'us.json']
 const out = process.argv.includes('--out') ? process.argv[process.argv.indexOf('--out') + 1] : null
 const UA = 'PilsBuddy-classics-check/1.0 (+https://github.com/MacBuchi/PilsBuddy)'
 

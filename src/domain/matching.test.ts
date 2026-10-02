@@ -32,7 +32,9 @@ describe('rankCandidates', () => {
     expect(c.find((x) => x.beer.id === 'jever')).toBeUndefined()
     expect(c.length).toBe(DECK_ORDER.length - 1)
     for (let i = 1; i < c.length; i++) expect(c[i - 1].pct).toBeGreaterThanOrEqual(c[i].pct)
-    expect(c[0].beer.id).toBe('flensburger')
+    // the catalogue grows, so pin the kind of beer on top, not its id
+    expect(c[0].beer.taste.bitterness).toBeGreaterThanOrEqual(80)
+    expect(c[0].beer.taste.dryness).toBeGreaterThanOrEqual(75)
   })
   it('falls back to WANT_TO_TRY/UNKNOWN when everything is rated', () => {
     const ratings: Ratings = Object.fromEntries(DECK_ORDER.map((id) => [id, { rating: 'LIKE' as const, at: 1 }]))
