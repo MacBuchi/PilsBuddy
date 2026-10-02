@@ -419,6 +419,8 @@ const DE = {
     legal: 'Impressum & Datenschutz',
     /** Under the legal link: the release this build belongs to. */
     version: 'Version {version}',
+    /** Same, on beta.pilsbuddy.mcbuchi.de (pre-release, Q4). */
+    versionBeta: 'Version {version} · Beta – Testversion, noch nicht freigegeben',
     backup: 'Sichern & umziehen',
     exportLabel: 'Profil exportieren',
     exportSub: 'Als Datei – für ein neues Handy oder nach dem Browser-Putz.',

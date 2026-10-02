@@ -56,8 +56,13 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   (UI work: `npm run dev`). Then push, open the PR and `gh pr merge --auto --squash --delete-branch` (never
   `--admin`). Visual review: the `screenshots` artifact of the „E2E flow“ job (`gh run download <run> -n screenshots`).
   Never rename CI jobs – branch protection requires the exact names.
-- After the merge, CI on `main` deploys, smoke-tests production (waits until `/version.json` reports the commit)
-  and creates the GitHub Release `v<date>.<run>` (notes from the PRs, `dist.zip`). A package is live when its
-  release exists. Anything failing after the merge opens an issue labelled `release-failed` – fix that before the
-  next package (fix forward, or `gh workflow run rollback.yml [-f tag=…]`, which redeploys an earlier release).
-  Nightly `prod-smoke.yml` does the same against production.
+- After the merge, CI on `main` deploys to **beta** (https://beta.pilsbuddy.mcbuchi.de, worker `pilsbuddy-beta`,
+  same Supabase project as production), smoke-tests it (waits until `/version.json` reports the commit) and creates
+  the GitHub **pre-release** `v<date>.<run>` (notes from the PRs, `dist.zip`). A package is done when its
+  pre-release exists. Users get it only after **Promote**: the job „Promote to production“ waits for the
+  maintainer's approval (environment `production`), deploys the same dist, smoke-tests production and marks the
+  release latest. A newer merge replaces a pending promotion. Never promote or approve yourself.
+  Anything failing after the merge opens an issue labelled `release-failed` – fix that before the next package
+  (fix forward, or `gh workflow run rollback.yml [-f tag=…]`, which redeploys an earlier release to production).
+  Nightly `prod-smoke.yml` checks production. Beta and production share the database, so migrations (applied
+  before the beta deploy) must keep the released app working.
