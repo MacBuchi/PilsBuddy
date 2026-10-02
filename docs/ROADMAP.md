@@ -17,7 +17,7 @@ mergen, live prüfen, hier abhaken – dann die nächste. Neue Wünsche werden h
 Details stehen beim jeweiligen Paket weiter unten.
 
 1. [x] **R6** „Bier fehlt? Eintragen“ – Meldung → Issue → Label `freigegeben` → Katalog (#38, live 2026-10-02)
-2. [ ] **Q1** Integrationstest Patch-Kompatibilität (Upgrade-Pfad mit Bestand, Live-Rechte, App-Queries) – #37
+2. [x] **Q1** Integrationstest Patch-Kompatibilität (Upgrade-Pfad mit Bestand, Live-Rechte, App-Queries) – #37 (#40, live 2026-10-02)
 3. [ ] **Q2** Live-Migration per CI vor dem Deploy – #37, ⏸ braucht die ausdrückliche Freigabe des Maintainers
        (Auto-Modus blockiert „Blind Apply“) und das Secret `SUPABASE_ACCESS_TOKEN`; bis dahin übersprungen
 4. [ ] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card)
@@ -232,10 +232,14 @@ Leitplanken:
 
 Vorlage: Job `schema-dry-run` in PilzBuddy/TrailBuddy (`tool/db_migrate.sh`, `schema_check.sh`, `grants_check.sql`).
 
-- [ ] Q1 **Integrationstest Patch-Kompatibilität:** neuer CI-Job – Stack mit den Migrationen von `origin/main`,
+- [x] Q1 **Integrationstest Patch-Kompatibilität:** neuer CI-Job – Stack mit den Migrationen von `origin/main`,
       realistische Daten (Katalog-Fixture, Sync, Feedback, Meldungen), dann nur die neuen Migrationen des PRs;
       Live-Standardrechte (anon/authenticated bekommen alles auf neuen Tabellen) lokal nachgestellt +
       `grants_check.sql`; alle App-Queries per PostgREST gegen das aufgerüstete Schema; dazu Frischinstallation (M)
+      - umgesetzt (2026-10-02, #40): Job „DB upgrade path (Bestand + neue Migrationen)“, seitdem Pflicht-Check;
+        `tool/db/` (upgrade_check.sh, grants_check.sql, schema_check.sh, seed_existing.sql). Befund: live hatten
+        anon/authenticated alle Rechte auf allen Tabellen (nur RLS schützte) → Migration `explicit_grants`, neue Tabellen
+        ohne Standardrechte; live geprüft (Rechte, App-Queries, Prod-Smoke)
 - [ ] Q2 **Live-Migration per CI:** Job `migrate` (`supabase db push --linked`, nur `SUPABASE_ACCESS_TOKEN`) nach Q1,
       vor dem Deploy; eigene Concurrency-Gruppe; ohne Secret sichtbar übersprungen. Braucht Freigabe (S)
 
