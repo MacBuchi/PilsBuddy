@@ -1,6 +1,6 @@
 -- RLS + spam guard for in-app feedback. Run with `supabase test db` against the local stack.
 begin;
-select plan(11);
+select plan(12);
 
 set local role anon;
 select lives_ok($$insert into public.feedback (type, message, app_version, platform) values ('bug', '  Swipe hängt  ', 'a74e951', 'iOS · App')$$,
@@ -18,6 +18,10 @@ select throws_ok($$update public.feedback set message = 'x'$$, '42501', null, 'a
 select throws_ok($$delete from public.feedback$$, '42501', null, 'anon cannot delete feedback');
 
 reset role;
+select is(
+  (select string_agg(distinct privilege_type, ',') from information_schema.role_table_grants
+    where table_schema = 'public' and table_name = 'feedback' and grantee in ('anon', 'authenticated')),
+  null, 'API roles hold no table-wide privileges, only the insert columns');
 select results_eq($$select message, processed_at is null from public.feedback$$,
   $$values ('Swipe hängt'::text, true)$$, 'text is trimmed, row waits for the bot');
 
