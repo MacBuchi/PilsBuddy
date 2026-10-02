@@ -1,0 +1,1785 @@
+[
+  {
+    "id": "molson-canadian",
+    "name": "Molson Canadian",
+    "fullName": "Molson Canadian",
+    "brewery": "Molson Coors",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Toronto",
+    "style": "American Lager",
+    "abv": 5.0,
+    "ibu": 15,
+    "source": "https://www.origlio.com/products/molson/molson-canadian-lager/",
+    "verified": "2026-10-02",
+    "note": "distributor sheet",
+    "de": {
+      "description": "Kanadas Lager schlechthin: hell, mild gehopft, sehr süffig.",
+      "humorousBio": "Hat ein Ahornblatt auf der Dose und meint es ernst.",
+      "disLikeQuip": "Du hast Kanada abgelehnt. Kanada entschuldigt sich trotzdem.",
+      "tags": [
+        "süffig",
+        "mild",
+        "Ahornblatt"
+      ]
+    },
+    "en": {
+      "description": "Canada's lager par excellence: pale, mildly hopped, very easy-drinking.",
+      "humorousBio": "Has a maple leaf on the can and means it.",
+      "disLikeQuip": "You turned down Canada. Canada apologises anyway.",
+      "tags": [
+        "easy-drinking",
+        "mild",
+        "maple leaf"
+      ]
+    }
+  },
+  {
+    "id": "labatt-blue",
+    "name": "Labatt Blue",
+    "fullName": "Labatt Blue",
+    "brewery": "Labatt",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "London",
+    "style": "American Lager",
+    "abv": 5.0,
+    "ibu": 11,
+    "source": "https://www.origlio.com/products/labatt/labatt-blue/",
+    "verified": "2026-10-02",
+    "note": "distributor sheet",
+    "de": {
+      "description": "Mildes Lager aus London, Ontario – seit Jahrzehnten eines der meistverkauften Biere Kanadas.",
+      "humorousBio": "Blau ist keine Farbe, sondern eine Lebenseinstellung.",
+      "disLikeQuip": "Blau gemacht. Aber anders als gedacht.",
+      "tags": [
+        "mild",
+        "süffig",
+        "Klassiker"
+      ]
+    },
+    "en": {
+      "description": "Mild lager from London, Ontario – one of Canada’s best sellers for decades.",
+      "humorousBio": "Blue is not a colour, it is a lifestyle.",
+      "disLikeQuip": "Feeling blue now. Not the good kind.",
+      "tags": [
+        "mild",
+        "easy-drinking",
+        "classic"
+      ]
+    }
+  },
+  {
+    "id": "moosehead-lager",
+    "name": "Moosehead",
+    "fullName": "Moosehead Lager",
+    "brewery": "Moosehead Breweries",
+    "country": "Kanada",
+    "region": "New Brunswick",
+    "city": "Saint John",
+    "style": "American Lager",
+    "abv": 5.0,
+    "ibu": 13,
+    "source": "https://www.origlio.com/products/moosehead/moosehead/",
+    "verified": "2026-10-02",
+    "note": "+ CSV pdf unitedstatesbeverage",
+    "de": {
+      "description": "Goldenes Lager aus Saint John, New Brunswick – von Kanadas ältester unabhängiger Brauerei.",
+      "humorousBio": "Trägt einen Elch im Logo und Familienbesitz im Herzen.",
+      "disLikeQuip": "Der Elch schaut dich enttäuscht an. Lange.",
+      "tags": [
+        "golden",
+        "mild",
+        "Elch"
+      ]
+    },
+    "en": {
+      "description": "Golden lager from Saint John, New Brunswick – from Canada’s oldest independent brewery.",
+      "humorousBio": "Wears a moose on the label and a family business at heart.",
+      "disLikeQuip": "The moose is giving you a long, disappointed look.",
+      "tags": [
+        "golden",
+        "mild",
+        "moose"
+      ]
+    }
+  },
+  {
+    "id": "keiths-ipa",
+    "name": "Keith's IPA",
+    "fullName": "Alexander Keith's India Pale Ale",
+    "brewery": "Alexander Keith's (Labatt)",
+    "country": "Kanada",
+    "region": "Neuschottland",
+    "city": "Halifax",
+    "style": "Pale Ale",
+    "abv": 5.0,
+    "source": "https://en.wikipedia.org/wiki/Alexander_Keith%27s_Brewery",
+    "verified": "2026-10-02",
+    "note": "lightly hopped, not a real IPA",
+    "adjust": [
+      {
+        "axis": "hopIntensity",
+        "delta": -35,
+        "reason": "lightly hopped",
+        "source": "https://en.wikipedia.org/wiki/Alexander_Keith%27s_Brewery"
+      },
+      {
+        "axis": "bitterness",
+        "delta": -25,
+        "reason": "lightly hopped",
+        "source": "https://en.wikipedia.org/wiki/Alexander_Keith%27s_Brewery"
+      }
+    ],
+    "de": {
+      "description": "Der Stolz von Halifax: heißt IPA, ist aber ein sanftes, leicht gehopftes Ale.",
+      "humorousBio": "Nennt sich IPA. Hopfenfans nennen es anders.",
+      "disLikeQuip": "Die Nova Scotians singen jetzt traurige Seemannslieder.",
+      "tags": [
+        "sanft",
+        "Halifax",
+        "Kultmarke"
+      ]
+    },
+    "en": {
+      "description": "The pride of Halifax: called an IPA, but really a gentle, lightly hopped ale.",
+      "humorousBio": "Calls itself an IPA. Hop fans call it something else.",
+      "disLikeQuip": "Somewhere in Nova Scotia a sad sea shanty starts playing.",
+      "tags": [
+        "gentle",
+        "Halifax",
+        "cult brand"
+      ]
+    }
+  },
+  {
+    "id": "kokanee",
+    "name": "Kokanee",
+    "fullName": "Kokanee",
+    "brewery": "Columbia Brewery (Labatt)",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Creston",
+    "style": "American Lager",
+    "abv": 5.0,
+    "source": "https://en.wikipedia.org/wiki/Kokanee_beer",
+    "verified": "2026-10-02",
+    "de": {
+      "description": "Mildes Lager aus Creston in den Rocky Mountains von British Columbia.",
+      "humorousBio": "Behauptet, mit Gletscherwasser zu tun zu haben. Sieht jedenfalls kühl aus.",
+      "disLikeQuip": "Der Sasquatch aus der Werbung ist gekränkt.",
+      "tags": [
+        "mild",
+        "Berge",
+        "süffig"
+      ]
+    },
+    "en": {
+      "description": "Mild lager from Creston in the Rocky Mountains of British Columbia.",
+      "humorousBio": "Claims a link to glacier water. Looks chilled, at least.",
+      "disLikeQuip": "The Sasquatch from the ads is offended.",
+      "tags": [
+        "mild",
+        "mountains",
+        "easy-drinking"
+      ]
+    }
+  },
+  {
+    "id": "molson-export",
+    "name": "Molson Export",
+    "fullName": "Molson Export",
+    "brewery": "Molson Coors",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Montréal",
+    "style": "Blonde Ale",
+    "abv": 5.0,
+    "source": "https://en.wikipedia.org/wiki/Molson_Export",
+    "verified": "2026-10-02",
+    "note": "since 1903",
+    "de": {
+      "description": "Helles Ale mit Molsons historischer Hefe – die älteste Molson-Marke, seit 1903.",
+      "humorousBio": "In Québec nennen sie es liebevoll „une Ex“.",
+      "disLikeQuip": "Une Ex weniger. Québec zuckt mit den Schultern.",
+      "tags": [
+        "Ale",
+        "Québec",
+        "seit 1903"
+      ]
+    },
+    "en": {
+      "description": "Blonde ale brewed with Molson’s historic yeast – the oldest Molson brand, since 1903.",
+      "humorousBio": "In Québec they lovingly call it “une Ex”.",
+      "disLikeQuip": "One Ex fewer. Québec shrugs.",
+      "tags": [
+        "ale",
+        "Québec",
+        "since 1903"
+      ]
+    }
+  },
+  {
+    "id": "fin-du-monde",
+    "name": "La Fin du Monde",
+    "fullName": "La Fin du Monde",
+    "brewery": "Unibroue",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Chambly",
+    "style": "Tripel",
+    "abv": 9.0,
+    "ibu": 19,
+    "source": "https://www.beerandbrewing.com/review/la-fin-du-monde",
+    "verified": "2026-10-02",
+    "note": "since 1994, most awarded CA beer",
+    "de": {
+      "description": "Goldenes Tripel aus Chambly, in der Flasche nachvergoren: Frucht, Gewürz, wenig Bittere.",
+      "humorousBio": "Das am meisten ausgezeichnete Bier Kanadas. Erwähnt es nur fünfmal am Tag.",
+      "disLikeQuip": "Für dich ist das Ende der Welt offenbar schon da.",
+      "tags": [
+        "Tripel",
+        "würzig",
+        "stark"
+      ]
+    },
+    "en": {
+      "description": "Golden tripel from Chambly, refermented in the bottle: fruit, spice, little bitterness.",
+      "humorousBio": "The most awarded beer in Canada. Mentions it only five times a day.",
+      "disLikeQuip": "For you, the end of the world has apparently arrived.",
+      "tags": [
+        "tripel",
+        "spicy",
+        "strong"
+      ]
+    }
+  },
+  {
+    "id": "blanche-de-chambly",
+    "name": "Blanche de Chambly",
+    "fullName": "Blanche de Chambly",
+    "brewery": "Unibroue",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Chambly",
+    "style": "Witbier",
+    "abv": 5.0,
+    "ibu": 10,
+    "source": "https://www.unibroue.com/en-us/beers/classics/blanche-de-chambly",
+    "verified": "2026-10-02",
+    "note": "since 1992, SRM 4",
+    "de": {
+      "description": "Belgisches Witbier aus Québec: trüb, hell, Koriander und Orangenschale.",
+      "humorousBio": "Trinkt sich wie ein Sommertag am Richelieu.",
+      "disLikeQuip": "Die Orangenschale fühlt sich übergangen.",
+      "tags": [
+        "Witbier",
+        "trüb",
+        "Koriander"
+      ]
+    },
+    "en": {
+      "description": "Belgian-style witbier from Québec: cloudy, pale, coriander and orange peel.",
+      "humorousBio": "Drinks like a summer day on the Richelieu.",
+      "disLikeQuip": "The orange peel feels overlooked.",
+      "tags": [
+        "witbier",
+        "cloudy",
+        "coriander"
+      ]
+    }
+  },
+  {
+    "id": "maudite",
+    "name": "Maudite",
+    "fullName": "Maudite",
+    "brewery": "Unibroue",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Chambly",
+    "style": "Dubbel",
+    "abv": 8.0,
+    "ibu": 22,
+    "source": "https://www.unibroue.com/en-us/beers/classics/maudite",
+    "verified": "2026-10-02",
+    "note": "strong amber-red, since 1992",
+    "de": {
+      "description": "Starkes rotbraunes Ale mit Gewürz und Frucht – Kanadas erstes Starkbier dieser Art.",
+      "humorousBio": "Heißt „die Verfluchte“. Auf dem Etikett paddeln Kanuten mit dem Teufel.",
+      "disLikeQuip": "Fluch abgewendet. Vorerst.",
+      "tags": [
+        "stark",
+        "würzig",
+        "Legende"
+      ]
+    },
+    "en": {
+      "description": "Strong amber-red ale with spice and fruit – Canada’s first strong beer of its kind.",
+      "humorousBio": "Means “the damned one”. The label shows canoeists paddling with the devil.",
+      "disLikeQuip": "Curse averted. For now.",
+      "tags": [
+        "strong",
+        "spicy",
+        "legend"
+      ]
+    }
+  },
+  {
+    "id": "peche-mortel",
+    "name": "Péché Mortel",
+    "fullName": "Péché Mortel",
+    "brewery": "Dieu du Ciel!",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Montréal",
+    "style": "Imperial Stout",
+    "abv": 9.5,
+    "ibu": 76,
+    "source": "https://thefullpint.com/beer-reviews/dieu-du-ciel-peche-mortel",
+    "verified": "2026-10-02",
+    "note": "coffee, since 2001",
+    "de": {
+      "description": "Imperial Stout mit Kaffee aus fairem Handel: tiefschwarz, dicht, kräftig geröstet.",
+      "humorousBio": "Todsünde im Namen, Espresso im Blut.",
+      "disLikeQuip": "Du widerstehst der Todsünde. Respekt, oder Angst?",
+      "tags": [
+        "Kaffee",
+        "Imperial Stout",
+        "Montréal"
+      ]
+    },
+    "en": {
+      "description": "Imperial stout with fair-trade coffee: jet black, dense, deeply roasted.",
+      "humorousBio": "Mortal sin in the name, espresso in the blood.",
+      "disLikeQuip": "You resisted mortal sin. Respect, or fear?",
+      "tags": [
+        "coffee",
+        "imperial stout",
+        "Montréal"
+      ]
+    }
+  },
+  {
+    "id": "rosee-hibiscus",
+    "name": "Rosée d'Hibiscus",
+    "fullName": "Rosée d'Hibiscus",
+    "brewery": "Dieu du Ciel!",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Montréal",
+    "style": "Witbier",
+    "abv": 5.9,
+    "source": "https://www.lcbo.com/en/dieu-du-ciel-rosee-d-hibiscus-41113",
+    "verified": "2026-10-02",
+    "note": "hibiscus wheat, pink",
+    "adjust": [
+      {
+        "axis": "dryness",
+        "delta": 10,
+        "reason": "floral and lightly acidic",
+        "source": "https://www.lcbo.com/en/dieu-du-ciel-rosee-d-hibiscus-41113"
+      }
+    ],
+    "de": {
+      "description": "Weizenbier mit Hibiskusblüten: rosa im Glas, blumig, leicht säuerlich.",
+      "humorousBio": "Das einzige Bier, das zu deinem Instagram-Filter passt.",
+      "disLikeQuip": "Rosa war dir zu viel? Schade, es war so stilvoll.",
+      "tags": [
+        "Hibiskus",
+        "blumig",
+        "rosa"
+      ]
+    },
+    "en": {
+      "description": "Wheat beer with hibiscus flowers: pink in the glass, floral, lightly tart.",
+      "humorousBio": "The only beer that matches your Instagram filter.",
+      "disLikeQuip": "Too pink for you? Shame, it was so stylish.",
+      "tags": [
+        "hibiscus",
+        "floral",
+        "pink"
+      ]
+    }
+  },
+  {
+    "id": "boreale-rousse",
+    "name": "Boréale Rousse",
+    "fullName": "Boréale Rousse",
+    "brewery": "Brasseurs du Nord",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Blainville",
+    "style": "Amber",
+    "abv": 5.0,
+    "ibu": 28,
+    "source": "https://www.boreale.com/en/beers/classiques/la-rousse",
+    "verified": "2026-10-02",
+    "note": "since 1988 first QC red ale",
+    "de": {
+      "description": "Rotes Ale aus Blainville – seit 1988 das erste seiner Art in Québec.",
+      "humorousBio": "War schon rot, bevor Craft Beer bunt wurde.",
+      "disLikeQuip": "Die Rousse errötet. Vor Wut.",
+      "tags": [
+        "rot",
+        "malzig",
+        "Québec"
+      ]
+    },
+    "en": {
+      "description": "Red ale from Blainville – since 1988 the first of its kind in Québec.",
+      "humorousBio": "Was red before craft beer got colourful.",
+      "disLikeQuip": "The Rousse is blushing. With rage.",
+      "tags": [
+        "red",
+        "malty",
+        "Québec"
+      ]
+    }
+  },
+  {
+    "id": "st-ambroise-stout",
+    "name": "St-Ambroise Stout",
+    "fullName": "St-Ambroise Oatmeal Stout",
+    "brewery": "Brasserie McAuslan",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Montréal",
+    "style": "Stout",
+    "abv": 5.0,
+    "ibu": 45,
+    "source": "https://www.beertasting.com/en/beers/mcauslan-st-ambroise-oatmeal-stout",
+    "verified": "2026-10-02",
+    "note": "WBC 1994 platinum",
+    "de": {
+      "description": "Haferflocken-Stout aus Montréal mit Espresso- und Schokoladennoten, mehrfach prämiert.",
+      "humorousBio": "Frühstück, Dessert und Feierabend in einer Flasche.",
+      "disLikeQuip": "Kein Hafer für dich. Auch gut, mehr für uns.",
+      "tags": [
+        "Hafer",
+        "röstig",
+        "Schokolade"
+      ]
+    },
+    "en": {
+      "description": "Oatmeal stout from Montréal with espresso and chocolate notes, multi-award-winning.",
+      "humorousBio": "Breakfast, dessert and knocking-off time in one bottle.",
+      "disLikeQuip": "No oats for you. Fine, more for us.",
+      "tags": [
+        "oats",
+        "roasty",
+        "chocolate"
+      ]
+    }
+  },
+  {
+    "id": "la-buteuse",
+    "name": "La Buteuse",
+    "fullName": "La Buteuse",
+    "brewery": "Le Trou du Diable",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Shawinigan",
+    "style": "Tripel",
+    "abv": 10.0,
+    "ibu": 60,
+    "source": "https://troududiable.com/en/beers/la-buteuse/",
+    "verified": "2026-10-02",
+    "note": "less sweet tripel",
+    "adjust": [
+      {
+        "axis": "sweetness",
+        "delta": -15,
+        "reason": "less sweet than the Westmalle Tripel that inspired it",
+        "source": "https://troududiable.com/en/beers/la-buteuse/"
+      }
+    ],
+    "de": {
+      "description": "Tripel aus Shawinigan mit 10 %: Champagner-Perlage, Gewürz, trockener als die belgischen Vorbilder.",
+      "humorousBio": "Kommt aus dem „Teufelsloch“. Benimmt sich entsprechend.",
+      "disLikeQuip": "Der Teufel nimmt’s sportlich. Diesmal.",
+      "tags": [
+        "Tripel",
+        "stark",
+        "perlend"
+      ]
+    },
+    "en": {
+      "description": "10 % tripel from Shawinigan: champagne-like bubbles, spice, drier than its Belgian role models.",
+      "humorousBio": "Comes from the “Devil’s Hole”. Behaves accordingly.",
+      "disLikeQuip": "The devil takes it on the chin. This time.",
+      "tags": [
+        "tripel",
+        "strong",
+        "sparkling"
+      ]
+    }
+  },
+  {
+    "id": "vache-folle-milk-stout",
+    "name": "Vache Folle",
+    "fullName": "Vache Folle Imperial Milk Stout",
+    "brewery": "MicroBrasserie Charlevoix",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Baie-Saint-Paul",
+    "style": "Milk Stout",
+    "abv": 9.0,
+    "source": "https://kensingtonwinemarket.com/blog/3843/silky-sultry-stouts-thursday-january-21",
+    "verified": "2026-10-02",
+    "note": "CSV wrongly at Trou du Diable/Lac-St-Jean",
+    "de": {
+      "description": "Starkes Milk Stout aus Baie-Saint-Paul: Röstmalz, Laktose-Süße, viel Schokolade.",
+      "humorousBio": "Die verrückte Kuh gibt keine Milch, sondern 9 Prozent.",
+      "disLikeQuip": "Die Kuh ist jetzt noch ein bisschen verrückter.",
+      "tags": [
+        "Laktose",
+        "Schokolade",
+        "stark"
+      ]
+    },
+    "en": {
+      "description": "Strong milk stout from Baie-Saint-Paul: roast, lactose sweetness, plenty of chocolate.",
+      "humorousBio": "The mad cow gives no milk, just 9 percent.",
+      "disLikeQuip": "The cow is now slightly madder.",
+      "tags": [
+        "lactose",
+        "chocolate",
+        "strong"
+      ]
+    }
+  },
+  {
+    "id": "steam-whistle",
+    "name": "Steam Whistle",
+    "fullName": "Steam Whistle Pilsner",
+    "brewery": "Steam Whistle Brewing",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Toronto",
+    "style": "Pils",
+    "abv": 5.0,
+    "ibu": 22,
+    "source": "https://steamwhistle.ca/products/steam-whistle-pilsner-keg",
+    "verified": "2026-10-02",
+    "note": "Saaz; IBU from beertasting.com",
+    "de": {
+      "description": "Pilsner aus einem alten Lokschuppen in Toronto, mit Saazer Hopfen und knackiger Bittere.",
+      "humorousBio": "Macht nur ein Bier – das aber mit Pfiff.",
+      "disLikeQuip": "Kein Pfiff für dich. Die Lok fährt ohne dich.",
+      "tags": [
+        "Pils",
+        "Saaz",
+        "Toronto"
+      ]
+    },
+    "en": {
+      "description": "Pilsner from an old railway roundhouse in Toronto, with Saaz hops and a crisp bite.",
+      "humorousBio": "Makes only one beer – but with a whistle.",
+      "disLikeQuip": "No whistle for you. The train leaves without you.",
+      "tags": [
+        "pils",
+        "Saaz",
+        "Toronto"
+      ]
+    }
+  },
+  {
+    "id": "lug-tread",
+    "name": "Lug Tread",
+    "fullName": "Lug Tread",
+    "brewery": "Beau's Brewing",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Vankleek Hill",
+    "style": "Kölsch",
+    "abv": 5.2,
+    "ibu": 21,
+    "source": "https://beaus.ca/products/lug-tread",
+    "verified": "2026-10-02",
+    "note": "lagered ale (kölsch-like)",
+    "de": {
+      "description": "Obergäriges, kalt gelagertes Ale aus Vankleek Hill – fruchtig wie ein Ale, frisch wie ein Lager.",
+      "humorousBio": "Heißt nach Traktorprofil. Fährt sich auch so geschmeidig.",
+      "disLikeQuip": "Der Traktor wendet. Ohne dich.",
+      "tags": [
+        "Kölsch-Art",
+        "frisch",
+        "Bio"
+      ]
+    },
+    "en": {
+      "description": "Top-fermented, cold-aged ale from Vankleek Hill – fruity like an ale, crisp like a lager.",
+      "humorousBio": "Named after tractor tread. Rolls just as smoothly.",
+      "disLikeQuip": "The tractor turns around. Without you.",
+      "tags": [
+        "Kölsch-style",
+        "crisp",
+        "organic"
+      ]
+    }
+  },
+  {
+    "id": "creemore-lager",
+    "name": "Creemore Lager",
+    "fullName": "Creemore Springs Premium Lager",
+    "brewery": "Creemore Springs",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Creemore",
+    "style": "Lager",
+    "abv": 5.0,
+    "ibu": 24,
+    "source": "https://www.creemoresprings.com/en-CA/beers/year-round/premium-lager",
+    "verified": "2026-10-02",
+    "note": "amber Bohemian lager, hazelnut",
+    "adjust": [
+      {
+        "axis": "maltiness",
+        "delta": 20,
+        "reason": "rich maltiness, lightly nutty",
+        "source": "https://www.creemoresprings.com/en-CA/beers/year-round/premium-lager"
+      }
+    ],
+    "de": {
+      "description": "Bernsteinfarbenes Lager aus Creemore, Ontario: reiches Malz, ein Hauch Haselnuss, trockener Hopfen.",
+      "humorousBio": "Kleinstadt, großes Malz.",
+      "disLikeQuip": "Creemore hat 1 300 Einwohner. Alle sind jetzt traurig.",
+      "tags": [
+        "malzig",
+        "Haselnuss",
+        "bernstein"
+      ]
+    },
+    "en": {
+      "description": "Amber lager from Creemore, Ontario: rich malt, a hint of hazelnut, dry hops.",
+      "humorousBio": "Small town, big malt.",
+      "disLikeQuip": "Creemore has 1,300 residents. All of them are sad now.",
+      "tags": [
+        "malty",
+        "hazelnut",
+        "amber"
+      ]
+    }
+  },
+  {
+    "id": "mad-tom",
+    "name": "Mad Tom IPA",
+    "fullName": "Mad Tom IPA",
+    "brewery": "Muskoka Brewery",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Bracebridge",
+    "style": "IPA",
+    "abv": 6.4,
+    "ibu": 45,
+    "source": "https://muskokabrewery.com/beverages/mad-tom/",
+    "verified": "2026-10-02",
+    "note": "older 64 IBU",
+    "de": {
+      "description": "IPA aus Bracebridge in Muskoka: Zitrus, Kiefer, klare Bittere.",
+      "humorousBio": "Benannt nach einem Kanu-Wildling. Paddelt gegen jeden Strom.",
+      "disLikeQuip": "Mad Tom ist jetzt noch ein bisschen verrückter.",
+      "tags": [
+        "hopfig",
+        "Zitrus",
+        "Muskoka"
+      ]
+    },
+    "en": {
+      "description": "IPA from Bracebridge in Muskoka: citrus, pine, a clear bitterness.",
+      "humorousBio": "Named after a canoe wild man. Paddles against every current.",
+      "disLikeQuip": "Mad Tom is now a little madder.",
+      "tags": [
+        "hoppy",
+        "citrus",
+        "Muskoka"
+      ]
+    }
+  },
+  {
+    "id": "ransack-universe",
+    "name": "Ransack the Universe",
+    "fullName": "Ransack the Universe",
+    "brewery": "Collective Arts Brewing",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Hamilton",
+    "style": "IPA",
+    "abv": 6.9,
+    "ibu": 85,
+    "source": "https://www.taphunter.com/beer/collective-arts-ransack-the-universe/5448096687456256",
+    "verified": "2026-10-02",
+    "note": "Galaxy+Mosaic",
+    "adjust": [
+      {
+        "axis": "bitterness",
+        "delta": -30,
+        "reason": "finishes crisp but not bitter",
+        "source": "https://www.monkeysfightingrobots.com/beer-collective-arts-brewing-rtu-ipa/"
+      }
+    ],
+    "de": {
+      "description": "IPA aus Hamilton mit Galaxy und Mosaic: Mango, Tropenfrucht, knackiger Abgang.",
+      "humorousBio": "Jede Dose ist eine kleine Kunstausstellung.",
+      "disLikeQuip": "Das Universum bleibt ungeplündert. Danke.",
+      "tags": [
+        "Galaxy",
+        "Mosaic",
+        "tropisch"
+      ]
+    },
+    "en": {
+      "description": "IPA from Hamilton with Galaxy and Mosaic: mango, tropical fruit, crisp finish.",
+      "humorousBio": "Every can is a tiny art exhibition.",
+      "disLikeQuip": "The universe stays un-ransacked. Thanks.",
+      "tags": [
+        "Galaxy",
+        "Mosaic",
+        "tropical"
+      ]
+    }
+  },
+  {
+    "id": "canuck-pale-ale",
+    "name": "Canuck Pale Ale",
+    "fullName": "Canuck Pale Ale",
+    "brewery": "Great Lakes Brewery",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Toronto",
+    "style": "Pale Ale",
+    "abv": 5.2,
+    "ibu": 35,
+    "source": "https://www.beertasting.com/en/beers/great-lakes-brewing-co-canuck-pale-ale",
+    "verified": "2026-10-02",
+    "note": "West Coast pale, 2010",
+    "de": {
+      "description": "Pale Ale nach Westküsten-Art aus Toronto, zu den Olympischen Spielen 2010 erstmals gebraut.",
+      "humorousBio": "Trägt den Spitznamen eines ganzen Landes. Kein Druck.",
+      "disLikeQuip": "Ein Canuck weniger. Das Eishockeyteam spürt es.",
+      "tags": [
+        "hopfig",
+        "Westküste",
+        "Toronto"
+      ]
+    },
+    "en": {
+      "description": "West Coast-style pale ale from Toronto, first brewed for the 2010 Olympic Games.",
+      "humorousBio": "Carries the nickname of a whole country. No pressure.",
+      "disLikeQuip": "One Canuck fewer. The hockey team can feel it.",
+      "tags": [
+        "hoppy",
+        "West Coast",
+        "Toronto"
+      ]
+    }
+  },
+  {
+    "id": "jelly-king",
+    "name": "Jelly King",
+    "fullName": "Jelly King",
+    "brewery": "Bellwoods Brewery",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Toronto",
+    "style": "Sour Ale",
+    "abv": 5.6,
+    "source": "https://bellwoodsbrewery.com/products/jelly-king-can",
+    "verified": "2026-10-02",
+    "note": "dry-hopped sour, Citra/Amarillo/Cascade",
+    "adjust": [
+      {
+        "axis": "hopIntensity",
+        "delta": 40,
+        "reason": "generous dry hop with Citra, Amarillo and Cascade",
+        "source": "https://bellwoodsbrewery.com/products/jelly-king-can"
+      }
+    ],
+    "de": {
+      "description": "Gestopftes Sauerbier aus Toronto: säuerlich, Pfirsich, Mandarine, Grapefruit.",
+      "humorousBio": "Sauer und hopfig zugleich – konnte sich einfach nicht entscheiden.",
+      "disLikeQuip": "Der König ist gestürzt. Aber nur bei dir.",
+      "tags": [
+        "sauer",
+        "gestopft",
+        "fruchtig"
+      ]
+    },
+    "en": {
+      "description": "Dry-hopped sour from Toronto: tart, peach, tangerine, grapefruit.",
+      "humorousBio": "Sour and hoppy at once – simply couldn’t decide.",
+      "disLikeQuip": "The king has fallen. But only for you.",
+      "tags": [
+        "sour",
+        "dry-hopped",
+        "fruity"
+      ]
+    }
+  },
+  {
+    "id": "boneshaker",
+    "name": "Boneshaker",
+    "fullName": "Boneshaker IPA",
+    "brewery": "Amsterdam Brewery",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Toronto",
+    "style": "IPA",
+    "abv": 7.1,
+    "ibu": 80,
+    "source": "https://shop.amsterdambeer.com/products/boneshaker-ipa-473ml-can",
+    "verified": "2026-10-02",
+    "de": {
+      "description": "Kräftiges IPA aus Toronto, durchgehend gehopft: Zitrus, Harz, Bittere mit Ansage.",
+      "humorousBio": "Schüttelt die Knochen, nicht nur die Geschmacksknospen.",
+      "disLikeQuip": "Deine Knochen bleiben ungeschüttelt. Langweilig.",
+      "tags": [
+        "hopfig",
+        "kräftig",
+        "Toronto"
+      ]
+    },
+    "en": {
+      "description": "Bold IPA from Toronto, hopped throughout the boil: citrus, resin, a bitterness that means it.",
+      "humorousBio": "Shakes your bones, not just your taste buds.",
+      "disLikeQuip": "Your bones stay unshaken. Boring.",
+      "tags": [
+        "hoppy",
+        "bold",
+        "Toronto"
+      ]
+    }
+  },
+  {
+    "id": "mill-street-organic",
+    "name": "Mill Street Organic",
+    "fullName": "Mill Street Original Organic Lager",
+    "brewery": "Mill Street Brewery",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Toronto",
+    "style": "Light Lager",
+    "abv": 4.2,
+    "ibu": 11,
+    "source": "https://www.beertasting.com/en/beers/mill-street-original-organic-lager",
+    "verified": "2026-10-02",
+    "de": {
+      "description": "Leichtes Bio-Lager aus Torontos Distillery District.",
+      "humorousBio": "Bio, leicht und ein bisschen stolz darauf.",
+      "disLikeQuip": "Selbst die Bio-Gerste ist enttäuscht.",
+      "tags": [
+        "Bio",
+        "leicht",
+        "Toronto"
+      ]
+    },
+    "en": {
+      "description": "Light organic lager from Toronto’s Distillery District.",
+      "humorousBio": "Organic, light and a little proud of it.",
+      "disLikeQuip": "Even the organic barley is disappointed.",
+      "tags": [
+        "organic",
+        "light",
+        "Toronto"
+      ]
+    }
+  },
+  {
+    "id": "arkell-best-bitter",
+    "name": "Arkell Best Bitter",
+    "fullName": "Arkell Best Bitter",
+    "brewery": "Wellington Brewery",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Guelph",
+    "style": "Bitter",
+    "abv": 4.0,
+    "ibu": 20,
+    "source": "https://www.wellingtonbrewery.ca/beers/year-round/arkell-best-bitter",
+    "verified": "2026-10-02",
+    "note": "since 1985",
+    "de": {
+      "description": "Bernsteinfarbenes Bitter aus Guelph seit 1985: Karamell, Keks, feiner Blumenhopfen.",
+      "humorousBio": "Englischer als der Tee der Queen, aber aus Ontario.",
+      "disLikeQuip": "Die Briten in Guelph rümpfen die Nase.",
+      "tags": [
+        "Bitter",
+        "Karamell",
+        "seit 1985"
+      ]
+    },
+    "en": {
+      "description": "Amber bitter from Guelph since 1985: caramel, biscuit, delicate floral hops.",
+      "humorousBio": "More English than the Queen’s tea, but from Ontario.",
+      "disLikeQuip": "The Brits in Guelph wrinkle their noses.",
+      "tags": [
+        "bitter",
+        "caramel",
+        "since 1985"
+      ]
+    }
+  },
+  {
+    "id": "juicy-ass",
+    "name": "Juicy Ass IPA",
+    "fullName": "Juicy Ass IPA",
+    "brewery": "Flying Monkeys Craft Brewery",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Barrie",
+    "style": "IPA",
+    "abv": 6.5,
+    "ibu": 69,
+    "source": "https://www.lcbo.com/en/flying-monkeys-juicy-ass-22930",
+    "verified": "2026-10-02",
+    "de": {
+      "description": "Trübgoldenes IPA aus Barrie: Grapefruit, Ananas, Kiefer und ein bitterer Abgang.",
+      "humorousBio": "Der Name ist Programm. Die Dose auch.",
+      "disLikeQuip": "Die fliegenden Affen sind beleidigt abgeflogen.",
+      "tags": [
+        "Grapefruit",
+        "Ananas",
+        "hopfig"
+      ]
+    },
+    "en": {
+      "description": "Hazy gold IPA from Barrie: grapefruit, pineapple, pine and a bitter finish.",
+      "humorousBio": "The name says it all. So does the can.",
+      "disLikeQuip": "The flying monkeys have flown off in a huff.",
+      "tags": [
+        "grapefruit",
+        "pineapple",
+        "hoppy"
+      ]
+    }
+  },
+  {
+    "id": "sleeman-cream-ale",
+    "name": "Sleeman Cream Ale",
+    "fullName": "Sleeman Cream Ale",
+    "brewery": "Sleeman Breweries",
+    "country": "Kanada",
+    "region": "Ontario",
+    "city": "Guelph",
+    "style": "Cream Ale",
+    "abv": 5.0,
+    "source": "https://www.lcbo.com/en/sleeman-cream-ale-910018",
+    "verified": "2026-10-02",
+    "note": "CSV had \"Sleeman Original\"",
+    "de": {
+      "description": "Sanftes Cream Ale aus Guelph in der klaren Flasche mit dem Biber.",
+      "humorousBio": "Hält sich für cremig. Ist es auch, ein bisschen.",
+      "disLikeQuip": "Der Biber auf dem Etikett nagt jetzt an deinem Ruf.",
+      "tags": [
+        "sanft",
+        "Biber",
+        "Klarglas"
+      ]
+    },
+    "en": {
+      "description": "Smooth cream ale from Guelph, in the clear bottle with the beaver.",
+      "humorousBio": "Thinks it’s creamy. It is, a little.",
+      "disLikeQuip": "The beaver on the label is now gnawing at your reputation.",
+      "tags": [
+        "smooth",
+        "beaver",
+        "clear bottle"
+      ]
+    }
+  },
+  {
+    "id": "english-bay-pale-ale",
+    "name": "English Bay Pale Ale",
+    "fullName": "English Bay Pale Ale",
+    "brewery": "Granville Island Brewing",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Vancouver",
+    "style": "Pale Ale",
+    "abv": 5.0,
+    "ibu": 18,
+    "source": "https://beertasting.com/en/beers/granville-english-bay-pale-ale",
+    "verified": "2026-10-02",
+    "note": "caramel malt, English style",
+    "adjust": [
+      {
+        "axis": "maltiness",
+        "delta": 10,
+        "reason": "caramel malt",
+        "source": "https://beertasting.com/en/beers/granville-english-bay-pale-ale"
+      }
+    ],
+    "de": {
+      "description": "Englisches Pale Ale aus Vancouver: Karamellmalz, leicht und frisch.",
+      "humorousBio": "Riecht ein bisschen nach Meer, wenn man sich Mühe gibt.",
+      "disLikeQuip": "Die Bucht bleibt englisch. Du bleibst trocken.",
+      "tags": [
+        "Karamell",
+        "leicht",
+        "Vancouver"
+      ]
+    },
+    "en": {
+      "description": "English-style pale ale from Vancouver: caramel malt, light and fresh.",
+      "humorousBio": "Smells a bit like the sea if you really try.",
+      "disLikeQuip": "The bay stays English. You stay dry.",
+      "tags": [
+        "caramel",
+        "light",
+        "Vancouver"
+      ]
+    }
+  },
+  {
+    "id": "blue-buck",
+    "name": "Blue Buck",
+    "fullName": "Blue Buck",
+    "brewery": "Phillips Brewing & Malting",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Victoria",
+    "style": "Pale Ale",
+    "abv": 5.0,
+    "source": "https://beermebc.com/2012/06/07/phillips-brewery-blue-buck-amber-ale/",
+    "verified": "2026-10-02",
+    "note": "English pale/amber",
+    "adjust": [
+      {
+        "axis": "hopIntensity",
+        "delta": -30,
+        "reason": "English-style pale ale, not hop-forward",
+        "source": "https://beermebc.com/2012/06/07/phillips-brewery-blue-buck-amber-ale/"
+      }
+    ],
+    "de": {
+      "description": "Bernsteinfarbenes Ale nach englischer Art aus Victoria – Phillips’ Dauerbrenner.",
+      "humorousBio": "Der blaue Hirsch ist das Wappentier jeder Grillparty in Victoria.",
+      "disLikeQuip": "Der Hirsch röhrt. Beleidigt.",
+      "tags": [
+        "bernstein",
+        "englisch",
+        "Victoria"
+      ]
+    },
+    "en": {
+      "description": "Amber English-style ale from Victoria – Phillips’ evergreen.",
+      "humorousBio": "The blue buck is the heraldic beast of every barbecue in Victoria.",
+      "disLikeQuip": "The buck bellows. Offended.",
+      "tags": [
+        "amber",
+        "English",
+        "Victoria"
+      ]
+    }
+  },
+  {
+    "id": "fat-tug",
+    "name": "Fat Tug",
+    "fullName": "Fat Tug IPA",
+    "brewery": "Driftwood Brewery",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Victoria",
+    "style": "IPA",
+    "abv": 7.0,
+    "ibu": 80,
+    "source": "https://driftwoodbeer.com/beers/fat-tug-ipa/",
+    "verified": "2026-10-02",
+    "note": "80+ IBU per brewery (CSV said 100)",
+    "de": {
+      "description": "Nordwest-IPA aus Victoria: Grapefruit, Mango, Maracuja und über 80 IBU.",
+      "humorousBio": "Ein Schlepper, der Hopfen statt Schiffe zieht.",
+      "disLikeQuip": "Der Schlepper legt ohne dich ab.",
+      "tags": [
+        "hopfig",
+        "Mango",
+        "bitter"
+      ]
+    },
+    "en": {
+      "description": "Northwest IPA from Victoria: grapefruit, mango, passion fruit and 80+ IBU.",
+      "humorousBio": "A tugboat that hauls hops instead of ships.",
+      "disLikeQuip": "The tug casts off without you.",
+      "tags": [
+        "hoppy",
+        "mango",
+        "bitter"
+      ]
+    }
+  },
+  {
+    "id": "red-racer-ipa",
+    "name": "Red Racer IPA",
+    "fullName": "Red Racer West Coast IPA",
+    "brewery": "Homefield Brewing (Central City)",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Surrey",
+    "style": "IPA",
+    "abv": 6.5,
+    "ibu": 80,
+    "source": "https://homefieldbrewing.ca/products/red-racer-west-coast-ipa/",
+    "verified": "2026-10-02",
+    "de": {
+      "description": "West-Coast-IPA aus Surrey mit 80 IBU – die Radlerin auf der Dose fährt Hopfen-Rennen.",
+      "humorousBio": "Fährt schneller, als dein Gaumen bremsen kann.",
+      "disLikeQuip": "Die Radlerin zieht ohne dich davon.",
+      "tags": [
+        "hopfig",
+        "bitter",
+        "Westküste"
+      ]
+    },
+    "en": {
+      "description": "West Coast IPA from Surrey with 80 IBU – the cyclist on the can races on hops.",
+      "humorousBio": "Goes faster than your palate can brake.",
+      "disLikeQuip": "The cyclist pulls away without you.",
+      "tags": [
+        "hoppy",
+        "bitter",
+        "West Coast"
+      ]
+    },
+    "note": "Central City Brewers + Distillers now trades as Homefield Brewing"
+  },
+  {
+    "id": "trash-panda",
+    "name": "Trash Panda",
+    "fullName": "Trash Panda Hazy IPA",
+    "brewery": "Parallel 49 Brewing",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Vancouver",
+    "style": "Hazy IPA",
+    "abv": 5.5,
+    "ibu": 55,
+    "source": "https://bc.thegrowler.ca/features/brews-news-new-releases-from-p49-foamers-folly-and-big-rock",
+    "verified": "2026-10-02",
+    "note": "launch article 5.5/55 (CSV had 6.5)",
+    "adjust": [
+      {
+        "axis": "bitterness",
+        "delta": -45,
+        "reason": "juicy IPA with mild bitterness",
+        "source": "https://www.whatsbrewing.ca/news/parallel-49-brewing-company-releases-trash-panda-northeast-style-hazy-ipa/"
+      }
+    ],
+    "de": {
+      "description": "Hazy IPA aus East Vancouver: Melone, Tropenfrucht, Birne, samtig und mild bitter.",
+      "humorousBio": "Der Waschbär auf der Dose hat den Hopfen aus der Tonne geholt.",
+      "disLikeQuip": "Der Waschbär wühlt jetzt in deinem Müll.",
+      "tags": [
+        "hazy",
+        "saftig",
+        "Waschbär"
+      ]
+    },
+    "en": {
+      "description": "Hazy IPA from East Vancouver: melon, tropical fruit, pear, velvety and mildly bitter.",
+      "humorousBio": "The raccoon on the can rescued the hops from the bin.",
+      "disLikeQuip": "The raccoon is now going through your trash.",
+      "tags": [
+        "hazy",
+        "juicy",
+        "raccoon"
+      ]
+    }
+  },
+  {
+    "id": "dark-matter",
+    "name": "Dark Matter",
+    "fullName": "Dark Matter",
+    "brewery": "Hoyne Brewing",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Victoria",
+    "style": "Brown Ale",
+    "abv": 5.3,
+    "ibu": 30,
+    "source": "https://www.taphunter.com/beer/hoyne-brewing-company-dark-matter/4657957738381312",
+    "verified": "2026-10-02",
+    "note": "elusive style, roasted chocolate",
+    "de": {
+      "description": "Dunkles Ale aus Victoria, das sich keinem Stil fügt: weich, geröstete Schokolade.",
+      "humorousBio": "Wie die echte dunkle Materie: keiner weiß genau, was es ist.",
+      "disLikeQuip": "Du hast etwas abgelehnt, das es offiziell nicht gibt.",
+      "tags": [
+        "dunkel",
+        "Schokolade",
+        "rätselhaft"
+      ]
+    },
+    "en": {
+      "description": "Dark ale from Victoria that refuses any style: soft, roasted chocolate.",
+      "humorousBio": "Like real dark matter: nobody knows exactly what it is.",
+      "disLikeQuip": "You turned down something that officially does not exist.",
+      "tags": [
+        "dark",
+        "chocolate",
+        "mysterious"
+      ]
+    }
+  },
+  {
+    "id": "what-the-huck",
+    "name": "What the Huck",
+    "fullName": "What the Huck",
+    "brewery": "Fernie Brewing",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Fernie",
+    "style": "Wheat Ale",
+    "abv": 5.0,
+    "ibu": 15,
+    "source": "https://www.beertasting.com/en/beers/fernie-what-the-huck",
+    "verified": "2026-10-02",
+    "note": "huckleberry wheat, 2008",
+    "adjust": [
+      {
+        "axis": "sweetness",
+        "delta": 10,
+        "reason": "huckleberry juice blended into the wheat ale",
+        "source": "https://www.beertasting.com/en/beers/fernie-what-the-huck"
+      }
+    ],
+    "de": {
+      "description": "Weizenale mit Heidelbeersaft aus Fernie in den Rocky Mountains.",
+      "humorousBio": "Der Name ist ein Wortspiel. Die Beeren sind echt.",
+      "disLikeQuip": "What the Huck? Genau das fragen wir uns auch.",
+      "tags": [
+        "Beeren",
+        "Weizen",
+        "Rockies"
+      ]
+    },
+    "en": {
+      "description": "Wheat ale with huckleberry juice from Fernie in the Rocky Mountains.",
+      "humorousBio": "The name is a pun. The berries are real.",
+      "disLikeQuip": "What the huck? Exactly what we’re asking.",
+      "tags": [
+        "berries",
+        "wheat",
+        "Rockies"
+      ]
+    }
+  },
+  {
+    "id": "talisman",
+    "name": "Talisman",
+    "fullName": "Talisman",
+    "brewery": "Strange Fellows Brewing",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Vancouver",
+    "style": "Pale Ale",
+    "abv": 4.2,
+    "ibu": 29,
+    "source": "https://www.beermebc.com/2015/07/02/strange-fellows-brewing-co-talisman-pale-ale/",
+    "verified": "2026-10-02",
+    "note": "West Coast pale, dry-hopped",
+    "de": {
+      "description": "Leichtes West-Coast-Pale-Ale aus Vancouver, fein gestopft: tropisch und zitrusfrisch.",
+      "humorousBio": "Ein Glücksbringer mit 4,2 Prozent.",
+      "disLikeQuip": "Der Talisman hat seine Wirkung bei dir verloren.",
+      "tags": [
+        "leicht",
+        "tropisch",
+        "gestopft"
+      ]
+    },
+    "en": {
+      "description": "Light West Coast pale ale from Vancouver, delicately dry-hopped: tropical and citrusy.",
+      "humorousBio": "A lucky charm at 4.2 percent.",
+      "disLikeQuip": "The talisman has lost its power over you.",
+      "tags": [
+        "light",
+        "tropical",
+        "dry-hopped"
+      ]
+    }
+  },
+  {
+    "id": "1516-lager",
+    "name": "1516 Bavarian Lager",
+    "fullName": "1516 Bavarian Lager",
+    "brewery": "Okanagan Spring Brewery",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Vernon",
+    "style": "Helles",
+    "abv": 5.0,
+    "source": "https://thesipadvisor.com/tag/vernon/",
+    "verified": "2026-10-02",
+    "note": "since 2002, Reinheitsgebot",
+    "de": {
+      "description": "Helles nach Reinheitsgebot aus dem Okanagan-Tal – ein Gruß an Bayern von 2002.",
+      "humorousBio": "Bayrischer als mancher Bayer, aber mit Seeblick auf den Okanagan.",
+      "disLikeQuip": "Das Reinheitsgebot dreht sich im Grab um.",
+      "tags": [
+        "Helles",
+        "Reinheitsgebot",
+        "Okanagan"
+      ]
+    },
+    "en": {
+      "description": "Helles brewed to the Reinheitsgebot in the Okanagan Valley – a nod to Bavaria since 2002.",
+      "humorousBio": "More Bavarian than some Bavarians, but with a view of Lake Okanagan.",
+      "disLikeQuip": "The Reinheitsgebot is turning in its grave.",
+      "tags": [
+        "Helles",
+        "Reinheitsgebot",
+        "Okanagan"
+      ]
+    }
+  },
+  {
+    "id": "red-truck-lager",
+    "name": "Red Truck Lager",
+    "fullName": "Red Truck Road Trip Classic Lager",
+    "brewery": "Red Truck Beer Company",
+    "country": "Kanada",
+    "region": "Britisch-Kolumbien",
+    "city": "Vancouver",
+    "style": "Lager",
+    "abv": 5.0,
+    "source": "https://redtruckbeer.com/road-trip-classic-lager/",
+    "verified": "2026-10-02",
+    "note": "now sold as Road Trip Classic Lager; Canadian malts, Saaz",
+    "de": {
+      "description": "Lager aus Vancouver mit kanadischem Malz und Saazer Hopfen, kühl vergoren und lange gelagert.",
+      "humorousBio": "Hat einen roten Laster vor der Tür und nichts zu verbergen.",
+      "disLikeQuip": "Der rote Laster fährt einfach weiter.",
+      "tags": [
+        "Lager",
+        "Vancouver",
+        "süffig"
+      ]
+    },
+    "en": {
+      "description": "Lager from Vancouver with Canadian malt and Saaz hops, cool-fermented and long-aged.",
+      "humorousBio": "Has a red truck out front and nothing to hide.",
+      "disLikeQuip": "The red truck simply drives on.",
+      "tags": [
+        "lager",
+        "Vancouver",
+        "easy-drinking"
+      ]
+    },
+    "ibu": 16
+  },
+  {
+    "id": "big-rock-traditional",
+    "name": "Big Rock Traditional",
+    "fullName": "Big Rock Traditional Ale",
+    "brewery": "Big Rock Brewery",
+    "country": "Kanada",
+    "region": "Alberta",
+    "city": "Calgary",
+    "style": "Brown Ale",
+    "abv": 5.0,
+    "ibu": 20,
+    "source": "https://www.beertasting.com/en/beers/big-rock-traditional-ale-1",
+    "verified": "2026-10-02",
+    "note": "unchanged recipe since 1985, CBA gold 2023",
+    "adjust": [
+      {
+        "axis": "sweetness",
+        "delta": 10,
+        "reason": "sweet caramel up front",
+        "source": "https://www.beertasting.com/en/beers/big-rock-traditional-ale-1"
+      }
+    ],
+    "de": {
+      "description": "Englisches Brown Ale aus Calgary: Toast, Karamell, nussiger Abgang – Rezept unverändert seit 1985.",
+      "humorousBio": "Seit 40 Jahren dasselbe Rezept. Veränderung ist was für andere.",
+      "disLikeQuip": "Ein großer Fels fällt. Ganz leise.",
+      "tags": [
+        "nussig",
+        "Karamell",
+        "seit 1985"
+      ]
+    },
+    "en": {
+      "description": "English-style brown ale from Calgary: toast, caramel, nutty finish – same recipe since 1985.",
+      "humorousBio": "Same recipe for 40 years. Change is for others.",
+      "disLikeQuip": "A big rock falls. Very quietly.",
+      "tags": [
+        "nutty",
+        "caramel",
+        "since 1985"
+      ]
+    }
+  },
+  {
+    "id": "velvet-fog",
+    "name": "Velvet Fog",
+    "fullName": "Velvet Fog",
+    "brewery": "Wild Rose Brewery",
+    "country": "Kanada",
+    "region": "Alberta",
+    "city": "Calgary",
+    "style": "Wheat Ale",
+    "abv": 4.5,
+    "source": "https://wildrosebrewery.com/pages/beers/velvet-fog",
+    "verified": "2026-10-02",
+    "note": "50% wheat, citrusy",
+    "de": {
+      "description": "Weizenale aus Calgary, halb Weizen, halb Gerste: trüb, weich, zitrusfrisch.",
+      "humorousBio": "Ein Nebel aus Samt – der einzige, den man gerne hat.",
+      "disLikeQuip": "Der Samtnebel hat sich für dich verzogen.",
+      "tags": [
+        "Weizen",
+        "trüb",
+        "Zitrus"
+      ]
+    },
+    "en": {
+      "description": "Wheat ale from Calgary, half wheat, half barley: cloudy, smooth, citrusy.",
+      "humorousBio": "A fog of velvet – the only fog anyone likes.",
+      "disLikeQuip": "The velvet fog has lifted for you.",
+      "tags": [
+        "wheat",
+        "cloudy",
+        "citrus"
+      ]
+    }
+  },
+  {
+    "id": "red-rage",
+    "name": "Red Rage",
+    "fullName": "Red Rage",
+    "brewery": "Tool Shed Brewing",
+    "country": "Kanada",
+    "region": "Alberta",
+    "city": "Calgary",
+    "style": "Amber",
+    "abv": 5.6,
+    "source": "https://toolshedbrewing.com/calgary-tool-shed-brewing-company-beer",
+    "verified": "2026-10-02",
+    "note": "roasty red ale",
+    "adjust": [
+      {
+        "axis": "maltiness",
+        "delta": 10,
+        "reason": "roasty like coffee, toasty like fresh bread",
+        "source": "https://toolshedbrewing.com/calgary-tool-shed-brewing-company-beer"
+      }
+    ],
+    "de": {
+      "description": "Dunkelrotes Ale aus Calgary: röstig, Brotkruste, gerade genug Hopfen.",
+      "humorousBio": "Wird nicht wütend. Nur rot.",
+      "disLikeQuip": "Jetzt ist es wirklich wütend.",
+      "tags": [
+        "rot",
+        "röstig",
+        "Calgary"
+      ]
+    },
+    "en": {
+      "description": "Dark red ale from Calgary: roasty, bread crust, just enough hops.",
+      "humorousBio": "Doesn’t get angry. Just red.",
+      "disLikeQuip": "Now it really is angry.",
+      "tags": [
+        "red",
+        "roasty",
+        "Calgary"
+      ]
+    }
+  },
+  {
+    "id": "original-16",
+    "name": "Original 16",
+    "fullName": "Original 16 Canadian Pale Ale",
+    "brewery": "Great Western Brewing",
+    "country": "Kanada",
+    "region": "Saskatchewan",
+    "city": "Saskatoon",
+    "style": "Blonde Ale",
+    "abv": 5.0,
+    "source": "https://canadianbeernews.com/2011/03/24/great-western-original-16-canadian-pale-ale-now-available",
+    "verified": "2026-10-02",
+    "note": "Canadian pale ale = light ale, 24 days cold-aged; 100% prairie 2-row",
+    "de": {
+      "description": "Helles Ale aus Saskatoon aus reinem Präriemalz, 24 Tage kalt gelagert.",
+      "humorousBio": "16 Angestellte haben die Brauerei einst gerettet. Daher der Name.",
+      "disLikeQuip": "Die 16 Retter sind ein bisschen gekränkt.",
+      "tags": [
+        "Prärie",
+        "mild",
+        "Saskatoon"
+      ]
+    },
+    "en": {
+      "description": "Light ale from Saskatoon brewed with pure prairie malt, cold-aged for 24 days.",
+      "humorousBio": "Sixteen employees once saved the brewery. Hence the name.",
+      "disLikeQuip": "The sixteen saviours are a little hurt.",
+      "tags": [
+        "prairie",
+        "mild",
+        "Saskatoon"
+      ]
+    }
+  },
+  {
+    "id": "little-scrapper",
+    "name": "Little Scrapper",
+    "fullName": "Little Scrapper IPA",
+    "brewery": "Half Pints Brewing",
+    "country": "Kanada",
+    "region": "Manitoba",
+    "city": "Winnipeg",
+    "style": "IPA",
+    "abv": 6.0,
+    "source": "https://halfpintsbrewing.com/beer/little-scrapper-ipa/",
+    "verified": "2026-10-02",
+    "note": "Amarillo + Cascade, one of four flagships",
+    "de": {
+      "description": "IPA aus Winnipeg mit Amarillo und Cascade über geröstetem Malz.",
+      "humorousBio": "Klein, aber kämpft wie ein Großer.",
+      "disLikeQuip": "Der kleine Raufbold nimmt’s persönlich.",
+      "tags": [
+        "hopfig",
+        "Amarillo",
+        "Winnipeg"
+      ]
+    },
+    "en": {
+      "description": "IPA from Winnipeg with Amarillo and Cascade over a toasty malt base.",
+      "humorousBio": "Small, but fights like a big one.",
+      "disLikeQuip": "The little scrapper takes it personally.",
+      "tags": [
+        "hoppy",
+        "Amarillo",
+        "Winnipeg"
+      ]
+    },
+    "ibu": 50
+  },
+  {
+    "id": "propeller-esb",
+    "name": "Propeller ESB",
+    "fullName": "Propeller Extra Special Bitter",
+    "brewery": "Propeller Brewing",
+    "country": "Kanada",
+    "region": "Neuschottland",
+    "city": "Halifax",
+    "style": "Bitter",
+    "abv": 5.0,
+    "source": "https://drinkpropeller.ca/products/esb-6-pack",
+    "verified": "2026-10-02",
+    "note": "staple since 1997; brewery lists no IBU",
+    "de": {
+      "description": "Kupferfarbenes Extra Special Bitter aus Halifax: Karamellmalz, erdiger Hopfen.",
+      "humorousBio": "Der Bestseller der Brauerei. Bleibt trotzdem bescheiden.",
+      "disLikeQuip": "Der Propeller dreht sich ohne dich.",
+      "tags": [
+        "Bitter",
+        "Karamell",
+        "Halifax"
+      ]
+    },
+    "en": {
+      "description": "Copper-coloured extra special bitter from Halifax: caramel malt, earthy hops.",
+      "humorousBio": "The brewery’s best seller. Stays humble anyway.",
+      "disLikeQuip": "The propeller spins on without you.",
+      "tags": [
+        "bitter",
+        "caramel",
+        "Halifax"
+      ]
+    }
+  },
+  {
+    "id": "picaroons-irish-red",
+    "name": "Picaroons Irish Red",
+    "fullName": "Picaroons Irish Red",
+    "brewery": "Picaroons Traditional Ales",
+    "country": "Kanada",
+    "region": "New Brunswick",
+    "city": "Fredericton",
+    "style": "Amber",
+    "abv": 4.8,
+    "ibu": 22,
+    "source": "https://picaroons.ca/our-beer/irish-red/",
+    "verified": "2026-10-02",
+    "note": "since 1996, Goldings/Tettnang",
+    "de": {
+      "description": "Rubinrotes Ale aus Fredericton: röstig, malzig, mit Goldings und Tettnanger.",
+      "humorousBio": "Hieß früher anders. Zweimal. Heute weiß es, wer es ist.",
+      "disLikeQuip": "Die Piraten von Picaroons ziehen weiter.",
+      "tags": [
+        "rot",
+        "malzig",
+        "Fredericton"
+      ]
+    },
+    "en": {
+      "description": "Ruby red ale from Fredericton: roasty, malty, with Goldings and Tettnang.",
+      "humorousBio": "Had two other names before. Today it knows who it is.",
+      "disLikeQuip": "The Picaroons pirates sail on.",
+      "tags": [
+        "red",
+        "malty",
+        "Fredericton"
+      ]
+    }
+  },
+  {
+    "id": "iceberg",
+    "name": "Iceberg",
+    "fullName": "Iceberg",
+    "brewery": "Quidi Vidi Brewing",
+    "country": "Kanada",
+    "region": "Neufundland",
+    "city": "St. John's",
+    "style": "Light Lager",
+    "abv": 4.5,
+    "source": "https://quidividibrewery.ca/products/iceberg-beer",
+    "verified": "2026-10-02",
+    "note": "brewed with iceberg water",
+    "de": {
+      "description": "Leichtes Lager aus St. John’s, gebraut mit Wasser aus geschmolzenen Eisbergen.",
+      "humorousBio": "Das Wasser ist 25 000 Jahre alt. Das Bier zum Glück nicht.",
+      "disLikeQuip": "Eiskalt abgelehnt. Passt ja.",
+      "tags": [
+        "Eisberg",
+        "leicht",
+        "Neufundland"
+      ]
+    },
+    "en": {
+      "description": "Light lager from St. John’s, brewed with water from melted icebergs.",
+      "humorousBio": "The water is 25,000 years old. Luckily the beer isn’t.",
+      "disLikeQuip": "Turned down ice-cold. Fitting.",
+      "tags": [
+        "iceberg",
+        "light",
+        "Newfoundland"
+      ]
+    }
+  },
+  {
+    "id": "yukon-gold",
+    "name": "Yukon Gold",
+    "fullName": "Yukon Gold",
+    "brewery": "Yukon Brewing",
+    "country": "Kanada",
+    "region": "Yukon",
+    "city": "Whitehorse",
+    "style": "Pale Ale",
+    "abv": 5.0,
+    "source": "https://yukonbeer.com/beer/yukon-gold/",
+    "verified": "2026-10-02",
+    "note": "\"Old English Ale\", Yukon’s number one selling draught",
+    "adjust": [
+      {
+        "axis": "bitterness",
+        "delta": -30,
+        "reason": "barely perceptible bitterness",
+        "source": "https://yukonbeer.com/beer/yukon-gold/"
+      },
+      {
+        "axis": "hopIntensity",
+        "delta": -35,
+        "reason": "mild hop flavours",
+        "source": "https://yukonbeer.com/beer/yukon-gold/"
+      }
+    ],
+    "de": {
+      "description": "Englisches Pale Ale aus Whitehorse mit Weizenmalz und mildem Hopfen – das meistgezapfte Bier im Yukon.",
+      "humorousBio": "Goldrausch im Glas, ganz ohne Schaufel.",
+      "disLikeQuip": "Kein Gold für dich. Der Yukon schweigt.",
+      "tags": [
+        "mild",
+        "Yukon",
+        "Goldrausch"
+      ]
+    },
+    "en": {
+      "description": "English-style pale ale from Whitehorse with wheat malt and mild hops – the Yukon’s best-selling draught.",
+      "humorousBio": "A gold rush in a glass, no shovel needed.",
+      "disLikeQuip": "No gold for you. The Yukon falls silent.",
+      "tags": [
+        "mild",
+        "Yukon",
+        "gold rush"
+      ]
+    }
+  },
+  {
+    "id": "labatt-50",
+    "name": "Labatt 50",
+    "fullName": "Labatt 50",
+    "brewery": "Labatt",
+    "country": "Kanada",
+    "region": "Québec",
+    "city": "Montréal",
+    "style": "Blonde Ale",
+    "abv": 5.0,
+    "source": "https://themain.com/articles/the-story-of-labatt-50-a-working-class-beer",
+    "verified": "2026-10-02",
+    "note": "since 1950, CA best seller until 1979",
+    "adjust": [
+      {
+        "axis": "dryness",
+        "delta": 10,
+        "reason": "good balance of dryness, fruity taste",
+        "source": "https://themain.com/articles/the-story-of-labatt-50-a-working-class-beer"
+      }
+    ],
+    "de": {
+      "description": "Helles, leicht fruchtiges Ale von 1950 – bis 1979 das meistverkaufte Bier Kanadas.",
+      "humorousBio": "War Kanadas Nummer eins, bevor Lager cool wurde.",
+      "disLikeQuip": "Die Fünfziger rufen an. Sie sind enttäuscht.",
+      "tags": [
+        "Ale",
+        "fruchtig",
+        "seit 1950"
+      ]
+    },
+    "en": {
+      "description": "Light, slightly fruity ale from 1950 – Canada’s best-selling beer until 1979.",
+      "humorousBio": "Was Canada’s number one before lager got cool.",
+      "disLikeQuip": "The fifties are calling. They’re disappointed.",
+      "tags": [
+        "ale",
+        "fruity",
+        "since 1950"
+      ]
+    }
+  },
+  {
+    "id": "old-style-pilsner",
+    "name": "Old Style Pilsner",
+    "fullName": "Old Style Pilsner",
+    "brewery": "Molson Coors",
+    "country": "Kanada",
+    "region": "Alberta",
+    "city": "Lethbridge",
+    "style": "American Lager",
+    "abv": 5.0,
+    "source": "https://en.wikipedia.org/wiki/Old_Style_Pilsner",
+    "verified": "2026-10-02",
+    "note": "since 1926 (Fritz Sick), \"Pil\"",
+    "de": {
+      "description": "Westkanadisches Lager, 1926 von Fritz Sick in Lethbridge erfunden – im Westen schlicht „Pil“.",
+      "humorousBio": "Hat mehr Prärie-Grillfeste gesehen als jeder Cowboy.",
+      "disLikeQuip": "Im Pil Country schüttelt man jetzt den Kopf.",
+      "tags": [
+        "Lager",
+        "Prärie",
+        "seit 1926"
+      ]
+    },
+    "en": {
+      "description": "Western Canadian lager, created by Fritz Sick in Lethbridge in 1926 – out west simply “Pil”.",
+      "humorousBio": "Has seen more prairie barbecues than any cowboy.",
+      "disLikeQuip": "Heads are shaking in Pil Country right now.",
+      "tags": [
+        "lager",
+        "prairie",
+        "since 1926"
+      ]
+    }
+  }
+]

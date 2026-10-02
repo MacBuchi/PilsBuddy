@@ -22,5 +22,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "tools/catalog/*.ts"]
+  "include": ["src", "tools/catalog/*.ts", "tools/classics/*.ts"]
 }

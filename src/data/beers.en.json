@@ -9,7 +9,8 @@
     "Belgien": "Belgium",
     "Tschechien": "Czechia",
     "Niederlande": "Netherlands",
-    "Italien": "Italy"
+    "Italien": "Italy",
+    "Kanada": "Canada"
   },
   "regions": {
     "München": "Munich",
@@ -24,7 +25,10 @@
     "Hessen": "Hesse",
     "Oberbayern": "Upper Bavaria",
     "Budweis": "České Budějovice",
-    "Pilsen": "Plzeň"
+    "Pilsen": "Plzeň",
+    "Neuschottland": "Nova Scotia",
+    "Britisch-Kolumbien": "British Columbia",
+    "Neufundland": "Newfoundland"
   },
   "beers": {
     "jever": {
@@ -386,6 +390,294 @@
       "humorousBio": "Comes with a straw and syrup. And isn't the least bit ashamed.",
       "disLikeQuip": "Not even with syrup? Red and green are both offended.",
       "tags": ["sour", "with syrup", "straw"]
+    },
+    "molson-canadian": {
+      "description": "Canada's lager par excellence: pale, mildly hopped, very easy-drinking.",
+      "humorousBio": "Has a maple leaf on the can and means it.",
+      "disLikeQuip": "You turned down Canada. Canada apologises anyway.",
+      "tags": ["easy-drinking", "mild", "maple leaf"]
+    },
+    "labatt-blue": {
+      "description": "Mild lager from London, Ontario – one of Canada’s best sellers for decades.",
+      "humorousBio": "Blue is not a colour, it is a lifestyle.",
+      "disLikeQuip": "Feeling blue now. Not the good kind.",
+      "tags": ["mild", "easy-drinking", "classic"]
+    },
+    "moosehead-lager": {
+      "description": "Golden lager from Saint John, New Brunswick – from Canada’s oldest independent brewery.",
+      "humorousBio": "Wears a moose on the label and a family business at heart.",
+      "disLikeQuip": "The moose is giving you a long, disappointed look.",
+      "tags": ["golden", "mild", "moose"]
+    },
+    "keiths-ipa": {
+      "description": "The pride of Halifax: called an IPA, but really a gentle, lightly hopped ale.",
+      "humorousBio": "Calls itself an IPA. Hop fans call it something else.",
+      "disLikeQuip": "Somewhere in Nova Scotia a sad sea shanty starts playing.",
+      "tags": ["gentle", "Halifax", "cult brand"]
+    },
+    "kokanee": {
+      "description": "Mild lager from Creston in the Rocky Mountains of British Columbia.",
+      "humorousBio": "Claims a link to glacier water. Looks chilled, at least.",
+      "disLikeQuip": "The Sasquatch from the ads is offended.",
+      "tags": ["mild", "mountains", "easy-drinking"]
+    },
+    "molson-export": {
+      "description": "Blonde ale brewed with Molson’s historic yeast – the oldest Molson brand, since 1903.",
+      "humorousBio": "In Québec they lovingly call it “une Ex”.",
+      "disLikeQuip": "One Ex fewer. Québec shrugs.",
+      "tags": ["ale", "Québec", "since 1903"]
+    },
+    "fin-du-monde": {
+      "description": "Golden tripel from Chambly, refermented in the bottle: fruit, spice, little bitterness.",
+      "humorousBio": "The most awarded beer in Canada. Mentions it only five times a day.",
+      "disLikeQuip": "For you, the end of the world has apparently arrived.",
+      "tags": ["tripel", "spicy", "strong"]
+    },
+    "blanche-de-chambly": {
+      "description": "Belgian-style witbier from Québec: cloudy, pale, coriander and orange peel.",
+      "humorousBio": "Drinks like a summer day on the Richelieu.",
+      "disLikeQuip": "The orange peel feels overlooked.",
+      "tags": ["witbier", "cloudy", "coriander"]
+    },
+    "maudite": {
+      "description": "Strong amber-red ale with spice and fruit – Canada’s first strong beer of its kind.",
+      "humorousBio": "Means “the damned one”. The label shows canoeists paddling with the devil.",
+      "disLikeQuip": "Curse averted. For now.",
+      "tags": ["strong", "spicy", "legend"]
+    },
+    "peche-mortel": {
+      "description": "Imperial stout with fair-trade coffee: jet black, dense, deeply roasted.",
+      "humorousBio": "Mortal sin in the name, espresso in the blood.",
+      "disLikeQuip": "You resisted mortal sin. Respect, or fear?",
+      "tags": ["coffee", "imperial stout", "Montréal"]
+    },
+    "rosee-hibiscus": {
+      "description": "Wheat beer with hibiscus flowers: pink in the glass, floral, lightly tart.",
+      "humorousBio": "The only beer that matches your Instagram filter.",
+      "disLikeQuip": "Too pink for you? Shame, it was so stylish.",
+      "tags": ["hibiscus", "floral", "pink"]
+    },
+    "boreale-rousse": {
+      "description": "Red ale from Blainville – since 1988 the first of its kind in Québec.",
+      "humorousBio": "Was red before craft beer got colourful.",
+      "disLikeQuip": "The Rousse is blushing. With rage.",
+      "tags": ["red", "malty", "Québec"]
+    },
+    "st-ambroise-stout": {
+      "description": "Oatmeal stout from Montréal with espresso and chocolate notes, multi-award-winning.",
+      "humorousBio": "Breakfast, dessert and knocking-off time in one bottle.",
+      "disLikeQuip": "No oats for you. Fine, more for us.",
+      "tags": ["oats", "roasty", "chocolate"]
+    },
+    "la-buteuse": {
+      "description": "10 % tripel from Shawinigan: champagne-like bubbles, spice, drier than its Belgian role models.",
+      "humorousBio": "Comes from the “Devil’s Hole”. Behaves accordingly.",
+      "disLikeQuip": "The devil takes it on the chin. This time.",
+      "tags": ["tripel", "strong", "sparkling"]
+    },
+    "vache-folle-milk-stout": {
+      "description": "Strong milk stout from Baie-Saint-Paul: roast, lactose sweetness, plenty of chocolate.",
+      "humorousBio": "The mad cow gives no milk, just 9 percent.",
+      "disLikeQuip": "The cow is now slightly madder.",
+      "tags": ["lactose", "chocolate", "strong"]
+    },
+    "steam-whistle": {
+      "description": "Pilsner from an old railway roundhouse in Toronto, with Saaz hops and a crisp bite.",
+      "humorousBio": "Makes only one beer – but with a whistle.",
+      "disLikeQuip": "No whistle for you. The train leaves without you.",
+      "tags": ["pils", "Saaz", "Toronto"]
+    },
+    "lug-tread": {
+      "description": "Top-fermented, cold-aged ale from Vankleek Hill – fruity like an ale, crisp like a lager.",
+      "humorousBio": "Named after tractor tread. Rolls just as smoothly.",
+      "disLikeQuip": "The tractor turns around. Without you.",
+      "tags": ["Kölsch-style", "crisp", "organic"]
+    },
+    "creemore-lager": {
+      "description": "Amber lager from Creemore, Ontario: rich malt, a hint of hazelnut, dry hops.",
+      "humorousBio": "Small town, big malt.",
+      "disLikeQuip": "Creemore has 1,300 residents. All of them are sad now.",
+      "tags": ["malty", "hazelnut", "amber"]
+    },
+    "mad-tom": {
+      "description": "IPA from Bracebridge in Muskoka: citrus, pine, a clear bitterness.",
+      "humorousBio": "Named after a canoe wild man. Paddles against every current.",
+      "disLikeQuip": "Mad Tom is now a little madder.",
+      "tags": ["hoppy", "citrus", "Muskoka"]
+    },
+    "ransack-universe": {
+      "description": "IPA from Hamilton with Galaxy and Mosaic: mango, tropical fruit, crisp finish.",
+      "humorousBio": "Every can is a tiny art exhibition.",
+      "disLikeQuip": "The universe stays un-ransacked. Thanks.",
+      "tags": ["Galaxy", "Mosaic", "tropical"]
+    },
+    "canuck-pale-ale": {
+      "description": "West Coast-style pale ale from Toronto, first brewed for the 2010 Olympic Games.",
+      "humorousBio": "Carries the nickname of a whole country. No pressure.",
+      "disLikeQuip": "One Canuck fewer. The hockey team can feel it.",
+      "tags": ["hoppy", "West Coast", "Toronto"]
+    },
+    "jelly-king": {
+      "description": "Dry-hopped sour from Toronto: tart, peach, tangerine, grapefruit.",
+      "humorousBio": "Sour and hoppy at once – simply couldn’t decide.",
+      "disLikeQuip": "The king has fallen. But only for you.",
+      "tags": ["sour", "dry-hopped", "fruity"]
+    },
+    "boneshaker": {
+      "description": "Bold IPA from Toronto, hopped throughout the boil: citrus, resin, a bitterness that means it.",
+      "humorousBio": "Shakes your bones, not just your taste buds.",
+      "disLikeQuip": "Your bones stay unshaken. Boring.",
+      "tags": ["hoppy", "bold", "Toronto"]
+    },
+    "mill-street-organic": {
+      "description": "Light organic lager from Toronto’s Distillery District.",
+      "humorousBio": "Organic, light and a little proud of it.",
+      "disLikeQuip": "Even the organic barley is disappointed.",
+      "tags": ["organic", "light", "Toronto"]
+    },
+    "arkell-best-bitter": {
+      "description": "Amber bitter from Guelph since 1985: caramel, biscuit, delicate floral hops.",
+      "humorousBio": "More English than the Queen’s tea, but from Ontario.",
+      "disLikeQuip": "The Brits in Guelph wrinkle their noses.",
+      "tags": ["bitter", "caramel", "since 1985"]
+    },
+    "juicy-ass": {
+      "description": "Hazy gold IPA from Barrie: grapefruit, pineapple, pine and a bitter finish.",
+      "humorousBio": "The name says it all. So does the can.",
+      "disLikeQuip": "The flying monkeys have flown off in a huff.",
+      "tags": ["grapefruit", "pineapple", "hoppy"]
+    },
+    "sleeman-cream-ale": {
+      "description": "Smooth cream ale from Guelph, in the clear bottle with the beaver.",
+      "humorousBio": "Thinks it’s creamy. It is, a little.",
+      "disLikeQuip": "The beaver on the label is now gnawing at your reputation.",
+      "tags": ["smooth", "beaver", "clear bottle"]
+    },
+    "english-bay-pale-ale": {
+      "description": "English-style pale ale from Vancouver: caramel malt, light and fresh.",
+      "humorousBio": "Smells a bit like the sea if you really try.",
+      "disLikeQuip": "The bay stays English. You stay dry.",
+      "tags": ["caramel", "light", "Vancouver"]
+    },
+    "blue-buck": {
+      "description": "Amber English-style ale from Victoria – Phillips’ evergreen.",
+      "humorousBio": "The blue buck is the heraldic beast of every barbecue in Victoria.",
+      "disLikeQuip": "The buck bellows. Offended.",
+      "tags": ["amber", "English", "Victoria"]
+    },
+    "fat-tug": {
+      "description": "Northwest IPA from Victoria: grapefruit, mango, passion fruit and 80+ IBU.",
+      "humorousBio": "A tugboat that hauls hops instead of ships.",
+      "disLikeQuip": "The tug casts off without you.",
+      "tags": ["hoppy", "mango", "bitter"]
+    },
+    "red-racer-ipa": {
+      "description": "West Coast IPA from Surrey with 80 IBU – the cyclist on the can races on hops.",
+      "humorousBio": "Goes faster than your palate can brake.",
+      "disLikeQuip": "The cyclist pulls away without you.",
+      "tags": ["hoppy", "bitter", "West Coast"]
+    },
+    "trash-panda": {
+      "description": "Hazy IPA from East Vancouver: melon, tropical fruit, pear, velvety and mildly bitter.",
+      "humorousBio": "The raccoon on the can rescued the hops from the bin.",
+      "disLikeQuip": "The raccoon is now going through your trash.",
+      "tags": ["hazy", "juicy", "raccoon"]
+    },
+    "dark-matter": {
+      "description": "Dark ale from Victoria that refuses any style: soft, roasted chocolate.",
+      "humorousBio": "Like real dark matter: nobody knows exactly what it is.",
+      "disLikeQuip": "You turned down something that officially does not exist.",
+      "tags": ["dark", "chocolate", "mysterious"]
+    },
+    "what-the-huck": {
+      "description": "Wheat ale with huckleberry juice from Fernie in the Rocky Mountains.",
+      "humorousBio": "The name is a pun. The berries are real.",
+      "disLikeQuip": "What the huck? Exactly what we’re asking.",
+      "tags": ["berries", "wheat", "Rockies"]
+    },
+    "talisman": {
+      "description": "Light West Coast pale ale from Vancouver, delicately dry-hopped: tropical and citrusy.",
+      "humorousBio": "A lucky charm at 4.2 percent.",
+      "disLikeQuip": "The talisman has lost its power over you.",
+      "tags": ["light", "tropical", "dry-hopped"]
+    },
+    "1516-lager": {
+      "description": "Helles brewed to the Reinheitsgebot in the Okanagan Valley – a nod to Bavaria since 2002.",
+      "humorousBio": "More Bavarian than some Bavarians, but with a view of Lake Okanagan.",
+      "disLikeQuip": "The Reinheitsgebot is turning in its grave.",
+      "tags": ["Helles", "Reinheitsgebot", "Okanagan"]
+    },
+    "red-truck-lager": {
+      "description": "Lager from Vancouver with Canadian malt and Saaz hops, cool-fermented and long-aged.",
+      "humorousBio": "Has a red truck out front and nothing to hide.",
+      "disLikeQuip": "The red truck simply drives on.",
+      "tags": ["lager", "Vancouver", "easy-drinking"]
+    },
+    "big-rock-traditional": {
+      "description": "English-style brown ale from Calgary: toast, caramel, nutty finish – same recipe since 1985.",
+      "humorousBio": "Same recipe for 40 years. Change is for others.",
+      "disLikeQuip": "A big rock falls. Very quietly.",
+      "tags": ["nutty", "caramel", "since 1985"]
+    },
+    "velvet-fog": {
+      "description": "Wheat ale from Calgary, half wheat, half barley: cloudy, smooth, citrusy.",
+      "humorousBio": "A fog of velvet – the only fog anyone likes.",
+      "disLikeQuip": "The velvet fog has lifted for you.",
+      "tags": ["wheat", "cloudy", "citrus"]
+    },
+    "red-rage": {
+      "description": "Dark red ale from Calgary: roasty, bread crust, just enough hops.",
+      "humorousBio": "Doesn’t get angry. Just red.",
+      "disLikeQuip": "Now it really is angry.",
+      "tags": ["red", "roasty", "Calgary"]
+    },
+    "original-16": {
+      "description": "Light ale from Saskatoon brewed with pure prairie malt, cold-aged for 24 days.",
+      "humorousBio": "Sixteen employees once saved the brewery. Hence the name.",
+      "disLikeQuip": "The sixteen saviours are a little hurt.",
+      "tags": ["prairie", "mild", "Saskatoon"]
+    },
+    "little-scrapper": {
+      "description": "IPA from Winnipeg with Amarillo and Cascade over a toasty malt base.",
+      "humorousBio": "Small, but fights like a big one.",
+      "disLikeQuip": "The little scrapper takes it personally.",
+      "tags": ["hoppy", "Amarillo", "Winnipeg"]
+    },
+    "propeller-esb": {
+      "description": "Copper-coloured extra special bitter from Halifax: caramel malt, earthy hops.",
+      "humorousBio": "The brewery’s best seller. Stays humble anyway.",
+      "disLikeQuip": "The propeller spins on without you.",
+      "tags": ["bitter", "caramel", "Halifax"]
+    },
+    "picaroons-irish-red": {
+      "description": "Ruby red ale from Fredericton: roasty, malty, with Goldings and Tettnang.",
+      "humorousBio": "Had two other names before. Today it knows who it is.",
+      "disLikeQuip": "The Picaroons pirates sail on.",
+      "tags": ["red", "malty", "Fredericton"]
+    },
+    "iceberg": {
+      "description": "Light lager from St. John’s, brewed with water from melted icebergs.",
+      "humorousBio": "The water is 25,000 years old. Luckily the beer isn’t.",
+      "disLikeQuip": "Turned down ice-cold. Fitting.",
+      "tags": ["iceberg", "light", "Newfoundland"]
+    },
+    "yukon-gold": {
+      "description": "English-style pale ale from Whitehorse with wheat malt and mild hops – the Yukon’s best-selling draught.",
+      "humorousBio": "A gold rush in a glass, no shovel needed.",
+      "disLikeQuip": "No gold for you. The Yukon falls silent.",
+      "tags": ["mild", "Yukon", "gold rush"]
+    },
+    "labatt-50": {
+      "description": "Light, slightly fruity ale from 1950 – Canada’s best-selling beer until 1979.",
+      "humorousBio": "Was Canada’s number one before lager got cool.",
+      "disLikeQuip": "The fifties are calling. They’re disappointed.",
+      "tags": ["ale", "fruity", "since 1950"]
+    },
+    "old-style-pilsner": {
+      "description": "Western Canadian lager, created by Fritz Sick in Lethbridge in 1926 – out west simply “Pil”.",
+      "humorousBio": "Has seen more prairie barbecues than any cowboy.",
+      "disLikeQuip": "Heads are shaking in Pil Country right now.",
+      "tags": ["lager", "prairie", "since 1926"]
     }
   }
 }
