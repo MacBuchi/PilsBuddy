@@ -107,6 +107,18 @@ describe('toRegionalBeer', () => {
     expect(sourceUrl({ ...beer('r-a4', 'Pils'), source: 3, source_ref: '/x' }, { website: null })).toBeUndefined()
     expect(sourceUrl({ ...beer('r-a5', 'Pils'), source: 2, source_ref: 'Q501' }, b)).toBe('https://www.wikidata.org/wiki/Q501')
   })
+
+  it('links reported beers (R6) to the link given with the report, if it is safe', () => {
+    expect(sourceUrl({ ...beer('r-app37', 'Pils'), source: 5, source_ref: 'https://hinterhof.example/biere' }, b)).toBe('https://hinterhof.example/biere')
+    expect(sourceUrl({ ...beer('r-app38', 'Pils'), source: 5, source_ref: 'javascript:alert(1)' }, b)).toBeUndefined()
+    expect(sourceUrl({ ...beer('r-app39', 'Pils'), source: 5, source_ref: null }, b)).toBeUndefined()
+    expect(toRegionalBeer({ ...beer('r-app37', 'Pils'), source: 5, source_ref: null }, b).regional?.source).toBe('Meldung aus der App')
+  })
+
+  it('accepts breweries reported in the app', () => {
+    expect(sanitizeBrewery({ id: 'app-37', name: 'Hinterhofbräu', lat: 49.2, lon: 9.1, country: 'DE' })?.id).toBe('app-37')
+    expect(sanitizeBrewery({ id: 'app-x', name: 'X', lat: 49.2, lon: 9.1, country: 'DE' })).toBeNull()
+  })
 })
 
 describe('rankRegional', () => {

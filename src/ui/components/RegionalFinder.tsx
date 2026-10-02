@@ -1,4 +1,4 @@
-import { ArrowSquareOutIcon, CrosshairIcon, MapPinIcon, NavigationArrowIcon } from '@phosphor-icons/react'
+import { ArrowSquareOutIcon, CrosshairIcon, MapPinIcon, NavigationArrowIcon, PlusCircleIcon } from '@phosphor-icons/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { formatAbv, rememberRegional } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
@@ -14,6 +14,7 @@ import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { RATING_COLOR } from '../ratingStyle'
 import { BeerBottle } from './BeerBottle'
+import { BeerSubmitSheet } from './BeerSubmitSheet'
 import { Sheet } from './Sheet'
 import list from '../screens/Matches.module.css'
 import styles from './RegionalFinder.module.css'
@@ -62,6 +63,8 @@ export function RegionalFinder() {
   const [plz, setPlz] = useState('')
   const [more, setMore] = useState({ query: '', n: PAGE })
   const [open, setOpen] = useState<{ brewery: RegionalBrewery; km: number } | null>(null)
+  // „Bier fehlt? Eintragen“ (R6): for the brewery of the sheet, or with a typed brewery
+  const [report, setReport] = useState<{ brewery: { id: string; name: string } | null } | null>(null)
   const autoLocate = useRef(prefs.mode === 'geo')
   const query = origin ? `${origin.lat}|${origin.lon}|${prefs.radius}` : null
   const ready = !!loaded && loaded.query === query
@@ -239,6 +242,9 @@ export function RegionalFinder() {
           )}
 
           {result.beers.length + result.breweries.length === 0 && <div className={styles.start}>{COPY.regional.empty}</div>}
+          <button type="button" className={styles.more} onClick={() => setReport({ brewery: null })}>
+            <PlusCircleIcon weight="bold" /> {COPY.submit.entryAny}
+          </button>
         </>
       )}
 
@@ -289,8 +295,20 @@ export function RegionalFinder() {
               </div>
             )
           })}
+          <button
+            type="button"
+            className={styles.more}
+            onClick={() => {
+              setReport({ brewery: { id: open.brewery.id, name: open.brewery.name } })
+              setOpen(null)
+            }}
+          >
+            <PlusCircleIcon weight="bold" /> {COPY.submit.entry}
+          </button>
         </Sheet>
       )}
+
+      {report && <BeerSubmitSheet brewery={report.brewery} onClose={() => setReport(null)} />}
     </div>
   )
 }

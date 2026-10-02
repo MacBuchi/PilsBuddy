@@ -149,6 +149,9 @@
 
 .more {
   align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   height: 40px;
   padding: 0 20px;
   border-radius: 99px;

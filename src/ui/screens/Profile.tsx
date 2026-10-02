@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { serializeProfile } from '../../state/storage'
 import { useProfileImport } from '../useProfileImport'
 import { BEER_BY_ID } from '../../data/beers'
+import { forgetSubmissions } from '../../data/beerSubmission'
 import { forgetRegional } from '../../data/regional'
 import { COPY, fill } from '../../data/copy'
 import { progressMessage } from '../../domain/quips'
@@ -65,6 +66,7 @@ export function Profile() {
       }
     }
     forgetRegional()
+    forgetSubmissions()
     dispatch({ type: 'RESET' })
   }
 

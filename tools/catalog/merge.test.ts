@@ -336,6 +336,9 @@ describe('importSql', () => {
     expect(files[0].sql).toContain('on conflict (id) do update set name = excluded.name')
     expect(files[1].sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', true)`)
     expect(files[2].sql).toContain(`id <> all('{"r-4001"}'::text[])`)
+    // app reports (R6) survive a rebuild
+    expect(files[2].sql).toContain('source <> 5 and id <> all(')
+    expect(files[2].sql).toContain("id not like 'app-%' and id <> all(")
     expect(files[3].sql).toContain('on conflict (country, postcode, name)')
   })
 

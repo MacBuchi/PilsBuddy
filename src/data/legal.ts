@@ -79,6 +79,14 @@ export const PRIVACY: LegalSection[] = [
     ],
   },
   {
+    title: 'Bier melden („Bier fehlt? Eintragen“)',
+    paragraphs: [
+      'Meldest du ein fehlendes Bier, speichern wir bei Supabase (Server in Frankfurt am Main) deine Angaben dazu – Brauerei (oder Name und PLZ/Ort einer neuen Brauerei), Link, Name, Stil, Alkoholgehalt und deine Notiz – sowie App-Version und groben Gerätetyp. Ohne Konto, ohne Namen, ohne deine Bewertungen; dein Standort wird nicht mitgeschickt. Supabase verarbeitet dabei technisch nötige Verbindungsdaten wie die IP-Adresse.',
+      'Ein Bot veröffentlicht die Meldung als Eintrag (Issue) im öffentlichen GitHub-Projekt von PilsBuddy (GitHub, Inc., USA). Geben wir sie frei, steht das Bier mit diesen Angaben öffentlich im Bierkatalog (Quelle „Meldung aus der App“, Link als Beleg). Die Kopie der Meldung bei Supabase löschen wir 30 Tage nach der Veröffentlichung. Auf deinem Gerät merkt sich die App einen unfertigen Entwurf und wann du gemeldet hast (höchstens fünf Meldungen am Tag); „Profil zurücksetzen“ löscht beides.',
+      'Rechtsgrundlage ist deine Einwilligung durch das Abschicken (Art. 6 Abs. 1 lit. a DSGVO).',
+    ],
+  },
+  {
     title: 'Buddy-Link',
     paragraphs: [
       'Wenn du einen Buddy-Link teilst, stecken deine Buddy-Nummer und deine Bewertungen im Link selbst. Wir speichern ihn nicht; wer den Link hat, kann deinen Geschmack sehen. Teile ihn also nur mit Leuten, die das dürfen.',
@@ -94,7 +102,7 @@ export const PRIVACY: LegalSection[] = [
   {
     title: 'Quellen der Brauerei-Daten',
     paragraphs: [
-      'Brauereien und ihre Biere aus deiner Region stammen aus offenen Datenbanken: © OpenStreetMap-Mitwirkende (ODbL), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (gemeinfrei) und GeoNames (Postleitzahlen, CC BY 4.0). Einige Biere (Name, Alkoholgehalt) haben wir den Websites der Brauereien entnommen; die Quelle ist bei jedem Bier verlinkt. Unsere daraus abgeleitete Datenbank steht ebenfalls unter der ODbL. Der Geschmack dieser Biere ist eine Schätzung aus dem Bierstil, keine Verkostung.',
+      'Brauereien und ihre Biere aus deiner Region stammen aus offenen Datenbanken: © OpenStreetMap-Mitwirkende (ODbL), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (gemeinfrei) und GeoNames (Postleitzahlen, CC BY 4.0). Einige Biere (Name, Alkoholgehalt) haben wir den Websites der Brauereien entnommen; die Quelle ist bei jedem Bier verlinkt. Dazu kommen Biere, die Nutzer gemeldet und wir geprüft haben. Unsere daraus abgeleitete Datenbank steht ebenfalls unter der ODbL. Der Geschmack dieser Biere ist eine Schätzung aus dem Bierstil, keine Verkostung.',
     ],
   },
   {

@@ -654,8 +654,9 @@ export function importSql(breweries: Brewery[], beers: RegionalBeer[], places: P
   files.push({
     name: '30-unpublish.sql',
     sql: tx(
-      `update public.regional_beers set published = false where published and id <> all(${arr(beers.map((b) => b.id))});\n` +
-        `update public.breweries set published = false where published and id <> all(${arr(breweries.map((b) => b.id))});\n`,
+      // beers and breweries reported in the app (R6: source 5, `app-<issue>`) are not the sources' to take back
+      `update public.regional_beers set published = false where published and source <> 5 and id <> all(${arr(beers.map((b) => b.id))});\n` +
+        `update public.breweries set published = false where published and id not like 'app-%' and id <> all(${arr(breweries.map((b) => b.id))});\n`,
     ),
   })
   chunks(places, batch * 2).forEach((rows, i) =>
