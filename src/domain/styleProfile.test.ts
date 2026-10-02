@@ -34,6 +34,59 @@ describe('normalizeStyle', () => {
     expect(normalizeStyle([name])).toBe(style)
   })
 
+  it.each([
+    // North American and Belgian/British names (Stufe N)
+    ['Budweiser American Lager', 'American Lager'],
+    ['Molson Canadian Lager', 'American Lager'],
+    ['Bud Light', 'Light Lager'],
+    ['Miller Lite', 'Light Lager'],
+    ['Genesee Cream Ale', 'Cream Ale'],
+    ['805 Blonde Ale', 'Blonde Ale'],
+    ['Big Wave Golden Ale', 'Blonde Ale'],
+    ['Leffe Blonde', 'Abbey Blonde'],
+    ['Blanche de Chambly', 'Witbier'],
+    ['Allagash White Ale', 'Witbier'],
+    ['Gumballhead American Wheat', 'Wheat Ale'],
+    ['Huckleberry Wheat Ale', 'Wheat Ale'],
+    ['Erdinger wheat beer', 'Weißbier'],
+    ['California Common', 'California Common'],
+    ['Arkell Best Bitter', 'Bitter'],
+    ['La Vache Folle ESB', 'Bitter'],
+    ['Traditional Ale English-style Brown Ale', 'Brown Ale'],
+    ['90 Shilling Scottish Ale', 'Scotch Ale'],
+    ['Pliny the Elder Double IPA', 'Double IPA'],
+    ['Maharaja Imperial IPA', 'Double IPA'],
+    ['Heady Topper DIPA', 'Double IPA'],
+    ['Julius New England IPA', 'Hazy IPA'],
+    ['Hazy IPA', 'Hazy IPA'],
+    ['Two Hearted Ale American IPA', 'IPA'],
+    ['Navigator IPA', 'IPA'],
+    ['Left Hand Milk Stout Nitro', 'Milk Stout'],
+    ['Péché Mortel Imperial Coffee Stout', 'Imperial Stout'],
+    ['Russian Imperial Stout', 'Imperial Stout'],
+    ['Bigfoot Barleywine Style Ale', 'Barleywine'],
+    ['Saison du Pinacle', 'Saison'],
+    ['Tank 7 Farmhouse Ale', 'Saison'],
+    ['La Fin du Monde Belgian Tripel', 'Tripel'],
+    ["Monk's Indiscretion Dubbel", 'Dubbel'],
+    ['Three Philosophers Quadrupel', 'Quadrupel'],
+    ['Jelly King Dry-hopped Sour', 'Sour Ale'],
+    ['La Roja Flanders Red Ale', 'Sour Ale'],
+    ['Fat Tire Amber Ale', 'Amber'],
+  ])('%s → %s', (name, style) => {
+    expect(normalizeStyle([name])).toBe(style)
+  })
+
+  it('keeps German words that look like English styles German', () => {
+    expect(normalizeStyle(['Saisonbier Hell'])).toBe('Helles')
+    expect(normalizeStyle(['Paulaner Salvator'])).toBe('Doppelbock')
+    expect(normalizeStyle(['Maxiator Bockbier'])).toBe('Doppelbock')
+    expect(normalizeStyle(['Bambergator'])).toBe('Doppelbock')
+    expect(normalizeStyle(['Shilling Hell'])).toBe('Helles')
+    expect(normalizeStyle(['Steam Whistle Pilsner'])).toBe('Pils')
+    expect(normalizeStyle(['Becks Blue non alcoholic'])).toBe('Alkoholfrei')
+  })
+
   it('reads every canonical style name back as itself', () => {
     for (const s of Object.keys(STYLE_PROFILES)) expect(normalizeStyle([s]), s).toBe(s)
   })

@@ -25,8 +25,10 @@ Details stehen beim jeweiligen Paket weiter unten.
 7. [x] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production` (#51, 2026-10-02)
 8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (#52, live 2026-10-02)
 9. [x] **R8** Bierbibliothek mit Filtern (#53, 2026-10-02)
-10. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
-11. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
+10. [ ] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#PR_N1) · N2 Klassiker Kanada ·
+    N3 Klassiker USA · N4 Regionalkatalog Schema + Client · N5 Pipeline + Crawler + Live-Import
+11. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
+12. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -259,6 +261,25 @@ Vorlage: Job `schema-dry-run` in PilzBuddy/TrailBuddy (`tool/db_migrate.sh`, `sc
 - [x] Q4 **Promote (Wunsch 2026-10-02):** jeder Merge geht auf beta.pilsbuddy.mcbuchi.de (Worker `pilsbuddy-beta`, gleiche
       DB) → Beta-Smoke → GitHub-Pre-Release; Job „Promote to production“ wartet auf das Approve im Environment
       `production`, deployt dasselbe `dist`, Prod-Smoke, Release wird „Latest“. Version im Profil zeigt „Beta“ (S)
+
+### Stufe N – Nordamerika (Wunsch 2026-10-02, #54)
+
+Bekannte kanadische und US-Biere als kuratierte Biere (ins Deck für alle, nicht ins Onboarding-Set) und der
+Regionalkatalog für CA/US. Basis ist die CSV aus #54, jede Zeile wird gegen die Brauerei-Quelle geprüft.
+Geschmack der Klassiker: `tasteFromStyle(Stil, ABV, IBU)` plus Abweichungen nur mit Quelle, per Test nachrechenbar.
+Quellen: Open Brewery DB (MIT), OSM, Wikidata, Open Food Facts, openbeer, GeoNames (US-ZIP, kanadische FSA).
+Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
+
+- [x] N1 **Stile für Nordamerika** (S): American Lager, Light Lager, Cream Ale, Blonde Ale, Wheat Ale, Witbier,
+      California Common, Bitter, Brown Ale, Scotch Ale, Double IPA, Hazy IPA, Milk Stout, Imperial Stout,
+      Barleywine, Saison, Tripel, Dubbel, Quadrupel, Sour Ale – Profile nach BJCP 2021, Muster vor dem
+      `ale`-Auffang, Flaschenregeln und Stilgruppen (#PR_N1)
+- [ ] N2 **Klassiker Kanada** (M): Recherchedatei mit Quelle je Feld, Ableitung `classicTaste`, Texte DE + EN
+- [ ] N3 **Klassiker USA** (M): wie N2
+- [ ] N4 **Regionalkatalog CA/US – Schema + Client** (M): Länder-CHECKs, Brauerei-IDs `obdb-…`, PLZ-Format
+      ZIP/FSA, Auswahl bei gleicher PLZ in DE und USA, Datenschutztext
+- [ ] N5 **Pipeline + Crawler CA/US** (L): zentrale Ländertabelle, Open Brewery DB, OSM je Bundesstaat,
+      Wikidata/OFF/openbeer/GeoNames, englischer Crawler; Live-Import nach Freigabe
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
