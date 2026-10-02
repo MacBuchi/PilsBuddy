@@ -9,6 +9,9 @@ import type { TasteVector } from './types'
  * The base profiles are the rounded means of the curated beers of each style (beers.json, 2026-10);
  * styles without a curated beer (marked „hand“) are set between their neighbours. Kept as a fixed table
  * so adding a curated beer never silently shifts thousands of estimates.
+ *
+ * North American and Belgian/British styles (Stufe N, marked „bjcp“) are placed from the BJCP 2021 style
+ * guidelines (typical ABV, IBU, SRM and the described impression) between the neighbouring profiles.
  */
 
 /** Order of the numbers in `taste`: see TASTE_AXES. */
@@ -52,6 +55,26 @@ export const STYLE_PROFILES: Record<string, StyleProfile> = {
   'Berliner Weisse': { abv: 2.5, color: '#F0DC8A', taste: [10, 10, 20, 40, 40, 15, 70, 70] },
   Gose: { abv: 4.5, color: '#EBD27A', taste: [15, 15, 25, 30, 55, 25, 70, 80] }, // hand
   Radler: { abv: 2.5, color: '#F2DB7A', taste: [10, 10, 20, 75, 20, 20, 90, 25] }, // hand
+  'American Lager': { abv: 4.8, color: '#F0D46A', taste: [20, 15, 22, 30, 58, 22, 90, 18] }, // bjcp 1B
+  'Light Lager': { abv: 4.2, color: '#F4E08A', taste: [12, 10, 14, 25, 62, 12, 93, 10] }, // bjcp 1A
+  'Cream Ale': { abv: 5, color: '#EFD06A', taste: [22, 20, 32, 38, 48, 28, 86, 30] }, // bjcp 1C
+  'Blonde Ale': { abv: 4.8, color: '#EFCD60', taste: [24, 24, 38, 38, 46, 32, 86, 32] }, // bjcp 18A
+  'Wheat Ale': { abv: 4.9, color: '#EBC560', taste: [22, 25, 42, 38, 45, 38, 82, 40] }, // bjcp 1D
+  Witbier: { abv: 5, color: '#F2DC8A', taste: [12, 12, 40, 48, 42, 40, 82, 68] }, // bjcp 24A
+  'California Common': { abv: 4.9, color: '#B9702E', taste: [55, 50, 60, 35, 48, 48, 70, 65] }, // bjcp 19B
+  Bitter: { abv: 4.6, color: '#C07A30', taste: [52, 42, 55, 32, 52, 38, 76, 55] }, // bjcp 11
+  'Brown Ale': { abv: 5.3, color: '#6B3A1A', taste: [32, 28, 75, 45, 35, 55, 66, 60] }, // bjcp 13B/19C
+  'Scotch Ale': { abv: 6, color: '#8A421A', taste: [20, 12, 88, 62, 25, 70, 55, 72] }, // bjcp 14/17C
+  'Double IPA': { abv: 8.3, color: '#D98E2E', taste: [88, 100, 55, 42, 52, 70, 30, 92] }, // bjcp 22A
+  'Hazy IPA': { abv: 6.8, color: '#E8B04A', taste: [40, 100, 45, 55, 30, 68, 52, 85] }, // bjcp 21C
+  'Milk Stout': { abv: 5.5, color: '#1E120C', taste: [32, 18, 85, 72, 22, 75, 55, 80] }, // bjcp 16A
+  'Imperial Stout': { abv: 10, color: '#140C08', taste: [60, 35, 100, 62, 32, 100, 18, 100] }, // bjcp 20C
+  Barleywine: { abv: 10.5, color: '#9A4A1E', taste: [70, 60, 98, 70, 25, 98, 15, 98] }, // bjcp 22C
+  Saison: { abv: 6.5, color: '#E5B04A', taste: [38, 35, 40, 28, 78, 42, 62, 85] }, // bjcp 25B
+  Tripel: { abv: 8.8, color: '#E9BC4A', taste: [40, 35, 52, 42, 68, 62, 40, 90] }, // bjcp 26C
+  Dubbel: { abv: 7, color: '#7A3B1A', taste: [24, 18, 85, 65, 30, 72, 48, 85] }, // bjcp 26B
+  Quadrupel: { abv: 10, color: '#5A2A14', taste: [28, 20, 95, 75, 25, 95, 25, 98] }, // bjcp 26D
+  'Sour Ale': { abv: 6, color: '#B0532A', taste: [10, 12, 35, 42, 62, 38, 62, 92] }, // bjcp 23B/28
 }
 
 /** Unknown style: a plain, middle-of-the-road beer. */
@@ -65,17 +88,38 @@ const PATTERNS: [RegExp, string][] = [
   [/radler|shandy|alster|biermisch|bier-?mix|beer-based|mixed-drinks/, 'Radler'],
   [/berliner[ -]weiss/, 'Berliner Weisse'],
   [/\bgose\b/, 'Gose'],
+  [/\bsour\b|flanders|kriek|lambic|gueuze|geuze|wild ale|framboise/, 'Sour Ale'],
   [/rauch|smoked/, 'Rauchbier'],
-  [/eisbock|doppel[ -]?bock|\b\w+ator\b/, 'Doppelbock'],
+  // Salvator, Optimator … – unless an English style follows („Navigator IPA“)
+  [/eisbock|doppel[ -]?bock|\b\w+ator\b(?!.*\b(ipa|ale|stout|porter|lager)\b)/, 'Doppelbock'],
   [/\bbock|bock\b|maibock|festbock|weizenbock|bock-beers/, 'Bock'],
+  [/barley ?wine/, 'Barleywine'],
   [/trappist/, 'Trappist'],
-  [/tripel|abbey|abtei|abdij|blonde-ales?|\bblond(e)?\b/, 'Abbey Blonde'],
-  [/belgian-strong|strong ale|quadrupel/, 'Belgian Strong Ale'],
+  [/quadrupel|\bquad\b|dark strong/, 'Quadrupel'],
+  [/tripel|triple(?! ipa)/, 'Tripel'],
+  [/dubbel|belgian dark ale/, 'Dubbel'],
+  // „Leffe Blonde“ is a Belgian abbey beer, „805 Blonde Ale“ an American blonde
+  [/abbey|abtei|abdij|blonde-ales?|\bblond(e)?\b(?! ale)/, 'Abbey Blonde'],
+  [/blonde? ale|golden ale/, 'Blonde Ale'],
+  [/belgian-strong|strong ale/, 'Belgian Strong Ale'],
+  [/imperial (\w+ )?stout|russian imperial/, 'Imperial Stout'],
+  [/milk stout|sweet stout|cream stout/, 'Milk Stout'],
   [/stout/, 'Stout'],
   [/porter/, 'Porter'],
-  [/\bipa\b|india pale|-ipa\b|\bneipa\b/, 'IPA'],
-  [/amber|red[ -]ale|wiener|vienna/, 'Amber'],
-  [/pale[ -]ale|\bapa\b|golden ale|session ale|\bales\b|\bale\b/, 'Pale Ale'],
+  [/double ipa|imperial ipa|triple ipa|\bd?dipa\b|\biipa\b/, 'Double IPA'],
+  [/hazy (ipa|india)|\bneipa\b|new england|\bne[ -]ipa\b/, 'Hazy IPA'],
+  [/\bipa\b|india pale|-ipa\b/, 'IPA'],
+  [/cream ale/, 'Cream Ale'],
+  [/california common|steam beer/, 'California Common'],
+  [/brown ale|nut brown/, 'Brown Ale'],
+  [/scotch ale|wee heavy|scottish|\d+ shilling|\b\d{2,3}\/-/, 'Scotch Ale'],
+  [/\besb\b|special bitter|best bitter|english bitter|bitter ale|^bitter$/, 'Bitter'],
+  [/witbier|\bwit\b|blanche|white ale|belgian white/, 'Witbier'],
+  [/wheat ale|american wheat/, 'Wheat Ale'],
+  // „Saisonbier“ is German for a seasonal beer – the word boundary keeps it out
+  [/\bsaison\b|farmhouse/, 'Saison'],
+  [/\bamber|red[ -]ale|wiener|vienna/, 'Amber'],
+  [/pale[ -]ale|\bapa\b|session ale|\bales\b|\bale\b/, 'Pale Ale'],
   [/k(ö|oe|o)lsch|\bwiess\b/, 'Kölsch'],
   [/\balt(bier)?\b|altbier/, 'Altbier'],
   [/schwarz|black lager/, 'Schwarzbier'],
@@ -89,10 +133,12 @@ const PATTERNS: [RegExp, string][] = [
   [/pils|pilsner|pilsener|\bherb\b|feinherb|edelherb/, 'Pils'],
   [/landbier/, 'Landbier'],
   [/\bhell(es)?\b|helles|munich-helles/, 'Helles'],
+  [/\blite\b|\blight\b/, 'Light Lager'],
+  [/american (adjunct )?lager|canadian lager|adjunct lager/, 'American Lager'],
   [/lager|vollbier/, 'Lager'],
 ]
 
-const ALCOHOL_FREE = /alkoholfrei|non-alcoholic|alcohol-free|\b0[,.]0\b|\bnaturradler 0/
+const ALCOHOL_FREE = /alkoholfrei|non[- ]?alcoholic|alcohol[- ]free|sans alcool|\b0[,.]0\b|\bnaturradler 0/
 
 function findStyle(text: string): string | null {
   for (const [re, style] of PATTERNS) if (re.test(text)) return style
