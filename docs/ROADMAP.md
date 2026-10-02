@@ -20,7 +20,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 2. [x] **Q1** Integrationstest Patch-Kompatibilität (Upgrade-Pfad mit Bestand, Live-Rechte, App-Queries) – #37 (#40, live 2026-10-02)
 3. [ ] **Q2** Live-Migration per CI vor dem Deploy – #37, ⏸ braucht die ausdrückliche Freigabe des Maintainers
        (Auto-Modus blockiert „Blind Apply“) und das Secret `SUPABASE_ACCESS_TOKEN`; bis dahin übersprungen
-4. [ ] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card)
+4. [x] **R5** Regional im Alltag (Deck-Modus, „Lokalpatriot“, Share-Card) (#42, live 2026-10-02)
 5. [ ] **R8** Bierbibliothek mit Filtern
 6. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 7. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
@@ -212,8 +212,9 @@ Leitplanken:
         Entfernung, ohne erfundenes Profil. Keine Migration – der Client liest `breweries` + `regional_beers`
         eingebettet. Snapshots in `pilsbuddy.regional.beers` (nur `BEER_BY_ID`, nie im Deck). Offen: auf einem
         zweiten Gerät (Sync/Import) fehlen die Snapshots, diese Bewertungen werden dort ignoriert
-- [ ] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
-      Achievement „Lokalpatriot“, Share-Card-Zeile (M)
+- [x] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
+      Achievement „Lokalpatriot“, Share-Card-Zeile (M). Umgesetzt: Pool = letztes Finder-Ergebnis (nur auf dem Gerät,
+      max. 60), Regional-Karten mischen sich ab der ersten Karte ein (nicht erst nach dem Onboarding-Set)
 - [x] R6 **„Bier fehlt? Eintragen“** (vor R5 gezogen, Wunsch 2026-10-02): Brauerei Pflicht (aus dem Finder oder
       frei mit PLZ/Ort), dazu ein Link oder die Daten (Name, Stil, Alkohol). Tabelle `beer_submissions` (anonym, nur
       `insert`, Trigger-Limit global + keine Doppelmeldung, 5 je Gerät und Tag) → `tool/beer_bot.py` legt je Meldung
