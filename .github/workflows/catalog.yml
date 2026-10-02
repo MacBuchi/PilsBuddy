@@ -1,6 +1,6 @@
 name: Regional catalogue (fetch)
 
-# Stufe R: downloads breweries/beers from OpenStreetMap, Wikidata and Open Food Facts on a runner
+# Stufe R/N: downloads breweries/beers from OpenStreetMap, Open Brewery DB, Wikidata and Open Food Facts on a runner
 # (stable network, polite rate limits) and uploads the raw files + the coverage report as an artifact.
 # Nothing is written to the database here. Trigger: gh workflow run catalog.yml --ref <branch>
 on:
@@ -16,37 +16,41 @@ concurrency:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: OpenStreetMap (probe + DE/AT/CH)
+      # the countries and their sources come from tools/catalog/countries.json
+      - name: OpenStreetMap (probe + every country)
         run: |
           node tools/catalog/fetch-osm.mjs
-          for c in DE AT CH; do node tools/catalog/fetch-osm.mjs --country $c; done
-      - name: Wikidata (probe + DE/AT/CH)
+          for c in $(node tools/catalog/lib.mjs countries); do node tools/catalog/fetch-osm.mjs --country $c; done
+      - name: Open Brewery DB (MIT, US + Canada)
+        if: ${{ !cancelled() }}
+        run: node tools/catalog/fetch-obdb.mjs
+      - name: Wikidata (probe + every country)
         if: ${{ !cancelled() }}
         run: |
           node tools/catalog/fetch-wikidata.mjs
-          for c in DE AT CH; do node tools/catalog/fetch-wikidata.mjs --country $c; sleep 2; done
+          for c in $(node tools/catalog/lib.mjs countries); do node tools/catalog/fetch-wikidata.mjs --country $c; sleep 2; done
           node tools/catalog/fetch-wikidata.mjs --beers
-      - name: Open Food Facts (daily export, DE/AT/CH)
+      - name: Open Food Facts (daily export, every country)
         if: ${{ !cancelled() }}
         run: node tools/catalog/fetch-off.mjs
-      - name: GeoNames postcodes (CC-BY 4.0, DE/AT/CH)
+      - name: GeoNames postcodes (CC-BY 4.0; Canada as FSA)
         if: ${{ !cancelled() }}
         run: |
-          for c in DE AT CH; do
+          for c in $(node tools/catalog/lib.mjs countries); do
             curl -sSfL --retry 5 -A 'PilsBuddy-catalog' -o /tmp/$c.zip https://download.geonames.org/export/zip/$c.zip
             unzip -p /tmp/$c.zip $c.txt > tools/catalog/raw/geonames-$c.txt
             wc -l tools/catalog/raw/geonames-$c.txt
           done
-      - name: openbeer / beer.db (Public Domain, DE + AT beer lists)
+      - name: openbeer / beer.db (Public Domain beer lists)
         if: ${{ !cancelled() }}
         run: |
-          for r in by-bayern oberfranken oberbayern at-austria de-deutschland; do
+          for r in $(node tools/catalog/lib.mjs openbeer); do
             git clone -q --depth 1 https://github.com/openbeer/$r tools/catalog/raw/openbeer/$r
           done
           find tools/catalog/raw/openbeer -name '*.txt' | wc -l

@@ -1,5 +1,7 @@
 // Brewery websites (R1b): robots.txt, links to the beer pages, beers on a page. Pure – crawl.ts does the I/O.
 // Only facts are taken (name, ABV); the style comes from normalizeStyle like for every other source.
+// Two language profiles for the filters (`de` for DACH, `en` for Canada/USA, countries.json): a German sentence
+// filter would throw away „Son of a Peach“, an English one would keep German events.
 import { normalizeStyle } from '../../src/domain/styleProfile'
 
 export const CRAWLER_UA = 'PilsBuddyBot/0.1 (+https://pilsbuddy.mcbuchi.de; macbuchi.apps@gmail.com)'
@@ -59,8 +61,10 @@ export const textOf = (html: string) =>
     .replace(/\s+/g, ' ')
     .trim()
 
-const BEER_LINK = /(unsere[-_\s]?)?biere?\b|bierspezialit|sortiment|produkte|unsere[-_\s]?marken|beers?\b|bierwelt/i
-const SKIP_LINK = /shop|warenkorb|cart|checkout|jobs?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|\.(pdf|jpe?g|png|gif|zip)$/i
+const BEER_LINK =
+  /(unsere[-_\s]?)?biere?\b|bierspezialit|sortiment|produkte|unsere[-_\s]?marken|beers?\b|bierwelt|on[-_\s]?tap|tap[-_\s]?list|line[-_\s]?up|brews\b|bi[eè]res\b/i
+const SKIP_LINK =
+  /shop|store|merch|warenkorb|cart|checkout|jobs?|careers?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|tickets?|gift[-_\s]?cards?|\.(pdf|jpe?g|png|gif|zip)$/i
 
 /** Same-site links that look like the beer overview, best first (max `limit`). */
 export function beerLinks(html: string, base: string, limit = 3): string[] {
@@ -96,15 +100,29 @@ export interface WebBeer {
   abv: number | null
 }
 
+/** Language profile of a brewery website – the brewery country's `lang` in countries.json. */
+export type Lang = 'de' | 'en'
+
 /** Not a beer name: navigation, headings of sections, calls to action. */
 const NOT_A_NAME =
   /unsere|alle |mehr|weiter|entdecken|shop|kaufen|bestellen|warenkorb|karte|sortiment|übersicht|produkte|biere$|^biere?\b|spezialitäten|newsletter|cookie|kontakt|öffnungszeit|veranstaltung|news|aktuell|geschichte|tradition|führung|gutschein|^\d|€|schwarzwald|zwischen|willkommen|herzlich|heimat|region|[!?]$/i
+
+/**
+ * English navigation and calls to action. A leading number is fine here („90 Minute IPA“, „805“) – prices, sizes
+ * and years are caught by NOT_A_BEER_EN.
+ */
+const NOT_A_NAME_EN =
+  /\b(see all|view all|our|more|shop|buy|order|find|view|see|learn|discover|explore|menu|tap ?list|on tap|now pouring|merch|gift|subscribe|sign up|contact|hours|events?|news|visit|about|welcome|story|history|careers?|jobs?)\b|^beers?$|\$|€|[!?]$/i
+
+/** English sentences, other drinks, food, merch, events and pack sizes rather than a beer. */
+const NOT_A_BEER_EN =
+  /\b(is|are|was|were|we|you|your|join|come|try|get|today|tonight|tomorrow)\b|\b(19|20)\d\d\b|\b(hard )?(seltzers?|ciders?|kombucha|sodas?|vodka|gin|whiske?y|spirits|mead|cocktails?|food|kitchen|trivia|music|festival|release party|tours?|tickets?|reservations?|club|membership|patio|locations?|blog|recipes?|pairings?|awards?|medals?|winners?|growlers?|crowlers?|kegs?|glass(ware)?|t-?shirts?|hats?|hoodies?)\b|\b(?<!barley[\s-])wines?\b|\d+\s*(x|pack|pk|-pack)\b|\d+\s*(oz|ml|l)\b|[.,]$|,.*,/iu
 
 /** Sentences, events, rooms and news rather than a beer: function words, years, typical nouns. */
 const NOT_A_BEER =
   /\b(und|ist|nicht|der|die|das|den|dem|des|im|auf|für|von|vom|mit|aus|als|wie|zum|zur|bei|nach|ein|eine|einen|einem|in|an|us|em|oder|or|the|and|of|for|with)\b|\b(19|20)\d\d\b|\p{L}+(ung|verkauf|hütten?|fest|feste|welt|abend|tour|markt|stube|garten|laden|vielfalt|keller)\b|vorgestellt|offiziell|ab sofort|gewinn|mitarbeiter|\(m\/w|\(w\/m|\p{L}*(brand|geist|likör|schnaps)\b|schnitzel|braten|generator|siphon|paradies|\bschweiz\b|\d+\s*x\s*\d+|\d\s*cl\b|events?\b|steckbrief|gastronomie|\p{L}+land\b|glas|gelee|alternativ|genießen|\d\s*l\b|[.,]$|,.*,/iu
 
-const ABBREVIATIONS = new Set(['IPA', 'APA', 'IRA', 'DIPA', 'NEIPA', 'ESB'])
+const ABBREVIATIONS = new Set(['IPA', 'APA', 'IRA', 'DIPA', 'NEIPA', 'ESB', 'IPL', 'XPA', 'DDH'])
 
 /**
  * All-caps names get title case („INDIA PALE ALE“ → „India Pale Ale“), all-lowercase ones capitals
@@ -138,7 +156,13 @@ export function cleanName(raw: string): string {
   return unshout(head !== name && normalizeStyle([head]) ? head : name)
 }
 
-const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk)/i
+/** „4,9 % vol“, „5.2% Alc.“, „6.5% ABV“ or „ABV: 6.5%“ */
+const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk|abv)|\babv\b\s*[:\-–]?\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*%/i
+const abvIn = (t: string) => {
+  const m = t.match(ABV)
+  const v = m?.[1] ?? m?.[2]
+  return v ? Number(v.replace(',', '.')) : null
+}
 
 /** „West Coast IPA 6.4% ABV“: the ABV at the end of a name is cut off (and used if the text had none). */
 const ABV_IN_NAME = /[\s,(–-]+(\d{1,2}(?:[.,]\d{1,2})?)\s*%.*$/
@@ -149,9 +173,10 @@ const toAbv = (s: string | undefined) => {
 }
 
 /** A heading or product title as a beer (tidied name + ABV from the name), or null if it is no beer. */
-export function beerName(raw: string, abv: number | null = null): WebBeer | null {
+export function beerName(raw: string, abv: number | null = null, lang: string = 'de'): WebBeer | null {
   const name = cleanName(raw)
-  if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || NOT_A_NAME.test(name) || NOT_A_BEER.test(name)) return null
+  const [notName, notBeer] = lang === 'en' ? [NOT_A_NAME_EN, NOT_A_BEER_EN] : [NOT_A_NAME, NOT_A_BEER]
+  if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || notName.test(name) || notBeer.test(name)) return null
   if (!normalizeStyle([name])) return null
   return { name, abv: toAbv(abv?.toString()) ?? toAbv(raw.match(ABV_IN_NAME)?.[1]) }
 }
@@ -160,10 +185,10 @@ export function beerName(raw: string, abv: number | null = null): WebBeer | null
  * Beers on a page: schema.org Product names (JSON-LD), and headings that name a beer style
  * („Hoepfner Pilsner“, „Hefeweizen hell“) with the ABV from the text up to the next heading.
  */
-export function extractBeers(html: string): WebBeer[] {
+export function extractBeers(html: string, lang: Lang = 'de'): WebBeer[] {
   const out = new Map<string, WebBeer>()
   const add = (rawName: string, abv: number | null) => {
-    const beer = beerName(rawName, abv)
+    const beer = beerName(rawName, abv, lang)
     if (!beer) return
     const key = beer.name.toLowerCase()
     const prev = out.get(key)
@@ -182,8 +207,7 @@ export function extractBeers(html: string): WebBeer[] {
       const o = x as Record<string, unknown>
       const type = String(o['@type'] ?? '')
       if (/Product/i.test(type) && typeof o.name === 'string') {
-        const abvMatch = textOf(String(o.description ?? '')).match(ABV)
-        add(decode(o.name), abvMatch ? Number(abvMatch[1].replace(',', '.')) : null)
+        add(decode(o.name), abvIn(textOf(String(o.description ?? ''))))
       }
       Object.values(o).forEach(walk)
     }
@@ -193,8 +217,7 @@ export function extractBeers(html: string): WebBeer[] {
   const heads = [...body.matchAll(/<h([1-4])\b[^>]*>([\s\S]*?)<\/h\1>/gi)]
   heads.forEach((h, i) => {
     const after = body.slice(h.index! + h[0].length, heads[i + 1]?.index ?? body.length).slice(0, 2000)
-    const abvMatch = textOf(after).match(ABV)
-    add(textOf(h[2]), abvMatch ? Number(abvMatch[1].replace(',', '.')) : null)
+    add(textOf(h[2]), abvIn(textOf(after)))
   })
   return [...out.values()]
 }

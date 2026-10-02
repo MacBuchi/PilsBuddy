@@ -6,15 +6,15 @@ import { args, bboxAround, COUNTRIES, getJson, PROBE, writeRaw } from './lib.mjs
 const { country, beers } = args()
 const ENDPOINT = 'https://query.wikidata.org/sparql'
 
-// --beers: beers whose manufacturer (P176) is a brewery in DE/AT/CH → raw/wikidata-beers.json
+// --beers: beers whose manufacturer (P176) is a brewery in one of the countries → raw/wikidata-beers.json
 if (beers) {
   const q = `SELECT ?beer ?beerLabel ?brewery ?breweryLabel ?placeLabel ?abv (GROUP_CONCAT(DISTINCT ?kindLabel; separator="|") AS ?kinds) WHERE {
-    VALUES ?c { ${Object.values(COUNTRIES).map((c) => `wd:${c}`).join(' ')} }
+    VALUES ?c { ${Object.values(COUNTRIES).map((c) => `wd:${c.wikidata}`).join(' ')} }
     ?brewery wdt:P17 ?c ; wdt:P31/wdt:P279* wd:Q131734 .
     ?beer wdt:P176 ?brewery .
     OPTIONAL { ?beer wdt:P2665 ?abv }
     OPTIONAL { ?brewery wdt:P131 ?place }
-    OPTIONAL { ?beer wdt:P31 ?kind . ?kind rdfs:label ?kindLabel . FILTER(LANG(?kindLabel) = "de") }
+    OPTIONAL { ?beer wdt:P31 ?kind . ?kind rdfs:label ?kindLabel . FILTER(LANG(?kindLabel) IN ("de", "en")) }
     SERVICE wikibase:label { bd:serviceParam wikibase:language "de,mul,en,fr,it" . ?beer rdfs:label ?beerLabel . ?brewery rdfs:label ?breweryLabel . ?place rdfs:label ?placeLabel . }
   } GROUP BY ?beer ?beerLabel ?brewery ?breweryLabel ?placeLabel ?abv`
   const data = await getJson(`${ENDPOINT}?query=${encodeURIComponent(q)}`, { headers: { Accept: 'application/sparql-results+json' } })
@@ -38,9 +38,12 @@ if (beers) {
   process.exit(0)
 }
 
+if (country && !COUNTRIES[country]) throw new Error(`unknown country ${country}`)
+// labels in the country's language first (Québec: French after English)
+const langs = country && COUNTRIES[country].lang === 'en' ? 'en,mul,fr,de' : 'de,en'
 let where
 if (country) {
-  where = `?item wdt:P17 wd:${COUNTRIES[country]} . ?item wdt:P625 ?coord .`
+  where = `?item wdt:P17 wd:${COUNTRIES[country].wikidata} . ?item wdt:P625 ?coord .`
 } else {
   const b = bboxAround(PROBE)
   where = `SERVICE wikibase:box { ?item wdt:P625 ?coord .
@@ -55,7 +58,7 @@ const query = `SELECT ?item ?itemLabel ?coord ?website ?dissolved ?countryCode ?
   OPTIONAL { ?item wdt:P17/wdt:P297 ?countryCode }
   OPTIONAL { ?item wdt:P571 ?inception }
   OPTIONAL { ?item wdt:P131 ?place }
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "de,en" . }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "${langs}" . }
 }`
 
 const data = await getJson(`${ENDPOINT}?query=${encodeURIComponent(query)}`, { headers: { Accept: 'application/sparql-results+json' } })

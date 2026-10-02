@@ -43,26 +43,31 @@ Auth-Einstellungen (seit 2026-10-01 aktiv; gezielt per Management-API `PATCH /v1
 gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = true`, Site URL
 `https://pilsbuddy.mcbuchi.de`, Rate-Limit 30 anonyme Anmeldungen/Stunde je IP (Default).
 
-**Regionalkatalog (Stufe R):** befüllt nur von `tools/catalog` – nie von der App. Ablauf:
+**Regionalkatalog (Stufe R, N5):** befüllt nur von `tools/catalog` – nie von der App. Die Länder und ihre Quellen
+(Wikidata-Item, OFF-Tag, Sprache, OSM-Teilgebiete, Open-Brewery-DB-Land, openbeer-Repos, Mindestzahl Brauereien)
+stehen zentral in `tools/catalog/countries.json`; Skripte, Merge und Workflow lesen sie dort. Ablauf:
 
 1. Workflow „Regional catalogue (fetch)“ (`gh workflow run catalog.yml --ref <branch>`) lädt OSM (Overpass,
-   mit Spiegel-Servern), Wikidata (Brauereien + `--beers`), den Open-Food-Facts-Export, die openbeer-Repos
+   mit Spiegel-Servern; DE, CA, US je Bundesland/Provinz/Staat), Open Brewery DB (MIT, US + Kanada), Wikidata (Brauereien + `--beers`), den Open-Food-Facts-Export, die openbeer-Repos
    (beer.db, gemeinfrei, Stand ~2014) und die GeoNames-Postleitzahlen; Artefakt `catalog-raw` nach
    `tools/catalog/raw/` entpacken.
    Website-Biere: Workflow „Regional catalogue (brewery websites)“ (`gh workflow run catalog-web.yml`)
    besucht die Websites der veröffentlichten Brauereien (`tools/catalog/crawl.ts`: robots.txt, eigener
-   User-Agent `PilsBuddyBot`, ≤ 4 Seiten je Site, 1 s Pause) und liefert `web-<n>.json` (Artefakte
+   User-Agent `PilsBuddyBot`, ≤ 4 Seiten je Site, 1 s Pause, Filter und `Accept-Language` nach Land der
+   Brauerei – deutsch für DACH, englisch für CA/US; 12 Shards) und liefert `web-<n>.json` (Artefakte
    `catalog-web-<n>`) – ebenfalls nach `tools/catalog/raw/`. Übernommen werden nur Name + Alkohol aus
    schema.org-Produkten oder Überschriften mit Bierstil; `source_ref` ist der Pfad auf der Brauerei-Website.
 2. `npm run catalog:build` → `tools/catalog/out/*.sql` + `report.txt`: Brauereien dedupliziert (gleicher Name
-   < 300 m, Wikidata per Tag oder Name < 500 m), Biere einer Brauerei zugeordnet (alle Namensteile der Brauerei
+   < 300 m, Wikidata per Tag oder Name < 500 m, Open Brewery DB per Name < 1 km; ohne Koordinaten an die Mitte
+   ihrer PLZ, dann Name < 5 km), Biere einer Brauerei zugeordnet (alle Namensteile der Brauerei
    in Marke/Hersteller, gleichnamige nur mit passendem Herstellungsort), davon die **Hauptbiere**: je Stil eines
    (Größen/Gebinde fallen zusammen), höchstens 5, Radler/Alkoholfreies zuletzt, unbekannter Stil nur ohne
    Alternative; bei Gleichstand gewinnt die aktuellere Quelle (OFF > Wikidata > Website > openbeer).
    Zuordnung auch über einen abweichenden Wikidata-Namen und ohne Adjektiv-„-er“ („Zwettler“ = „Zwettl“);
    allgemeine Namen („Hofbräu“, „Die Weisse“) nur mit passendem Ort; Listen mit vollen Brauereinamen
    (openbeer) streng: Ort passt, oder gleicher Name und Brauerei ohne bekannten Ort.
-   Bricht ab bei < 1000 Brauereien (unvollständiger Download).
+   Alle Länder werden immer zusammen gebaut (sonst setzt `30-unpublish.sql` die fehlenden auf unveröffentlicht);
+   bricht ab, wenn ein Land unter seiner Mindestzahl liegt (unvollständiger Download).
 3. Lokal prüfen: `for f in tools/catalog/out/*.sql; do psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$f"; done`
 4. Live: Workflow „Regional catalogue (import)“ (`gh workflow run catalog-import.yml` = Probelauf mit Report,
    `-f apply=true` = Import nach Freigabe im Environment `production`; nimmt die Artefakte des letzten fetch-
@@ -72,7 +77,7 @@ gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = 
    den freigegebenen Meldungen aus der App (Quelle 5, Brauereien `app-…`).
 
 Geschmack wird nicht gespeichert – die App leitet ihn aus Stil + ABV ab (`tasteFromStyle`, „Stil-Schätzung“).
-Lizenzen: OpenStreetMap und Open Food Facts ODbL (Namensnennung, abgeleitete DB bleibt ODbL), Wikidata CC0,
+Lizenzen: OpenStreetMap und Open Food Facts ODbL (Namensnennung, abgeleitete DB bleibt ODbL), Open Brewery DB MIT, Wikidata CC0,
 GeoNames CC BY 4.0 – genannt in `src/data/legal.ts`.
 
 Advisor: Die zwei WARN „Anonymous Access Policies“ (0012) für `profiles` und `ratings` sind gewollt – anonyme

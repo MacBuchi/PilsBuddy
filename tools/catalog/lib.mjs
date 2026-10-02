@@ -1,7 +1,7 @@
 // Shared helpers for the regional catalogue pipeline (Stufe R). Node ≥ 20, no dependencies.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 export const RAW = join(dirname(fileURLToPath(import.meta.url)), 'raw')
 mkdirSync(RAW, { recursive: true })
@@ -12,7 +12,20 @@ export const UA = 'PilsBuddy-catalog/0.1 (+https://pilsbuddy.mcbuchi.de; macbuch
 /** Probe region of R0: Bad Rappenau ± 50 km. */
 export const PROBE = { lat: 49.2386, lon: 9.1016, radiusKm: 50 }
 
-export const COUNTRIES = { DE: 'Q183', AT: 'Q40', CH: 'Q39' }
+/**
+ * The catalogue's countries (countries.json, also read by merge.ts): Wikidata item, Open Food Facts tag, language,
+ * OSM areas (ISO 3166-2, for countries one Overpass query cannot cover), Open Brewery DB country, openbeer repos and
+ * the fewest breweries a complete download has. A new country is a new entry there plus the DB CHECKs.
+ */
+export const COUNTRIES = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'countries.json'), 'utf8'))
+
+// `node tools/catalog/lib.mjs countries|openbeer` prints the lists the workflow loops over
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  const what = process.argv[2]
+  if (what === 'countries') console.log(Object.keys(COUNTRIES).join(' '))
+  else if (what === 'openbeer') console.log(Object.values(COUNTRIES).flatMap((c) => c.openbeer ?? []).join(' '))
+  else throw new Error('usage: lib.mjs countries|openbeer')
+}
 
 /** `--key value` arguments. */
 export function args() {

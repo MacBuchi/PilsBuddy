@@ -286,8 +286,13 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
       - umgesetzt (#59): Migration `north_america` (CA/US, `obdb-<uuid>`, FSA), `src/domain/postcode.ts` kürzt eine
         kanadische PLZ auf dem Gerät auf die FSA; gibt es die PLZ in mehreren Ländern, kommt das Land der
         Browsersprache zuerst, die anderen sind einen Tipp entfernt (Finder und Bibliothek)
-- [ ] N5 **Pipeline + Crawler CA/US** (L): zentrale Ländertabelle, Open Brewery DB, OSM je Bundesstaat,
+- [x] N5 **Pipeline + Crawler CA/US** (L): zentrale Ländertabelle, Open Brewery DB, OSM je Bundesstaat,
       Wikidata/OFF/openbeer/GeoNames, englischer Crawler; Live-Import nach Freigabe
+      - umgesetzt (#PR): `tools/catalog/countries.json` steuert Skripte, Merge und Workflow; `fetch-obdb.mjs`
+        (Brauereien ohne Koordinaten an der Mitte ihrer PLZ), GeoNames US-ZIP + kanadische FSA, `fl oz` im Gebinde,
+        englische Firmenwörter beim Namensabgleich, Crawler-Sprachprofil je Land (englische Filter, „6.5% ABV“,
+        Zahl am Namensanfang), 12 Shards, Mindestzahl Brauereien je Land. Live-Import (fetch → import → Websites →
+        import) läuft erst nach Freigabe im Environment `production`
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

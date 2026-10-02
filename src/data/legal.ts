@@ -103,7 +103,7 @@ const PRIVACY_DE: LegalSection[] = [
   {
     title: 'Quellen der Brauerei-Daten',
     paragraphs: [
-      'Brauereien und ihre Biere aus deiner Region stammen aus offenen Datenbanken: © OpenStreetMap-Mitwirkende (ODbL), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (gemeinfrei) und GeoNames (Postleitzahlen, CC BY 4.0). Einige Biere (Name, Alkoholgehalt) haben wir den Websites der Brauereien entnommen; die Quelle ist bei jedem Bier verlinkt. Dazu kommen Biere, die Nutzer gemeldet und wir geprüft haben. Unsere daraus abgeleitete Datenbank steht ebenfalls unter der ODbL. Der Geschmack dieser Biere ist eine Schätzung aus dem Bierstil, keine Verkostung.',
+      'Brauereien und ihre Biere aus deiner Region stammen aus offenen Datenbanken: © OpenStreetMap-Mitwirkende (ODbL), Open Brewery DB (MIT, Brauereien in den USA und Kanada), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (gemeinfrei) und GeoNames (Postleitzahlen, CC BY 4.0). Einige Biere (Name, Alkoholgehalt) haben wir den Websites der Brauereien entnommen; die Quelle ist bei jedem Bier verlinkt. Dazu kommen Biere, die Nutzer gemeldet und wir geprüft haben. Unsere daraus abgeleitete Datenbank steht ebenfalls unter der ODbL. Der Geschmack dieser Biere ist eine Schätzung aus dem Bierstil, keine Verkostung.',
     ],
   },
   {
@@ -193,7 +193,7 @@ const PRIVACY_EN: LegalSection[] = [
   {
     title: 'Sources of the brewery data',
     paragraphs: [
-      'Breweries and their beers from your region come from open databases: © OpenStreetMap contributors (ODbL), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (public domain) and GeoNames (postcodes, CC BY 4.0). We took some beers (name, alcohol content) from the breweries’ websites; the source is linked for every beer. In addition there are beers reported by users and checked by us. Our database derived from these is also under the ODbL. The taste of these beers is an estimate from the beer style, not a tasting.',
+      'Breweries and their beers from your region come from open databases: © OpenStreetMap contributors (ODbL), Open Brewery DB (MIT, breweries in the USA and Canada), Open Food Facts (ODbL), Wikidata (CC0), beer.db/openbeer (public domain) and GeoNames (postcodes, CC BY 4.0). We took some beers (name, alcohol content) from the breweries’ websites; the source is linked for every beer. In addition there are beers reported by users and checked by us. Our database derived from these is also under the ODbL. The taste of these beers is an estimate from the beer style, not a tasting.',
     ],
   },
   {

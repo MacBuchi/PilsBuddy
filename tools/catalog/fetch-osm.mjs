@@ -1,7 +1,7 @@
 // Breweries from OpenStreetMap (ODbL) via Overpass.
 //   node tools/catalog/fetch-osm.mjs              → probe region (R0)
-//   node tools/catalog/fetch-osm.mjs --country DE → whole country (DE state by state – one query times out)
-import { args, bboxAround, getJson, PROBE, sleep, writeRaw } from './lib.mjs'
+//   node tools/catalog/fetch-osm.mjs --country DE → whole country (DE, CA, US state by state – one query times out)
+import { args, bboxAround, COUNTRIES, getJson, PROBE, sleep, writeRaw } from './lib.mjs'
 
 const { country } = args()
 // the main instance answers 504 under load – rotate through public mirrors
@@ -22,11 +22,11 @@ async function overpass(query) {
 }
 
 const filters = ['["craft"="brewery"]', '["microbrewery"="yes"]', '["industrial"="brewery"]']
-const DE_STATES = ['BW', 'BY', 'BE', 'BB', 'HB', 'HH', 'HE', 'MV', 'NI', 'NW', 'RP', 'SL', 'SN', 'ST', 'SH', 'TH']
+if (country && !COUNTRIES[country]) throw new Error(`unknown country ${country}`)
 const areas = !country
   ? [null]
-  : country === 'DE'
-    ? DE_STATES.map((s) => `area["ISO3166-2"="DE-${s}"]->.a;`)
+  : COUNTRIES[country].osm
+    ? COUNTRIES[country].osm.map((s) => `area["ISO3166-2"="${s}"]->.a;`)
     : [`area["ISO3166-1"="${country}"][admin_level=2]->.a;`]
 
 const elements = new Map()

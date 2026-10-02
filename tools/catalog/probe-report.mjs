@@ -1,11 +1,11 @@
 // R0: coverage numbers for the probe region (Bad Rappenau ± 50 km) from the raw downloads.
 //   node tools/catalog/probe-report.mjs   (needs raw/osm-probe.json, raw/wikidata-probe.json, raw/off-*.json)
-import { haversineKm, hasRaw, normName, PROBE, readRaw } from './lib.mjs'
+import { COUNTRIES, haversineKm, hasRaw, normName, PROBE, readRaw } from './lib.mjs'
 
 const inRadius = (r) => haversineKm(PROBE, r) <= PROBE.radiusKm
 const osm = readRaw('osm-probe.json').filter(inRadius)
 const wd = readRaw('wikidata-probe.json').filter(inRadius).filter((r) => !r.dissolved)
-const off = ['DE', 'AT', 'CH'].filter((c) => hasRaw(`off-${c}.json`)).flatMap((c) => readRaw(`off-${c}.json`))
+const off = Object.keys(COUNTRIES).filter((c) => hasRaw(`off-${c}.json`)).flatMap((c) => readRaw(`off-${c}.json`))
 
 // ---- breweries: OSM first, Wikidata joins by QID or name + < 300 m ----
 const breweries = osm.filter((b) => b.name).map((b) => ({ ...b, sources: ['osm'], key: normName(b.name) }))
@@ -37,10 +37,10 @@ const STYLE_HINTS = ['pils', 'helles', 'lager', 'weiss', 'weizen', 'wheat', 'dun
 const styled = off.filter((p) => p.categories.some((c) => STYLE_HINTS.some((h) => c.includes(h))))
 
 // ---- country totals (if downloaded) ----
-console.log('Länder (OSM-Brauereien mit Namen / Wikidata aktiv / OFF-Biere):')
-for (const c of ['DE', 'AT', 'CH']) {
+console.log('Länder (OSM-Brauereien mit Namen / Wikidata aktiv / Open Brewery DB / OFF-Biere):')
+for (const c of Object.keys(COUNTRIES)) {
   const n = (f, fn) => (hasRaw(f) ? fn(readRaw(f)) : '–')
-  console.log(`  ${c}: ${n(`osm-${c}.json`, (r) => r.filter((b) => b.name).length)} / ${n(`wikidata-${c}.json`, (r) => r.filter((b) => !b.dissolved).length)} / ${n(`off-${c}.json`, (r) => r.length)}`)
+  console.log(`  ${c}: ${n(`osm-${c}.json`, (r) => r.filter((b) => b.name).length)} / ${n(`wikidata-${c}.json`, (r) => r.filter((b) => !b.dissolved).length)} / ${n(`obdb-${c}.json`, (r) => `${r.length} (${r.filter((b) => b.lat == null).length} ohne Koordinaten)`)} / ${n(`off-${c}.json`, (r) => r.length)}`)
 }
 console.log('')
 
