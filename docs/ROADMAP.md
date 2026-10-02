@@ -26,7 +26,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (#52, live 2026-10-02)
 9. [x] **R8** Bierbibliothek mit Filtern (#53, 2026-10-02)
 10. [ ] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada (#56) ·
-    N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#PR) · N5 Pipeline + Crawler + Live-Import
+    N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler + Live-Import
 11. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 12. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
@@ -283,7 +283,7 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
         Coors, Miller, PBR, Yuengling …) und Craft-Wegbereiter (Pliny, Heady Topper, Two Hearted, Dale's …)
 - [x] N4 **Regionalkatalog CA/US – Schema + Client** (M): Länder-CHECKs, Brauerei-IDs `obdb-…`, PLZ-Format
       ZIP/FSA, Auswahl bei gleicher PLZ in DE und USA, Datenschutztext
-      - umgesetzt (#PR): Migration `north_america` (CA/US, `obdb-<uuid>`, FSA), `src/domain/postcode.ts` kürzt eine
+      - umgesetzt (#59): Migration `north_america` (CA/US, `obdb-<uuid>`, FSA), `src/domain/postcode.ts` kürzt eine
         kanadische PLZ auf dem Gerät auf die FSA; gibt es die PLZ in mehreren Ländern, kommt das Land der
         Browsersprache zuerst, die anderen sind einen Tipp entfernt (Finder und Bibliothek)
 - [ ] N5 **Pipeline + Crawler CA/US** (L): zentrale Ländertabelle, Open Brewery DB, OSM je Bundesstaat,
