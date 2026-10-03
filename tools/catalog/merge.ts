@@ -558,9 +558,15 @@ export function mainBeers(
       sourceRef: w.path.slice(0, 300) || '/',
     })
   }
+  // a bare „Blonde“ is an abbey beer in German-speaking countries, an American blonde ale in English-speaking ones
+  const lang = new Map(breweries.map((b) => [b.id, COUNTRY_INFO[b.country].lang]))
+  const localStyle = (breweryId: string, c: Candidate) =>
+    c.style === 'Abbey Blonde' && lang.get(breweryId) === 'en' && !/abbey|abbaye|abdij|belgian|belge/i.test(c.name)
+      ? 'Blonde Ale'
+      : c.style
   const out: RegionalBeer[] = []
   for (const [breweryId, cands] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0])))
-    pickMainBeers(cands).forEach((c, rank) =>
+    pickMainBeers(cands.map((c) => ({ ...c, style: localStyle(breweryId, c) }))).forEach((c, rank) =>
       out.push({
         id: `r-${c.code}`,
         breweryId,

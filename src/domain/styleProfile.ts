@@ -96,7 +96,8 @@ const PATTERNS: [RegExp, string][] = [
   [/barley ?wine/, 'Barleywine'],
   [/trappist/, 'Trappist'],
   [/quadrupel|\bquad\b|dark strong/, 'Quadrupel'],
-  [/tripel|triple(?! ipa)/, 'Tripel'],
+  // English „triple“ is a Tripel only next to a Belgian word („Abbey Triple“), not in „Triple Berry“ or „Triple Play“
+  [/tripel|(belgian|abbey|trappist|farmhouse|monk'?s?) triple|triple (ale|blonde?)\b/, 'Tripel'],
   [/dubbel|belgian dark ale/, 'Dubbel'],
   // „Leffe Blonde“ is a Belgian abbey beer, „805 Blonde Ale“ an American blonde
   [/abbey|abtei|abdij|blonde-ales?|\bblond(e)?\b(?! ale)/, 'Abbey Blonde'],
