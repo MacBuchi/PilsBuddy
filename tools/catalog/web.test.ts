@@ -98,6 +98,21 @@ describe('extractBeers', () => {
     expect(cleanName('Pils: unser Klassiker')).toBe('Pils: unser Klassiker')
     expect(cleanName('renegade ipa')).toBe('Renegade IPA')
     expect(cleanName('Kel\u00adler Pils')).toBe('Keller Pils')
+    // menu leftovers on English sites
+    expect(cleanName('Hazy West Coast IPA |')).toBe('Hazy West Coast IPA')
+    expect(cleanName('Lucky Cat Rice Lager //')).toBe('Lucky Cat Rice Lager')
+    expect(cleanName('(Hoppy Lager )')).toBe('Hoppy Lager')
+    expect(cleanName('Cackler IPA ( IPA')).toBe('Cackler IPA')
+    expect(cleanName('Mustache Ride ( Red Ale')).toBe('Mustache Ride Red Ale')
+    expect(cleanName('Hazy IPA ABV:')).toBe('Hazy IPA')
+    expect(cleanName('Juicy IPA, ABV')).toBe('Juicy IPA')
+    expect(cleanName('Night Hike Porter (Porter)')).toBe('Night Hike Porter')
+    expect(cleanName('River Runner ESB (Extra Special Bitter)')).toBe('River Runner ESB')
+    expect(cleanName('Green Eyed Lady (Belgian Strong Ale)')).toBe('Green Eyed Lady (Belgian Strong Ale)')
+    expect(cleanName('Porter 4.6 ABV • 28 IBU')).toBe('Porter')
+    expect(cleanName('Blootylicious – Blueberry Wheat Ale |')).toBe('Blootylicious – Blueberry Wheat Ale')
+    expect(cleanName('DEVIL’S STAIRCASE IPA')).toBe('Devil’s Staircase IPA')
+    expect(cleanName("Wiley's Blood Orange Wheat")).toBe("Wiley's Blood Orange Wheat")
   })
 
   it('takes the ABV out of the name', () => {
@@ -129,6 +144,20 @@ describe('extractBeers', () => {
     // the German profile still drops what it dropped before
     expect(beerName('Son of a Peach Wheat Ale')).toBeNull()
     expect(beerName('All Day IPA', null, 'en')).toEqual({ name: 'All Day IPA', abv: null })
+    for (const event of [
+      'IPA Series',
+      'Oktoberfest NEW RELEASE',
+      'Friday 10/2 English bitter',
+      'IPA and Craft Beer Trends',
+      'Oktoberfest Party',
+      'House-made Ginger Ale',
+      'Ales & Lagers, Friends & Neighbors',
+    ])
+      expect(beerName(event, null, 'en')).toBeNull()
+    expect(beerName('Party On IPA', null, 'en')).toEqual({ name: 'Party On IPA', abv: null })
+    expect(beerName('Celebration Fresh Hop IPA', null, 'en')).toEqual({ name: 'Celebration Fresh Hop IPA', abv: null })
+    expect(beerName('Root Beer Porter', null, 'en')).toEqual({ name: 'Root Beer Porter', abv: null })
+    expect(beerName('Fly By Night IPA', null, 'en')).toEqual({ name: 'Fly By Night IPA', abv: null })
   })
 
   it('finds English beer pages', () => {

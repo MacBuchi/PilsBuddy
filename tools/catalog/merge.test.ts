@@ -347,6 +347,21 @@ describe('website beers', () => {
     ])
     expect(beers[1].id).toMatch(/^r-w[0-9a-f]{16}$/)
   })
+
+  it('read a bare „Blonde“ as a blonde ale in English-speaking countries', () => {
+    const us = brewery({ id: 'obdb-0', name: 'Beachwood Brewing', country: 'US' })
+    const de = brewery({ id: 'osm-n5', name: 'Brauerei Blond' })
+    const beers = mainBeers([], [us, de], [], [], [
+      { breweryId: 'obdb-0', path: '/', name: 'Beachwood Blonde', abv: null },
+      { breweryId: 'obdb-0', path: '/', name: 'Belgian Blonde', abv: null },
+      { breweryId: 'osm-n5', path: '/', name: 'Klosterbier Blonde', abv: null },
+    ])
+    expect(beers.map((x) => [x.name, x.style])).toEqual([
+      ['Belgian Blonde', 'Abbey Blonde'],
+      ['Beachwood Blonde', 'Blonde Ale'],
+      ['Klosterbier Blonde', 'Abbey Blonde'],
+    ])
+  })
 })
 
 describe('parsePlaces', () => {

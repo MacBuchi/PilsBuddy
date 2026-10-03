@@ -116,7 +116,7 @@ const NOT_A_NAME_EN =
 
 /** English sentences, other drinks, food, merch, events and pack sizes rather than a beer. */
 const NOT_A_BEER_EN =
-  /\b(is|are|was|were|we|you|your|join|come|try|get|today|tonight|tomorrow)\b|\b(19|20)\d\d\b|\b(hard )?(seltzers?|ciders?|kombucha|sodas?|vodka|gin|whiske?y|spirits|mead|cocktails?|food|kitchen|trivia|music|festival|release party|tours?|tickets?|reservations?|club|membership|patio|locations?|blog|recipes?|pairings?|awards?|medals?|winners?|growlers?|crowlers?|kegs?|glass(ware)?|t-?shirts?|hats?|hoodies?)\b|\b(?<!barley[\s-])wines?\b|\d+\s*(x|pack|pk|-pack)\b|\d+\s*(oz|ml|l)\b|[.,]$|,.*,/iu
+  /\b(is|are|was|were|we|you|your|join|come|try|get|today|tonight|tomorrow)\b|\b(19|20)\d\d\b|\b(hard )?(seltzers?|ciders?|kombucha|sodas?|vodka|gin|whiske?y|spirits|mead|cocktails?|food|kitchen|trivia|music|festival|release party|ginger ale|root beer(?! (porter|stout|ale))|(new )?releases?|series|trends|takeover|(mon|tues|wednes|thurs|fri|satur|sun)days?|tours?|tickets?|reservations?|club|membership|patio|locations?|blog|recipes?|pairings?|awards?|medals?|winners?|growlers?|crowlers?|kegs?|glass(ware)?|t-?shirts?|hats?|hoodies?)\b|\b(?<!barley[\s-])wines?\b|\d+\s*(x|pack|pk|-pack)\b|\d+\s*(oz|ml|l)\b|\bales? & lagers?\b|\bparty$|[.,]$|,.*,/iu
 
 /** Sentences, events, rooms and news rather than a beer: function words, years, typical nouns. */
 const NOT_A_BEER =
@@ -131,9 +131,24 @@ const ABBREVIATIONS = new Set(['IPA', 'APA', 'IRA', 'DIPA', 'NEIPA', 'ESB', 'IPL
 const unshout = (name: string) => {
   const letters = name.replace(/ß/g, '')
   if (/\p{Ll}/u.test(letters) && /\p{Lu}/u.test(letters)) return name
-  return name.replace(/\p{L}{3,}/gu, (w) =>
-    ABBREVIATIONS.has(w.toUpperCase()) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1).toLowerCase(),
-  )
+  return name
+    .replace(/\p{L}{3,}/gu, (w) =>
+      ABBREVIATIONS.has(w.toUpperCase()) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1).toLowerCase(),
+    )
+    .replace(/(\p{L}['’])S\b/gu, '$1s') // „DEVIL’S“ → „Devil’s“, not „Devil’S“
+}
+
+/**
+ * Brackets: „(Hoppy Lager )“ loses them, „Night Hike Porter (Porter)“ or „River Runner ESB (Extra Special
+ * Bitter)“ the bracket if the rest still names a style, „Cackler IPA ( IPA“ everything from an unclosed one.
+ */
+const unbracket = (name: string) => {
+  const inner = name.match(/^\(([^()]*)\)$/)
+  if (inner) return inner[1].trim()
+  const rest = name.replace(/\s*\([^()]*\)/g, '').trim()
+  if (rest !== name && normalizeStyle([rest])) name = rest
+  const open = name.replace(/\s*\([^)]*$/, '').trim()
+  return normalizeStyle([open]) ? open : name.replace(/\s*\(\s*/, ' ').trim()
 }
 
 /**
@@ -147,12 +162,15 @@ export function cleanName(raw: string): string {
     decode(raw)
       .replace(/[\u00ad\u200b]/g, '')
       .replace(ABV_IN_NAME, '')
+      .replace(/\s+\d{1,2}(?:[.,]\d{1,2})?\s*abv\b.*$/i, '') // „Porter 4.6 ABV • 28 IBU“
       .replace(/\s*\((sold out|ausverkauft|neu|new|limit|saison)[^)]*\)/gi, ''),
   )
   // „Jetzt neu: Distel Helles“ – a short label before a colon goes if it names no style
   const label = name.match(/^([^:]{1,20}):\s+(.+)$/)
   if (label && !normalizeStyle([label[1]])) name = strip(label[2])
-  const head = strip(name.split(/\s[–—|-]\s/)[0])
+  // separators left over from menus: „Hazy West Coast IPA |“, „Lucky Cat Rice Lager //“
+  name = unbracket(name.replace(/([\s,]+(abv|ibu))?[\s|/\\•~–—:-]*$/i, '').replace(/^[\s|/\\•~–—:-]+/, ''))
+  const head = strip(name.split(/\s[–—|•-]\s/)[0])
   return unshout(head !== name && normalizeStyle([head]) ? head : name)
 }
 
