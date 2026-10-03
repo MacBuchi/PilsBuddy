@@ -27,7 +27,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 9. [x] **R8** Bierbibliothek mit Filtern (#53, 2026-10-02)
 10. [x] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada (#56) ·
     N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60, #61) + Live-Import (2026-10-03)
-11. [x] **R9** Brauerei-Weltkarte mit eigenem Standort (Wunsch 2026-10-03, vor R7 gezogen) (#PR)
+11. [x] **R9** Brauerei-Weltkarte mit eigenem Standort (Wunsch 2026-10-03, vor R7 gezogen) (#64)
 12. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 13. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
@@ -232,7 +232,7 @@ Leitplanken:
         Finder-Zellen zeigen ein freigegebenes Bier erst nach bis zu 30 Tagen
 - [x] R9 **Brauerei-Weltkarte** (Wunsch 2026-10-03): alle Brauereien auf einer einfachen Weltkarte, dazu der eigene
       Standort. Eigene Vektorkarte statt Kartenkacheln – kein Kartendienst sieht, wo man hinschaut (M)
-      - umgesetzt (#PR): Screen `map` (lazy, Einstieg „Weltkarte aller Brauereien“ im Finder), Umrisse Natural Earth
+      - umgesetzt (#64): Screen `map` (lazy, Einstieg „Weltkarte aller Brauereien“ im Finder), Umrisse Natural Earth
         1:50m als generierter SVG-Pfad (`src/data/world.ts`, `npm run map:build`, ≈ 67 KB gzip), Projektion/Ansicht/
         Clustering rein in `src/domain/worldMap.ts`. Marker = das PilsBuddy-Glas aus dem App-Icon, Cluster mit Zahl.
         Liste aller Brauereien (`id,name,lat,lon,country`, seitenweise) 30 Tage auf dem Gerät; ein angetipptes Glas
