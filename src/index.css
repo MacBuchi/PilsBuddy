@@ -36,6 +36,11 @@
   --line-strong: rgba(29, 24, 17, 0.2);
   --edge: #1d1811;
 
+  /* brewery world map */
+  --map-sea: #dce5e2;
+  --map-land: #fffbf3;
+  --map-me: #2f7fe8;
+
   --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
 
@@ -58,6 +63,8 @@
   --line: rgba(244, 238, 226, 0.14);
   --line-strong: rgba(244, 238, 226, 0.28);
   --edge: #050403;
+  --map-sea: #0e1416;
+  --map-land: #2a231a;
   color-scheme: dark;
 }
 
@@ -129,6 +136,10 @@ a {
   100% { transform: translateY(-760px); opacity: 0; }
 }
 @keyframes pbSpin { to { transform: rotate(360deg); } }
+@keyframes pbPulse {
+  0% { transform: scale(0.5); opacity: 0.45; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
 @keyframes pbIn {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: none; }

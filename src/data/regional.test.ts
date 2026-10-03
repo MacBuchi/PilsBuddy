@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CELL_TTL_MS, CELLS_KEY, fetchCells, findPostcode, forgetRegional, loadRegion, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
+import { CELL_TTL_MS, CELLS_KEY, fetchBreweryMap, fetchCells, findPostcode, forgetRegional, loadBrewery, loadBreweryMap, loadRegion, MAP_KEY, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
 
 const MANNHEIM = { lat: 49.49, lon: 8.47 }
 const eichbaum = {
@@ -145,6 +145,7 @@ describe('prefs and snapshots', () => {
     writePrefs({ radius: 10, mode: 'plz', place: { label: '74906 Bad Rappenau', lat: 49.2, lon: 9.1 }, deck: true })
     writePool([{ row: { id: 'r-4000000000001', name: 'X', style: null, abv: null, pack: null, rank: 0, source: 1, source_ref: '1' }, brewery: { ...eichbaum, country: 'DE' }, km: 3 }])
     writeSnapshot({ id: 'r-4000000000001', name: 'X', style: null, abv: null, pack: null, rank: 0, source: 1, source_ref: '1' }, { ...eichbaum, beers: [], country: 'DE' })
+    stored.set(MAP_KEY, '{"v":1,"data":{"at":1,"rows":[]}}')
     forgetRegional()
     expect(stored.size).toBe(0)
   })
@@ -181,5 +182,67 @@ describe('library search (R8)', () => {
     const far = { ...eichbaum, id: 'osm-n2', lat: 49.99, lon: 8.47, regional_beers: [{ ...eichbaum.regional_beers[0], id: 'r-4000000000002' }] }
     const found = await searchNear(MANNHEIM, 10, api([eichbaum, far]) as unknown as typeof fetch)
     expect(found.map((x) => x.row.id)).toEqual(['r-4000000000001'])
+  })
+})
+
+describe('world map', () => {
+  const brewery = (i: number) => ({ id: `osm-n${String(i).padStart(5, '0')}`, name: `Brauerei ${i}`, lat: 49 + i / 1e4, lon: 9, country: 'DE' })
+  /** A fake API with `total` breweries that honours limit/offset. */
+  const paged = (total: number) =>
+    vi.fn(async (url: string) => {
+      const q = new URL(url).searchParams
+      const offset = Number(q.get('offset'))
+      const limit = Number(q.get('limit'))
+      const rows = Array.from({ length: Math.max(0, Math.min(limit, total - offset)) }, (_, i) => brewery(offset + i))
+      return new Response(JSON.stringify(rows), { status: 200 })
+    })
+
+  it('fetches every brewery page by page – id, name, position, no position of the user', async () => {
+    const f = paged(2345)
+    const all = await fetchBreweryMap(f as unknown as typeof fetch)
+    expect(all).toHaveLength(2345)
+    expect(new Set(all.map((b) => b.id)).size).toBe(2345)
+    const url = decodeURIComponent(f.mock.calls[0][0])
+    expect(url).toContain('select=id,name,lat,lon,country&published=eq.true&order=id.asc&limit=1000&offset=0')
+    expect(f).toHaveBeenCalledTimes(4) // one parallel round, the third page is short
+  })
+
+  it('stops after the first short page, even on an exact multiple', async () => {
+    const f = paged(4000)
+    expect(await fetchBreweryMap(f as unknown as typeof fetch)).toHaveLength(4000)
+    expect(f).toHaveBeenCalledTimes(8)
+  })
+
+  it('drops broken rows', async () => {
+    const rows = [brewery(1), { id: 'x', name: 'Nowhere', lat: 123, lon: 0 }, { id: 7, name: 'n', lat: 1, lon: 1 }]
+    const f = vi.fn(async (url: string) => new Response(JSON.stringify(url.includes('offset=0') ? rows : []), { status: 200 }))
+    expect((await fetchBreweryMap(f as unknown as typeof fetch)).map((b) => b.id)).toEqual(['osm-n00001'])
+  })
+
+  it('caches the list compactly for 30 days, then fetches again; offline the stale list stays', async () => {
+    const stored = stubStorage()
+    const f = paged(3)
+    const first = await loadBreweryMap(f as unknown as typeof fetch, 1000)
+    expect(first).toEqual({ breweries: [brewery(0), brewery(1), brewery(2)], offline: false })
+    expect(JSON.parse(stored.get(MAP_KEY)!).data.rows[0]).toEqual(['osm-n00000', 'Brauerei 0', 49, 9, 'DE'])
+    const calls = f.mock.calls.length
+    expect((await loadBreweryMap(f as unknown as typeof fetch, 1000 + CELL_TTL_MS)).breweries).toHaveLength(3)
+    expect(f.mock.calls.length).toBe(calls)
+    const late = await loadBreweryMap(offline() as unknown as typeof fetch, 1001 + CELL_TTL_MS)
+    expect(late.offline).toBe(true)
+    expect(late.breweries).toHaveLength(3)
+  })
+
+  it('loads a tapped brewery through its whole grid cell, not by id', async () => {
+    stubStorage()
+    const f = api([eichbaum])
+    const b = await loadBrewery({ id: 'osm-n1', lat: 49.4954, lon: 8.4823 }, f as unknown as typeof fetch, 1000)
+    expect(b?.beers.map((r) => r.name)).toEqual(['Ureich Pils'])
+    const url = decodeURIComponent(f.mock.calls[0][0])
+    expect(url).toContain('and(lat.gte.49,lat.lt.49.5,lon.gte.8,lon.lt.8.5)')
+    expect(url).not.toContain('osm-n1')
+    // the cell is cached: a second tap needs no request
+    await loadBrewery({ id: 'osm-n1', lat: 49.4954, lon: 8.4823 }, f as unknown as typeof fetch, 2000)
+    expect(f).toHaveBeenCalledTimes(1)
   })
 })

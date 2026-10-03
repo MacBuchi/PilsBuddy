@@ -12,7 +12,8 @@
     "typecheck": "tsc -b",
     "deploy": "npm run build && wrangler deploy",
     "catalog:build": "tsx tools/catalog/build.ts",
-    "classics:build": "tsx tools/classics/build.ts"
+    "classics:build": "tsx tools/classics/build.ts",
+    "map:build": "tsx tools/map/build.ts"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",

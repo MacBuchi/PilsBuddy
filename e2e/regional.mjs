@@ -101,6 +101,29 @@ await step('postcode 74906 → Brauerei Adler nearby', async () => {
   await page.screenshot({ path: `${out}-plz.png` })
 })
 
+await step('world map: all breweries, no position sent, a glass opens the brewery sheet', async () => {
+  requests.length = 0
+  await m.getByRole('button', { name: 'Weltkarte aller Brauereien' }).click()
+  await see('Brauerei-Weltkarte')
+  await m.getByText(/^\d[\d.]* Brauereien?$/).first().waitFor({ timeout: 15000 })
+  const list = requests.filter((u) => u.includes('select=id,name,lat,lon,country&'))
+  if (!list.length) throw new Error('no map request')
+  for (const u of list) if (/lat\.|lon\.|49\.2|9\.1/.test(u.split('?')[1].replace(/select=[^&]*/, ''))) throw new Error('position in map request: ' + u)
+  // the map starts around the stored postcode (74906); zoom into a cluster if Adler shares one
+  const adler = m.getByRole('button', { name: /Adler/ })
+  for (let i = 0; i < 4 && !(await adler.count()); i++) {
+    await m.getByRole('button', { name: /näher heran/ }).first().click()
+    await page.waitForTimeout(600)
+  }
+  await page.screenshot({ path: `${out}-map.png` })
+  await adler.first().click()
+  await m.locator('[role=dialog]').getByText('Adler Hell').waitFor({ timeout: 15000 })
+  await page.screenshot({ path: `${out}-map-sheet.png` })
+  await page.keyboard.press('Escape')
+  await m.getByLabel('Zurück').click()
+  await m.getByRole('tab', { name: 'Nähe' }).waitFor()
+})
+
 console.log(errors.length ? `page errors:\n${errors.join('\n')}` : 'no page errors')
 await browser.close()
 process.exit(errors.length ? 1 : 0)

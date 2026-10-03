@@ -19,6 +19,7 @@ export const CELLS_KEY = 'pilsbuddy.regional.cells'
 export const SNAPS_KEY = 'pilsbuddy.regional.beers'
 export const PREFS_KEY = 'pilsbuddy.regional.prefs'
 export const POOL_KEY = 'pilsbuddy.regional.pool'
+export const MAP_KEY = 'pilsbuddy.regional.map'
 const VERSION = 1
 
 export const CELL_TTL_MS = 30 * 24 * 3600 * 1000
@@ -91,11 +92,10 @@ export interface RegionLoad {
 }
 
 /**
- * All breweries in the cells around `origin`: fresh cache first, the rest from the API. If the API
- * is unreachable, stale cells are better than none.
+ * The breweries of the given cells: fresh cache first, the rest from the API. If the API is unreachable,
+ * stale cells are better than none.
  */
-export async function loadRegion(origin: LatLon, radius: number, fetchFn: FetchFn = fetch, now = Date.now()): Promise<RegionLoad> {
-  const keys = cellsWithin(origin, radius)
+async function loadCells(keys: readonly string[], fetchFn: FetchFn, now: number): Promise<RegionLoad> {
   const cache = read<Record<string, CellEntry>>(CELLS_KEY) ?? {}
   const missing = keys.filter((k) => !cache[k] || now - cache[k].at > CELL_TTL_MS)
   let offline = false
@@ -115,6 +115,105 @@ export async function loadRegion(origin: LatLon, radius: number, fetchFn: FetchF
   }
   const breweries = keys.flatMap((k) => (cache[k]?.rows ?? []).map(sanitizeBrewery).filter((b): b is RegionalBrewery => !!b))
   return { breweries, offline }
+}
+
+/** All breweries in the cells around `origin`. */
+export function loadRegion(origin: LatLon, radius: number, fetchFn: FetchFn = fetch, now = Date.now()): Promise<RegionLoad> {
+  return loadCells(cellsWithin(origin, radius), fetchFn, now)
+}
+
+/**
+ * One brewery with its beers, for the map's sheet. Asks for the whole grid cell it lies in (like the finder),
+ * not for the brewery – and caches the cell. Null if it is not there (or offline without cache).
+ */
+export async function loadBrewery(p: Pick<MapBrewery, 'id' | 'lat' | 'lon'>, fetchFn: FetchFn = fetch, now = Date.now()): Promise<RegionalBrewery | null> {
+  const { breweries } = await loadCells([cellOf(p)], fetchFn, now)
+  return breweries.find((b) => b.id === p.id) ?? null
+}
+
+/* ---------- all breweries for the world map ---------- */
+
+export interface MapBrewery extends LatLon {
+  id: string
+  name: string
+  /** Where the map starts without a position: the browser's country. */
+  country: Country | null
+}
+
+export interface MapLoad {
+  breweries: MapBrewery[]
+  /** The network failed; what is shown comes from the cache (maybe nothing). */
+  offline: boolean
+}
+
+const MAP_COLS = 'id,name,lat,lon,country'
+/** The API's row cap per request. */
+const MAP_PAGE = 1000
+const MAP_PARALLEL = 4
+/** A guard against a runaway loop, far above the catalogue (≈ 14 000 in 2026-10). */
+const MAP_MAX = 60000
+
+function mapRow(r: unknown): MapBrewery | null {
+  const o = r as { id?: unknown; name?: unknown; lat?: unknown; lon?: unknown; country?: unknown }
+  if (typeof o?.id !== 'string' || !o.id || o.id.length > 80 || typeof o.name !== 'string') return null
+  if (typeof o.lat !== 'number' || typeof o.lon !== 'number' || Math.abs(o.lat) > 90 || Math.abs(o.lon) > 180) return null
+  const country = typeof o.country === 'string' && Object.hasOwn(COPY.countries, o.country) ? (o.country as Country) : null
+  return { id: o.id, name: o.name.slice(0, 80), lat: o.lat, lon: o.lon, country }
+}
+
+/** Every published brewery (id, name, position) – page by page, a few pages at a time. No position is sent. */
+export async function fetchBreweryMap(fetchFn: FetchFn = fetch): Promise<MapBrewery[]> {
+  const out: MapBrewery[] = []
+  for (let offset = 0; offset < MAP_MAX; offset += MAP_PAGE * MAP_PARALLEL) {
+    const pages = await Promise.all(
+      Array.from({ length: MAP_PARALLEL }, async (_, i) => {
+        const q = `select=${MAP_COLS}&published=eq.true&order=id.asc&limit=${MAP_PAGE}&offset=${offset + i * MAP_PAGE}`
+        const res = await fetchFn(`${SUPABASE_URL}/rest/v1/breweries?${q}`, { headers: { apikey: SUPABASE_KEY } })
+        if (!res.ok) throw new Error(`breweries ${res.status}`)
+        const rows = (await res.json()) as unknown
+        if (!Array.isArray(rows)) throw new Error('breweries: no list')
+        return rows
+      }),
+    )
+    for (const rows of pages) for (const r of rows) {
+      const b = mapRow(r)
+      if (b) out.push(b)
+    }
+    if (pages.some((rows) => rows.length < MAP_PAGE)) break
+  }
+  return out
+}
+
+/**
+ * The world map's breweries: cached on the device for 30 days (compact rows), then fetched again. If the API
+ * is unreachable, a stale list is better than none.
+ */
+export function loadBreweryMap(fetchFn: FetchFn = fetch, now = Date.now()): Promise<MapLoad> {
+  // one download at a time – reopening the map while it loads joins the running one
+  mapLoading ??= loadMap(fetchFn, now).finally(() => {
+    mapLoading = null
+  })
+  return mapLoading
+}
+
+let mapLoading: Promise<MapLoad> | null = null
+
+async function loadMap(fetchFn: FetchFn, now: number): Promise<MapLoad> {
+  const cached = read<{ at?: unknown; rows?: unknown }>(MAP_KEY)
+  const rows = Array.isArray(cached?.rows) ? (cached.rows as unknown[]) : []
+  const fromCache = () =>
+    rows.flatMap((r) => {
+      const b = Array.isArray(r) ? mapRow({ id: r[0], name: r[1], lat: r[2], lon: r[3], country: r[4] }) : null
+      return b ? [b] : []
+    })
+  if (typeof cached?.at === 'number' && now - cached.at <= CELL_TTL_MS && rows.length) return { breweries: fromCache(), offline: false }
+  try {
+    const breweries = await fetchBreweryMap(fetchFn)
+    write(MAP_KEY, { at: now, rows: breweries.map((b) => [b.id, b.name, Math.round(b.lat * 1e5) / 1e5, Math.round(b.lon * 1e5) / 1e5, b.country]) })
+    return { breweries, offline: false }
+  } catch {
+    return { breweries: fromCache(), offline: true }
+  }
 }
 
 /* ---------- postcode ---------- */
@@ -237,9 +336,9 @@ export function readPool(): PoolItem[] {
   return out
 }
 
-/** „Profil zurücksetzen“: postcode, radius, snapshots, pool and cached cells go too. */
+/** „Profil zurücksetzen“: postcode, radius, snapshots, pool, cached cells and the map list go too. */
 export function forgetRegional(): void {
-  for (const key of [CELLS_KEY, SNAPS_KEY, PREFS_KEY, POOL_KEY]) {
+  for (const key of [CELLS_KEY, SNAPS_KEY, PREFS_KEY, POOL_KEY, MAP_KEY]) {
     try {
       localStorage.removeItem(key)
     } catch {

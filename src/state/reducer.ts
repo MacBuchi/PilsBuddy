@@ -17,6 +17,7 @@ export type Screen =
   | 'quartett'
   | 'regional'
   | 'library'
+  | 'map'
 
 export type MatchTab = 'biere' | 'probieren' | 'naehe' | 'menschen'
 
@@ -66,6 +67,8 @@ export interface AppState {
   /** Where the detail screen was opened from, to return there. */
   detailFrom: Screen
   detailId: string | null
+  /** Where the world map was opened from (finder or Matches › Nähe) – a beer detail in between doesn't count. */
+  mapFrom: Screen
   matchTab: MatchTab
   /** One-step undo: the last rated beer and what it was before (null = unrated). Not persisted. */
   lastRated: { id: string; rating: Rating; previous: RatingEntry | null } | null
@@ -109,6 +112,7 @@ export function initialState(profile: Profile = initialProfile()): AppState {
     prevScreen: 'welcome',
     detailFrom: 'swipe',
     detailId: null,
+    mapFrom: 'regional',
     matchTab: 'biere',
     lastRated: null,
   }
@@ -120,7 +124,8 @@ export function reducer(state: AppState, action: Action): AppState {
       if (action.screen === state.screen) return state
       // Seeing the DNA is the moment the user is "onboarded": tabs appear from here on.
       const profile = action.screen === 'dna' && !state.profile.onboarded ? { ...state.profile, onboarded: true } : state.profile
-      return { ...state, profile, screen: action.screen, prevScreen: state.screen }
+      const mapFrom = action.screen === 'map' && state.screen !== 'detail' ? state.screen : state.mapFrom
+      return { ...state, profile, screen: action.screen, prevScreen: state.screen, mapFrom }
     }
     case 'OPEN_DETAIL':
       return {

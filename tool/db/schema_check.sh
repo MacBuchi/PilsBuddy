@@ -63,6 +63,9 @@ check_get "Bierkatalog (catalog.ts)" "/$catalog"
 check_get "Regional-Finder: Brauereien + Biere einer Zelle (regional.ts)" \
   "/rest/v1/breweries?select=$regional_select&published=eq.true&or=(and(lat.gte.49,lat.lt.49.5,lon.gte.9,lon.lt.9.5))&order=id.asc&limit=1000"
 check_get "Regional-Finder: PLZ (regional.ts)" "/$places"
+map_cols=$(src "const MAP_COLS = '[^']*'" src/data/regional.ts | cut -d"'" -f2)
+check_get "Weltkarte: alle Brauereien seitenweise (regional.ts)" \
+  "/rest/v1/breweries?select=$map_cols&published=eq.true&order=id.asc&limit=1000&offset=1000"
 check_get "Bibliothek: Regionalbiere nach Name (regional.ts)" \
   "/rest/v1/regional_beers?select=$beer_cols,breweries!inner($brewery_cols)&published=eq.true&name=ilike.*pils*&order=name.asc&limit=40"
 check_get "Bibliothek: Brauereien nach Name/Ort (regional.ts)" \
