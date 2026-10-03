@@ -1,22 +1,18 @@
-import { ArrowSquareOutIcon, CrosshairIcon, MapPinIcon, NavigationArrowIcon, PlusCircleIcon } from '@phosphor-icons/react'
+import { CrosshairIcon, GlobeHemisphereWestIcon, MapPinIcon, PlusCircleIcon } from '@phosphor-icons/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { formatAbv, rememberRegional } from '../../data/beers'
-import { COPY, fill, pick } from '../../data/copy'
+import { COPY, fill } from '../../data/copy'
 import { findPostcode, loadRegion, readPrefs, writePool, writePrefs } from '../../data/regional'
 import type { RegionalPrefs, RegionLoad } from '../../data/regional'
-import { hashId } from '../../domain/hash'
 import { isPostcode } from '../../domain/postcode'
-import { formatKm, RADII, rankRegional, routeUrl } from '../../domain/regional'
+import { formatKm, RADII, rankRegional } from '../../domain/regional'
 import type { LatLon, RegionalHit } from '../../domain/regional'
-import type { RegionalBeerRow, RegionalBrewery } from '../../domain/regionalBeer'
-import { toRegionalBeer } from '../../domain/regionalBeer'
-import { compatibility } from '../../domain/matching'
+import type { RegionalBrewery } from '../../domain/regionalBeer'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
-import { RATING_COLOR } from '../ratingStyle'
+import { geoGranted, locate } from '../locate'
 import { BeerBottle } from './BeerBottle'
 import { BeerSubmitSheet } from './BeerSubmitSheet'
-import { Sheet } from './Sheet'
+import { BrewerySheet } from './BrewerySheet'
 import list from '../screens/Matches.module.css'
 import styles from './RegionalFinder.module.css'
 
@@ -29,32 +25,12 @@ const PAGE = 15
 const countLine = (n: number, b: number) =>
   fill(COPY.regional.count, { n, b, beers: COPY.regional.beerWord[n === 1 ? 0 : 1], breweries: COPY.regional.breweryWord[b === 1 ? 0 : 1] })
 
-/** Browser position, coarse on purpose (no GPS warm-up needed); it stays in memory only. */
-function locate(): Promise<LatLon> {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) return reject(new Error('unsupported'))
-    navigator.geolocation.getCurrentPosition(
-      (p) => resolve({ lat: p.coords.latitude, lon: p.coords.longitude }),
-      (e) => reject(e),
-      { enableHighAccuracy: false, timeout: 12000, maximumAge: 10 * 60 * 1000 },
-    )
-  })
-}
-
-async function geoGranted(): Promise<boolean> {
-  try {
-    return (await navigator.permissions.query({ name: 'geolocation' })).state === 'granted'
-  } catch {
-    return false
-  }
-}
-
 /**
  * Regional finder (Stufe R4): position or postcode → nearby breweries, their beers ranked by the user's
  * DNA. Used by the `regional` screen and the „Nähe“ segment in Matches.
  */
 export function RegionalFinder() {
-  const { state, rate, toast, openDetail } = useApp()
+  const { state, go } = useApp()
   const { dna } = useDerived()
   const [prefs, setPrefs] = useState<RegionalPrefs>(readPrefs)
   const [origin, setOrigin] = useState<Origin | null>(() => (prefs.mode === 'plz' && prefs.place ? prefs.place : null))
@@ -146,12 +122,6 @@ export function RegionalFinder() {
   const notice = error ?? (ready && loaded.offline ? (loaded.breweries.length ? COPY.regional.errOffline : COPY.regional.errNothing) : null)
   const ratings = state.profile.ratings
 
-  const show = (row: RegionalBeerRow, brewery: RegionalBrewery) => openDetail(rememberRegional(row, brewery).id)
-  const putOnList = (row: RegionalBeerRow, brewery: RegionalBrewery) => {
-    const beer = rememberRegional(row, brewery)
-    if (rate(beer.id, 'WANT_TO_TRY').length) return
-    toast(fill(pick(COPY.quips.WANT_TO_TRY, hashId(beer.id)), { name: beer.name }), RATING_COLOR.WANT_TO_TRY)
-  }
   const tag = (h: RegionalHit) => (ratings[h.beer.id] ? COPY.rating[ratings[h.beer.id].rating].label : COPY.regional.estimate)
 
   return (
@@ -212,6 +182,11 @@ export function RegionalFinder() {
           </button>
         ))}
       </div>
+
+      <button type="button" className={styles.mapEntry} onClick={() => go('map')}>
+        <GlobeHemisphereWestIcon weight="bold" />
+        {COPY.map.entry}
+      </button>
 
       <label className={styles.deckToggle}>
         <input type="checkbox" checked={prefs.deck} onChange={(e) => savePrefs({ deck: e.target.checked })} />
@@ -292,63 +267,15 @@ export function RegionalFinder() {
       )}
 
       {open && (
-        <Sheet title={open.brewery.name} onClose={() => setOpen(null)}>
-          <div className={styles.sheetMeta}>
-            {[open.brewery.city, formatKm(open.km), open.brewery.founded ? fill(COPY.regional.since, { year: open.brewery.founded }) : null]
-              .filter(Boolean)
-              .join(' · ')}
-          </div>
-          <div className={styles.links}>
-            <a className={styles.link} href={routeUrl(open.brewery)} target="_blank" rel="noopener noreferrer">
-              <NavigationArrowIcon weight="bold" /> {COPY.regional.route}
-            </a>
-            {open.brewery.website && (
-              <a className={styles.link} href={open.brewery.website} target="_blank" rel="noopener noreferrer">
-                <ArrowSquareOutIcon weight="bold" /> {COPY.regional.website}
-              </a>
-            )}
-          </div>
-          <span className="t-label">{COPY.regional.sheetBeers}</span>
-          {open.brewery.beers.length === 0 && <p className={styles.note}>{COPY.regional.sheetNone}</p>}
-          {open.brewery.beers.map((row) => {
-            const beer = toRegionalBeer(row, open.brewery)
-            const onList = ratings[beer.id]?.rating === 'WANT_TO_TRY'
-            return (
-              <div key={row.id} className={styles.sheetBeer}>
-                <button type="button" className={styles.sheetOpen} onClick={() => show(row, open.brewery)}>
-                  <span className={list.bottle} style={{ background: beer.color }}>
-                    <BeerBottle beer={beer} size={50} />
-                  </span>
-                  <span className={list.recoText}>
-                    <span className={`${list.recoName} ${styles.name}`}>{beer.name}</span>
-                    <span className={list.recoMeta}>
-                      {beer.style} · {formatAbv(beer.abv)}
-                    </span>
-                    <span className={styles.sheetPct}>{fill(COPY.regional.match, { pct: compatibility(dna.taste, beer.taste) })}</span>
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.tryBtn} ${onList ? styles.tryOn : ''}`}
-                  onClick={() => putOnList(row, open.brewery)}
-                  disabled={onList}
-                >
-                  {onList ? COPY.regional.onList : COPY.regional.tryCta}
-                </button>
-              </div>
-            )
-          })}
-          <button
-            type="button"
-            className={styles.more}
-            onClick={() => {
-              setReport({ brewery: { id: open.brewery.id, name: open.brewery.name } })
-              setOpen(null)
-            }}
-          >
-            <PlusCircleIcon weight="bold" /> {COPY.submit.entry}
-          </button>
-        </Sheet>
+        <BrewerySheet
+          brewery={open.brewery}
+          km={open.km}
+          onClose={() => setOpen(null)}
+          onReport={(b) => {
+            setReport({ brewery: b })
+            setOpen(null)
+          }}
+        />
       )}
 
       {report && <BeerSubmitSheet brewery={report.brewery} onClose={() => setReport(null)} />}

@@ -20,6 +20,12 @@ describe('reducer', () => {
     expect(s.detailFrom).toBe('matches')
   })
 
+  it('GO map remembers the screen it was opened from – not a beer detail on the way back', () => {
+    const s = run(fresh(), { type: 'GO', screen: 'matches' }, { type: 'GO', screen: 'map' }, { type: 'OPEN_DETAIL', id: 'jever' }, { type: 'GO', screen: 'map' })
+    expect(s.screen).toBe('map')
+    expect(s.mapFrom).toBe('matches')
+  })
+
   it('RATE stores the rating and remembers it for undo', () => {
     const s = run(fresh(), { type: 'RATE', id: 'jever', rating: 'LIKE', at: 1 })
     expect(s.profile.ratings.jever).toEqual({ rating: 'LIKE', at: 1 })

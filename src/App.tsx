@@ -23,6 +23,8 @@ import { Welcome } from './ui/screens/Welcome'
 
 /** Impressum & Datenschutz: rarely opened, so it stays out of the main bundle. */
 const Legal = lazy(() => import('./ui/screens/Legal').catch(() => import('./ui/screens/LegalOffline')))
+/** Brewery world map: the world outline is ~200 KB, so it loads only when opened. */
+const BreweryMap = lazy(() => import('./ui/screens/BreweryMap').catch(() => import('./ui/screens/MapOffline')))
 
 /** Shows the one-time moment for the first big achievement that hasn't been celebrated yet. */
 function MomentHost() {
@@ -64,6 +66,11 @@ function Screens() {
         {s === 'quartett' && <Quartett />}
         {s === 'regional' && <Regional />}
         {s === 'library' && <Library />}
+        {s === 'map' && (
+          <Suspense fallback={null}>
+            <BreweryMap />
+          </Suspense>
+        )}
         {s === 'legal' && (
           <Suspense fallback={null}>
             <Legal />

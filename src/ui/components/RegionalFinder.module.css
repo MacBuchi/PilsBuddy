@@ -324,3 +324,22 @@
 .others .radius {
   padding: 0 14px;
 }
+
+.mapEntry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font: 800 14px/1 var(--font-display);
+  cursor: pointer;
+}
+
+.mapEntry svg {
+  font-size: 18px;
+  color: var(--gold-text);
+}
