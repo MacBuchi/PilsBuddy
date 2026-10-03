@@ -25,8 +25,8 @@ Details stehen beim jeweiligen Paket weiter unten.
 7. [x] **Q2** (neu freigegeben 2026-10-02) Live-Migrationen + Edge Functions per CI, Approve im Environment `production` (#51, 2026-10-02)
 8. [x] **Q4** Promote: jeder Merge → beta.pilsbuddy.mcbuchi.de + Pre-Release, Nutzer erst nach Freigabe (#52, live 2026-10-02)
 9. [x] **R8** Bierbibliothek mit Filtern (#53, 2026-10-02)
-10. [ ] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada (#56) ·
-    N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60) + Live-Import
+10. [x] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada (#56) ·
+    N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60, #61) + Live-Import (2026-10-03)
 11. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
 12. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
@@ -294,6 +294,10 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
         Zahl am Namensanfang), 12 Shards, Mindestzahl Brauereien je Land; OSM-Abruf parallel je Land/Teil, unvollständige Overpass-Antworten
         werden wiederholt, `05-guard.sql` bricht den Import ab, wenn ein Land > 10 % seiner Brauereien verliert. Live-Import (fetch → import → Websites →
         import) läuft erst nach Freigabe im Environment `production`
+      - Nachtrag (#61): Menü-/Event-Text aus US/CA-Websitenamen gefiltert, englisch „Triple“/„Blonde“ richtig zugeordnet
+      - live 2026-10-03 (fetch 37062841573, Websites 37102663196, Import 37104983511): 14 055 Brauereien
+        (US 10 567 · DE 1 949 · CA 1 046 · CH 268 · AT 225), 10 675 Hauptbiere (US 7 388 · DE 1 733 · CA 1 101 · CH 264 ·
+        AT 189), 89 906 PLZ/ZIP/FSA
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
