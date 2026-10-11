@@ -32,7 +32,8 @@ Details stehen beim jeweiligen Paket weiter unten.
 13. [x] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71, E6 #72)
 14. [x] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
     jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73, V2 #74, V3 #75
-15. [ ] **C2/C3**, dann **D1/D2**
+15. [x] **C2/C3** Pils-Match: Feed, Anstoßen, Blockieren (Absprache 2026-10-11: Vergleich + Anstoßen, Feed nur für Sichtbare) (#PR)
+16. [ ] **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -51,7 +52,7 @@ Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
 | WANT_TO_TRY | Interesse-Signal, Probierliste mit Nachbewertung | – |
 | Persistenz | localStorage, versioniert, Export/Import, offline-fähig | geräteübergreifend erst mit Stufe B |
 | Share | Bild-Karte (Story-Format) + Text-Fallback | – |
-| Social | Buddy-Link-Vergleich (C1) ohne Backend | öffentlicher Pils-Match braucht Stufe B |
+| Social | Buddy-Link-Vergleich (C1), Pils-Match mit Anstoßen und Blockieren (C2/C3) | – |
 | Qualität | Domain-, Reducer-, Komponententests, E2E in CI | Auto-Deploy wartet auf Secrets |
 
 ## Stufe A – Spaß & Nutzbarkeit (kein Backend)
@@ -378,9 +379,9 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
 - [x] C1 Buddy-Link ohne Backend: `?buddy=<base64url(Buddy-Nr., Bewertungen)>` – Geschmack/Persona
       rechnet der Empfänger selbst; Vergleich in Matches › Menschen (Prozent, gemeinsame Herzbiere,
       Streitbiere, Tipps), Einladung per Share/Zwischenablage, Hinweis auf Welcome und im DNA-Screen
-- [ ] C2 Feed über Edge Function `match_candidates` (nur `visible`-Profile; keine Fotos, keine
-      Persönlichkeitsbewertung) (L)
-- [ ] C3 Opt-in, Handle, Blockieren; kein Chat (S)
+- [x] C2 Feed über Edge Function `match-candidates` (nur `visible`-Profile; keine Fotos, keine
+      Persönlichkeitsbewertung) (L) – Vergleich wie beim Buddy-Link, „Anstoßen 🍻“: beide angestoßen = Buddys (#PR)
+- [x] C3 Opt-in, Handle, Blockieren; kein Chat (S) – Feed nur für selbst Sichtbare, Sync-Aus macht unsichtbar (#PR)
 
 ## Stufe D – Optionale KI-Schicht
 

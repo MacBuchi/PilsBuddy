@@ -135,6 +135,8 @@ export const syncActions = {
   },
   disable(dispatch: (a: Action) => void) {
     dispatch({ type: 'SET_SYNC', sync: { on: false } })
+    // Pils-Match compares synced ratings – without sync the profile would go stale in other people's feeds
+    void import('./match').then((m) => m.becomeHidden()).catch(() => undefined)
   },
   async join(input: string, dispatch: (a: Action) => void): Promise<void> {
     const code = normalizeCode(input)

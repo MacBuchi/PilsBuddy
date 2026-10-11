@@ -5,8 +5,9 @@ Projekt **PilsBuddy**, Ref `rwqpljpnotnyovvuxjgl`, Region eu-central-1.
 | Tabelle | Inhalt | Zugriff (RLS) |
 |---|---|---|
 | `beers` | Ergänzungen zu `src/data/beers.json` (`data` = Bier-Objekt ohne `id`) | veröffentlichte Biere öffentlich lesbar, schreiben nur Admin |
-| `profiles` | ein Profil je (anonymem) Nutzer: Buddy-Nr., Archetyp, DNA, `visible` | eigenes lesen/schreiben; fremde nur bei `visible = true` (Opt-in) |
+| `profiles` | ein Profil je (anonymem) Nutzer: Buddy-Nr., Archetyp, DNA, Pils-Match-Opt-in `visible` + `handle` (eindeutig ohne Groß/klein) | nur eigenes; andere sieht man nur über die Edge Function `match-candidates` (C2/C3) |
 | `ratings` | eine Zeile je Nutzer und Bier, `at` entscheidet beim Sync; `deleted` = Tombstone | nur eigene |
+| `match_clinks` / `match_blocks` | C2/C3 „Anstoßen“ und „Blockieren“: je Paar und Richtung eine Zeile (`from_id` → `to_id`), beide Richtungen angestoßen = Buddys | nur eigene (`from_id`) lesen, anlegen, löschen |
 | `sync_codes` | Hash des Sync-Codes je Nutzer | keine – nur die Edge Function (service_role) |
 | `breweries` | Brauereien DE/AT/CH/CA/US aus OpenStreetMap, Wikidata und Open Brewery DB, `id` = Quell-ID (`osm-n123`, `wd-q123`, `obdb-<uuid>`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
 | `regional_beers` | bis zu 5 Hauptbiere je Brauerei (`id` = `r-<EAN>` / `r-q<n>`, Stil, ABV, Gebinde, `source` + kurze `source_ref`) | veröffentlichte öffentlich lesbar, schreiben nur der Import |
@@ -38,6 +39,11 @@ Dafür bekommt der Nutzer beim ersten Einlösen eine interne Platzhalter-Adresse
 `delete` (B4 „Alles löschen“) löscht den Auth-Nutzer; `profiles`, `ratings` und `sync_codes` gehen per
 `on delete cascade` mit. Andere Geräte merken es beim nächsten Sync (Fremdschlüssel-Fehler bzw. unbekannter
 Code), schalten ihren Sync aus und behalten ihre lokale Kopie.
+
+Edge Function `match-candidates` (C2/C3, `verify_jwt = false`, prüft den JWT selbst): nur für sichtbare Profile mit
+Handle. Liefert die bis zu 30 sichtbaren Profile mit dem nächsten Geschmacksvektor (aus den 500 zuletzt aktiven) plus
+alle Buddys – je Person Handle, Bewertungen ohne Zeitpunkt und ohne `UNKNOWN`, ob man selbst angestoßen hat und ob es
+gegenseitig ist; Blockierungen blenden beide Seiten aus. Match, Persona und Tipps rechnet die App (`src/domain/pilsMatch.ts`).
 
 Auth-Einstellungen (seit 2026-10-01 aktiv; gezielt per Management-API `PATCH /v1/projects/<ref>/config/auth`
 gesetzt, nicht per `supabase config push`): `external_anonymous_users_enabled = true`, Site URL

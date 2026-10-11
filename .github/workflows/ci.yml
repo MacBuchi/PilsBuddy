@@ -119,7 +119,7 @@ jobs:
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f tools/catalog/fixtures/check.sql
       - uses: ./.github/actions/playwright
         with:
-          scripts: e2e/sync.mjs e2e/catalog.mjs e2e/regional.mjs e2e/room.mjs
+          scripts: e2e/sync.mjs e2e/catalog.mjs e2e/regional.mjs e2e/room.mjs e2e/match.mjs
       - name: Dev server against the local stack, run sync flow
         run: |
           eval "$(supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=')"
@@ -137,6 +137,8 @@ jobs:
         run: node /tmp/pw/regional.mjs http://localhost:5179/ /tmp/regional
       - name: Game room (Realtime, three devices)
         run: node /tmp/pw/room.mjs http://localhost:5179/ /tmp/room
+      - name: Pils-Match (feed, clink, block – three devices)
+        run: node /tmp/pw/match.mjs http://localhost:5179/ /tmp/match
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -146,6 +148,7 @@ jobs:
             /tmp/catalog-*.png
             /tmp/regional-*.png
             /tmp/room-*.png
+            /tmp/match-*.png
 
   e2e:
     name: E2E flow

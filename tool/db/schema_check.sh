@@ -71,7 +71,9 @@ check_get "Bibliothek: Regionalbiere nach Name (regional.ts)" \
 check_get "Bibliothek: Brauereien nach Name/Ort (regional.ts)" \
   "/rest/v1/breweries?select=$regional_select&published=eq.true&or=(name.ilike.*brau*,city.ilike.*brau*)&order=name.asc&limit=20"
 check_get "Sync: ratings-Spalten (cloud.ts)" "/rest/v1/ratings?select=user_id,beer_id,rating,previous,at,deleted&limit=1" allow_denied
-check_get "Sync: profiles-Spalten (cloud.ts)" "/rest/v1/profiles?select=id,buddy_no,archetype,taste,decoded,dark,onboarded,visible&limit=1" allow_denied
+check_get "Sync: profiles-Spalten (cloud.ts)" "/rest/v1/profiles?select=id,buddy_no,archetype,taste,decoded,dark,onboarded,visible,handle&limit=1" allow_denied
+check_get "Pils-Match: Anstoßen (match.ts)" "/rest/v1/match_clinks?select=from_id,to_id&limit=1" allow_denied
+check_get "Pils-Match: Blockieren (match.ts)" "/rest/v1/match_blocks?select=from_id,to_id&limit=1" allow_denied
 check_denied "Feedback nicht lesbar" "/rest/v1/feedback?select=id&limit=1"
 check_denied "Bier-Meldungen nicht lesbar" "/rest/v1/beer_submissions?select=id&limit=1"
 check_insert "Feedback senden (feedback.ts)" feedback \

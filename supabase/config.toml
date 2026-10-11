@@ -416,3 +416,7 @@ enabled = true
 # B2: redeem works without a session (the function checks the JWT itself for "create")
 [functions.sync-code]
 verify_jwt = false
+
+# C2/C3: the Pils-Match feed checks the JWT itself (same as sync-code, works with the new API keys)
+[functions.match-candidates]
+verify_jwt = false

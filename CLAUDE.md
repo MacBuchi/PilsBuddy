@@ -46,6 +46,8 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   The app must keep working fully offline/without the backend (localStorage stays the source of truth).
   Sync code lives in `src/sync/` (pure merge in `merge.ts` with tests; supabase-js only via lazy `cloud.ts`).
   Edge functions in `supabase/functions/`; the two-device flow `e2e/sync.mjs` runs in CI against a local stack.
+  Pils-Match (C2/C3): other people's profiles and ratings only through the Edge Function `match-candidates` (visible
+  callers only, blocks honoured) – never open `profiles`/`ratings` RLS for it; `e2e/match.mjs` covers it.
 - No analytics. No new cloud projects or paid services without asking. Anything that sends data off the device
   must be described in the privacy text `src/data/legal.ts` in the same PR.
 - Regional beers (Stufe R): taste only via `tasteFromStyle` (shown as „Stil-Schätzung“), never hand-invented;
