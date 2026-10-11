@@ -30,7 +30,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 11. [x] **R9** Brauerei-Weltkarte mit eigenem Standort (Wunsch 2026-10-03, vor R7 gezogen) (#64)
 12. [x] **R7** Aktualität (monatlicher Pipeline-Dry-Run) (#67)
 13. [x] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71, E6 #72)
-14. [ ] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
+14. [x] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
     jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73, V2 #74
 15. [ ] **C2/C3**, dann **D1/D2**
 
@@ -329,8 +329,12 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       - umgesetzt (#74): Detail-Seite unten „Problem mit diesem Bier melden“ – Auswahl (kein Bier · gibt es nicht ·
         Stil/Alkohol falsch · Brauerei/Ort falsch · doppelt · anderes) + Notiz; Feedback-Tabelle mit `type = 'beer'`,
         Bot → Issue `bier-problem` mit Katalogdaten; Label `ausblenden` → `regional_beers.hidden` (überlebt den Import)
-- [ ] V3 **Lieblingsbiere zuerst:** vor dem Referenz-Set nach Lieblingsbieren fragen (Suche in Katalog + Regionalbieren);
+- [x] V3 **Lieblingsbiere zuerst:** vor dem Referenz-Set nach Lieblingsbieren fragen (Suche in Katalog + Regionalbieren);
       gefundene zählen als „Mag ich“, fehlende gehen als „Bier fehlt“-Meldung (R6) raus (M)
+      - umgesetzt (#PR): Screen `favorites` zwischen Anleitung und erstem Swipe (nur bei leerem Profil, optional):
+        Suche kuratiert offline (`domain/favorites.ts`, Rangfolge Name > Wortanfang > Brauerei) + ab 3 Zeichen
+        Regionalbiere (nicht „fraglich“), bis 5 Favoriten → „Mag ich“ (nie über eine vorhandene Bewertung);
+        „Nicht dabei? Bier melden“ öffnet die R6-Meldung mit dem Suchtext als Biername
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

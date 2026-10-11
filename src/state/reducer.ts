@@ -5,6 +5,7 @@ import type { Rating, RatingEntry, Ratings } from '../domain/types'
 export type Screen =
   | 'welcome'
   | 'howto'
+  | 'favorites'
   | 'swipe'
   | 'analyzing'
   | 'dna'

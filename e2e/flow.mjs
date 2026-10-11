@@ -36,7 +36,22 @@ await step('age gate blocks', async () => { await m.getByText('Erstes Date start
 await step('confirm age + start', async () => {
   await m.getByText('Ich bin mindestens 18').click()
   await m.getByText('Erstes Date starten').click()
-  await see('Karte ziehen')
+  await see('Was trinkst du gern?')
+})
+let favorite = ''
+await step('favourites (V3): search, pick one, missing beer → report sheet, continue', async () => {
+  await m.getByLabel('Bier oder Brauerei').fill('augustiner')
+  const hit = m.getByRole('checkbox').first()
+  favorite = (await hit.locator('[class*="recoName"]').innerText()).trim()
+  await hit.click()
+  await see('Deine Favoriten · 1/5')
+  await m.getByLabel('Bier oder Brauerei').fill('E2E Nirgendbräu Spezial')
+  await m.getByRole('button', { name: 'Bier melden' }).click({ timeout: 20000 })
+  await see('Ein Link reicht')
+  await page.keyboard.press('Escape')
+  await page.screenshot({ path: `${out}-favorites.png` })
+  await m.getByRole('button', { name: 'Weiter mit 1 Favorit' }).click()
+  await m.getByText(/^\d+ übrig$/).first().waitFor({ timeout: 4000 })
 })
 await step('help sheet opens and closes', async () => {
   await m.getByLabel('Wie war das nochmal?').click()
@@ -355,6 +370,7 @@ await step('buddy link: new user is invited, onboards, sees the comparison', asy
   await m.getByText("Los geht's").click()
   await m.getByText('Ich bin mindestens 18').click()
   await m.getByText('Erstes Date starten').click()
+  await m.getByRole('button', { name: 'Weiter ohne Favoriten' }).click()
   for (let i = 0; i < 6; i++) { await page.keyboard.press(i % 2 ? 'ArrowLeft' : 'ArrowRight'); await page.waitForTimeout(450) }
   await m.getByText('DNA auswerten').click()
   await page.waitForTimeout(3300)
@@ -380,6 +396,8 @@ await step('English: an English browser gets the English app, the welcome link s
   await em.getByText("Let's go").click()
   await em.getByText('I am at least 18').click()
   await em.getByText('Start the first date').click()
+  await enSee('What do you like to drink?')
+  await em.getByRole('button', { name: 'Continue without favourites' }).click()
   for (let i = 0; i < 3; i++) { await en.keyboard.press('ArrowRight'); await en.waitForTimeout(450) }
   await enSee('left')
   await enSee("Don't know")
