@@ -29,7 +29,7 @@ Details stehen beim jeweiligen Paket weiter unten.
     N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60, #61) + Live-Import (2026-10-03)
 11. [x] **R9** Brauerei-Weltkarte mit eigenem Standort (Wunsch 2026-10-03, vor R7 gezogen) (#64)
 12. [x] **R7** Aktualität (monatlicher Pipeline-Dry-Run) (#67)
-13. [ ] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #PR), dann **C2/C3**, dann **D1/D2**
+13. [ ] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71), dann **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -339,7 +339,7 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
       Gastgeber hält den Spielzustand (M) (#70) – Regeln rein in `domain/games/room.ts` (Snapshots mit
       Laufnummer, Wünsche der Gäste), Netz lazy in `sync/room.ts`, ohne Tabelle und ohne Anmeldung; bis 8 am
       Tisch, Einladung per `?room=`; erste gemeinsame Runde: Anstoßen, wenn alle bereit sind
-- [x] E5 **Quartett zu zweit** und „Wie viel ist drin?“ für alle im Raum auf E4 (M) (#PR) – Regeln rein in
+- [x] E5 **Quartett zu zweit** und „Wie viel ist drin?“ für alle im Raum auf E4 (M) (#71) – Regeln rein in
       `domain/games/party.ts`, der Gastgeber teilt aus (gebündelte Biere als Deck) und wertet; Quartett nur zu
       zweit (Dritte schauen zu), Schätzen für bis zu 8: alle schätzen, Auflösung von selbst oder per Gastgeber,
       Rangliste am Ende; geht ein Quartett-Spieler, zurück an den Tisch. Zählt nicht in die Solo-Statistik
