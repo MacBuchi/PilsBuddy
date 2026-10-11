@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [{ "type": "command", "command": "python3 \"$CLAUDE_PROJECT_DIR/tool/session_status.py\"", "timeout": 30 }]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npx vitest run:*)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint)",
+      "Bash(git fetch origin:*)",
+      "Bash(python3 tool/session_status.py:*)",
+      "Bash(python3 tool/agent_docs.py:*)"
+    ]
+  }
+}

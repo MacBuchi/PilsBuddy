@@ -33,6 +33,12 @@ jobs:
         run: echo "version=v$(date -u +%Y.%m.%d).${{ github.run_number }}" >> "$GITHUB_OUTPUT"
       - run: npm ci
       - run: npm run lint
+      # AGENTS.md and the Codex skills stay symlinks to the Claude files, CLAUDE.md under 16 KB (#65)
+      - name: Agent docs
+        run: |
+          python3 tool/agent_docs.py
+          python3 tool/agent_docs.py --self-test
+          python3 tool/session_status.py --self-test
       - run: npm test
       - run: npm run build
         env:
