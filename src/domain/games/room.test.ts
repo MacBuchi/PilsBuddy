@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BEER_BY_ID, BUNDLED_IDS } from '../../data/beers'
+import { BEER_BY_ID, BEERS, BUNDLED_IDS } from '../../data/beers'
 import {
   acceptSnapshot,
   applyIntent,
@@ -18,6 +18,7 @@ import {
   withPresent,
 } from './room'
 import type { RoomMember, RoomState } from './room'
+import { tastingBeer } from './tasting'
 
 const host: RoomMember = { id: 'h', name: 'Buddy #0427' }
 const anna: RoomMember = { id: 'a', name: 'Buddy #1200' }
@@ -263,3 +264,57 @@ describe('games in the room (E5)', () => {
     expect(acceptSnapshot(null, { ...pair(), game: t.game }, 'K7Q2M')?.game).toBe(null)
   })
 })
+
+describe('Tasting-Abend in the room (E6)', () => {
+  const readyAll = (s: RoomState) =>
+    s.players.reduce((t, p) => (p.id === t.host ? t : applyIntent(t, p.id, { type: 'ready', ready: true })), s)
+  const beer = tastingBeer(BEERS[0])
+  const verdict = (stars: number) => ({ stars, axes: { bitterness: 40, body: 50, sweetness: 60 } })
+  const started = () => applyIntent(readyAll(lobby()), 'h', { type: 'start', game: 'tasting', seed: 1 })
+
+  it('starts for everyone ready; only the host pours and ends', () => {
+    expect(canStart(lobby(), 'tasting')).toBe(false)
+    const s = started()
+    expect(s).toMatchObject({ phase: 'play', game: { kind: 'tasting', rounds: [], over: false } })
+    expect(applyIntent(s, 'a', { type: 'pour', beer })).toBe(s)
+    const p = applyIntent(s, 'h', { type: 'pour', beer })
+    expect(p.seq).toBe(s.seq + 1)
+    expect(p.game?.kind === 'tasting' && p.game.rounds[0].beer).toEqual(beer)
+    expect(applyIntent(p, 'a', { type: 'end' })).toBe(p)
+  })
+
+  it('reveals once all three have rated, or when the host calls it', () => {
+    let s = applyIntent(started(), 'h', { type: 'pour', beer })
+    s = applyIntent(s, 'a', { type: 'rate', verdict: verdict(4) })
+    expect(applyIntent(s, 'a', { type: 'reveal' })).toBe(s)
+    const called = applyIntent(s, 'h', { type: 'reveal' })
+    expect(called.game?.kind === 'tasting' && called.game.rounds[0].revealed).toBe(true)
+    s = applyIntent(s, 'b', { type: 'rate', verdict: verdict(2) })
+    expect(s.game?.kind === 'tasting' && s.game.rounds[0].revealed).toBe(false)
+    s = applyIntent(s, 'h', { type: 'rate', verdict: verdict(5) })
+    expect(s.game?.kind === 'tasting' && s.game.rounds[0].revealed).toBe(true)
+  })
+
+  it('reveals when the last one still rating leaves', () => {
+    let s = applyIntent(started(), 'h', { type: 'pour', beer })
+    s = applyIntent(s, 'h', { type: 'rate', verdict: verdict(3) })
+    s = applyIntent(s, 'a', { type: 'rate', verdict: verdict(3) })
+    const t = withPresent(s, [host, anna])
+    expect(t.phase).toBe('play')
+    expect(t.game?.kind === 'tasting' && t.game.rounds[0].revealed).toBe(true)
+  })
+
+  it('takes ratings over the network, never a pour or the end', () => {
+    expect(parseIntent({ type: 'rate', verdict: verdict(4) })).toEqual({ type: 'rate', verdict: verdict(4) })
+    expect(parseIntent({ type: 'rate', verdict: { stars: 4 } })).toBe(null)
+    expect(parseIntent({ type: 'rate', verdict: { stars: '4', axes: verdict(4).axes } })).toBe(null)
+    expect(parseIntent({ type: 'pour', beer })).toBe(null)
+    expect(parseIntent({ type: 'end' })).toBe(null)
+  })
+
+  it('a guest reads the tasting snapshot', () => {
+    const s = applyIntent(applyIntent(started(), 'h', { type: 'pour', beer }), 'a', { type: 'rate', verdict: verdict(4) })
+    expect(acceptSnapshot(null, JSON.parse(JSON.stringify(s)), 'K7Q2M')).toEqual(s)
+  })
+})
+

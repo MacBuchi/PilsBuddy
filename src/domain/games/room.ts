@@ -3,6 +3,8 @@ import { duelPlay, fillGuess, fillNext, fillReveal, fillSettle, newDuel, newFill
 import type { PartyGame, PartyKind } from './party'
 import { seededRandom } from './quartett'
 import type { StatKey } from './quartett'
+import { newTasting, tastingEnd, tastingPour, tastingRate, tastingReveal, tastingSettle, TASTING_AXES } from './tasting'
+import type { TastingBeer, TastingVerdict } from './tasting'
 
 /**
  * Multiplayer room (Stufe E4): the rules of a room, without the network. One device opens the
@@ -55,9 +57,14 @@ export type RoomIntent =
   | { type: 'start'; game: PartyKind; seed: number }
   | { type: 'stat'; stat: StatKey }
   | { type: 'guess'; ml: number }
-  /** Host only: resolve the glass without waiting for the last guess, then the next glass. */
+  /** Host only: resolve the glass (or the tasting round) without waiting for the last one, then the next glass. */
   | { type: 'reveal' }
   | { type: 'next' }
+  /** Tasting-Abend: host only, the beer comes from the host's catalog. */
+  | { type: 'pour'; beer: TastingBeer }
+  | { type: 'rate'; verdict: TastingVerdict }
+  /** Tasting-Abend: host only, close the evening. */
+  | { type: 'end' }
 
 /** What the host needs to deal Quartett cards: the card ids and the beers behind them. */
 export interface RoomDeck {
@@ -124,7 +131,9 @@ export function withPresent(state: RoomState, present: readonly RoomMember[]): R
   if (players.length < 2 || (game?.kind === 'quartett' && !game.seats.every((id) => here.has(id) || id === state.host))) {
     return state.phase === 'play' ? toLobby(next) : { ...next, phase: players.length < 2 ? 'lobby' : state.phase }
   }
-  if (game?.kind === 'fill') return { ...next, game: fillSettle(game, players.map((p) => p.id)) }
+  const ids = players.map((p) => p.id)
+  if (game?.kind === 'fill') return { ...next, game: fillSettle(game, ids) }
+  if (game?.kind === 'tasting') return { ...next, game: tastingSettle(game, ids) }
   return next
 }
 
@@ -134,10 +143,10 @@ function toLobby(state: RoomState): RoomState {
   return { ...state, phase: 'lobby', game: null, players }
 }
 
-/** Quartett is for exactly two, everyone ready, and needs a full deck. */
+/** Quartett is for exactly two, everyone ready, and needs a full deck; the others for everyone ready. */
 export function canStart(state: RoomState, kind: PartyKind, deckSize = DUEL_CARDS): boolean {
   if (!canCheer(state)) return false
-  return kind === 'fill' || (state.players.length === 2 && deckSize >= DUEL_CARDS)
+  return kind !== 'quartett' || (state.players.length === 2 && deckSize >= DUEL_CARDS)
 }
 
 /** Two or more in the room and every guest ready. */
@@ -172,7 +181,9 @@ export function applyIntent(state: RoomState, from: string, intent: RoomIntent, 
       const game =
         intent.game === 'fill'
           ? newFillParty(intent.seed)
-          : newDuel([state.players[0].id, state.players[1].id], ids, intent.seed)
+          : intent.game === 'tasting'
+            ? newTasting()
+            : newDuel([state.players[0].id, state.players[1].id], ids, intent.seed)
       return { ...state, phase: 'play', game, round: state.round + 1, seq: state.seq + 1 }
     }
     case 'stat': {
@@ -189,8 +200,22 @@ export function applyIntent(state: RoomState, from: string, intent: RoomIntent, 
     case 'reveal':
     case 'next': {
       const game = state.game
-      if (!isHost || game?.kind !== 'fill') return state
+      if (!isHost) return state
+      if (game?.kind === 'tasting' && intent.type === 'reveal') return withGame(state, tastingReveal(game))
+      if (game?.kind !== 'fill') return state
       return withGame(state, intent.type === 'reveal' ? fillReveal(game) : fillNext(game))
+    }
+    case 'pour':
+    case 'end': {
+      const game = state.game
+      if (!isHost || game?.kind !== 'tasting') return state
+      return withGame(state, intent.type === 'pour' ? tastingPour(game, intent.beer) : tastingEnd(game))
+    }
+    case 'rate': {
+      const game = state.game
+      if (game?.kind !== 'tasting') return state
+      const rated = tastingRate(game, from, intent.verdict)
+      return withGame(state, rated === game ? game : tastingSettle(rated, state.players.map((p) => p.id)))
     }
   }
 }
@@ -216,7 +241,7 @@ export function acceptSnapshot(current: RoomState | null, incoming: unknown, cod
 }
 
 export function parseIntent(raw: unknown): RoomIntent | null {
-  const i = raw as { type?: unknown; ready?: unknown; stat?: unknown; ml?: unknown } | null
+  const i = raw as { type?: unknown; ready?: unknown; stat?: unknown; ml?: unknown; verdict?: unknown } | null
   if (!i || typeof i !== 'object') return null
   if (i.type === 'ready' && typeof i.ready === 'boolean') return { type: 'ready', ready: i.ready }
   if (i.type === 'cheers' || i.type === 'lobby' || i.type === 'reveal' || i.type === 'next') return { type: i.type }
@@ -225,7 +250,19 @@ export function parseIntent(raw: unknown): RoomIntent | null {
     return stat ? { type: 'stat', stat } : null
   }
   if (i.type === 'guess' && typeof i.ml === 'number' && Number.isFinite(i.ml)) return { type: 'guess', ml: i.ml }
-  // `start` never comes over the network: only the host starts, on its own device
+  if (i.type === 'rate') {
+    const v = i.verdict as { stars?: unknown; axes?: Record<string, unknown> } | null
+    const num = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n)
+    if (!v || typeof v !== 'object' || !num(v.stars) || !v.axes || typeof v.axes !== 'object') return null
+    const axes = { bitterness: 0, body: 0, sweetness: 0 }
+    for (const a of TASTING_AXES) {
+      const n = v.axes[a]
+      if (!num(n)) return null
+      axes[a] = n
+    }
+    return { type: 'rate', verdict: { stars: v.stars, axes } }
+  }
+  // `start`, `pour` and `end` never come over the network: only the host does them, on its own device
   return null
 }
 

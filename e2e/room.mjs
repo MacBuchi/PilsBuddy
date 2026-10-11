@@ -4,7 +4,8 @@
 //   node e2e/room.mjs http://localhost:5179/
 // A opens a room; B comes in through the invite link (new user: age first), C types the code.
 // The host holds the state: toasting only once every guest is ready, everyone sees „Prost!“, the host
-// brings them back. All three play „Wie viel ist drin?“ (E5); C leaves, A and B start Quartett zu zweit.
+// brings them back. All three play „Wie viel ist drin?“ (E5) and hold a Tasting-Abend (E6: a catalog beer
+// resolving by itself, B keeps the verdict, a typed beer the host resolves); C leaves, A and B start Quartett zu zweit.
 // Then A closes the room and B is told. An unknown code is not found.
 import { chromium, devices } from 'playwright'
 
@@ -124,6 +125,51 @@ await step('„Wie viel ist drin?“ for all three: guess, reveal, result', asyn
   await A.m.getByRole('button', { name: 'Zur Auswertung' }).click()
   for (const d of [A, B, C]) await d.m.getByText('Auswertung', { exact: true }).waitFor({ timeout: 10000 })
   await C.page.screenshot({ path: `${out}-c-fill-result.png` })
+  await A.m.getByRole('button', { name: 'Zurück an den Tisch' }).click()
+  await B.m.getByRole('button', { name: 'Ich bin bereit' }).waitFor({ timeout: 10000 })
+})
+
+const rate = async (d, stars) => {
+  await d.m.getByRole('radio', { name: `${stars} von 5 Sternen` }).click()
+  await d.m.getByRole('button', { name: 'Bewerten', exact: true }).click()
+}
+
+await step('Tasting-Abend for all three: pour, rate, reveal, keep, end', async () => {
+  for (const d of [B, C]) await d.m.getByRole('button', { name: 'Ich bin bereit' }).click()
+  await A.page.waitForFunction(() => {
+    const b = [...document.querySelectorAll('main button')].find((x) => x.textContent?.includes('Tasting-Abend'))
+    return b && !b.disabled
+  }, null, { timeout: 10000 })
+  await A.m.getByRole('button', { name: 'Tasting-Abend' }).click()
+  await B.m.getByText('Der Gastgeber sucht das Bier aus …').waitFor({ timeout: 10000 })
+  await A.m.getByRole('searchbox', { name: 'Bier suchen' }).fill('jever')
+  await A.m.getByRole('button', { name: /^Jever Friesisches/ }).click()
+  for (const d of [A, B, C]) await d.m.getByRole('heading', { name: 'Jever' }).waitFor({ timeout: 10000 })
+  if (!(await B.m.getByRole('button', { name: 'Bewerten', exact: true }).isDisabled())) throw new Error('rating without stars')
+  await B.page.screenshot({ path: `${out}-b-tasting-rate.png` })
+  // all three rate → resolves by itself
+  await rate(A, 5)
+  await rate(B, 4)
+  await A.m.getByText('2 von 3 haben bewertet').waitFor({ timeout: 10000 })
+  await rate(C, 2)
+  for (const d of [A, B, C]) await d.m.getByText('Ø 3,7 Sterne').waitFor({ timeout: 10000 })
+  await C.m.getByText('Streitbier! Von 2 bis 5 Sternen.').waitFor()
+  await B.page.screenshot({ path: `${out}-b-tasting-reveal.png` })
+  await B.m.getByRole('button', { name: 'Als „Mag ich“ speichern' }).click()
+  await B.m.getByText('In deinen Bewertungen gespeichert.').waitFor()
+  // a beer typed by hand; C dawdles, the host resolves
+  await A.m.getByRole('searchbox', { name: 'Bier suchen' }).fill('Omas Kellerbier')
+  await A.m.getByRole('button', { name: '„Omas Kellerbier“ eintragen' }).click()
+  for (const d of [A, B, C]) await d.m.getByRole('heading', { name: 'Omas Kellerbier' }).waitFor({ timeout: 10000 })
+  await rate(A, 4)
+  await rate(B, 4)
+  await A.m.getByRole('button', { name: 'Auflösen' }).click()
+  for (const d of [A, B, C]) await d.m.getByText('Ø 4,0 Sterne').waitFor({ timeout: 10000 })
+  await C.m.getByText('nicht bewertet').waitFor()
+  await A.m.getByRole('button', { name: 'Abend beenden' }).click()
+  for (const d of [A, B, C]) await d.m.getByText('Liebling des Abends: Omas Kellerbier').waitFor({ timeout: 10000 })
+  await C.m.getByText('Streitbier des Abends: Jever (2–5 Sterne)').waitFor()
+  await C.page.screenshot({ path: `${out}-c-tasting-end.png` })
   await A.m.getByRole('button', { name: 'Zurück an den Tisch' }).click()
   await B.m.getByRole('button', { name: 'Ich bin bereit' }).waitFor({ timeout: 10000 })
 })
