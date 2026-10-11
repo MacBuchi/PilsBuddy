@@ -2,12 +2,18 @@ name: Regional catalogue (brewery websites)
 
 # R1b: crawls the websites of the published breweries for their beers (crawl.ts) and uploads
 # raw/web-<shard>.json as the artifact catalog-web. Nothing is written to the database here.
-# Manual only: gh workflow run catalog-web.yml
+# Manual (gh workflow run catalog-web.yml) or called by „Regional catalogue (monthly)“ (R7).
 on:
   workflow_dispatch:
     inputs:
       limit:
         description: Sites per shard (empty = all)
+        required: false
+  workflow_call:
+    inputs:
+      limit:
+        description: Sites per shard (empty = all)
+        type: string
         required: false
 
 concurrency:

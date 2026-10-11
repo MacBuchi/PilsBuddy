@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  # R7: the monthly catalogue PR is opened with GITHUB_TOKEN, which starts no pull_request run – the workflow
+  # dispatches CI on its branch instead, the checks land on the same commit
+  workflow_dispatch:
 
 # A PR's newer push replaces the older run. On main every run is its own group (a run waiting for the promote
 # approval must not hold back the next merge); deploys are serialised per target by job-level groups.

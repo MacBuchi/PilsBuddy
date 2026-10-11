@@ -1,0 +1,119 @@
+name: Regional catalogue (monthly)
+
+# R7: once a month the whole pipeline as a dry run – fetch (catalog.yml) and brewery websites (catalog-web.yml),
+# build the import, compare it with the live catalogue (public API, read-only) and open/refresh the PR
+# „Katalog-Stand“ on the branch catalog-stand: tools/catalog/stand.md + the diff report as PR body. Nothing is
+# written to the database here. Merging that PR is the OK: „Regional catalogue (import)“ then imports exactly these
+# raw data, after the maintainer's approval in the environment „production“. Artifacts live 14 days – a PR left
+# longer needs a new run. Manual: gh workflow run catalog-monthly.yml
+on:
+  schedule:
+    - cron: '17 3 1 * *' # 1st of the month, 03:17 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: catalog-monthly
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    uses: ./.github/workflows/catalog.yml
+
+  web:
+    uses: ./.github/workflows/catalog-web.yml
+
+  pr:
+    name: Diff report + PR
+    needs: [fetch, web]
+    # a failed website shard only loses that shard's website beers – the report shows it; without the fetch nothing
+    if: ${{ !cancelled() && needs.fetch.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write # branch catalog-stand
+      pull-requests: write
+      actions: write # dispatch CI on the PR branch
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BRANCH: catalog-stand
+      WEB_RESULT: ${{ needs.web.result }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: catalog-raw
+          path: tools/catalog/raw
+      - uses: actions/download-artifact@v4
+        continue-on-error: true # no website shard at all → report without website beers
+        with:
+          pattern: catalog-web-*
+          merge-multiple: true
+          path: tools/catalog/raw
+      - run: npm run catalog:build
+      - name: Compare with the live catalogue
+        run: |
+          trap 'cat blocked.txt >&2' EXIT
+          npm run -s catalog:diff 2> blocked.txt | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-diff
+          path: |
+            tools/catalog/out/report.txt
+            tools/catalog/out/diff.md
+            tools/catalog/out/diff.tsv
+          retention-days: 30
+      - name: tools/catalog/stand.md + PR body
+        run: |
+          day=$(date -u +%F)
+          expires=$(date -u -d '+13 days' +%F)
+          url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          shards=$(find tools/catalog/raw -maxdepth 1 -name 'web-*.json' | wc -l)
+          {
+            echo "# Regionalkatalog – Stand $day"
+            echo
+            echo "<!-- catalog-run: $GITHUB_RUN_ID -->"
+            echo "Probelauf [$GITHUB_RUN_ID]($url) (R7)."' Der Merge startet „Regional catalogue (import)“ mit genau diesen'
+            echo "Rohdaten; der Import wartet auf die Freigabe im Environment \`production\`. Rohdaten verfügbar bis $expires."
+            echo
+            echo "Website-Crawl: $shards von 12 Teilen ($WEB_RESULT)."
+            echo
+            echo '```'
+            cat tools/catalog/out/report.txt
+            echo '```'
+            echo
+            echo "## Änderungen gegenüber live"
+            echo
+            cat tools/catalog/out/diff.md
+          } > tools/catalog/stand.md
+          {
+            cat tools/catalog/stand.md
+            echo
+            echo "Alle Änderungen: Artefakt \`catalog-diff\` (\`diff.tsv\`) im Lauf. Prüfen → mergen = übernehmen;"
+            echo "schließen = verwerfen (nächster Monat kommt neu). Kein Auto-Merge."
+          } > body.md
+          title="Katalog-Stand $day (R7)"
+          if grep -q '^blocked:' blocked.txt; then title="⚠️ $title – Import würde abbrechen"; fi
+          echo "TITLE=$title" >> "$GITHUB_ENV"
+      - name: Push branch, open or update the PR, start CI
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$BRANCH"
+          git add tools/catalog/stand.md
+          git commit -q -m "$TITLE"
+          git push -f origin "$BRANCH"
+          pr=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --title "$TITLE" --body-file body.md
+          else
+            gh pr create --head "$BRANCH" --base main --title "$TITLE" --body-file body.md
+          fi
+          gh workflow run ci.yml --ref "$BRANCH"
