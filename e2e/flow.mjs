@@ -283,6 +283,14 @@ await step('regional mode: switch in the finder → every third swipe card is fr
   await m.getByLabel('Zurück').click()
   await m.getByText('Swipen', { exact: true }).click()
   const badge = m.getByText(/^Aus deiner Nähe · /)
+  // V1: the reference set stays researched beers only – regional cards come after it
+  // (finishing it shows „Bier-DNA entschlüsselt!“ once – then on with „Weiterswipen“)
+  for (let i = 0; i < 25 && !(await badge.first().isVisible()); i++) {
+    const more = m.getByRole('button', { name: 'Weiterswipen' })
+    if (await more.isVisible()) await more.click()
+    else await page.keyboard.press('k')
+    await page.waitForTimeout(200)
+  }
   await badge.first().waitFor({ timeout: 4000 })
   await page.screenshot({ path: `${out}-regional-deck.png` })
   for (let i = 0; i < 3; i++) await page.keyboard.press('k')
