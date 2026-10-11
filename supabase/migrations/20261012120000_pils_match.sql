@@ -61,3 +61,5 @@ create policy "own blocks"
 -- no updates: a clink or block is set or removed
 grant select, insert, delete on public.match_clinks, public.match_blocks to authenticated;
 grant select, insert, update, delete on public.match_clinks, public.match_blocks to service_role;
+-- the feed reads visible profiles and their ratings with the service key (a fresh stack grants service_role nothing)
+grant select on public.profiles, public.ratings to service_role;
