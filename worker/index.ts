@@ -6,10 +6,11 @@
  * builds the prompt itself and asks Workers AI. It stays inside the free allocation: identical questions come
  * from the cache, a Durable Object counts the day's model calls (hard cap) and a few per device and minute.
  */
-import { AI_MAX_TOKENS, aiKey, buildPrompt, cleanAiText, parseAiRequest } from '../src/ai/prompt'
+import { AI_MAX_TOKENS, aiKey, buildPrompt, cleanAiText, parseAiRequest, PROMPT_VERSION } from '../src/ai/prompt'
 
-export const AI_MODEL = '@cf/meta/llama-3.2-3b-instruct'
-/** Model calls per worker and UTC day. ~7 neurons each; beta + production together stay below the 10 000 free ones. */
+/** 8B writes far better German than the 3B model at about the same price per call (Workers AI pricing, Oct 2026). */
+export const AI_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8-fast'
+/** Model calls per worker and UTC day. ~6–7 neurons each; beta + production together stay below the 10 000 free ones. */
 export const AI_PER_DAY = 600
 export const AI_PER_MINUTE = 4
 const MAX_BODY = 2000
@@ -55,7 +56,7 @@ export async function handleAi(req: Request, env: Env, ctx: Ctx, cache: Cache): 
   const ask = parseAiRequest(parsed)
   if (!ask) return json({ error: 'request' }, 400)
 
-  const cacheKey = new Request(`${url.origin}/api/ai/cache/${await sha256(aiKey(ask))}`)
+  const cacheKey = new Request(`${url.origin}/api/ai/cache/v${PROMPT_VERSION}/${await sha256(aiKey(ask))}`)
   const hit = await cache.match(cacheKey)
   if (hit) return json(await hit.json())
 

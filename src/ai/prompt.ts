@@ -21,7 +21,7 @@ export interface AiPrompt {
 
 /** Longest text the UI shows; the model is asked for less. */
 export const AI_MAX_CHARS = 420
-export const AI_MAX_TOKENS = 160
+export const AI_MAX_TOKENS = 130
 
 /** Persona, beer and style names: one line, no quotes or brackets that could pass for prompt structure. */
 const NAME = /^[^\p{C}"„“”«»<>{}[\]\\]{1,60}$/u
@@ -94,38 +94,65 @@ const AXIS: Record<AiLang, Record<keyof TasteVector, string>> = {
   },
 }
 
-const values = (lang: AiLang, t: TasteVector) => TASTE_AXES.map((a) => `${AXIS[lang][a]} ${t[a]}`).join(', ')
+/** Bumped whenever the prompt or the model changes, so cached answers of the old one are not served again. */
+export const PROMPT_VERSION = 2
+
+/**
+ * Taste in words instead of numbers: small models parrot numbers and mix up scales, but they handle „sehr bitter,
+ * kaum süß“ well. Only what stands out is named – the middle of the scale says nothing.
+ */
+const LEVEL: Record<AiLang, [high: string, low: string]> = { de: ['viel', 'wenig'], en: ['lots of', 'little'] }
+
+export function tasteWords(lang: AiLang, t: TasteVector): string {
+  const [high, low] = LEVEL[lang]
+  const strong = TASTE_AXES.filter((a) => t[a] >= 65).sort((a, b) => t[b] - t[a])
+  const weak = TASTE_AXES.filter((a) => t[a] <= 30).sort((a, b) => t[a] - t[b])
+  const parts = [
+    ...strong.slice(0, 3).map((a) => `${high} ${AXIS[lang][a]}`),
+    ...weak.slice(0, 2).map((a) => `${low} ${AXIS[lang][a]}`),
+  ]
+  return parts.length ? parts.join(', ') : lang === 'de' ? 'alles schön in der Mitte' : 'everything nicely in the middle'
+}
 
 const SYSTEM: Record<AiLang, string> = {
   de:
-    'Du bist PilsBuddy, ein frecher, herzlicher Kumpel am Tresen. Du schreibst auf Deutsch, duzt, maximal drei kurze Sätze, ' +
-    'höchstens ein Emoji, keine Aufzählung, keine Anführungszeichen. Nie beleidigend, nichts über Aussehen, Herkunft, Gesundheit ' +
-    'oder Alkoholmengen, kein Aufruf zum Trinken. Werte von 0 bis 100 beschreiben Geschmack; nenn keine Zahlen.',
+    'Du bist PilsBuddy, ein frecher, herzlicher Kumpel am Tresen. Du sprichst die Person direkt mit „du“ an, nie in der ' +
+    'dritten Person. Schreib natürliches, umgangssprachliches Deutsch: höchstens drei kurze Sätze, höchstens ein Emoji, ' +
+    'keine Aufzählung, keine Anführungszeichen, keine Zahlen, keine Einleitung wie „Hier ist“. Nie beleidigend, nichts über ' +
+    'Aussehen, Herkunft, Gesundheit oder Alkoholmengen, kein Aufruf zum Trinken.',
   en:
-    'You are PilsBuddy, a cheeky, warm mate at the bar. Write in English, at most three short sentences, at most one emoji, ' +
-    'no lists, no quotation marks. Never insulting, nothing about looks, origin, health or amounts of alcohol, never urge anyone ' +
-    'to drink. Values from 0 to 100 describe taste; do not mention numbers.',
+    'You are PilsBuddy, a cheeky, warm mate at the bar. Talk to the person directly as "you", never in the third person. ' +
+    'Write natural, casual English: at most three short sentences, at most one emoji, no lists, no quotation marks, no ' +
+    'numbers, no preamble like "Here is". Never insulting, nothing about looks, origin, health or amounts of alcohol, never ' +
+    'urge anyone to drink.',
 }
 
 export function buildPrompt(req: AiRequest): AiPrompt {
   const { lang } = req
+  const mine = tasteWords(lang, req.taste)
   if (req.kind === 'roast') {
     return {
       system: SYSTEM[lang],
       user:
         lang === 'de'
-          ? `Roaste liebevoll den Biergeschmack von jemandem mit der Bier-Persona „${req.persona}“. Geschmacksprofil: ${values(lang, req.taste)}.`
-          : `Lovingly roast the beer taste of someone whose beer persona is "${req.persona}". Taste profile: ${values(lang, req.taste)}.`,
+          ? `Meine Bier-Persona heißt ${req.persona}. Beim Bier mag ich ${mine}. Zieh mich damit liebevoll auf – sprich mich mit du an.`
+          : `My beer persona is called ${req.persona}. In a beer I like ${mine}. Tease me about it lovingly – talk to me as you.`,
     }
   }
+  const verdict =
+    req.pct >= 75
+      ? lang === 'de' ? 'passt sehr gut zu mir' : 'suits me very well'
+      : req.pct >= 50
+        ? lang === 'de' ? 'passt so halb zu mir' : 'half suits me'
+        : lang === 'de' ? 'passt eher nicht zu mir' : 'rather does not suit me'
   return {
     system: SYSTEM[lang],
     user:
       lang === 'de'
-        ? `Erklär in zwei Sätzen, warum das Bier „${req.beer}“ (${req.style}) zu jemandem passt oder nicht – Match ${req.pct} %. ` +
-          `Bier: ${values(lang, req.beerTaste)}. Geschmack der Person: ${values(lang, req.taste)}.`
-        : `Explain in two sentences why the beer "${req.beer}" (${req.style}) suits someone or not – match ${req.pct} %. ` +
-          `Beer: ${values(lang, req.beerTaste)}. The person's taste: ${values(lang, req.taste)}.`,
+        ? `Das Bier ${req.beer} (${req.style}) hat ${tasteWords(lang, req.beerTaste)}. Ich mag ${mine}. Laut PilsBuddy ${verdict}. ` +
+          'Erklär mir in zwei Sätzen, woran das liegt – sprich mich mit du an.'
+        : `The beer ${req.beer} (${req.style}) has ${tasteWords(lang, req.beerTaste)}. I like ${mine}. PilsBuddy says it ${verdict}. ` +
+          'Explain to me in two sentences why – talk to me as you.',
   }
 }
 
@@ -136,6 +163,7 @@ export function cleanAiText(raw: unknown): string | null {
     // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, '')
     .replace(/\s+/g, ' ')
+    .replace(/^(PilsBuddy|Antwort|Answer)\s*:\s*/i, '')
     .replace(/^["„“”'\s]+|["„“”'\s]+$/g, '')
     .trim()
   if (t.length > AI_MAX_CHARS) {
