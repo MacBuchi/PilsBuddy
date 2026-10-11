@@ -377,9 +377,10 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
       Streitbier ab 2 Sternen Abstand; bis 12 Biere, Abschluss mit Liebling des Abends; Urteil auf Wunsch in die
       eigenen Bewertungen (4–5 „Mag ich“, 1–2 „Nicht meins“)
 - [x] E7 **Bierquiz** allein (Wunsch #45) (S) (#80) – Regeln rein in `domain/games/quiz.ts`: 10 Fragen mit je 4
-      Antworten, halb geprüftes Wissen (`COPY.quiz.facts`, de + en, 28 Fragen: Reinheitsgebot, Stile, Herkunft,
-      Brauen), halb aus den kuratierten Bierdaten (Land, Stil ohne Fast-Zwillinge, stärkstes von vier mit
-      ≥ 0,5 % Abstand); nach jeder Antwort die Auflösung mit einem Satz dazu, Sieg ab 7 richtig, Bestwert im Profil
+      Antworten zum Mitlernen. 7 aus geprüftem Wissen (`COPY.quiz.facts`, de + en, 64 Fragen in fünf Themen:
+      Geschichte, Herstellung, Reinheitsgebot & Recht, Sortenkunde, Zutaten – jedes Thema mindestens einmal pro
+      Quiz, Wunsch 2026-10-11), 3 aus den kuratierten Bierdaten (Land, Stil ohne Fast-Zwillinge, stärkstes von vier
+      mit ≥ 0,5 % Abstand); nach jeder Antwort die Auflösung mit einem Satz dazu, Sieg ab 7 richtig, Bestwert im Profil
 - [ ] E8 **Bierquiz im Spielraum** (#45) auf E4: Gastgeber teilt dieselben Fragen (Seed) aus, alle antworten,
       Auflösung von selbst oder per Gastgeber, Rangliste am Ende (M)
 

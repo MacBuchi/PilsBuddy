@@ -50,7 +50,7 @@ describe('English text bank', () => {
 
   it('is actually translated (no German umlauts outside names)', () => {
     // names stay German: breweries, places (quiz), beer styles
-    const names = /Häffner|Tannenzäpfle|Störtebeker|Dröppke|Lübzer|Budějovice|Plzeň|Maß|Kölsch|Düsseldorf|Würzburg|Weißbier|Märzen|Köstritz|Ainpöckisch|Stammwürze/g
+    const names = /Häffner|Tannenzäpfle|Störtebeker|Dröppke|Lübzer|Budějovice|Plzeň|Maß|Kölsch|Düsseldorf|Würzburg|Weißbier|Märzen|Köstritz|Ainpöckisch|Stammwürze|Hofbräu|bräu|März|München/g
     const german = enLeaves.filter(([, t]) => /[äöüß]/.test(t.replace(names, '')))
     expect(german).toEqual([])
   })

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { BEERS } from '../../data/beers'
 import { COPY, COPY_BY_LANG } from '../../data/copy'
-import { current, isOver, isRight, isWin, newQuiz, pick, QUIZ_PASS, QUIZ_QUESTIONS, scoreOf } from './quiz'
+import { current, isOver, isRight, isWin, newQuiz, pick, QUIZ_PASS, QUIZ_QUESTIONS, QUIZ_TOPICS, scoreOf } from './quiz'
 import type { QuizGame } from './quiz'
 
 const beers = BEERS.filter((b) => !b.regional)
@@ -20,7 +20,12 @@ describe('newQuiz', () => {
         expect(q.answer).toBeLessThan(4)
         expect(q.explain.length).toBeGreaterThan(10)
       }
-      expect(game.questions.filter((q) => q.kind === 'fact')).toHaveLength(5)
+      const facts = game.questions.filter((q) => q.kind === 'fact')
+      expect(facts).toHaveLength(7)
+      // something to learn from every corner: history, brewing, purity law, styles, ingredients
+      expect(new Set(facts.map((q) => q.topic))).toEqual(new Set(QUIZ_TOPICS))
+      expect(new Set(facts.map((q) => q.prompt)).size).toBe(7)
+      expect(game.questions.filter((q) => q.kind !== 'fact').every((q) => q.topic === 'beer')).toBe(true)
     }
   })
 
@@ -90,17 +95,22 @@ describe('playing', () => {
 })
 
 describe('fact bank', () => {
-  it('has the same questions in German and English, four options each', () => {
+  it('has the same questions in German and English, four options each, every topic well stocked', () => {
     const de = COPY_BY_LANG.de.quiz.facts
     const en = COPY_BY_LANG.en.quiz.facts
-    expect(de.length).toBeGreaterThanOrEqual(20)
+    expect(de.length).toBeGreaterThanOrEqual(50)
     expect(en).toHaveLength(de.length)
+    expect(en.map((f) => f.topic)).toEqual(de.map((f) => f.topic))
+    for (const t of QUIZ_TOPICS) expect(de.filter((f) => f.topic === t).length, t).toBeGreaterThanOrEqual(8)
+    expect(new Set(de.map((f) => f.q)).size).toBe(de.length)
     for (const f of [...de, ...en]) {
       expect(f.options).toHaveLength(4)
       expect(new Set(f.options).size).toBe(4)
     }
-    // spot check: the pairs stay aligned
-    expect(de[0].options[0]).toBe(en[0].options[0])
+    expect(de.every((f) => (QUIZ_TOPICS as readonly string[]).includes(f.topic))).toBe(true)
+    // spot check: the pairs stay aligned (numbers and names are the same in both languages)
+    const year = de.findIndex((f) => f.options[0] === '1516')
+    expect(en[year].options[0]).toBe('1516')
     expect(COPY.quiz.facts).toBe(de)
   })
 })

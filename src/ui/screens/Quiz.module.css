@@ -37,6 +37,13 @@
   animation: pbIn 0.3s ease both;
 }
 
+.topic {
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+
 .bottle {
   flex: none;
 }
