@@ -82,6 +82,11 @@ stehen zentral in `tools/catalog/countries.json`; Skripte, Merge und Workflow le
    Swipe-Deck). 3 geprüft bleibt den von Hand recherchierten Bieren vorbehalten (kuratiert; freigegebene Meldungen
    bekommen 2). Vorher fliegen Merch, Hashtags, Award-Zeilen und Listenüberschriften raus (`notABeerName`), Layout-
    Reste im Namen werden entfernt (`tidyBeerName`, die ID bleibt am Rohnamen).
+   **Problem melden (V2):** An jedem Bier meldet die App ein Problem über die Feedback-Tabelle (`type = 'beer'`,
+   `beer_id`, `beer_name`, `problem`); der Feedback-Bot macht daraus ein Issue `bier-problem` mit den Katalogdaten.
+   Label `ausblenden` → `regional_beers.hidden = true` (RLS: nur `published and not hidden` ist öffentlich). Der Import
+   fasst `hidden` nie an – das Bier bleibt weg. Der Monats-Diff (R7) sieht ausgeblendete Biere nicht und listet sie
+   deshalb als „neu“.
 5. Monatlich (R7): Workflow „Regional catalogue (monthly)“ (am 1., 03:17 UTC, oder `gh workflow run catalog-monthly.yml`)
    ruft fetch + Websites auf, baut den Import und vergleicht ihn mit dem Live-Katalog (`npm run catalog:diff`:
    `out/next.json` gegen die öffentliche API, nur lesend) – je Land Brauereien/Biere neu · weg · geändert, Warnung

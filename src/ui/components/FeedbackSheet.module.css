@@ -72,3 +72,28 @@
   font: italic 500 12.5px/1.4 var(--font-display);
   color: var(--mut);
 }
+
+/* V2 – problem choices at a beer, as wrapping chips */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.choice {
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 99px;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font: 700 13.5px/1.2 var(--font-display);
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice.typeOn {
+  border-color: var(--ink-fixed);
+  background: var(--ink-fixed);
+  color: var(--foam);
+}

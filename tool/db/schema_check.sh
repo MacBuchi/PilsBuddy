@@ -76,6 +76,8 @@ check_denied "Feedback nicht lesbar" "/rest/v1/feedback?select=id&limit=1"
 check_denied "Bier-Meldungen nicht lesbar" "/rest/v1/beer_submissions?select=id&limit=1"
 check_insert "Feedback senden (feedback.ts)" feedback \
   "{\"type\":\"bug\",\"message\":\"schema_check $run\",\"app_version\":\"ci\",\"platform\":\"Linux · Browser\"}"
+check_insert "Problem mit einem Bier melden (feedback.ts, V2)" feedback \
+  "{\"type\":\"beer\",\"message\":\"„Check $run“: Gibt es nicht\",\"beer_id\":\"jever\",\"beer_name\":\"Check $run\",\"problem\":\"not_exists\",\"app_version\":\"ci\",\"platform\":\"Linux · Browser\"}"
 check_insert "Bier melden (beerSubmission.ts)" beer_submissions \
   "{\"brewery_name\":\"Schema-Check-Bräu\",\"brewery_place\":\"74906\",\"beer_name\":\"Check $run\",\"style\":\"Pils\",\"abv\":4.9,\"app_version\":\"ci\",\"platform\":\"Linux · Browser\"}"
 

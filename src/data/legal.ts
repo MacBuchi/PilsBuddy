@@ -83,6 +83,7 @@ const PRIVACY_DE: LegalSection[] = [
     title: 'Feedback („Wünsch dir was!“)',
     paragraphs: [
       'Schickst du eine Idee oder einen Fehler ab, speichern wir bei Supabase (Server in Frankfurt am Main) deinen Text, die Art (Idee/Fehler), die App-Version und den groben Gerätetyp (z. B. „iOS · App“) – ohne Konto, ohne Namen, ohne deine Bewertungen. Supabase verarbeitet dabei technisch nötige Verbindungsdaten wie die IP-Adresse.',
+      'Meldest du ein Problem mit einem Bier („Problem mit diesem Bier melden“), kommen dazu, um welches Bier es geht (Kennung und Name) und welches Problem du ausgewählt hast; deine Notiz ist der Text. Bestätigt sich das Problem, blenden wir das Bier im Katalog aus oder korrigieren es.',
       'Ein Bot veröffentlicht den Text anschließend als Eintrag (Issue) im öffentlichen GitHub-Projekt von PilsBuddy (GitHub, Inc., USA). Dort ist er für alle lesbar und bleibt stehen; schreib deshalb keine persönlichen Daten hinein. Die Kopie bei Supabase löschen wir 30 Tage nach der Veröffentlichung. Weil wir nicht wissen, von wem ein Text stammt, können wir einzelne Einsendungen nur über ihren Wortlaut finden.',
       'Rechtsgrundlage ist deine Einwilligung durch das Abschicken (Art. 6 Abs. 1 lit. a DSGVO).',
     ],
@@ -181,6 +182,7 @@ const PRIVACY_EN: LegalSection[] = [
     title: 'Feedback (“Make a wish!”)',
     paragraphs: [
       'If you send an idea or a bug, we store at Supabase (servers in Frankfurt am Main) your text, its type (idea/bug), the app version and the rough device type (e.g. “iOS · App”) – without an account, without a name, without your ratings. Supabase processes technically necessary connection data such as the IP address.',
+      'If you report a problem with a beer (“Report a problem with this beer”), we also store which beer it is (id and name) and the problem you picked; your note is the text. If the problem is confirmed, we hide the beer in the catalogue or fix it.',
       'A bot then publishes the text as an issue in the public PilsBuddy GitHub project (GitHub, Inc., USA). There it can be read by anyone and stays up; so please don’t include any personal data. We delete the copy at Supabase 30 days after publication. Because we don’t know who wrote a text, we can only find individual submissions by their wording.',
       'The legal basis is your consent by sending (Art. 6(1)(a) GDPR).',
     ],

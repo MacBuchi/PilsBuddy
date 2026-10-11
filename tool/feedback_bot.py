@@ -9,6 +9,10 @@ ago are deleted, as the privacy text promises.
 The feedback is anonymous: the issue carries the quoted text, app build, platform and date – nothing
 about the person. @-mentions are defused, a public issue must not ping anyone.
 
+V2 – beer reports („Problem melden“, type `beer`): the issue (label `bier-problem`) names the beer, the problem and
+what the catalogue holds about it. The label `ausblenden` on such an issue (`feedback_bot.py hide N`, run by the
+workflow) hides a regional beer for good: regional_beers.hidden, which the catalogue import never touches.
+
 Environment: SUPABASE_SERVICE_ROLE_KEY, GH_TOKEN (the workflow provides both). The project URL comes
 from src/sync/config.ts, the file the app reads, so it cannot drift.
 
@@ -28,6 +32,19 @@ CONFIG = "src/sync/config.ts"
 RETENTION_DAYS = 30
 TITLE_CHARS = 60
 USER_AGENT = "pilsbuddy-feedback-bot/1.0 (+https://github.com/MacBuchi/PilsBuddy)"
+BEER_LABEL = "bier-problem"
+HIDE_LABEL = "ausblenden"
+PROBLEMS = {  # feedback.problem → issue wording (German, like the maintainer's other issues)
+    "not_a_beer": "Das ist kein Bier",
+    "not_exists": "Gibt es nicht (mehr)",
+    "wrong_values": "Stil oder Alkohol falsch",
+    "wrong_brewery": "Falsche Brauerei oder Ort",
+    "duplicate": "Doppelt",
+    "other": "Etwas anderes",
+}
+SOURCES = {1: "Open Food Facts", 2: "Wikidata", 3: "Brauerei-Website", 4: "beer.db (openbeer)", 5: "Meldung aus der App"}
+QUALITY = {0: "fraglich", 1: "gefunden", 2: "bestätigt", 3: "geprüft"}
+BEER_MARKER = re.compile(r"<!-- beer-id: ([a-z0-9-]{1,60}) -->")
 
 
 def supabase_url() -> str:
@@ -67,14 +84,52 @@ def defuse(text: str) -> str:
 
 
 def issue_title(row: dict) -> str:
+    if row["type"] == "beer":
+        name = " ".join(defuse(row.get("beer_name") or "").split())[:TITLE_CHARS]
+        return f"Bier-Problem: {name} – {PROBLEMS.get(row.get('problem'), 'Etwas anderes')}"
     prefix = "Bug report: " if row["type"] == "bug" else "Feature request: "
     text = " ".join(defuse(row["message"]).split())
     return prefix + text[:TITLE_CHARS] + ("…" if len(text) > TITLE_CHARS else "")
 
 
-def issue_body(row: dict) -> str:
+def catalogue_facts(beer_id: str, lookup=None) -> str:
+    """What the catalogue holds about a regional beer (service key reads hidden/unpublished rows too)."""
+    if not beer_id.startswith("r-"):
+        return "Kuratiertes Bier – Korrektur von Hand in `src/data/beers.json` (oder der Tabelle `beers`)."
+    rows = (lookup or api)("GET", f"/rest/v1/regional_beers?id=eq.{beer_id}&select=name,style,abv,source,source_ref,quality,published,"
+                           "breweries(id,name,city,website)", prefer="count=none") or []
+    if not rows:
+        return "Nicht (mehr) im Regionalkatalog."
+    r = rows[0]
+    b = r.get("breweries") or {}
+    lines = [
+        f"- Brauerei: {defuse(b.get('name') or '?')} ({defuse(b.get('city') or '–')}, `{b.get('id')}`)",
+        f"- Stil: {r.get('style') or 'unbekannt'} · Alkohol: {r.get('abv') if r.get('abv') is not None else 'unbekannt'}",
+        f"- Quelle: {SOURCES.get(r.get('source'), r.get('source'))} – `{defuse(str(r.get('source_ref') or ''))}`",
+        f"- Datenlage: {QUALITY.get(r.get('quality'), '?')}" + ("" if r.get("published") else " · nicht veröffentlicht"),
+    ]
+    if b.get("website"):
+        lines.append(f"- Website: {b['website']}")
+    return "\n".join(lines)
+
+
+def issue_body(row: dict, lookup=None) -> str:
     """Mirrors .github/ISSUE_TEMPLATE: Description, App version, Platform."""
     quoted = "\n".join("> " + line if line.strip() else ">" for line in defuse(row["message"].strip()).splitlines())
+    if row["type"] == "beer":
+        hint = (f"Bestätigt? Label `{HIDE_LABEL}` blendet das Bier aus (bleibt auch nach dem nächsten Katalog-Import weg)."
+                if row["beer_id"].startswith("r-") else "Bestätigt? Bitte von Hand korrigieren und das Issue schließen.")
+        return (
+            f"### Bier\n\n{defuse(row['beer_name'])} (`{row['beer_id']}`)\n\n"
+            f"### Problem\n\n{PROBLEMS.get(row['problem'], row['problem'])}\n\n"
+            f"### Description\n\n{quoted}\n\n"
+            f"### Katalog\n\n{catalogue_facts(row['beer_id'], lookup)}\n\n"
+            f"### App version\n\n{row.get('app_version') or 'unbekannt'}\n\n"
+            f"### Platform\n\n{row.get('platform') or 'unbekannt'}\n\n"
+            f"{hint}\n\n"
+            f"_Gemeldet in der App am {row['created_at'][:10]}, automatisch erstellt vom Feedback-Bot._\n"
+            f"<!-- beer-id: {row['beer_id']} -->"
+        )
     return (
         f"### Description\n\n{quoted}\n\n"
         f"### App version\n\n{row.get('app_version') or 'unbekannt'}\n\n"
@@ -84,7 +139,35 @@ def issue_body(row: dict) -> str:
 
 
 def issue_label(row: dict) -> str:
-    return "bug" if row["type"] == "bug" else "enhancement"
+    return BEER_LABEL if row["type"] == "beer" else "bug" if row["type"] == "bug" else "enhancement"
+
+
+def ensure_labels() -> None:
+    """The two V2 labels exist before the first beer issue (`--force` only updates colour/description)."""
+    run("gh", "label", "create", BEER_LABEL, "--color", "d4a017", "--force", "--description", "Problem mit einem Bier, gemeldet in der App")
+    run("gh", "label", "create", HIDE_LABEL, "--color", "b60205", "--force", "--description", "Bier-Problem bestätigt: Regionalbier ausblenden")
+
+
+def hide(number: int) -> None:
+    """Issue N (label bier-problem) got the label `ausblenden` → hide its regional beer, comment, close."""
+    issue = json.loads(run("gh", "issue", "view", str(number), "--json", "body,labels,state"))
+    labels = {label["name"] for label in issue["labels"]}
+    if BEER_LABEL not in labels or HIDE_LABEL not in labels or issue["state"] != "OPEN":
+        print(f"#{number}: not an open {BEER_LABEL} issue with {HIDE_LABEL} – nothing to do")
+        return
+    m = BEER_MARKER.search(issue["body"] or "")
+    if not m or not m.group(1).startswith("r-"):
+        run("gh", "issue", "comment", str(number), "--body",
+            "Kein Regionalbier in diesem Issue – ausblenden geht nur dort. Kuratierte Biere bitte von Hand korrigieren.")
+        run("gh", "issue", "edit", str(number), "--remove-label", HIDE_LABEL)
+        return
+    beer_id = m.group(1)
+    api("PATCH", f"/rest/v1/regional_beers?id=eq.{beer_id}", {"hidden": True})
+    run("gh", "issue", "comment", str(number), "--body",
+        f"🙈 `{beer_id}` ist ausgeblendet – die App findet es nicht mehr, auch nach dem nächsten Katalog-Import nicht. "
+        "Geräte mit gecachter Umgebung sehen es spätestens nach 30 Tagen nicht mehr.")
+    run("gh", "issue", "close", str(number), "--reason", "completed")
+    print(f"#{number} → {beer_id} hidden")
 
 
 def existing_issue(title: str) -> int | None:
@@ -93,7 +176,9 @@ def existing_issue(title: str) -> int | None:
 
 
 def process() -> None:
-    rows = api("GET", "/rest/v1/feedback?processed_at=is.null&order=created_at.asc&limit=50&select=id,type,message,app_version,platform,created_at") or []
+    rows = api("GET", "/rest/v1/feedback?processed_at=is.null&order=created_at.asc&limit=50&select=id,type,message,beer_id,beer_name,problem,app_version,platform,created_at") or []
+    if any(row["type"] == "beer" for row in rows):
+        ensure_labels()
     for row in rows:
         title = issue_title(row)
         number = existing_issue(title)
@@ -124,11 +209,25 @@ def self_test() -> None:
     assert issue_title({**row, "type": "feature", "message": "Kurz"}) == "Feature request: Kurz"
     os.environ.pop("SUPABASE_URL", None)
     assert supabase_url() == "https://rwqpljpnotnyovvuxjgl.supabase.co"
+    beer = {**row, "type": "beer", "message": "„T-Shirt Schwarz“: Das ist kein Bier – @shop", "beer_id": "r-wb412292101b0b4d0",
+            "beer_name": "T-Shirt Schwarz", "problem": "not_a_beer"}
+    assert issue_title(beer) == "Bier-Problem: T-Shirt Schwarz – Das ist kein Bier", issue_title(beer)
+    assert issue_label(beer) == BEER_LABEL
+    fake = lambda *_a, **_k: [{"name": "T-Shirt Schwarz", "style": "Schwarzbier", "abv": None, "source": 3, "source_ref": "/shop",
+                               "quality": 1, "published": True, "breweries": {"id": "osm-n1", "name": "Schlossbräu", "city": "Kronach", "website": "https://schloss.de"}}]
+    body = issue_body(beer, fake)
+    assert "### Problem\n\nDas ist kein Bier" in body and "Quelle: Brauerei-Website – `/shop`" in body, body
+    assert "Datenlage: gefunden" in body and "@​shop" in body and f"Label `{HIDE_LABEL}`" in body, body
+    assert BEER_MARKER.search(body).group(1) == "r-wb412292101b0b4d0"
+    curated = issue_body({**beer, "beer_id": "jever-pilsener", "beer_name": "Jever"}, fake)
+    assert "Kuratiertes Bier" in curated and HIDE_LABEL not in curated, curated
     print("self-test ok")
 
 
 if __name__ == "__main__":
     if "--self-test" in sys.argv:
         self_test()
+    elif len(sys.argv) == 3 and sys.argv[1] == "hide":
+        hide(int(sys.argv[2]))
     else:
         process()
