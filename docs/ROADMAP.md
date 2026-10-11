@@ -31,7 +31,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 12. [x] **R7** Aktualität (monatlicher Pipeline-Dry-Run) (#67)
 13. [x] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71, E6 #72)
 14. [ ] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
-    jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung
+    jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73
 15. [ ] **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -320,7 +320,7 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
 Viele Regionalbiere sind automatisch gelesen (9 621 von 10 675 nur von Brauerei-Websites), nicht geprüft – dabei
 auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche Werte. Die kuratierten Biere sind recherchiert.
 
-- [ ] V1 **Qualitätsstufe** je Bier, berechnet aus den Belegen: 0 fraglich (nur alte openbeer-Liste, oder weder Stil
+- [x] V1 **Qualitätsstufe** (#73) je Bier, berechnet aus den Belegen: 0 fraglich (nur alte openbeer-Liste, oder weder Stil
       noch Alkohol) · 1 gefunden (eine aktuelle Quelle) · 2 bestätigt (Strichcode/Wikidata oder zwei Quellen, Alkohol
       bekannt) · 3 geprüft (von Hand recherchiert = kuratierte Biere). Spalte `regional_beers.quality`, Pipeline filtert
       Merch/Hashtags/Award-Zeilen und säubert Layout-Reste im Namen; Detail zeigt die Datenlage; die erste
