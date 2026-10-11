@@ -64,7 +64,8 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   the GitHub **pre-release** `v<date>.<run>` (notes from the PRs, `dist.zip`). A package is done when its
   pre-release exists. Users get it only after **Promote**: the job „Promote to production“ waits for the
   maintainer's approval (environment `production`), deploys the same dist, smoke-tests production and marks the
-  release latest. A newer merge replaces a pending promotion. Never promote or approve yourself.
+  release latest. A newer merge replaces a pending promotion, and a run whose commit is no longer the head of `main` skips the
+  beta deploy (no pre-release, no promotion) – runs can finish out of order while a live-db approval waits. Never promote or approve yourself.
   Anything failing after the merge opens an issue labelled `release-failed` – fix that before the next package
   (fix forward, or `gh workflow run rollback.yml [-f tag=…]`, which redeploys an earlier release to production).
   Nightly `prod-smoke.yml` checks production. Beta and production share the database, so migrations (applied
