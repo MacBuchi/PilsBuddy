@@ -60,6 +60,12 @@ describe('storage', () => {
     expect(p.dark).toBe(true)
     expect(p.onboarded).toBe(false)
   })
+  it('keeps the AI opt-in only when it is exactly true (older profiles: off)', () => {
+    const parse = (ai: unknown) => parseProfile(JSON.stringify({ v: 1, profile: { ratings: {}, ai } }))!.ai
+    expect(parse(true)).toBe(true)
+    expect(parse('yes')).toBe(false)
+    expect(parse(undefined)).toBe(false)
+  })
   it('returns null for invalid input', () => {
     expect(parseProfile(null)).toBeNull()
     expect(parseProfile('{not json')).toBeNull()

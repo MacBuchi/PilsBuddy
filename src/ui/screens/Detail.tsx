@@ -1,5 +1,6 @@
 import { ArrowCounterClockwiseIcon, ArrowLeftIcon, FlagIcon, HeartIcon } from '@phosphor-icons/react'
 import { useState } from 'react'
+import { coarse } from '../../ai/prompt'
 import { BEER_BY_ID, formatAbv } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
 import { DISPLAY_AXES } from '../../domain/dna'
@@ -9,8 +10,10 @@ import { hashId, relationQuip } from '../../domain/quips'
 import { RATINGS } from '../../domain/types'
 import type { Rating } from '../../domain/types'
 import { useApp } from '../../state/AppContext'
+import { LANG } from '../../state/lang'
 import { useDerived } from '../../state/useDerived'
 import { RATING_COLOR, RATING_ICON } from '../ratingStyle'
+import { AiText } from '../components/AiText'
 import { BeerBottle } from '../components/BeerBottle'
 import { BeerProblemSheet } from '../components/BeerProblemSheet'
 import styles from './Detail.module.css'
@@ -138,6 +141,12 @@ export function Detail() {
                 </li>
               ))}
             </ul>
+          )}
+          {dna.counts.total > 0 && (
+            <AiText
+              req={{ kind: 'why', lang: LANG, beer: beer.name, style: beer.style, beerTaste: coarse(beer.taste), taste: coarse(dna.taste), pct: Math.round(pct) }}
+              title={COPY.ai.whyTitle}
+            />
           )}
         </div>
 

@@ -1,0 +1,41 @@
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1.5px dashed var(--line-strong);
+  border-radius: var(--r-list);
+  background: var(--sf);
+  text-align: left;
+  width: 100%;
+  max-width: 360px;
+  animation: pbFade 0.3s ease-out;
+}
+
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 11px/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+
+.text {
+  margin: 0;
+  font: 500 15px/1.4 var(--font-display);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.pending {
+  font: 500 14px/1.4 var(--font-display);
+  color: var(--mut);
+  animation: pbFade 0.8s ease-in-out infinite alternate;
+}
+
+.note {
+  font: 500 11.5px/1.3 var(--font-display);
+  color: var(--mut);
+}

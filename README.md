@@ -64,7 +64,8 @@ Nicht meins −0,8 · Kenn ich nicht 0 (fließt nur in den Neugier-Faktor ein).
 
 Live: **https://pilsbuddy.mcbuchi.de**
 
-Statischer Build als Workers Static Assets (`wrangler.jsonc`), kein Server-Code:
+Statischer Build als Workers Static Assets (`wrangler.jsonc`). Code läuft nur unter `/api/*`
+(`worker/index.ts`: `/api/ai` für die optionalen KI-Texte über Workers AI, Stufe D):
 
 ```sh
 npm run build

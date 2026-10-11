@@ -1,9 +1,13 @@
 import { ShareFatIcon } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { coarse } from '../../ai/prompt'
+import type { AiRequest } from '../../ai/prompt'
 import { COPY, fill } from '../../data/copy'
 import { shareCardData } from '../../domain/shareCard'
 import { useApp } from '../../state/AppContext'
+import { LANG } from '../../state/lang'
 import { useDerived } from '../../state/useDerived'
+import { AiText } from '../components/AiText'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
 import page from './page.module.css'
@@ -15,6 +19,7 @@ export function AvatarScreen() {
   const { archetype, avatar, decoded, dna, candidates } = useDerived()
   const P = COPY.personas[archetype]
   const [busy, setBusy] = useState(false)
+  const roast = useMemo<AiRequest>(() => ({ kind: 'roast', lang: LANG, persona: P.name, taste: coarse(dna.taste) }), [P.name, dna.taste])
 
   const share = async () => {
     const text = fill(COPY.avatar.shareText, { name: P.name, tagline: COPY.app.tagline })
@@ -58,6 +63,7 @@ export function AvatarScreen() {
         </div>
       </div>
       <p className={styles.desc}>{P.desc}</p>
+      <AiText req={roast} title={COPY.ai.roastTitle} />
       <div className={styles.traits}>
         {P.traits.map((t) => (
           <span key={t} className={page.chip}>

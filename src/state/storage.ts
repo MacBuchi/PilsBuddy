@@ -94,6 +94,7 @@ export function parseProfile(json: string | null): Profile | null {
       buddy: sanitizeBuddy(p.buddy),
       sync: sanitizeSync(p.sync),
       games: sanitizeGames(p.games),
+      ai: p.ai === true,
       seen: Array.isArray(p.seen) ? p.seen.filter((x): x is string => typeof x === 'string') : unlockedIds(progressOf(ratings, sanitizeGames(p.games))),
     }
   } catch {

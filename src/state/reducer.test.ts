@@ -3,7 +3,7 @@ import { initialState, NO_GAMES, reducer } from './reducer'
 import type { Action, AppState } from './reducer'
 
 const run = (s: AppState, ...actions: Action[]) => actions.reduce(reducer, s)
-const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [], buddy: null, sync: { on: false, code: null }, games: NO_GAMES })
+const fresh = () => initialState({ ratings: {}, ageConfirmed: true, onboarded: false, dark: false, buddyNo: 1234, seen: [], buddy: null, sync: { on: false, code: null }, games: NO_GAMES, ai: false })
 
 describe('reducer', () => {
   it('GO to dna marks the user as onboarded, other screens do not', () => {
@@ -84,6 +84,13 @@ describe('reducer', () => {
     const s = reducer(rated, { type: 'IMPORT', profile: other })
     expect(s.profile).toBe(other)
     expect(s.lastRated).toBeNull()
+  })
+
+  it('TOGGLE_AI switches the AI texts; RESET turns them off', () => {
+    const on = run(fresh(), { type: 'TOGGLE_AI' })
+    expect(on.profile.ai).toBe(true)
+    expect(run(on, { type: 'TOGGLE_AI' }).profile.ai).toBe(false)
+    expect(run(on, { type: 'RESET' }).profile.ai).toBe(false)
   })
 
   it('RESTART_DECK and RESET clear undo; RESET keeps dark mode', () => {

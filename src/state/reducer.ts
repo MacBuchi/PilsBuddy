@@ -46,6 +46,8 @@ export interface Profile {
   sync: SyncSettings
   /** Mini games (Stufe E): finished games per game, device-local. */
   games: GameStats
+  /** „KI-Texte“ (Stufe D): opt-in, device-local; off = deterministic texts only, nothing is sent. */
+  ai: boolean
 }
 
 export interface GameRecord {
@@ -97,6 +99,7 @@ export type Action =
   | { type: 'SET_AGE'; value: boolean }
   | { type: 'SET_ONBOARDED' }
   | { type: 'TOGGLE_DARK' }
+  | { type: 'TOGGLE_AI' }
   | { type: 'SET_MATCH_TAB'; tab: MatchTab }
   | { type: 'RESTART_DECK' }
   | { type: 'MARK_SEEN'; id: string }
@@ -118,7 +121,7 @@ export function newBuddyNo(): number {
 }
 
 export function initialProfile(): Profile {
-  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [], buddy: null, sync: { on: false, code: null }, games: NO_GAMES }
+  return { ratings: {}, ageConfirmed: false, onboarded: false, dark: false, buddyNo: newBuddyNo(), seen: [], buddy: null, sync: { on: false, code: null }, games: NO_GAMES, ai: false }
 }
 
 export function initialState(profile: Profile = initialProfile()): AppState {
@@ -181,6 +184,8 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, profile: { ...state.profile, onboarded: true } }
     case 'TOGGLE_DARK':
       return { ...state, profile: { ...state.profile, dark: !state.profile.dark } }
+    case 'TOGGLE_AI':
+      return { ...state, profile: { ...state.profile, ai: !state.profile.ai } }
     case 'SET_MATCH_TAB':
       return { ...state, matchTab: action.tab }
     case 'RESTART_DECK':

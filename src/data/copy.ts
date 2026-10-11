@@ -851,6 +851,14 @@ const DE = {
     },
   } satisfies Record<ArchetypeId, { name: string; short: string; desc: string; traits: string[] }>,
   /** Adjectives per taste axis, used in match reasons ("Affinität zu herbem, hopfigem Bier"). */
+  ai: {
+    label: 'KI-Texte',
+    sub: 'Persona-Roast und „Warum passt es?“ zusätzlich von einer KI (Cloudflare). Aus: nur unsere festen Texte.',
+    roastTitle: 'KI-Roast',
+    whyTitle: 'Die KI meint',
+    thinking: 'Die KI denkt nach …',
+    note: 'Von einer KI geschrieben – kann danebenliegen.',
+  },
   why: {
     title: 'Warum passt es zu dir?',
     more: 'Mehr {axis}, als du gewohnt bist – {n} Punkte drüber.',
