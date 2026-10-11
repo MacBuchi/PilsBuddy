@@ -129,15 +129,17 @@ export function Games() {
         </span>
       </button>
 
-      <div className={styles.soonGrid}>
-        {COPY.games.upcoming.map((g) => (
-          <div key={g.title} className={styles.soon}>
-            <span className={styles.soonChip}>{COPY.games.soon}</span>
-            <span className={styles.soonTitle}>{g.title}</span>
-            <span className={styles.soonText}>{g.text}</span>
-          </div>
-        ))}
-      </div>
+      {COPY.games.upcoming.length > 0 && (
+        <div className={styles.soonGrid}>
+          {COPY.games.upcoming.map((g) => (
+            <div key={g.title} className={styles.soon}>
+              <span className={styles.soonChip}>{COPY.games.soon}</span>
+              <span className={styles.soonTitle}>{g.title}</span>
+              <span className={styles.soonText}>{g.text}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       <p className={styles.note}>{COPY.games.noDrinking}</p>
     </div>

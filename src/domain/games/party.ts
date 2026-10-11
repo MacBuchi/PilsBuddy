@@ -3,10 +3,12 @@ import { GLASS_BY_ID, newFillGame, scoreGuess } from './fill'
 import type { FillRound } from './fill'
 import { newQuartett, playStat, QUARTETT_STATS } from './quartett'
 import type { Player, QuartettRound, QuartettState, StatKey } from './quartett'
+import { parseTasting } from './tasting'
+import type { Tasting } from './tasting'
 
 /**
  * The games of a room (Stufe E5): Bier-Quartett for two and „Wie viel ist drin?“ for everyone at
- * the table. Only the host runs these rules (see room.ts); guests send wishes and render what the
+ * the table; the Tasting-Abend (Stufe E6) has its own file, tasting.ts. Only the host runs these rules (see room.ts); guests send wishes and render what the
  * host sends back. Pure and deterministic – the host's UI passes in the seed.
  */
 
@@ -34,7 +36,7 @@ export interface FillParty {
   over: boolean
 }
 
-export type PartyGame = Duel | FillParty
+export type PartyGame = Duel | FillParty | Tasting
 export type PartyKind = PartyGame['kind']
 
 export function newDuel(seats: [string, string], deck: readonly string[], seed: number): Duel {
@@ -127,6 +129,7 @@ export function parseGame(raw: unknown): PartyGame | null {
   if (!g || typeof g !== 'object') return null
   if (g.kind === 'quartett') return parseDuel(raw as Record<string, unknown>)
   if (g.kind === 'fill') return parseFill(raw as Record<string, unknown>)
+  if (g.kind === 'tasting') return parseTasting(raw as Record<string, unknown>)
   return null
 }
 

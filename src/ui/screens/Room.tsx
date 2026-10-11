@@ -11,6 +11,7 @@ import { Button } from '../components/Button'
 import { RoomQr } from '../components/RoomQr'
 import q from './Quartett.module.css'
 import { RoomDuel, RoomFill } from './RoomGames'
+import { RoomTasting } from './RoomTasting'
 import styles from './Room.module.css'
 
 /** Quartett cards the host can deal – every bundled beer this device knows. */
@@ -157,7 +158,13 @@ function Table({ room, meId, isHost, onInvite, send }: TableProps) {
     const over = room.game.kind === 'quartett' ? room.game.q.winner !== null : room.game.over
     return (
       <>
-        {room.game.kind === 'quartett' ? <RoomDuel {...props} game={room.game} /> : <RoomFill {...props} game={room.game} />}
+        {room.game.kind === 'quartett' ? (
+          <RoomDuel {...props} game={room.game} />
+        ) : room.game.kind === 'fill' ? (
+          <RoomFill {...props} game={room.game} />
+        ) : (
+          <RoomTasting {...props} game={room.game} />
+        )}
         {isHost && !over && (
           <button type="button" className={styles.abort} onClick={() => window.confirm(COPY.room.abortConfirm) && send({ type: 'lobby' })}>
             {COPY.room.abort}
@@ -226,6 +233,9 @@ function Table({ room, meId, isHost, onInvite, send }: TableProps) {
               <span className={styles.label}>{COPY.room.games}</span>
               <Button variant="ink" block disabled={!canStart(room, 'fill')} onClick={() => send({ type: 'start', game: 'fill', seed: newSeed() })}>
                 {COPY.room.startFill}
+              </Button>
+              <Button variant="ink" block disabled={!canStart(room, 'tasting')} onClick={() => send({ type: 'start', game: 'tasting', seed: newSeed() })}>
+                {COPY.room.startTasting}
               </Button>
               <Button
                 variant="ghost"

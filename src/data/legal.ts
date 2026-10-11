@@ -75,7 +75,7 @@ const PRIVACY_DE: LegalSection[] = [
     title: 'Spielraum (nur wenn du einen öffnest oder beitrittst)',
     paragraphs: [
       'Öffnest du unter „Spiele“ einen Spielraum oder trittst einem bei (per Code, QR oder Einladungslink), verbindet sich die App über Supabase Realtime (Supabase, Inc., USA; Server in Frankfurt am Main, EU) mit den anderen Geräten im Raum – ohne Konto, ohne Anmeldung.',
-      'Übertragen werden an alle im Raum: der Raum-Code, deine Buddy-Nummer als Anzeigename, eine zufällige ID, die nur für diesen Besuch gilt, und der Spielstand (wer bereit ist, gespielte Quartett-Karten, deine Schätzungen und Punkte). Der Server leitet das nur weiter und speichert es nicht; schließt der Gastgeber den Raum oder gehen alle, ist er weg. Supabase verarbeitet dabei technisch nötige Verbindungsdaten wie die IP-Adresse.',
+      'Übertragen werden an alle im Raum: der Raum-Code, deine Buddy-Nummer als Anzeigename, eine zufällige ID, die nur für diesen Besuch gilt, und der Spielstand (wer bereit ist, gespielte Quartett-Karten, deine Schätzungen und Punkte, beim Tasting-Abend das ausgeschenkte Bier sowie deine Sterne und Geschmackseinschätzung dazu). Ob du ein Bier danach in deine Bewertungen übernimmst, entscheidest du selbst – das bleibt auf deinem Gerät. Der Server leitet das nur weiter und speichert es nicht; schließt der Gastgeber den Raum oder gehen alle, ist er weg. Supabase verarbeitet dabei technisch nötige Verbindungsdaten wie die IP-Adresse.',
       'Rechtsgrundlage ist dein Wunsch, gemeinsam zu spielen (Art. 6 Abs. 1 lit. b DSGVO). Für einen möglichen Zugriff aus den USA gelten die EU-Standardvertragsklauseln.',
     ],
   },
@@ -173,7 +173,7 @@ const PRIVACY_EN: LegalSection[] = [
     title: 'Game room (only if you open or join one)',
     paragraphs: [
       'If you open a game room under “Games” or join one (by code, QR or invite link), the app connects through Supabase Realtime (Supabase, Inc., USA; servers in Frankfurt am Main, EU) to the other devices in the room – without an account, without signing in.',
-      'Sent to everyone in the room: the room code, your buddy number as display name, a random ID that only applies to this visit, and the game state (who is ready, Top Trumps cards played, your guesses and points). The server only passes this on and does not store it; once the host closes the room or everyone leaves, it is gone. Supabase processes technically necessary connection data such as the IP address.',
+      'Sent to everyone in the room: the room code, your buddy number as display name, a random ID that only applies to this visit, and the game state (who is ready, Top Trumps cards played, your guesses and points, and at a tasting night the beer poured plus your stars and taste verdict on it). Whether you then save a beer to your ratings is up to you – that stays on your device. The server only passes this on and does not store it; once the host closes the room or everyone leaves, it is gone. Supabase processes technically necessary connection data such as the IP address.',
       'The legal basis is your wish to play together (Art. 6(1)(b) GDPR). The EU standard contractual clauses apply to any access from the USA.',
     ],
   },

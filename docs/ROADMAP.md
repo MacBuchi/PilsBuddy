@@ -343,7 +343,11 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
       `domain/games/party.ts`, der Gastgeber teilt aus (gebündelte Biere als Deck) und wertet; Quartett nur zu
       zweit (Dritte schauen zu), Schätzen für bis zu 8: alle schätzen, Auflösung von selbst oder per Gastgeber,
       Rangliste am Ende; geht ein Quartett-Spieler, zurück an den Tisch. Zählt nicht in die Solo-Statistik
-- [ ] E6 **Tasting-Abend:** Gastgeber startet, alle bewerten dasselbe Bier, gemeinsame Auflösung (M)
+- [x] E6 **Tasting-Abend:** Gastgeber startet, alle bewerten dasselbe Bier, gemeinsame Auflösung (M) (#72) – Regeln
+      rein in `domain/games/tasting.ts`; Bier aus dem Katalog oder per Hand, reist mit Name/Profil im Snapshot;
+      Sterne 1–5 + Bittere/Körper/Süße, Auflösung von selbst oder per Gastgeber, Tisch-Schnitt gegen das Profil,
+      Streitbier ab 2 Sternen Abstand; bis 12 Biere, Abschluss mit Liebling des Abends; Urteil auf Wunsch in die
+      eigenen Bewertungen (4–5 „Mag ich“, 1–2 „Nicht meins“)
 
 ## Stufe C – Pils-Match (Social)
 
