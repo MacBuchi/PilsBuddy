@@ -134,6 +134,17 @@ await step('spiele: wie viel ist drin?, one glass', async () => {
   page.once('dialog', (d) => d.accept())
   await m.getByRole('button', { name: 'Spiel beenden' }).click()
   await see('Noch nie geschätzt')
+})
+await step('spiele: flaschen-memory, one move', async () => {
+  await m.getByRole('button', { name: /Aufdecken/ }).click()
+  await see('0 von 8 Paaren')
+  await m.getByRole('button', { name: /verdeckt/ }).first().click()
+  await m.getByRole('button', { name: /verdeckt/ }).first().click()
+  await see('Züge: 1')
+  await page.screenshot({ path: `${out}-memory.png` })
+  page.once('dialog', (d) => d.accept())
+  await m.getByRole('button', { name: 'Spiel beenden' }).click()
+  await see('Die Flaschen liegen bereit')
   await m.getByText('Profil', { exact: true }).click()
 })
 await step('impressum & datenschutz from profile, back', async () => {

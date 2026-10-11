@@ -1,4 +1,4 @@
-import { PlayIcon } from '@phosphor-icons/react'
+import { BeerBottleIcon, PlayIcon } from '@phosphor-icons/react'
 import { BEER_BY_ID } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
 import { GLASS_BY_ID, GLASSES, POINTS_PER_ROUND } from '../../domain/games/fill'
@@ -16,12 +16,15 @@ const SHELF = [
   [GLASS_BY_ID.mass, 780],
 ] as const
 const FILL_MAX = GLASSES.length * POINTS_PER_ROUND
+const MEMO = BEER_BY_ID.augustiner ?? FAN[1]
 
-/** Stufe E: the mini games. Bier-Quartett and „Wie viel ist drin?“ are playable; the rest is announced. */
+/** Stufe E: the mini games. Quartett, „Wie viel ist drin?“ and Flaschen-Memory are playable; the rest is announced. */
 export function Games() {
   const { state, go, withTabs } = useApp()
   const { played, won } = state.profile.games.quartett
   const fillRec = state.profile.games.fill
+  const memo = state.profile.games.memory
+  const memoBest = Math.min(...Object.values(memo.best).filter((n) => n > 0))
 
   return (
     <div className={`${page.page} ${withTabs ? page.withTabs : ''}`}>
@@ -75,6 +78,39 @@ export function Games() {
           </span>
           <span className={styles.play}>
             <PlayIcon weight="fill" /> {COPY.games.fill.cta}
+          </span>
+        </span>
+      </button>
+
+      <button type="button" className={styles.hero} onClick={() => go('memory')}>
+        <div className={styles.memo} aria-hidden>
+          <span className={`${styles.memoCard} ${styles.memoBack}`}>
+            <BeerBottleIcon weight="fill" />
+          </span>
+          {MEMO && (
+            <>
+              <span className={styles.memoCard}>
+                <BeerBottle beer={MEMO} size={76} />
+              </span>
+              <span className={styles.memoCard}>
+                <BeerBottle beer={MEMO} size={76} />
+              </span>
+            </>
+          )}
+          <span className={`${styles.memoCard} ${styles.memoBack}`}>
+            <BeerBottleIcon weight="fill" />
+          </span>
+        </div>
+        <span className={styles.heroTitle}>{COPY.games.memory.title}</span>
+        <span className={styles.heroText}>{COPY.games.memory.text}</span>
+        <span className={styles.heroFoot}>
+          <span className={styles.record}>
+            {memo.played
+              ? fill(COPY.games.memory.record, { best: String(memoBest), played: String(memo.played) })
+              : COPY.games.memory.none}
+          </span>
+          <span className={styles.play}>
+            <PlayIcon weight="fill" /> {COPY.games.memory.cta}
           </span>
         </span>
       </button>

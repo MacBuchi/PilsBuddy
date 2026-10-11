@@ -64,6 +64,43 @@
   margin-bottom: 4px;
 }
 
+.memo {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 112px;
+  margin-bottom: 4px;
+}
+
+.memoCard {
+  width: 58px;
+  height: 84px;
+  border-radius: 10px;
+  border: 2.5px solid var(--edge);
+  box-shadow: 0 3px 0 var(--edge);
+  background: var(--sf);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.memoCard:nth-child(2) {
+  transform: rotate(-6deg);
+}
+
+.memoCard:nth-child(3) {
+  transform: rotate(5deg) translateY(-6px);
+}
+
+.memoBack {
+  align-items: center;
+  background: repeating-linear-gradient(45deg, var(--gold) 0 10px, #e9a92c 10px 20px);
+  color: var(--ink-fixed);
+  font-size: 22px;
+}
+
 .heroTitle {
   font: 800 26px/1 var(--font-display);
   letter-spacing: -0.03em;

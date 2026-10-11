@@ -83,7 +83,7 @@ describe('storage', () => {
   })
 
   it('game stats survive a reload; junk and old profiles count as nothing played', () => {
-    const games = { quartett: { played: 5, won: 3 }, fill: { played: 2, won: 1, best: 412 } }
+    const games = { quartett: { played: 5, won: 3 }, fill: { played: 2, won: 1, best: 412 }, memory: { played: 3, won: 1, best: { bottles: 15, style: 0 } } }
     const p = { ...initialProfile(), games }
     expect(parseProfile(serializeProfile(p))?.games).toEqual(games)
     const old = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: undefined } })
@@ -92,6 +92,13 @@ describe('storage', () => {
     const e1 = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quartett: { played: 4, won: 1 } } } })
     expect(parseProfile(e1)?.games).toEqual({ ...NO_GAMES, quartett: { played: 4, won: 1 } })
     const junk = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quartett: { played: 2, won: 9 }, fill: { played: 0, won: 0, best: 300 } } } })
-    expect(parseProfile(junk)?.games).toEqual({ quartett: { played: 2, won: 2 }, fill: { played: 0, won: 0, best: 0 } })
+    expect(parseProfile(junk)?.games).toEqual({ ...NO_GAMES, quartett: { played: 2, won: 2 } })
+    // profiles from before E3 have no memory record; a best without a game played is junk
+    const e2 = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quartett: { played: 1, won: 0 }, fill: games.fill } } })
+    expect(parseProfile(e2)?.games.memory).toEqual(NO_GAMES.memory)
+    const memJunk = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { memory: { played: 0, won: 0, best: { bottles: 9, style: 'x' } } } } })
+    expect(parseProfile(memJunk)?.games.memory).toEqual(NO_GAMES.memory)
+    const memOk = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { memory: { played: 2, won: 1, best: { bottles: 12, style: -3 } } } } })
+    expect(parseProfile(memOk)?.games.memory).toEqual({ played: 2, won: 1, best: { bottles: 12, style: 0 } })
   })
 })

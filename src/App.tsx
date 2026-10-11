@@ -13,6 +13,7 @@ import { FillGame } from './ui/screens/FillGame'
 import { Games } from './ui/screens/Games'
 import { ErrorBoundary } from './ui/screens/ErrorScreen'
 import { Howto } from './ui/screens/Howto'
+import { Memory } from './ui/screens/Memory'
 import { Library } from './ui/screens/Library'
 import { Match } from './ui/screens/Match'
 import { Matches } from './ui/screens/Matches'
@@ -36,7 +37,7 @@ function MomentHost() {
   const close = useCallback(() => {
     if (id) dispatch({ type: 'MARK_SEEN', id })
   }, [dispatch, id])
-  if (!pending || ['welcome', 'howto', 'analyzing', 'quartett', 'fill'].includes(state.screen)) return null
+  if (!pending || ['welcome', 'howto', 'analyzing', 'quartett', 'fill', 'memory'].includes(state.screen)) return null
   const onDna =
     pending.id === 'entschluesselt'
       ? () => {
@@ -66,6 +67,7 @@ function Screens() {
         {s === 'games' && <Games />}
         {s === 'quartett' && <Quartett />}
         {s === 'fill' && <FillGame />}
+        {s === 'memory' && <Memory />}
         {s === 'regional' && <Regional />}
         {s === 'library' && <Library />}
         {s === 'map' && (

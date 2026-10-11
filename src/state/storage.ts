@@ -63,9 +63,15 @@ function sanitizeRecord(raw: unknown): GameRecord {
 }
 
 function sanitizeGames(raw: unknown): GameStats {
-  const g = raw as { quartett?: unknown; fill?: { best?: unknown } } | null
+  const g = raw as { quartett?: unknown; fill?: { best?: unknown }; memory?: { best?: { bottles?: unknown; style?: unknown } } } | null
   const fill = sanitizeRecord(g?.fill)
-  return { quartett: sanitizeRecord(g?.quartett), fill: { ...fill, best: fill.played ? count(g?.fill?.best) : 0 } }
+  const memory = sanitizeRecord(g?.memory)
+  const fewest = (v: unknown) => (memory.played ? count(v) : 0)
+  return {
+    quartett: sanitizeRecord(g?.quartett),
+    fill: { ...fill, best: fill.played ? count(g?.fill?.best) : 0 },
+    memory: { ...memory, best: { bottles: fewest(g?.memory?.best?.bottles), style: fewest(g?.memory?.best?.style) } },
+  }
 }
 
 /** Accepts whatever is on disk and returns a valid Profile – or null if unusable. */

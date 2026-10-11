@@ -137,6 +137,15 @@ describe('sync', () => {
     const f = run(s, { type: 'GAME_OVER', game: 'fill', won: true, score: 420 }, { type: 'GAME_OVER', game: 'fill', won: false, score: 180 })
     expect(f.profile.games.fill).toEqual({ played: 2, won: 1, best: 420 })
     expect(f.profile.games.quartett).toEqual({ played: 2, won: 1 })
+    const m = run(
+      f,
+      { type: 'GAME_OVER', game: 'memory', won: false, variant: 'bottles', moves: 21 },
+      { type: 'GAME_OVER', game: 'memory', won: true, variant: 'bottles', moves: 14 },
+      { type: 'GAME_OVER', game: 'memory', won: false, variant: 'bottles', moves: 18 },
+      { type: 'GAME_OVER', game: 'memory', won: true, variant: 'style', moves: 16 },
+    )
+    expect(m.profile.games.memory).toEqual({ played: 4, won: 2, best: { bottles: 14, style: 16 } })
+    expect(m.profile.games.fill).toEqual(f.profile.games.fill)
     expect(run(s, { type: 'RESET' }).profile.games).toEqual(NO_GAMES)
   })
 })
