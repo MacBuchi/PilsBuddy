@@ -34,7 +34,7 @@ Details stehen beim jeweiligen Paket weiter unten.
     jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73, V2 #74, V3 #75
 15. [x] **C2/C3** Pils-Match: Feed, Anstoßen, Blockieren (Absprache 2026-10-11: Vergleich + Anstoßen, Feed nur für Sichtbare) (#78)
 16. [x] **D1/D2** Optionale KI-Texte (Absprache 2026-10-11: Workers AI, nur Gratis-Kontingent, Opt-in im Profil) (#79)
-17. [x] **E7** Bierquiz allein (Wunsch #45, eingeplant 2026-10-11) (#PR)
+17. [x] **E7** Bierquiz allein (Wunsch #45, eingeplant 2026-10-11) (#80)
 18. [ ] **E8** Bierquiz im Spielraum (#45, Mehrspieler auf E4)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -376,7 +376,7 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
       Sterne 1–5 + Bittere/Körper/Süße, Auflösung von selbst oder per Gastgeber, Tisch-Schnitt gegen das Profil,
       Streitbier ab 2 Sternen Abstand; bis 12 Biere, Abschluss mit Liebling des Abends; Urteil auf Wunsch in die
       eigenen Bewertungen (4–5 „Mag ich“, 1–2 „Nicht meins“)
-- [x] E7 **Bierquiz** allein (Wunsch #45) (S) (#PR) – Regeln rein in `domain/games/quiz.ts`: 10 Fragen mit je 4
+- [x] E7 **Bierquiz** allein (Wunsch #45) (S) (#80) – Regeln rein in `domain/games/quiz.ts`: 10 Fragen mit je 4
       Antworten, halb geprüftes Wissen (`COPY.quiz.facts`, de + en, 28 Fragen: Reinheitsgebot, Stile, Herkunft,
       Brauen), halb aus den kuratierten Bierdaten (Land, Stil ohne Fast-Zwillinge, stärkstes von vier mit
       ≥ 0,5 % Abstand); nach jeder Antwort die Auflösung mit einem Satz dazu, Sieg ab 7 richtig, Bestwert im Profil
