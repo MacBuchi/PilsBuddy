@@ -1,5 +1,9 @@
 # PilsBuddy – notes for coding agents
 
+`AGENTS.md` (Codex) is a symlink to this file and `.agents/skills/*` link to `.claude/skills/*` – edit only here
+(CI: `tool/agent_docs.py`, which also keeps this file under 16 KB). A session starts with `tool/session_status.py`
+(branch, open PRs, `release-failed`, pending promotion, next roadmap item); issue → PR: skill `pils-issue`.
+
 Tinder-style beer-swipe web app. German UI, English code. Vite + React 19 + TypeScript, no router,
 no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobile-app-design/project/`
 (Claude Design handoff – read the Designsystem before changing visuals).
@@ -76,3 +80,9 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   (fix forward, or `gh workflow run rollback.yml [-f tag=…]`, which redeploys an earlier release to production).
   Nightly `prod-smoke.yml` checks production. Beta and production share the database, so migrations (applied
   before the beta deploy) must keep the released app working.
+
+## Compact instructions
+
+When compacting, keep: the branch and open PR numbers, what the user decided (and their exact wording for open
+questions), files changed and why, failing checks with their error, and the standing rules above. Drop file dumps
+and logs that are already resolved.
