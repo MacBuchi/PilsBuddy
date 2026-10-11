@@ -27,7 +27,11 @@ begin
       ('profiles', 'authenticated', 'SELECT'), ('profiles', 'authenticated', 'INSERT'),
       ('profiles', 'authenticated', 'UPDATE'), ('profiles', 'authenticated', 'DELETE'),
       ('ratings', 'authenticated', 'SELECT'), ('ratings', 'authenticated', 'INSERT'),
-      ('ratings', 'authenticated', 'UPDATE'), ('ratings', 'authenticated', 'DELETE')
+      ('ratings', 'authenticated', 'UPDATE'), ('ratings', 'authenticated', 'DELETE'),
+      ('match_clinks', 'authenticated', 'SELECT'), ('match_clinks', 'authenticated', 'INSERT'),
+      ('match_clinks', 'authenticated', 'DELETE'),
+      ('match_blocks', 'authenticated', 'SELECT'), ('match_blocks', 'authenticated', 'INSERT'),
+      ('match_blocks', 'authenticated', 'DELETE')
     )
     select g.table_name, g.grantee, g.privilege_type from information_schema.role_table_grants g
     where g.table_schema = 'public' and g.grantee in ('anon', 'authenticated')
@@ -66,7 +70,7 @@ begin
     problems := problems || format(E'\n  Standardrechte für neue Tabellen geben anon/authenticated noch Rechte: %s', r.acl);
   end loop;
 
-  -- 5. what the server side needs (service key: feedback/beer bots, sync-code edge function)
+  -- 5. what the server side needs (service key: feedback/beer bots, sync-code and match-candidates edge functions)
   for r in
     select * from (values
       ('feedback', 'select'), ('feedback', 'update'), ('feedback', 'delete'),
@@ -74,7 +78,8 @@ begin
       ('breweries', 'select'), ('breweries', 'insert'), ('breweries', 'update'),
       ('regional_beers', 'select'), ('regional_beers', 'insert'), ('regional_beers', 'update'),
       ('places', 'select'),
-      ('sync_codes', 'select'), ('sync_codes', 'insert'), ('sync_codes', 'update'), ('sync_codes', 'delete')
+      ('sync_codes', 'select'), ('sync_codes', 'insert'), ('sync_codes', 'update'), ('sync_codes', 'delete'),
+      ('profiles', 'select'), ('ratings', 'select'), ('match_clinks', 'select'), ('match_blocks', 'select')
     ) as need(tbl, priv)
     where not has_table_privilege('service_role', 'public.' || tbl, priv)
   loop

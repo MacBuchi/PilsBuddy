@@ -1,4 +1,4 @@
-import { HourglassMediumIcon, MagnifyingGlassIcon } from '@phosphor-icons/react'
+import { MagnifyingGlassIcon } from '@phosphor-icons/react'
 import { useMemo, useState } from 'react'
 import { BEER_BY_ID, getBeer } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
@@ -10,6 +10,7 @@ import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { BuddyAvatar } from '../components/BuddyAvatar'
 import { Button } from '../components/Button'
+import { ComparePills, PilsMatch } from '../components/PilsMatch'
 import page from './page.module.css'
 import { BeerBottle } from '../components/BeerBottle'
 import { RateSheet } from '../components/RateSheet'
@@ -155,43 +156,7 @@ export function Matches() {
               <div className="t-label" style={{ fontSize: 10.5 }}>
                 {fill(COPY.buddy.sub, { persona: COPY.personas[compare.buddyArchetype].name })}
               </div>
-              {compare.shared.length > 0 && (
-                <div className={styles.group}>
-                  <span className={styles.groupLabel}>{COPY.buddy.both}</span>
-                  <div className={styles.pills}>
-                    {compare.shared.map((id) => (
-                      <button key={id} type="button" className={styles.pillLike} onClick={() => openDetail(id)}>
-                        {getBeer(id).name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {compare.disagree.length > 0 && (
-                <div className={styles.group}>
-                  <span className={styles.groupLabel}>{COPY.buddy.disagree}</span>
-                  <div className={styles.pills}>
-                    {compare.disagree.map((id) => (
-                      <button key={id} type="button" className={styles.pillNope} onClick={() => openDetail(id)}>
-                        {getBeer(id).name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {compare.shared.length + compare.disagree.length === 0 && <div className={styles.note}>{COPY.buddy.none}</div>}
-              {compare.tips.length > 0 && (
-                <div className={styles.group}>
-                  <span className={styles.groupLabel}>{fill(COPY.buddy.tips, { no: buddyLabel })}</span>
-                  <div className={styles.pills}>
-                    {compare.tips.slice(0, 6).map((id) => (
-                      <button key={id} type="button" className={styles.pillTip} onClick={() => openDetail(id)}>
-                        {getBeer(id).name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <ComparePills compare={compare} tipsLabel={fill(COPY.buddy.tips, { no: buddyLabel })} />
               <Button size="md" block onClick={invite} style={{ height: 52 }}>
                 {COPY.buddy.inviteAgain}
               </Button>
@@ -205,61 +170,16 @@ export function Matches() {
       )}
 
       {tab === 'menschen' && !buddy && (
-        <>
-          <div className={styles.soon}>
-            <HourglassMediumIcon weight="bold" size={22} style={{ marginTop: 2, flex: 'none' }} />
-            <div className={styles.soonText}>
-              <span className={styles.soonTitle}>{COPY.matches.soonTitle}</span>
-              <span className={styles.soonSub}>{COPY.matches.soonText}</span>
-            </div>
-          </div>
-          <div className={styles.inviteBox}>
-            <span className={styles.soonTitle}>{COPY.buddy.inviteLabel}</span>
-            <span className={styles.soonSub}>{COPY.buddy.privacy}</span>
-            <Button size="md" block onClick={invite} style={{ height: 52 }}>
-              {COPY.buddy.invite}
-            </Button>
-          </div>
-          <div className="t-label">{COPY.matches.previewLabel}</div>
-          <div className={styles.preview} aria-hidden="true" style={{ opacity: 0.75 }}>
-            <div className={styles.previewHead}>
-              <span className={styles.previewAvatar}>
-                <BuddyAvatar spec={avatar} size={78} />
-              </span>
-              <span className={styles.plus}>+</span>
-              <span className={styles.previewAvatar}>
-                <BuddyAvatar archetype="herb" size={78} />
-              </span>
-            </div>
-            <div className={styles.previewBody}>
-              <div className={styles.previewRow}>
-                <span className={styles.previewNames}>{COPY.matches.previewYou}</span>
-                <span className={styles.previewPct}>94 %</span>
-              </div>
-              <div className="t-label" style={{ fontSize: 10.5 }}>
-                {COPY.matches.previewSub}
-              </div>
-              <div className={styles.group}>
-                <span className={styles.groupLabel}>{COPY.matches.previewBoth}</span>
-                <div className={styles.pills}>
-                  {['Jever', 'Rothaus', 'Flensburger'].map((n) => (
-                    <span key={n} className={styles.pillLike}>
-                      {n}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className={styles.group}>
-                <span className={styles.groupLabel}>{COPY.matches.previewDisagree}</span>
-                <div className={styles.pills}>
-                  <span className={styles.pillNope}>Beck's</span>
-                </div>
-              </div>
-              <div className={styles.note} dangerouslySetInnerHTML={{ __html: COPY.matches.previewNote }} />
-            </div>
-          </div>
-        </>
+        <div className={styles.inviteBox}>
+          <span className={styles.soonTitle}>{COPY.buddy.inviteLabel}</span>
+          <span className={styles.soonSub}>{COPY.buddy.privacy}</span>
+          <Button size="md" block onClick={invite} style={{ height: 52 }}>
+            {COPY.buddy.invite}
+          </Button>
+        </div>
       )}
+
+      {tab === 'menschen' && <PilsMatch />}
     </div>
   )
 }

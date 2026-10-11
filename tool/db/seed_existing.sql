@@ -23,6 +23,24 @@ begin
       (uid, 'r-4000000000001', 'KNOW', null, now() - interval '1 day')
       on conflict do nothing;
   end if;
+  -- a second account that opted in to Pils-Match (C2/C3), clinked by the first one, which also blocked nobody yet
+  insert into auth.users (instance_id, id, aud, role, is_anonymous, created_at, updated_at)
+    values ('00000000-0000-0000-0000-000000000000', '0b0b0b0b-0000-4000-8000-000000000002', 'authenticated', 'authenticated',
+      true, now(), now())
+    on conflict (id) do nothing;
+  if to_regclass('public.profiles') is not null then
+    insert into public.profiles (id, buddy_no, handle, archetype, taste, decoded, visible)
+      values ('0b0b0b0b-0000-4000-8000-000000000002', 815, 'Bestand_Bierfan', 'geniesser',
+        '{"bitterness":40,"hopIntensity":40,"maltiness":70,"sweetness":50,"dryness":40,"body":70,"drinkability":60,"character":60}',
+        40, true)
+      on conflict (id) do nothing;
+  end if;
+  if to_regclass('public.match_clinks') is not null then
+    insert into public.match_clinks (from_id, to_id) values (uid, '0b0b0b0b-0000-4000-8000-000000000002') on conflict do nothing;
+  end if;
+  if to_regclass('public.match_blocks') is not null then
+    insert into public.match_blocks (from_id, to_id) values ('0b0b0b0b-0000-4000-8000-000000000002', uid) on conflict do nothing;
+  end if;
   if to_regclass('public.sync_codes') is not null then
     insert into public.sync_codes (user_id, code_hash) values (uid, repeat('ab', 32)) on conflict do nothing;
   end if;

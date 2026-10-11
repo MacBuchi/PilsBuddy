@@ -1,4 +1,5 @@
--- RLS for PilsBuddy: users only see and change their own rows; visible profiles are opt-in.
+-- RLS for PilsBuddy: users only see and change their own rows – visible profiles too (Pils-Match goes through
+-- the Edge Function match-candidates since C2/C3, which also honours blocks).
 -- Run with `supabase test db` against the local stack.
 begin;
 select plan(18);
@@ -46,7 +47,7 @@ update public.ratings set rating = 'DISLIKE' where user_id = '22222222-2222-2222
 delete from public.profiles where id = '22222222-2222-2222-2222-222222222222';
 select throws_ok('insert into public.beers (id, data) values (''x'', ''{}'')', '42501', null, 'users cannot edit the catalogue');
 
--- B opts in to Pils-Match → A can find the profile, still not the ratings
+-- B opts in to Pils-Match → still neither profile nor ratings through the API (C2/C3: only via the feed)
 reset role;
 update public.profiles set visible = true where id = '22222222-2222-2222-2222-222222222222';
 select results_eq(
@@ -58,7 +59,7 @@ select isnt_empty(
 
 set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"11111111-1111-1111-1111-111111111111","role":"authenticated"}', true);
-select results_eq('select buddy_no from public.profiles order by buddy_no', array[7, 42], 'A sees own + visible profile');
+select results_eq('select buddy_no from public.profiles order by buddy_no', array[7], 'A sees only the own profile, also when B is visible');
 select is_empty('select * from public.ratings where user_id <> auth.uid()', 'ratings stay private when visible');
 update public.profiles set buddy_no = 1 where id = '22222222-2222-2222-2222-222222222222';
 

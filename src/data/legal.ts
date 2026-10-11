@@ -103,10 +103,19 @@ const PRIVACY_DE: LegalSection[] = [
     ],
   },
   {
+    title: 'Pils-Match (nur wenn du sichtbar wirst)',
+    paragraphs: [
+      'Pils-Match ist standardmäßig aus. Wirst du unter „Matches › Menschen“ sichtbar, schaltet das den Geräte-Sync ein und speichert in deinem Sync-Konto zusätzlich den Namen, den du dafür wählst, und dass du sichtbar bist.',
+      'Andere, die selbst sichtbar sind, bekommen dich dann vorgeschlagen, wenn euer Geschmack ähnlich ist, und sehen deinen Namen und deine Bewertungen (ohne Zeitpunkt und ohne „Kenn ich nicht“) – daraus berechnet ihre App Persona und Match. Wir zeigen keinen Ort, keine Fotos und keine Buddy-Nummer; es gibt keinen Chat.',
+      'Stößt du mit jemandem an oder blockierst jemanden, speichern wir das in deinem Konto. Wer angestoßen hat, erfährt der andere erst, wenn er selbst zurück anstößt. Blockierte Personen und du seht euch gegenseitig nicht mehr.',
+      '„Unsichtbar werden“ nimmt dich sofort aus allen Vorschlägen, ebenso das Ausschalten des Geräte-Syncs; dein Name bleibt für dich reserviert, bis du das Sync-Konto löschst. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).',
+    ],
+  },
+  {
     title: 'Löschen',
     paragraphs: [
       '„Profil zurücksetzen“ löscht alles auf diesem Gerät und – falls du den Sync genutzt hast – sofort dein Sync-Konto mit allen Daten auf dem Server. Willst du nur die Cloud-Daten loswerden, nimm „Daten aus der Cloud löschen“ im Abschnitt „Auf allen Geräten“; auf dem Gerät bleibt dann alles.',
-      'Andere Geräte, die mit demselben Code verbunden waren, behalten ihre eigene Kopie auf dem Gerät und schalten den Sync beim nächsten Versuch selbst aus.',
+      'Mit dem Sync-Konto verschwinden auch dein Pils-Match-Name, deine Anstoßer und Blockierungen. Andere Geräte, die mit demselben Code verbunden waren, behalten ihre eigene Kopie auf dem Gerät und schalten den Sync beim nächsten Versuch selbst aus.',
     ],
   },
   {
@@ -202,10 +211,19 @@ const PRIVACY_EN: LegalSection[] = [
     ],
   },
   {
+    title: 'Pils match (only if you become visible)',
+    paragraphs: [
+      'Pils match is off by default. If you become visible under “Matches › People”, that turns on device sync and additionally stores the name you choose for it and that you are visible in your sync account.',
+      'Others who are visible themselves then get you suggested when your taste is similar, and see your name and your ratings (without timestamps and without “Don’t know it”) – their app calculates persona and match from them. We show no location, no photos and no buddy number; there is no chat.',
+      'If you toast someone or block someone, we store that in your account. The other person only learns that you toasted once they toast back. Blocked people and you no longer see each other.',
+      '“Become invisible” removes you from all suggestions at once, and so does turning off device sync; your name stays reserved for you until you delete the sync account. The legal basis is your consent (Art. 6(1)(a) GDPR).',
+    ],
+  },
+  {
     title: 'Deleting',
     paragraphs: [
       '“Reset profile” deletes everything on this device and – if you have used sync – immediately deletes your sync account with all data on the server. If you only want to get rid of the cloud data, use “Delete data from the cloud” in the “On all your devices” section; everything then stays on the device.',
-      'Other devices that were connected with the same code keep their own copy on the device and turn sync off themselves at their next attempt.',
+      'Your Pils match name, toasts and blocks go with the sync account. Other devices that were connected with the same code keep their own copy on the device and turn sync off themselves at their next attempt.',
     ],
   },
   {
