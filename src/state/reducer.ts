@@ -18,6 +18,7 @@ export type Screen =
   | 'quartett'
   | 'fill'
   | 'memory'
+  | 'room'
   | 'regional'
   | 'library'
   | 'map'
@@ -83,6 +84,8 @@ export interface AppState {
   matchTab: MatchTab
   /** One-step undo: the last rated beer and what it was before (null = unrated). Not persisted. */
   lastRated: { id: string; rating: Rating; previous: RatingEntry | null } | null
+  /** Room code from a `?room=` invite (Stufe E4), joined when the room screen opens. Not persisted. */
+  roomJoin: string | null
 }
 
 export type Action =
@@ -127,6 +130,7 @@ export function initialState(profile: Profile = initialProfile()): AppState {
     mapFrom: 'regional',
     matchTab: 'biere',
     lastRated: null,
+    roomJoin: null,
   }
 }
 
@@ -137,7 +141,8 @@ export function reducer(state: AppState, action: Action): AppState {
       // Seeing the DNA is the moment the user is "onboarded": tabs appear from here on.
       const profile = action.screen === 'dna' && !state.profile.onboarded ? { ...state.profile, onboarded: true } : state.profile
       const mapFrom = action.screen === 'map' && state.screen !== 'detail' ? state.screen : state.mapFrom
-      return { ...state, profile, screen: action.screen, prevScreen: state.screen, mapFrom }
+      const roomJoin = action.screen === 'room' ? state.roomJoin : null
+      return { ...state, profile, screen: action.screen, prevScreen: state.screen, mapFrom, roomJoin }
     }
     case 'OPEN_DETAIL':
       return {

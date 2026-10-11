@@ -101,6 +101,22 @@
   font-size: 22px;
 }
 
+.room {
+  align-self: center;
+  width: 112px;
+  height: 112px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  border: 2.5px solid var(--edge);
+  box-shadow: 0 4px 0 var(--edge);
+  background: var(--gold);
+  color: var(--ink-fixed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+}
+
 .heroTitle {
   font: 800 26px/1 var(--font-display);
   letter-spacing: -0.03em;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { encodeBuddy } from '../domain/buddyLink'
-import { withIncomingBuddy, withLegalHash } from './AppContext'
-import { initialState, NO_GAMES } from './reducer'
+import { withIncomingBuddy, withIncomingRoom, withLegalHash } from './AppContext'
+import { initialState, NO_GAMES, reducer } from './reducer'
 import { parseProfile, serializeProfile } from './storage'
 
 const link = encodeBuddy(4242, { jever: { rating: 'LIKE', at: 1 }, becks: { rating: 'DISLIKE', at: 2 } })
@@ -45,5 +45,23 @@ describe('legal deep link', () => {
     }
     expect(withLegalHash(resumed, '#nope')).toBe(resumed)
     expect(withLegalHash(resumed, '')).toBe(resumed)
+  })
+})
+
+describe('room invite', () => {
+  it('opens the room screen with the code; back leads where the app would start', () => {
+    const resumed = { ...base(true), screen: 'swipe' as const }
+    const s = withIncomingRoom(resumed, 'k7q2m')
+    expect(s).toMatchObject({ screen: 'room', prevScreen: 'swipe', roomJoin: 'K7Q2M' })
+    expect(withIncomingRoom(resumed, 'nope')).toBe(resumed)
+    expect(withIncomingRoom(resumed, null)).toBe(resumed)
+  })
+
+  it('the code is forgotten once the room screen is left', () => {
+    const s = withIncomingRoom(base(false), 'K7Q2M')
+    expect(s.prevScreen).toBe('welcome')
+    const back = reducer(s, { type: 'GO', screen: 'welcome' })
+    expect(back.roomJoin).toBe(null)
+    expect(reducer(back, { type: 'GO', screen: 'room' }).roomJoin).toBe(null)
   })
 })

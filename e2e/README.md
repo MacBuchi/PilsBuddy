@@ -21,3 +21,7 @@ with the fixture catalogue (`npm run catalog:build -- --raw tools/catalog/fixtur
 „Backend E2E“): ranked beers, brewery sheet, Probieren, snapshot, offline cache and postcode search. It also
 checks that the API only ever sees whole grid cells. `flow.mjs` covers the finder against real data
 (Bad Rappenau).
+
+`room.mjs` (E4) plays a game room with three devices against a local Supabase stack with Realtime (CI job
+„Backend E2E“): open, join by invite link and by typed code, ready check, „Prost!“ everywhere, leaving, the host
+closing the room, an unknown code.

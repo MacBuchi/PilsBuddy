@@ -38,7 +38,7 @@ const PRIVACY_DE: LegalSection[] = [
     title: 'Auf deinem Gerät',
     paragraphs: [
       'Im Speicher deines Browsers (localStorage) liegen: deine Bier-Bewertungen mit Zeitpunkt, deine Altersbestätigung, Dark-Mode, deine Sprachwahl, deine Buddy-Nummer, gesehene Hinweise und – falls genutzt – dein Sync-Code und die Sitzung des Sync-Kontos. Ein Service Worker speichert die App selbst, damit sie offline läuft.',
-      'Diese Daten verlassen dein Gerät nicht, solange der Sync aus ist. Du löschst sie mit „Profil zurücksetzen“ oder indem du die Website-Daten im Browser löschst.',
+      'Diese Daten verlassen dein Gerät nicht, solange der Sync aus ist – nur in einem Spielraum sehen die anderen am Tisch deine Buddy-Nummer. Du löschst sie mit „Profil zurücksetzen“ oder indem du die Website-Daten im Browser löschst.',
     ],
   },
   {
@@ -69,6 +69,14 @@ const PRIVACY_DE: LegalSection[] = [
       'Der Sync ist standardmäßig aus. Schaltest du ihn im Profil ein, legen wir bei Supabase (Supabase, Inc., USA; Server in Frankfurt am Main, EU) ein anonymes Konto an – mit einer zufälligen ID, ohne Name und ohne E-Mail.',
       'Gespeichert werden: deine Bewertungen mit Zeitpunkt, deine daraus berechnete Bier-DNA (Geschmacksprofil, Persona, Fortschritt), Buddy-Nummer, Dark-Mode und Onboarding-Status sowie ein Prüfwert (Hash) deines Sync-Codes und wann er zuletzt benutzt wurde. Den Code selbst speichern wir nicht. Supabase verarbeitet außerdem technische Verbindungsdaten wie die IP-Adresse in Server-Logs.',
       'Rechtsgrundlage ist deine Einwilligung durch das Einschalten (Art. 6 Abs. 1 lit. a DSGVO). Für einen möglichen Zugriff aus den USA gelten die EU-Standardvertragsklauseln. Die Daten bleiben gespeichert, bis du sie löschst.',
+    ],
+  },
+  {
+    title: 'Spielraum (nur wenn du einen öffnest oder beitrittst)',
+    paragraphs: [
+      'Öffnest du unter „Spiele“ einen Spielraum oder trittst einem bei (per Code, QR oder Einladungslink), verbindet sich die App über Supabase Realtime (Supabase, Inc., USA; Server in Frankfurt am Main, EU) mit den anderen Geräten im Raum – ohne Konto, ohne Anmeldung.',
+      'Übertragen werden an alle im Raum: der Raum-Code, deine Buddy-Nummer als Anzeigename, eine zufällige ID, die nur für diesen Besuch gilt, und der Spielstand (etwa wer bereit ist). Der Server leitet das nur weiter und speichert es nicht; schließt der Gastgeber den Raum oder gehen alle, ist er weg. Supabase verarbeitet dabei technisch nötige Verbindungsdaten wie die IP-Adresse.',
+      'Rechtsgrundlage ist dein Wunsch, gemeinsam zu spielen (Art. 6 Abs. 1 lit. b DSGVO). Für einen möglichen Zugriff aus den USA gelten die EU-Standardvertragsklauseln.',
     ],
   },
   {
@@ -128,7 +136,7 @@ const PRIVACY_EN: LegalSection[] = [
     title: 'On your device',
     paragraphs: [
       "Your browser's storage (localStorage) holds: your beer ratings with timestamps, your age confirmation, dark mode, your language choice, your buddy number, hints you have seen and – if used – your sync code and the sync account's session. A service worker stores the app itself so it works offline.",
-      'This data does not leave your device as long as sync is off. You delete it with “Reset profile” or by clearing the site data in your browser.',
+      'This data does not leave your device as long as sync is off – only in a game room do the others at the table see your buddy number. You delete it with “Reset profile” or by clearing the site data in your browser.',
     ],
   },
   {
@@ -159,6 +167,14 @@ const PRIVACY_EN: LegalSection[] = [
       'Sync is off by default. If you turn it on in your profile, we create an anonymous account at Supabase (Supabase, Inc., USA; servers in Frankfurt am Main, EU) – with a random ID, no name and no email.',
       'Stored are: your ratings with timestamps, the beer DNA calculated from them (taste profile, persona, progress), buddy number, dark mode and onboarding status, as well as a check value (hash) of your sync code and when it was last used. We do not store the code itself. Supabase also processes technical connection data such as the IP address in server logs.',
       'The legal basis is your consent by turning it on (Art. 6(1)(a) GDPR). The EU standard contractual clauses apply to any access from the USA. The data stays stored until you delete it.',
+    ],
+  },
+  {
+    title: 'Game room (only if you open or join one)',
+    paragraphs: [
+      'If you open a game room under “Games” or join one (by code, QR or invite link), the app connects through Supabase Realtime (Supabase, Inc., USA; servers in Frankfurt am Main, EU) to the other devices in the room – without an account, without signing in.',
+      'Sent to everyone in the room: the room code, your buddy number as display name, a random ID that only applies to this visit, and the game state (such as who is ready). The server only passes this on and does not store it; once the host closes the room or everyone leaves, it is gone. Supabase processes technically necessary connection data such as the IP address.',
+      'The legal basis is your wish to play together (Art. 6(1)(b) GDPR). The EU standard contractual clauses apply to any access from the USA.',
     ],
   },
   {
