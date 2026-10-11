@@ -33,7 +33,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 14. [x] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
     jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73, V2 #74, V3 #75
 15. [x] **C2/C3** Pils-Match: Feed, Anstoßen, Blockieren (Absprache 2026-10-11: Vergleich + Anstoßen, Feed nur für Sichtbare) (#78)
-16. [x] **D1/D2** Optionale KI-Texte (Absprache 2026-10-11: Workers AI, nur Gratis-Kontingent, Opt-in im Profil) (#PR)
+16. [x] **D1/D2** Optionale KI-Texte (Absprache 2026-10-11: Workers AI, nur Gratis-Kontingent, Opt-in im Profil) (#79)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -387,9 +387,9 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
 ## Stufe D – Optionale KI-Schicht
 
 - [x] D1 `src/ai/provider.ts`: `disabled` (Default, deterministische Texte) · `ollama` · `cloud`;
-      Zugriff nur über `useAiText()`, nie aus Komponenten (S) – Schalter „KI-Texte“ im Profil (#PR)
+      Zugriff nur über `useAiText()`, nie aus Komponenten (S) – Schalter „KI-Texte“ im Profil (#79)
 - [x] D2 Cloudflare Workers AI hinter `/api/ai`, Rate-Limit, Persona-Roast + „Warum passt es zu mir?“ (M) –
       `worker/index.ts`: nur die zwei festen Anfragen, Cache, Tagesdeckel je Worker (Durable Object) unter dem
-      Gratis-Kontingent, 4 Anfragen pro Gerät und Minute; die KI-Texte stehen zusätzlich unter den festen (#PR)
+      Gratis-Kontingent, 4 Anfragen pro Gerät und Minute; die KI-Texte stehen zusätzlich unter den festen (#79)
 
 Invariante: DNA, Matching, Persona, Avatar bleiben KI-frei.
