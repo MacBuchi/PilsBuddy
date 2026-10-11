@@ -56,7 +56,9 @@ interface CellEntry {
   rows: unknown[]
 }
 
-const SELECT = 'id,name,lat,lon,city,postcode,country,website,founded,regional_beers(id,name,style,abv,pack,rank,source,source_ref,quality)'
+// beer rows as `*`: a column added later (V1 `quality`) arrives once its migration is live and is simply missing before –
+// sanitizeBeerRow fills the default, so the app never asks for a column the database does not have yet
+const SELECT = 'id,name,lat,lon,city,postcode,country,website,founded,regional_beers(*)'
 
 const cellFilter = (key: string) => {
   const b = cellBounds(key)
@@ -349,7 +351,7 @@ export function forgetRegional(): void {
 
 /* ---------- search by name (R8 Bierbibliothek) ---------- */
 
-const BEER_COLS = 'id,name,style,abv,pack,rank,source,source_ref,quality'
+const BEER_COLS = '*'
 const BREWERY_COLS = 'id,name,lat,lon,city,postcode,country,website,founded'
 
 /**
