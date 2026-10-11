@@ -18,8 +18,20 @@ const PROBLEM: Partial<Record<SubmitResult, string>> = {
  * beer's facts. No taste questions – an approved beer gets its taste from the style like every regional beer.
  * The draft stays on the device until it was sent.
  */
-export function BeerSubmitSheet({ brewery, onClose }: { brewery?: { id: string; name: string } | null; onClose: () => void }) {
-  const [s, setS] = useState<Submission>(() => readSubmissionDraft(brewery))
+export function BeerSubmitSheet({
+  brewery,
+  beerName,
+  onClose,
+}: {
+  brewery?: { id: string; name: string } | null
+  /** V3: the name the user searched for among their favourites */
+  beerName?: string
+  onClose: () => void
+}) {
+  const [s, setS] = useState<Submission>(() => {
+    const d = readSubmissionDraft(brewery)
+    return beerName?.trim() && !d.beerName ? { ...d, beerName: beerName.trim().slice(0, 200) } : d
+  })
   const [state, setState] = useState<'edit' | 'sending' | 'sent'>('edit')
   const [problem, setProblem] = useState<string | null>(null)
 

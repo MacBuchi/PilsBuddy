@@ -12,6 +12,7 @@ import { Dna } from './ui/screens/Dna'
 import { FillGame } from './ui/screens/FillGame'
 import { Games } from './ui/screens/Games'
 import { ErrorBoundary } from './ui/screens/ErrorScreen'
+import { Favorites } from './ui/screens/Favorites'
 import { Howto } from './ui/screens/Howto'
 import { Memory } from './ui/screens/Memory'
 import { Library } from './ui/screens/Library'
@@ -38,7 +39,7 @@ function MomentHost() {
   const close = useCallback(() => {
     if (id) dispatch({ type: 'MARK_SEEN', id })
   }, [dispatch, id])
-  if (!pending || ['welcome', 'howto', 'analyzing', 'quartett', 'fill', 'memory', 'room'].includes(state.screen)) return null
+  if (!pending || ['welcome', 'howto', 'favorites', 'analyzing', 'quartett', 'fill', 'memory', 'room'].includes(state.screen)) return null
   const onDna =
     pending.id === 'entschluesselt'
       ? () => {
@@ -57,6 +58,7 @@ function Screens() {
       <ErrorBoundary>
         {s === 'welcome' && <Welcome />}
         {s === 'howto' && <Howto />}
+        {s === 'favorites' && <Favorites />}
         {s === 'swipe' && <Swipe />}
         {s === 'analyzing' && <Analyzing />}
         {s === 'dna' && <Dna />}

@@ -14,7 +14,8 @@ export function Howto() {
       toast(COPY.howto.ageMissing)
       return
     }
-    go('swipe')
+    // V3: a fresh profile names its favourites first; anyone who already rated goes straight to the deck
+    go(Object.keys(state.profile.ratings).length ? 'swipe' : 'favorites')
   }
 
   return (
