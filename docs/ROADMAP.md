@@ -32,7 +32,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 13. [x] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71, E6 #72)
 14. [x] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
     jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73, V2 #74, V3 #75
-15. [x] **C2/C3** Pils-Match: Feed, Anstoßen, Blockieren (Absprache 2026-10-11: Vergleich + Anstoßen, Feed nur für Sichtbare) (#PR)
+15. [x] **C2/C3** Pils-Match: Feed, Anstoßen, Blockieren (Absprache 2026-10-11: Vergleich + Anstoßen, Feed nur für Sichtbare) (#78)
 16. [ ] **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -380,8 +380,8 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
       rechnet der Empfänger selbst; Vergleich in Matches › Menschen (Prozent, gemeinsame Herzbiere,
       Streitbiere, Tipps), Einladung per Share/Zwischenablage, Hinweis auf Welcome und im DNA-Screen
 - [x] C2 Feed über Edge Function `match-candidates` (nur `visible`-Profile; keine Fotos, keine
-      Persönlichkeitsbewertung) (L) – Vergleich wie beim Buddy-Link, „Anstoßen 🍻“: beide angestoßen = Buddys (#PR)
-- [x] C3 Opt-in, Handle, Blockieren; kein Chat (S) – Feed nur für selbst Sichtbare, Sync-Aus macht unsichtbar (#PR)
+      Persönlichkeitsbewertung) (L) – Vergleich wie beim Buddy-Link, „Anstoßen 🍻“: beide angestoßen = Buddys (#78)
+- [x] C3 Opt-in, Handle, Blockieren; kein Chat (S) – Feed nur für selbst Sichtbare, Sync-Aus macht unsichtbar (#78)
 
 ## Stufe D – Optionale KI-Schicht
 
