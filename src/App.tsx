@@ -16,6 +16,7 @@ import { Favorites } from './ui/screens/Favorites'
 import { Howto } from './ui/screens/Howto'
 import { Memory } from './ui/screens/Memory'
 import { Quiz } from './ui/screens/Quiz'
+import { Bierionaer } from './ui/screens/Bierionaer'
 import { Library } from './ui/screens/Library'
 import { Match } from './ui/screens/Match'
 import { Matches } from './ui/screens/Matches'
@@ -40,7 +41,7 @@ function MomentHost() {
   const close = useCallback(() => {
     if (id) dispatch({ type: 'MARK_SEEN', id })
   }, [dispatch, id])
-  if (!pending || ['welcome', 'howto', 'favorites', 'analyzing', 'quartett', 'fill', 'memory', 'quiz', 'room'].includes(state.screen)) return null
+  if (!pending || ['welcome', 'howto', 'favorites', 'analyzing', 'quartett', 'fill', 'memory', 'quiz', 'bierionaer', 'room'].includes(state.screen)) return null
   const onDna =
     pending.id === 'entschluesselt'
       ? () => {
@@ -73,6 +74,7 @@ function Screens() {
         {s === 'fill' && <FillGame />}
         {s === 'memory' && <Memory />}
         {s === 'quiz' && <Quiz />}
+        {s === 'bierionaer' && <Bierionaer />}
         {s === 'room' && <Room />}
         {s === 'regional' && <Regional />}
         {s === 'library' && <Library />}

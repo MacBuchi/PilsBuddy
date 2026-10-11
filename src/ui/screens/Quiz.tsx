@@ -88,7 +88,10 @@ export function Quiz() {
         </div>
 
         <section key={shown} className={styles.card}>
-          <span className={styles.topic}>{COPY.quiz.topics[question.topic]}</span>
+          <span className={styles.topic}>
+            {question.estimate && `${COPY.quiz.estimate} · `}
+            {COPY.quiz.topics[question.topic]}
+          </span>
           {beer && question.kind !== 'abv' && <BeerBottle beer={beer} size={120} className={styles.bottle} />}
           <h2 className={styles.prompt}>{question.prompt}</h2>
         </section>

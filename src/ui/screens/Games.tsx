@@ -1,4 +1,4 @@
-import { BeerBottleIcon, PlayIcon, SealQuestionIcon, UsersThreeIcon } from '@phosphor-icons/react'
+import { BeerBottleIcon, CrownSimpleIcon, PlayIcon, SealQuestionIcon, UsersThreeIcon } from '@phosphor-icons/react'
 import { BEER_BY_ID } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
 import { GLASS_BY_ID, GLASSES, POINTS_PER_ROUND } from '../../domain/games/fill'
@@ -19,13 +19,14 @@ const SHELF = [
 const FILL_MAX = GLASSES.length * POINTS_PER_ROUND
 const MEMO = BEER_BY_ID.augustiner ?? FAN[1]
 
-/** Stufe E: the mini games. Quartett, „Wie viel ist drin?“, Flaschen-Memory, Bierquiz and the game room are here; the rest is announced. */
+/** Stufe E: the mini games. Quartett, „Wie viel ist drin?“, Flaschen-Memory, Bierquiz, „Wer wird Bierionär?“ and the game room are here; the rest is announced. */
 export function Games() {
   const { state, go, withTabs } = useApp()
   const { played, won } = state.profile.games.quartett
   const fillRec = state.profile.games.fill
   const memo = state.profile.games.memory
   const quiz = state.profile.games.quiz
+  const bier = state.profile.games.bierionaer
   const memoBest = Math.min(...Object.values(memo.best).filter((n) => n > 0))
 
   return (
@@ -131,6 +132,24 @@ export function Games() {
           </span>
           <span className={styles.play}>
             <PlayIcon weight="fill" /> {COPY.games.quiz.cta}
+          </span>
+        </span>
+      </button>
+
+      <button type="button" className={`${styles.hero} ${styles.studio}`} onClick={() => go('bierionaer')}>
+        <div className={styles.crown} aria-hidden>
+          <CrownSimpleIcon weight="fill" />
+        </div>
+        <span className={styles.heroTitle}>{COPY.games.bierionaer.title}</span>
+        <span className={styles.heroText}>{COPY.games.bierionaer.text}</span>
+        <span className={styles.heroFoot}>
+          <span className={styles.record}>
+            {bier.played
+              ? fill(COPY.games.bierionaer.record, { best: bier.best.toLocaleString(COPY.app.locale), played: String(bier.played) })
+              : COPY.games.bierionaer.none}
+          </span>
+          <span className={styles.play}>
+            <PlayIcon weight="fill" /> {COPY.games.bierionaer.cta}
           </span>
         </span>
       </button>

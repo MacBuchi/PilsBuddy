@@ -20,6 +20,7 @@ export type Screen =
   | 'fill'
   | 'memory'
   | 'quiz'
+  | 'bierionaer'
   | 'room'
   | 'regional'
   | 'library'
@@ -64,6 +65,8 @@ export interface GameStats {
   memory: GameRecord & { best: Record<MemoryVariant, number> }
   /** Bierquiz – plus the most right answers in one game. */
   quiz: GameRecord & { best: number }
+  /** „Wer wird Bierionär?“ – won = the million; plus the most Kronkorken taken home. */
+  bierionaer: GameRecord & { best: number }
 }
 
 export const NO_GAMES: GameStats = {
@@ -71,6 +74,7 @@ export const NO_GAMES: GameStats = {
   fill: { played: 0, won: 0, best: 0 },
   memory: { played: 0, won: 0, best: { bottles: 0, style: 0 } },
   quiz: { played: 0, won: 0, best: 0 },
+  bierionaer: { played: 0, won: 0, best: 0 },
 }
 
 export interface SyncSettings {
@@ -110,7 +114,7 @@ export type Action =
   | { type: 'IMPORT'; profile: Profile }
   | { type: 'SET_BUDDY'; buddy: BuddySnapshot | null }
   | { type: 'RESET' }
-  | { type: 'GAME_OVER'; game: 'quartett' | 'fill' | 'quiz'; won: boolean; score?: number }
+  | { type: 'GAME_OVER'; game: 'quartett' | 'fill' | 'quiz' | 'bierionaer'; won: boolean; score?: number }
   | { type: 'GAME_OVER'; game: 'memory'; won: boolean; variant: MemoryVariant; moves: number }
   | { type: 'SET_SYNC'; sync: Partial<SyncSettings> }
   /** Result of a cloud sync, computed from `sent`; ratings changed meanwhile on this device are kept. */
@@ -213,7 +217,7 @@ export function reducer(state: AppState, action: Action): AppState {
         const old = all.memory.best[action.variant]
         const best = { ...all.memory.best, [action.variant]: old ? Math.min(old, action.moves) : action.moves }
         games = { ...all, memory: { ...played, best } }
-      } else if (action.game === 'fill' || action.game === 'quiz')
+      } else if (action.game === 'fill' || action.game === 'quiz' || action.game === 'bierionaer')
         games = { ...all, [action.game]: { ...played, best: Math.max(all[action.game].best, action.score ?? 0) } }
       else games = { ...all, [action.game]: played }
       return { ...state, profile: { ...state.profile, games } }

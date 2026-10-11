@@ -155,6 +155,8 @@ describe('sync', () => {
     expect(m.profile.games.fill).toEqual(f.profile.games.fill)
     const q = run(m, { type: 'GAME_OVER', game: 'quiz', won: false, score: 5 }, { type: 'GAME_OVER', game: 'quiz', won: true, score: 8 })
     expect(q.profile.games.quiz).toEqual({ played: 2, won: 1, best: 8 })
+    const b = run(q, { type: 'GAME_OVER', game: 'bierionaer', won: false, score: 16000 }, { type: 'GAME_OVER', game: 'bierionaer', won: false, score: 500 })
+    expect(b.profile.games.bierionaer).toEqual({ played: 2, won: 0, best: 16000 })
     expect(run(s, { type: 'RESET' }).profile.games).toEqual(NO_GAMES)
   })
 })

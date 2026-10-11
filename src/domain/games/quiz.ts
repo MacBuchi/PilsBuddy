@@ -19,6 +19,10 @@ export interface QuizQuestion {
   kind: QuizKind
   /** What the question is about; beer questions are `beer`. */
   topic: QuizTopic | 'beer'
+  /** 1 leicht · 2 mittel · 3 schwer – „Wer wird Bierionär“ climbs through them. */
+  level: QuizLevel
+  /** Schätzfrage: a number or an A/B choice (two options). */
+  estimate: boolean
   prompt: string
   options: string[]
   /** Index of the right option. */
@@ -35,30 +39,37 @@ export interface QuizGame {
   picks: number[]
 }
 
+export type QuizLevel = 1 | 2 | 3
+
 export interface QuizFact {
   topic: QuizTopic
+  level: QuizLevel
+  estimate?: boolean
   q: string
-  /** Four options, the first is the right one; the game shuffles them. */
+  /** Four options (two for an A/B Schätzfrage), the first is the right one; the game shuffles them. */
   options: readonly string[]
   explain: string
 }
 
 export const QUIZ_QUESTIONS = 10
 /** Generated questions per game, one of each kind; the rest are facts. */
-const BEER_KINDS: readonly QuizKind[] = ['country', 'style', 'abv']
+export type BeerKind = Exclude<QuizKind, 'fact'>
+const BEER_KINDS: readonly BeerKind[] = ['country', 'style', 'abv']
+/** How hard the generated questions are: the country is easy, style and strongest beer need knowledge. */
+const BEER_LEVEL: Record<BeerKind, QuizLevel> = { country: 1, style: 2, abv: 2 }
 /** A game counts as won with at least this many right answers. */
 export const QUIZ_PASS = 7
 /** `abv`: the strongest beer must beat the others by this much, so the answer is beyond doubt. */
 const ABV_GAP = 0.5
 
-type QuizBeer = Pick<Beer, 'id' | 'name' | 'fullName' | 'brewery' | 'country' | 'region' | 'style' | 'abv'>
+export type QuizBeer = Pick<Beer, 'id' | 'name' | 'fullName' | 'brewery' | 'country' | 'region' | 'style' | 'abv'>
 
 const words = (s: string) => s.toLowerCase().split(/[\s-]+/)
 /** „IPA“ and „Hazy IPA“, „Weißbier“ and „Alkoholfreies Weißbier“: too close to be fair distractors. */
 const related = (a: string, b: string) => words(a).some((w) => words(b).includes(w))
 
 /** Puts `right` among `wrong` at a seeded position. */
-function arrange(right: string, wrong: readonly string[], rnd: () => number): { options: string[]; answer: number } {
+export function arrange(right: string, wrong: readonly string[], rnd: () => number): { options: string[]; answer: number } {
   const options = shuffle([right, ...wrong], Math.floor(rnd() * 2 ** 32))
   return { options, answer: options.indexOf(right) }
 }
@@ -73,7 +84,8 @@ function distractors(right: string, pool: readonly string[], rnd: () => number, 
   return out.length === 3 ? out : null
 }
 
-function beerQuestion(kind: QuizKind, beers: readonly QuizBeer[], used: Set<string>, rnd: () => number): QuizQuestion | null {
+/** A question built from the beer data, or null when the beers cannot make one. */
+export function beerQuestion(kind: BeerKind, beers: readonly QuizBeer[], used: Set<string>, rnd: () => number): QuizQuestion | null {
   const T = COPY.quiz.ask
   for (const beer of shuffle(beers, Math.floor(rnd() * 2 ** 32))) {
     if (used.has(beer.id)) continue
@@ -84,6 +96,8 @@ function beerQuestion(kind: QuizKind, beers: readonly QuizBeer[], used: Set<stri
       return {
         kind,
         topic: 'beer',
+        level: BEER_LEVEL[kind],
+        estimate: false,
         prompt: fill(T.country, { name: beer.fullName }),
         ...arrange(beer.country, wrong, rnd),
         beer: beer.id,
@@ -97,6 +111,8 @@ function beerQuestion(kind: QuizKind, beers: readonly QuizBeer[], used: Set<stri
       return {
         kind,
         topic: 'beer',
+        level: BEER_LEVEL[kind],
+        estimate: false,
         prompt: fill(T.style, { name: beer.fullName }),
         ...arrange(beer.style, wrong, rnd),
         beer: beer.id,
@@ -114,6 +130,8 @@ function beerQuestion(kind: QuizKind, beers: readonly QuizBeer[], used: Set<stri
       return {
         kind,
         topic: 'beer',
+        level: BEER_LEVEL[kind],
+        estimate: false,
         prompt: T.abv,
         ...arrange(beer.fullName, wrong, rnd),
         beer: beer.id,
@@ -123,6 +141,19 @@ function beerQuestion(kind: QuizKind, beers: readonly QuizBeer[], used: Set<stri
   }
   return null
 }
+
+export const factQuestion = (f: QuizFact, rnd: () => number): QuizQuestion => ({
+  kind: 'fact',
+  topic: f.topic,
+  level: f.level,
+  estimate: f.estimate === true,
+  prompt: f.q,
+  ...arrange(f.options[0], f.options.slice(1), rnd),
+  explain: f.explain,
+})
+
+/** The fact bank of the current language (the text bank widens topic and level; quiz.test.ts checks them). */
+export const FACTS = COPY.quiz.facts as readonly QuizFact[]
 
 /**
  * Facts for one game: topics in a seeded order, one fact per topic per round – so every topic comes up before any
@@ -139,15 +170,12 @@ function pickFacts(facts: readonly QuizFact[], n: number, rnd: () => number): Qu
 }
 
 /** A new game: facts and beer questions mixed. Throws if the beers cannot fill it. */
-// the text bank widens the topic to string; quiz.test.ts checks every topic is one of QUIZ_TOPICS
-export function newQuiz(beers: readonly QuizBeer[], seed: number, facts = COPY.quiz.facts as readonly QuizFact[]): QuizGame {
+export function newQuiz(beers: readonly QuizBeer[], seed: number, facts: readonly QuizFact[] = FACTS): QuizGame {
   const rnd = seededRandom(seed)
   const used = new Set<string>()
   const fromBeers = BEER_KINDS.map((kind) => beerQuestion(kind, beers, used, rnd))
   if (fromBeers.some((q) => !q)) throw new Error('quiz: not enough beers')
-  const fromFacts = pickFacts(facts, QUIZ_QUESTIONS - fromBeers.length, rnd).map(
-    (f): QuizQuestion => ({ kind: 'fact', topic: f.topic, prompt: f.q, ...arrange(f.options[0], f.options.slice(1), rnd), explain: f.explain }),
-  )
+  const fromFacts = pickFacts(facts, QUIZ_QUESTIONS - fromBeers.length, rnd).map((f) => factQuestion(f, rnd))
   const questions = shuffle([...fromFacts, ...(fromBeers as QuizQuestion[])], Math.floor(rnd() * 2 ** 32))
   return { questions, picks: [] }
 }
