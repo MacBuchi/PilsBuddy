@@ -36,7 +36,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 16. [x] **D1/D2** Optionale KI-Texte (Absprache 2026-10-11: Workers AI, nur Gratis-Kontingent, Opt-in im Profil) (#79)
 17. [x] **E7** Bierquiz allein (Wunsch #45, eingeplant 2026-10-11) (#80)
 18. [ ] **E8** Bierquiz und „Mitspieler fragen“-Joker im Spielraum (#45, Mehrspieler auf E4)
-19. [x] **E9** „Wer wird Bierionär?“ + Schätzfragen (Wunsch 2026-10-11, vor E8 gezogen) (#PR)
+19. [x] **E9** „Wer wird Bierionär?“ + Schätzfragen (Wunsch 2026-10-11, vor E8 gezogen) (#81)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -385,7 +385,7 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
 - [ ] E8 **Bierquiz im Spielraum** (#45) auf E4: Gastgeber teilt dieselben Fragen (Seed) aus, alle antworten,
       Auflösung von selbst oder per Gastgeber, Rangliste am Ende; dazu der Joker „Mitspieler fragen“ für den
       Bierionär: die anderen am Tisch stimmen ab (M)
-- [x] E9 **„Wer wird Bierionär?“** (Wunsch 2026-10-11) (M) (#PR) – Regeln rein in `domain/games/bierionaer.ts`:
+- [x] E9 **„Wer wird Bierionär?“** (Wunsch 2026-10-11) (M) (#81) – Regeln rein in `domain/games/bierionaer.ts`:
       15 Fragen leicht → schwer (Stufe 1–3 je Frage im Katalog), Gewinnleiter in Kronkorken 50 … 1 000 000,
       Sicherheitsstufen nach Frage 5 und 10, Aussteigen jederzeit; Joker 50:50, Stammtisch (Abstimmung, bei schweren
       Fragen öfter daneben), Braumeister (Tipp, mal sicher, mal nicht) – per Seed deterministisch. Studio im
