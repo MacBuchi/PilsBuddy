@@ -28,7 +28,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 10. [x] **N1–N5** Nordamerika (#54): kanadische und US-Biere – N1 Stile (#55) · N2 Klassiker Kanada (#56) ·
     N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60, #61) + Live-Import (2026-10-03)
 11. [x] **R9** Brauerei-Weltkarte mit eigenem Standort (Wunsch 2026-10-03, vor R7 gezogen) (#64)
-12. [ ] **R7** Aktualität (monatlicher Pipeline-Dry-Run)
+12. [x] **R7** Aktualität (monatlicher Pipeline-Dry-Run) (#67)
 13. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -238,7 +238,11 @@ Leitplanken:
         Liste aller Brauereien (`id,name,lat,lon,country`, seitenweise) 30 Tage auf dem Gerät; ein angetipptes Glas
         lädt sein 0,5°-Kartenfeld wie der Finder und öffnet das Brauerei-Sheet. Start: eigener Standort (wenn schon
         erlaubt) bzw. PLZ, sonst das Land der Browsersprache. Keine Migration
-- [ ] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
+- [x] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
+      - umgesetzt (#67): Workflow „Regional catalogue (monthly)“ (am 1., ruft fetch + Websites auf) baut den Import,
+        `npm run catalog:diff` vergleicht ihn mit dem Live-Katalog (öffentliche API, `tools/catalog/diff.ts`), PR
+        „Katalog-Stand“ mit `tools/catalog/stand.md`; Merge = OK → „Regional catalogue (import)“ mit genau diesem Lauf,
+        nach Freigabe in `production`. CI startet per Dispatch (PR mit `GITHUB_TOKEN`)
 - [x] R8 **Bierbibliothek** (Wunsch 2026-10-02): alle Biere durchsuchen und filtern – Name, PLZ/Region, Stil,
       Alkohol, eigene Bewertung; vorkategorisiert nach Stilgruppen (hell · dunkel · Weizen · Hopfen · alkoholfrei).
       Kuratierte Biere offline; Regionalbiere ohne Standort per Name/PLZ-Suche aus `regional_beers` (M)

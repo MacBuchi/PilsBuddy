@@ -5,11 +5,13 @@ name: Regional catalogue (fetch)
 # OpenStreetMap runs as one job per country part in parallel (Overpass limits per IP; 82 areas in a row took > 2 h),
 # the other sources in one job; „Bundle“ puts it together. Countries and sources: tools/catalog/countries.json.
 # Nothing is written to the database here. Trigger: gh workflow run catalog.yml --ref <branch>
+# Also called by „Regional catalogue (monthly)“ (R7) – the artifacts then belong to that run.
 on:
   workflow_dispatch:
+  workflow_call:
   push:
     branches-ignore: [main]
-    paths: ['tools/catalog/**', '.github/workflows/catalog.yml']
+    paths: ['tools/catalog/**', '!tools/catalog/stand.md', '.github/workflows/catalog.yml']
 
 concurrency:
   group: catalog-${{ github.ref }}

@@ -76,6 +76,15 @@ stehen zentral in `tools/catalog/countries.json`; Skripte, Merge und Workflow le
    (sonst Abbruch vor dem ersten Schreiben – ein Download kann still unvollständig sein); Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
    setzt Brauereien/Biere, die nicht mehr in den Quellen sind, auf `published = false` (Zeilen bleiben) – außer
    den freigegebenen Meldungen aus der App (Quelle 5, Brauereien `app-…`).
+5. Monatlich (R7): Workflow „Regional catalogue (monthly)“ (am 1., 03:17 UTC, oder `gh workflow run catalog-monthly.yml`)
+   ruft fetch + Websites auf, baut den Import und vergleicht ihn mit dem Live-Katalog (`npm run catalog:diff`:
+   `out/next.json` gegen die öffentliche API, nur lesend) – je Land Brauereien/Biere neu · weg · geändert, Warnung
+   wenn `05-guard.sql` abbrechen würde. Ergebnis: PR „Katalog-Stand …“ auf dem Branch `catalog-stand` mit
+   `tools/catalog/stand.md` (Report + Diff, Lauf-ID) und dem Diff als Beschreibung; volle Liste im Artefakt
+   `catalog-diff`. Der PR wird mit `GITHUB_TOKEN` geöffnet, daher startet der Workflow die CI per Dispatch auf dem
+   Branch (Repo-Einstellung „Allow GitHub Actions to create and approve pull requests“ muss an sein). **Mergen = OK:**
+   der Push von `stand.md` auf `main` startet „Regional catalogue (import)“ mit genau diesen Rohdaten, Import erst
+   nach Freigabe in `production`. Schließen = verwerfen. Rohdaten leben 14 Tage – danach neuen Lauf starten.
 
 Geschmack wird nicht gespeichert – die App leitet ihn aus Stil + ABV ab (`tasteFromStyle`, „Stil-Schätzung“).
 Lizenzen: OpenStreetMap und Open Food Facts ODbL (Namensnennung, abgeleitete DB bleibt ODbL), Open Brewery DB MIT, Wikidata CC0,

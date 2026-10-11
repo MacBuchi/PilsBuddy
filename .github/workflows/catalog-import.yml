@@ -6,7 +6,12 @@ name: Regional catalogue (import)
 #   gh workflow run catalog-import.yml                    → dry run with the latest successful downloads
 #   gh workflow run catalog-import.yml -f apply=true      → the same, then import after approval
 # Artifacts are kept 14 days; older downloads need a new fetch run.
+# R7: merging the monthly PR „Katalog-Stand“ (tools/catalog/stand.md on main) is the OK – the import then runs with
+# the raw data of the monthly run named there (<!-- catalog-run: … -->), again only after the approval.
 on:
+  push:
+    branches: [main]
+    paths: ['tools/catalog/stand.md']
   workflow_dispatch:
     inputs:
       fetch_run:
@@ -44,11 +49,18 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Raw data of the merged monthly run
+        if: github.event_name == 'push'
+        run: |
+          run=$(grep -oP '<!-- catalog-run: \K[0-9]+' tools/catalog/stand.md || true)
+          [ -n "$run" ] || { echo "::error::tools/catalog/stand.md names no catalog-run"; exit 1; }
+          echo "STAND_RUN=$run" >> "$GITHUB_ENV"
       - name: Download raw data
         run: |
           latest() { gh run list --repo "$GITHUB_REPOSITORY" --workflow "$1" --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty'; }
-          FETCH_RUN=${FETCH_RUN:-$(latest catalog.yml)}
-          WEB_RUN=${WEB_RUN:-$(latest catalog-web.yml)}
+          # the monthly run (R7) has both: its catalog-raw and catalog-web-<n> artifacts
+          FETCH_RUN=${STAND_RUN:-${FETCH_RUN:-$(latest catalog.yml)}}
+          WEB_RUN=${STAND_RUN:-${WEB_RUN:-$(latest catalog-web.yml)}}
           [ -n "$FETCH_RUN" ] || { echo "::error::no successful fetch run"; exit 1; }
           mkdir -p tools/catalog/raw
           gh run download "$FETCH_RUN" --repo "$GITHUB_REPOSITORY" -n catalog-raw -D tools/catalog/raw
@@ -70,7 +82,7 @@ jobs:
   apply:
     name: Import into the live database
     needs: build
-    if: inputs.apply
+    if: inputs.apply || github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment: production # waits for the maintainer's approval

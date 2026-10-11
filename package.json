@@ -12,6 +12,7 @@
     "typecheck": "tsc -b",
     "deploy": "npm run build && wrangler deploy",
     "catalog:build": "tsx tools/catalog/build.ts",
+    "catalog:diff": "tsx tools/catalog/compare.ts",
     "classics:build": "tsx tools/classics/build.ts",
     "map:build": "tsx tools/map/build.ts"
   },

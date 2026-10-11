@@ -1,6 +1,7 @@
 // Regional catalogue (R1): raw downloads → tools/catalog/out/*.sql (idempotent import) + report.
 //   npm run catalog:build                       raw/ from the catalog workflow artifact
 //   npm run catalog:build -- --raw <dir> --out <dir> [--min-breweries 1]   (default: per country, countries.json)
+//   npm run catalog:diff                        out/next.json vs. the live catalogue → out/diff.md + diff.tsv (R7)
 // Apply locally:  for f in tools/catalog/out/*.sql; do psql "$DB_URL" -v ON_ERROR_STOP=1 -f "$f"; done
 // Apply live (after OK): the same loop with `supabase db query --linked -f "$f"` (see supabase/README.md).
 /// <reference types="node" />
@@ -9,6 +10,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import COUNTRY_TABLE from './countries.json'
 import { COUNTRIES, COUNTRY_INFO, importSql, mainBeers, mergeBreweries, parseOpenbeer, parsePlaces, tooFew } from './merge'
+import { beerRow, breweryRow } from './diff'
 import { beerName } from './web'
 import type { Country, ObdbRow, OffRow, OpenbeerRow, OsmRow, WebRow, WikidataBeerRow, WikidataRow } from './merge'
 
@@ -78,6 +80,8 @@ const beers = mainBeers(off, breweries, wdBeers, openbeer, web)
 rmSync(OUT, { recursive: true, force: true })
 mkdirSync(OUT, { recursive: true })
 for (const f of importSql(breweries, beers, places)) writeFileSync(join(OUT, f.name), f.sql)
+// R7: what compare.ts diffs against the live catalogue (not imported – the import reads *.sql only)
+writeFileSync(join(OUT, 'next.json'), JSON.stringify({ breweries: breweries.map(breweryRow), beers: beers.map(beerRow) }))
 
 const count = <T>(xs: T[], key: (x: T) => string) =>
   Object.entries(xs.reduce<Record<string, number>>((m, x) => ((m[key(x)] = (m[key(x)] ?? 0) + 1), m), {}))
@@ -95,7 +99,7 @@ const report = [
   `  je Land: ${COUNTRIES.map((c) => `${c} ${beers.filter((b) => countryOf.get(b.breweryId) === c).length} bei ${new Set(beers.filter((b) => countryOf.get(b.breweryId) === c).map((b) => b.breweryId)).size}`).join(' · ')}`,
   `  mit ABV ${beers.filter((b) => b.abv != null).length} · mit Gebinde ${beers.filter((b) => b.pack).length}`,
   `Postleitzahlen: ${places.length} (${count(places, (p) => p.country)})`,
-  `SQL: ${readdirSync(OUT).length} Dateien in ${OUT}`,
+  `SQL: ${readdirSync(OUT).filter((f) => f.endsWith('.sql')).length} Dateien in ${OUT}`,
 ].join('\n')
 writeFileSync(join(OUT, 'report.txt'), report + '\n')
 console.log(report)
