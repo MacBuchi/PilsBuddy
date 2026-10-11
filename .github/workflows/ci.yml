@@ -290,9 +290,17 @@ jobs:
     steps:
       - name: Skip without Cloudflare secrets
         id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          # runs on main finish out of order (a waiting live-db approval holds an older one back) – an older
+          # commit must not overwrite a newer beta, and its pre-release/promotion would offer to roll production back
+          head=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "No CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secret – skipping deploy."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          elif [ "$head" != "$GITHUB_SHA" ]; then
+            echo "main is already at $head – the newer run deploys, skipping $GITHUB_SHA." | tee -a "$GITHUB_STEP_SUMMARY"
             echo "enabled=false" >> "$GITHUB_OUTPUT"
           else
             echo "enabled=true" >> "$GITHUB_OUTPUT"
@@ -358,6 +366,16 @@ jobs:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
+      # the approval may come after a newer merge went through beta – never promote an older commit
+      - name: Still the newest commit?
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          head=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
+          if [ "$head" != "$GITHUB_SHA" ]; then
+            echo "::error::main is already at $head – promote the newest run instead of $GITHUB_SHA."
+            exit 1
+          fi
       - uses: actions/checkout@v4 # wrangler.jsonc
       - uses: actions/download-artifact@v4
         with:
