@@ -37,7 +37,7 @@ const PRIVACY_DE: LegalSection[] = [
   {
     title: 'Auf deinem Gerät',
     paragraphs: [
-      'Im Speicher deines Browsers (localStorage) liegen: deine Bier-Bewertungen mit Zeitpunkt, deine Altersbestätigung, Dark-Mode, deine Sprachwahl, deine Buddy-Nummer, gesehene Hinweise und – falls genutzt – dein Sync-Code und die Sitzung des Sync-Kontos. Ein Service Worker speichert die App selbst, damit sie offline läuft.',
+      'Im Speicher deines Browsers (localStorage) liegen: deine Bier-Bewertungen mit Zeitpunkt, deine Altersbestätigung, Dark-Mode, ob KI-Texte an sind, deine Sprachwahl, deine Buddy-Nummer, gesehene Hinweise und – falls genutzt – dein Sync-Code und die Sitzung des Sync-Kontos. Ein Service Worker speichert die App selbst, damit sie offline läuft.',
       'Diese Daten verlassen dein Gerät nicht, solange der Sync aus ist – nur in einem Spielraum sehen die anderen am Tisch deine Buddy-Nummer. Du löschst sie mit „Profil zurücksetzen“ oder indem du die Website-Daten im Browser löschst.',
     ],
   },
@@ -112,6 +112,14 @@ const PRIVACY_DE: LegalSection[] = [
     ],
   },
   {
+    title: 'KI-Texte (nur wenn du sie einschaltest)',
+    paragraphs: [
+      'KI-Texte sind standardmäßig aus; dann zeigt die App nur ihre eigenen, festen Texte und sendet dafür nichts. Schaltest du sie im Profil ein, fragt die App für den Persona-Roast und für „Warum passt es zu dir?“ bei unserem Server unter dieser Adresse nach, der die Frage an Cloudflare Workers AI weitergibt (Cloudflare, Inc., USA; zertifiziert unter dem EU-US Data Privacy Framework).',
+      'Gesendet werden nur: der Name deiner Persona, deine acht Geschmackswerte (auf Fünfer gerundet), die Sprache und – beim Bier – sein Name, Stil, seine Geschmackswerte und dein Match in Prozent. Keine Bewertungsliste, keine Buddy-Nummer, kein Konto. Die Antwort speichern wir ohne Bezug zu dir bis zu sieben Tage, damit dieselbe Frage nicht noch einmal gerechnet wird. Deine IP-Adresse halten wir nur eine Minute im Arbeitsspeicher, um Anfragen pro Gerät zu begrenzen; gespeichert wird sie nicht.',
+      'Die Texte schreibt eine KI – sie können danebenliegen. Deine Bier-DNA, Persona, Avatar und Matches berechnet die App weiterhin selbst, ohne KI. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO); Ausschalten genügt zum Widerruf.',
+    ],
+  },
+  {
     title: 'Löschen',
     paragraphs: [
       '„Profil zurücksetzen“ löscht alles auf diesem Gerät und – falls du den Sync genutzt hast – sofort dein Sync-Konto mit allen Daten auf dem Server. Willst du nur die Cloud-Daten loswerden, nimm „Daten aus der Cloud löschen“ im Abschnitt „Auf allen Geräten“; auf dem Gerät bleibt dann alles.',
@@ -145,7 +153,7 @@ const PRIVACY_EN: LegalSection[] = [
   {
     title: 'On your device',
     paragraphs: [
-      "Your browser's storage (localStorage) holds: your beer ratings with timestamps, your age confirmation, dark mode, your language choice, your buddy number, hints you have seen and – if used – your sync code and the sync account's session. A service worker stores the app itself so it works offline.",
+      "Your browser's storage (localStorage) holds: your beer ratings with timestamps, your age confirmation, dark mode, whether AI texts are on, your language choice, your buddy number, hints you have seen and – if used – your sync code and the sync account's session. A service worker stores the app itself so it works offline.",
       'This data does not leave your device as long as sync is off – only in a game room do the others at the table see your buddy number. You delete it with “Reset profile” or by clearing the site data in your browser.',
     ],
   },
@@ -217,6 +225,14 @@ const PRIVACY_EN: LegalSection[] = [
       'Others who are visible themselves then get you suggested when your taste is similar, and see your name and your ratings (without timestamps and without “Don’t know it”) – their app calculates persona and match from them. We show no location, no photos and no buddy number; there is no chat.',
       'If you toast someone or block someone, we store that in your account. The other person only learns that you toasted once they toast back. Blocked people and you no longer see each other.',
       '“Become invisible” removes you from all suggestions at once, and so does turning off device sync; your name stays reserved for you until you delete the sync account. The legal basis is your consent (Art. 6(1)(a) GDPR).',
+    ],
+  },
+  {
+    title: 'AI texts (only if you turn them on)',
+    paragraphs: [
+      'AI texts are off by default; the app then shows only its own fixed texts and sends nothing for them. If you turn them on in your profile, the app asks our server at this address for the persona roast and for “Why does it suit you?”, and the server passes the question on to Cloudflare Workers AI (Cloudflare, Inc., USA; certified under the EU-US Data Privacy Framework).',
+      'Only this is sent: the name of your persona, your eight taste values (rounded to fives), the language and – for a beer – its name, style, taste values and your match in percent. No list of ratings, no buddy number, no account. We keep the answer for up to seven days without any link to you, so the same question is not computed again. We hold your IP address in memory for one minute only, to limit requests per device; it is not stored.',
+      'The texts are written by an AI – they may be off. Your beer DNA, persona, avatar and matches are still computed by the app itself, without AI. The legal basis is your consent (Art. 6(1)(a) GDPR); turning them off withdraws it.',
     ],
   },
   {

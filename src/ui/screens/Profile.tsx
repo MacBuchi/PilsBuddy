@@ -1,4 +1,4 @@
-import { ChatCircleTextIcon, DownloadSimpleIcon, MoonStarsIcon, TranslateIcon, UploadSimpleIcon } from '@phosphor-icons/react'
+import { ChatCircleTextIcon, DownloadSimpleIcon, MoonStarsIcon, SparkleIcon, TranslateIcon, UploadSimpleIcon } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { serializeProfile } from '../../state/storage'
 import { useProfileImport } from '../useProfileImport'
@@ -24,7 +24,7 @@ export function Profile() {
   const [feedback, setFeedback] = useState(false)
   const { state, dispatch, go, openDetail, withTabs, toast } = useApp()
   const { counts, decoded, archetype, avatar, achievements } = useDerived()
-  const { ratings, dark, buddyNo } = state.profile
+  const { ratings, dark, buddyNo, ai } = state.profile
   const P = COPY.personas[archetype]
 
   const history = Object.entries(ratings)
@@ -141,6 +141,16 @@ export function Profile() {
             <span className={styles.settingSub}>{COPY.language.sub}</span>
           </span>
           <span className={styles.langCode}>{COPY.language.code}</span>
+        </button>
+        <button type="button" className={styles.setting} onClick={() => dispatch({ type: 'TOGGLE_AI' })} role="switch" aria-checked={ai}>
+          <SparkleIcon weight="bold" size={20} />
+          <span className={styles.settingText}>
+            <span className={styles.settingLabel}>{COPY.ai.label}</span>
+            <span className={styles.settingSub}>{COPY.ai.sub}</span>
+          </span>
+          <span className={`${styles.track} ${ai ? styles.trackOn : ''}`}>
+            <span className={styles.knob} style={{ left: ai ? 22 : 2 }} />
+          </span>
         </button>
         <SyncSection />
         <button type="button" className={styles.setting} onClick={() => setFeedback(true)}>

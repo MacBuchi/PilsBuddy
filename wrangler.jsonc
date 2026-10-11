@@ -1,13 +1,21 @@
 {
-  // Cloudflare Workers Static Assets – serves dist/ with no server code.
+  // Cloudflare Workers Static Assets – serves dist/; only /api/* runs code (worker/index.ts, Stufe D2 /api/ai).
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "pilsbuddy",
+  "main": "worker/index.ts",
   "compatibility_date": "2026-09-01",
   "routes": [{ "pattern": "pilsbuddy.mcbuchi.de", "custom_domain": true }],
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
   },
+  // Workers AI (free daily allocation) and the counter that keeps /api/ai inside it – bindings are not inherited,
+  // so the beta environment repeats them (its own counter: beta and production share the allocation, see AI_PER_DAY)
+  "ai": { "binding": "AI" },
+  "durable_objects": { "bindings": [{ "name": "AI_BUDGET", "class_name": "AiBudget" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["AiBudget"] }],
   // Pre-release (Q4): every merge to main lands here first; production only after „Promote“ (ci.yml).
   // wrangler deploy --env beta
   "env": {
@@ -16,8 +24,12 @@
       "routes": [{ "pattern": "beta.pilsbuddy.mcbuchi.de", "custom_domain": true }],
       "assets": {
         "directory": "./dist",
-        "not_found_handling": "single-page-application"
-      }
+        "binding": "ASSETS",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": ["/api/*"]
+      },
+      "ai": { "binding": "AI" },
+      "durable_objects": { "bindings": [{ "name": "AI_BUDGET", "class_name": "AiBudget" }] }
     }
   }
 }

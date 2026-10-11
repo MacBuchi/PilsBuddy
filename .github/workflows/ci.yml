@@ -39,6 +39,12 @@ jobs:
           APP_VERSION: ${{ steps.version.outputs.version }}
       - name: Bundle size (entry chunk ≤ 260 kB gzip)
         run: node tool/bundle_size.mjs dist 260 | tee -a "$GITHUB_STEP_SUMMARY"
+      # the worker (worker/index.ts, /api/ai) and its bindings bundle for both environments – a broken config
+      # would otherwise only show in „Deploy beta“ after the merge
+      - name: Worker bundles (wrangler dry-run)
+        run: |
+          npx -y wrangler@4 deploy --env="" --dry-run --outdir /tmp/worker-prod
+          npx -y wrangler@4 deploy --env beta --dry-run --outdir /tmp/worker-beta
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -119,7 +125,7 @@ jobs:
           psql "$DB_URL" -v ON_ERROR_STOP=1 -f tools/catalog/fixtures/check.sql
       - uses: ./.github/actions/playwright
         with:
-          scripts: e2e/sync.mjs e2e/catalog.mjs e2e/regional.mjs e2e/room.mjs e2e/match.mjs
+          scripts: e2e/sync.mjs e2e/catalog.mjs e2e/regional.mjs e2e/room.mjs e2e/match.mjs e2e/ai.mjs
       - name: Dev server against the local stack, run sync flow
         run: |
           eval "$(supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=')"
@@ -139,6 +145,8 @@ jobs:
         run: node /tmp/pw/room.mjs http://localhost:5179/ /tmp/room
       - name: Pils-Match (feed, clink, block – three devices)
         run: node /tmp/pw/match.mjs http://localhost:5179/ /tmp/match
+      - name: KI-Texte (opt-in, /api/ai mocked)
+        run: node /tmp/pw/ai.mjs http://localhost:5179/ /tmp/ai
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
@@ -149,6 +157,7 @@ jobs:
             /tmp/regional-*.png
             /tmp/room-*.png
             /tmp/match-*.png
+            /tmp/ai-*.png
 
   e2e:
     name: E2E flow

@@ -48,6 +48,10 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   Edge functions in `supabase/functions/`; the two-device flow `e2e/sync.mjs` runs in CI against a local stack.
   Pils-Match (C2/C3): other people's profiles and ratings only through the Edge Function `match-candidates` (visible
   callers only, blocks honoured) – never open `profiles`/`ratings` RLS for it; `e2e/match.mjs` covers it.
+- Optional AI texts (Stufe D): only through `useAiText()` (`src/ai/`), off unless the user switches „KI-Texte“ on; they
+  appear in addition to the deterministic texts, never instead of DNA, matching, persona or avatar. The worker
+  (`worker/index.ts`, `/api/ai` – the only server code on Cloudflare) accepts just the requests of `src/ai/prompt.ts`
+  (no free prompts) and stays inside the Workers AI free allocation (`AI_PER_DAY` per worker, cache, per-device limit).
 - No analytics. No new cloud projects or paid services without asking. Anything that sends data off the device
   must be described in the privacy text `src/data/legal.ts` in the same PR.
 - Regional beers (Stufe R): taste only via `tasteFromStyle` (shown as „Stil-Schätzung“), never hand-invented;

@@ -842,6 +842,14 @@ export const EN: Copy = {
       traits: ['experienced', 'down-to-earth', 'knows everyone'],
     },
   },
+  ai: {
+    label: 'AI texts',
+    sub: 'Persona roast and “Why does it suit you?” also written by an AI (Cloudflare). Off: only our own texts.',
+    roastTitle: 'AI roast',
+    whyTitle: 'The AI says',
+    thinking: 'The AI is thinking …',
+    note: 'Written by an AI – may be off.',
+  },
   why: {
     title: 'Why does it suit you?',
     more: 'More {axis} than you are used to – {n} points above.',
