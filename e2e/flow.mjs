@@ -121,6 +121,19 @@ await step('spiele: bier-quartett, one round against the bot', async () => {
   page.once('dialog', (d) => d.accept())
   await m.getByRole('button', { name: 'Spiel beenden' }).click()
   await see('Noch nie gespielt') // an abandoned game doesn't count
+})
+await step('spiele: wie viel ist drin?, one glass', async () => {
+  await m.getByRole('button', { name: /Einschenken/ }).click()
+  await see('Glas 1 von 5')
+  await m.getByRole('button', { name: '+ 10 ml' }).click()
+  await m.getByRole('button', { name: 'Schätzen' }).click()
+  await see('Drin waren'); await see('Deine Schätzung')
+  await page.screenshot({ path: `${out}-fill.png` })
+  await m.getByRole('button', { name: 'Nächstes Glas' }).click()
+  await see('Glas 2 von 5')
+  page.once('dialog', (d) => d.accept())
+  await m.getByRole('button', { name: 'Spiel beenden' }).click()
+  await see('Noch nie geschätzt')
   await m.getByText('Profil', { exact: true }).click()
 })
 await step('impressum & datenschutz from profile, back', async () => {

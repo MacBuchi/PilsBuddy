@@ -15,6 +15,7 @@ export type Screen =
   | 'legal'
   | 'games'
   | 'quartett'
+  | 'fill'
   | 'regional'
   | 'library'
   | 'map'
@@ -50,9 +51,11 @@ export interface GameRecord {
 
 export interface GameStats {
   quartett: GameRecord
+  /** „Wie viel ist drin?“ – plus the best total score. */
+  fill: GameRecord & { best: number }
 }
 
-export const NO_GAMES: GameStats = { quartett: { played: 0, won: 0 } }
+export const NO_GAMES: GameStats = { quartett: { played: 0, won: 0 }, fill: { played: 0, won: 0, best: 0 } }
 
 export interface SyncSettings {
   on: boolean
@@ -88,7 +91,7 @@ export type Action =
   | { type: 'IMPORT'; profile: Profile }
   | { type: 'SET_BUDDY'; buddy: BuddySnapshot | null }
   | { type: 'RESET' }
-  | { type: 'GAME_OVER'; game: keyof GameStats; won: boolean }
+  | { type: 'GAME_OVER'; game: keyof GameStats; won: boolean; score?: number }
   | { type: 'SET_SYNC'; sync: Partial<SyncSettings> }
   /** Result of a cloud sync, computed from `sent`; ratings changed meanwhile on this device are kept. */
   | { type: 'SYNC_APPLY'; sent: Ratings; result: Ratings; adopt?: Partial<Pick<Profile, 'buddyNo' | 'onboarded' | 'dark'>> }
@@ -178,8 +181,13 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'RESET':
       return initialState({ ...initialProfile(), dark: state.profile.dark })
     case 'GAME_OVER': {
-      const rec = state.profile.games[action.game]
-      const games = { ...state.profile.games, [action.game]: { played: rec.played + 1, won: rec.won + (action.won ? 1 : 0) } }
+      const { games: all } = state.profile
+      const rec = all[action.game]
+      const played = { played: rec.played + 1, won: rec.won + (action.won ? 1 : 0) }
+      const games =
+        action.game === 'fill'
+          ? { ...all, fill: { ...played, best: Math.max(all.fill.best, action.score ?? 0) } }
+          : { ...all, [action.game]: played }
       return { ...state, profile: { ...state.profile, games } }
     }
     case 'SET_SYNC':

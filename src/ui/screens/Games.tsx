@@ -1,17 +1,27 @@
 import { PlayIcon } from '@phosphor-icons/react'
 import { BEER_BY_ID } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
+import { GLASS_BY_ID, GLASSES, POINTS_PER_ROUND } from '../../domain/games/fill'
 import { useApp } from '../../state/AppContext'
 import { BeerBottle } from '../components/BeerBottle'
+import { FillGlass } from '../components/FillGlass'
 import page from './page.module.css'
 import styles from './Games.module.css'
 
 const FAN = ['guinness', 'jever', 'paulaner-weisse'].map((id) => BEER_BY_ID[id]).filter(Boolean)
+/** Three glasses for the „Wie viel ist drin?“ tile: [glass, ml]. */
+const SHELF = [
+  [GLASS_BY_ID.stange, 140],
+  [GLASS_BY_ID.weizen, 260],
+  [GLASS_BY_ID.mass, 780],
+] as const
+const FILL_MAX = GLASSES.length * POINTS_PER_ROUND
 
-/** Stufe E: the mini games. Bier-Quartett is playable; the rest is announced. */
+/** Stufe E: the mini games. Bier-Quartett and „Wie viel ist drin?“ are playable; the rest is announced. */
 export function Games() {
   const { state, go, withTabs } = useApp()
   const { played, won } = state.profile.games.quartett
+  const fillRec = state.profile.games.fill
 
   return (
     <div className={`${page.page} ${withTabs ? page.withTabs : ''}`}>
@@ -41,6 +51,30 @@ export function Games() {
           </span>
           <span className={styles.play}>
             <PlayIcon weight="fill" /> {COPY.games.quartett.cta}
+          </span>
+        </span>
+      </button>
+
+      <button type="button" className={styles.hero} onClick={() => go('fill')}>
+        <div className={styles.shelf} aria-hidden>
+          {SHELF.map(([g, v]) => (
+            <FillGlass key={g.id} glass={g} ml={v} markLabel="" height={112} />
+          ))}
+        </div>
+        <span className={styles.heroTitle}>{COPY.games.fill.title}</span>
+        <span className={styles.heroText}>{COPY.games.fill.text}</span>
+        <span className={styles.heroFoot}>
+          <span className={styles.record}>
+            {fillRec.played
+              ? fill(COPY.games.fill.record, {
+                  best: String(fillRec.best),
+                  max: String(FILL_MAX),
+                  played: String(fillRec.played),
+                })
+              : COPY.games.fill.none}
+          </span>
+          <span className={styles.play}>
+            <PlayIcon weight="fill" /> {COPY.games.fill.cta}
           </span>
         </span>
       </button>

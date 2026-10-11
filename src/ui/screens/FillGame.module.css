@@ -1,0 +1,97 @@
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 12px 10px;
+  border-radius: var(--r-panel);
+  border: 2.5px solid var(--edge);
+  background: var(--sf2);
+  box-shadow: 0 4px 0 var(--edge);
+}
+
+.glassName {
+  margin: 0;
+  font: 800 22px/1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.step {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--edge);
+  background: var(--sf);
+  color: var(--ink);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.step:active {
+  transform: translateY(2px);
+}
+
+.value {
+  min-width: 5.5ch;
+  text-align: center;
+  font: 700 34px/1 var(--font-mono);
+  letter-spacing: -0.03em;
+}
+
+.slider {
+  width: 100%;
+  margin: 4px 0 6px;
+  accent-color: var(--gold);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.result p {
+  margin: 0;
+}
+
+.truth {
+  font: 700 16px/1.35 var(--font-display);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: 700 11px/1.3 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.dash {
+  width: 22px;
+  border-top: 3px dashed var(--try);
+}
+
+.fact {
+  font: 500 13.5px/1.4 var(--font-display);
+  color: var(--mut);
+}
+
+.endScore {
+  font: 700 22px/1.1 var(--font-mono);
+  text-align: center;
+}

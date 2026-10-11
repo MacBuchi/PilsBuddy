@@ -204,3 +204,12 @@ a {
     opacity: 1;
   }
 }
+
+@keyframes pbPour {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: none;
+  }
+}

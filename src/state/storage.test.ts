@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createLocalStore, parseProfile, serializeProfile, STORAGE_KEY } from './storage'
-import { initialProfile } from './reducer'
+import { initialProfile, NO_GAMES } from './reducer'
 
 function memoryStorage() {
   const m = new Map<string, string>()
@@ -83,11 +83,15 @@ describe('storage', () => {
   })
 
   it('game stats survive a reload; junk and old profiles count as nothing played', () => {
-    const p = { ...initialProfile(), games: { quartett: { played: 5, won: 3 } } }
-    expect(parseProfile(serializeProfile(p))?.games).toEqual({ quartett: { played: 5, won: 3 } })
+    const games = { quartett: { played: 5, won: 3 }, fill: { played: 2, won: 1, best: 412 } }
+    const p = { ...initialProfile(), games }
+    expect(parseProfile(serializeProfile(p))?.games).toEqual(games)
     const old = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: undefined } })
-    expect(parseProfile(old)?.games).toEqual({ quartett: { played: 0, won: 0 } })
-    const junk = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quartett: { played: 2, won: 9 } } } })
-    expect(parseProfile(junk)?.games.quartett).toEqual({ played: 2, won: 2 })
+    expect(parseProfile(old)?.games).toEqual(NO_GAMES)
+    // profiles from before E2 have no fill record
+    const e1 = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quartett: { played: 4, won: 1 } } } })
+    expect(parseProfile(e1)?.games).toEqual({ ...NO_GAMES, quartett: { played: 4, won: 1 } })
+    const junk = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quartett: { played: 2, won: 9 }, fill: { played: 0, won: 0, best: 300 } } } })
+    expect(parseProfile(junk)?.games).toEqual({ quartett: { played: 2, won: 2 }, fill: { played: 0, won: 0, best: 0 } })
   })
 })
