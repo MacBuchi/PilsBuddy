@@ -325,7 +325,10 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       bekannt) · 3 geprüft (von Hand recherchiert = kuratierte Biere). Spalte `regional_beers.quality`, Pipeline filtert
       Merch/Hashtags/Award-Zeilen und säubert Layout-Reste im Namen; Detail zeigt die Datenlage; die erste
       Sequenzierung (Referenz-Set) nur mit geprüften Bieren, „fraglich“ nie im Deck (M)
-- [ ] V2 **„Problem melden“** an jedem Bier (falsches Bier, falsche Werte, gibt es nicht) → Issue wie das Feedback (S–M)
+- [x] V2 **„Problem melden“** an jedem Bier (falsches Bier, falsche Werte, gibt es nicht) → Issue wie das Feedback (S–M)
+      - umgesetzt (#PR): Detail-Seite unten „Problem mit diesem Bier melden“ – Auswahl (kein Bier · gibt es nicht ·
+        Stil/Alkohol falsch · Brauerei/Ort falsch · doppelt · anderes) + Notiz; Feedback-Tabelle mit `type = 'beer'`,
+        Bot → Issue `bier-problem` mit Katalogdaten; Label `ausblenden` → `regional_beers.hidden` (überlebt den Import)
 - [ ] V3 **Lieblingsbiere zuerst:** vor dem Referenz-Set nach Lieblingsbieren fragen (Suche in Katalog + Regionalbieren);
       gefundene zählen als „Mag ich“, fehlende gehen als „Bier fehlt“-Meldung (R6) raus (M)
 

@@ -328,3 +328,20 @@ p.whyLine {
   padding-left: 0;
   color: var(--mut);
 }
+
+/* V2 – „Problem melden“, quiet, at the end of the page */
+.report {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--mut);
+  font: 600 13px/1.2 var(--font-display);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}

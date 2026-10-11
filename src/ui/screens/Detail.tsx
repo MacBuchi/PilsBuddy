@@ -1,4 +1,5 @@
-import { ArrowCounterClockwiseIcon, ArrowLeftIcon, HeartIcon } from '@phosphor-icons/react'
+import { ArrowCounterClockwiseIcon, ArrowLeftIcon, FlagIcon, HeartIcon } from '@phosphor-icons/react'
+import { useState } from 'react'
 import { BEER_BY_ID, formatAbv } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
 import { DISPLAY_AXES } from '../../domain/dna'
@@ -11,11 +12,13 @@ import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
 import { RATING_COLOR, RATING_ICON } from '../ratingStyle'
 import { BeerBottle } from '../components/BeerBottle'
+import { BeerProblemSheet } from '../components/BeerProblemSheet'
 import styles from './Detail.module.css'
 
 export function Detail() {
   const { state, go, rate, toast, dispatch } = useApp()
   const { dna, candidates } = useDerived()
+  const [reporting, setReporting] = useState(false)
   const beer = (state.detailId && BEER_BY_ID[state.detailId]) || candidates[0]?.beer
   if (!beer) return null
   const quality = qualityOf(beer)
@@ -176,7 +179,12 @@ export function Detail() {
             </button>
           )}
         </div>
+
+        <button type="button" className={styles.report} onClick={() => setReporting(true)}>
+          <FlagIcon weight="bold" /> {COPY.beerProblem.entry}
+        </button>
       </div>
+      {reporting && <BeerProblemSheet beer={beer} onClose={() => setReporting(false)} />}
     </div>
   )
 }

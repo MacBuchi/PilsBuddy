@@ -3,10 +3,14 @@ name: Feedback Bot
 # Turns in-app feedback („Wünsch dir was!“, table public.feedback) into public GitHub issues and deletes
 # processed rows after 30 days (tool/feedback_bot.py). Without SUPABASE_SERVICE_ROLE_KEY the run says so
 # in its summary and stays green – a run that fails every two hours would only be noise.
+# V2: beer reports („Problem melden“) become issues with the label `bier-problem`; the label `ausblenden` on such an
+# issue hides the regional beer (regional_beers.hidden). Only people with triage rights can set labels.
 on:
   schedule:
     - cron: "23 */2 * * *" # every two hours
   workflow_dispatch:
+  issues:
+    types: [labeled]
 
 # two overlapping runs would read the same rows – let the second wait
 concurrency:
@@ -20,6 +24,7 @@ permissions:
 jobs:
   process:
     name: Feedback verarbeiten
+    if: github.event_name != 'issues'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -45,3 +50,22 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: python3 tool/feedback_bot.py
+
+  hide:
+    name: Bestätigtes Bier ausblenden
+    if: >-
+      github.event_name == 'issues' && github.event.label.name == 'ausblenden' &&
+      contains(github.event.issue.labels.*.name, 'bier-problem') && github.event.issue.state == 'open'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Self-test (no network)
+        run: python3 tool/feedback_bot.py --self-test
+      - name: Issue → hidden
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # via env, not interpolated into the script
+          ISSUE: ${{ github.event.issue.number }}
+        run: python3 tool/feedback_bot.py hide "$ISSUE"

@@ -47,7 +47,7 @@ begin
       and not exists (select 1 from information_schema.role_table_grants g where g.table_schema = 'public'
                       and g.table_name = c.table_name and g.grantee = c.grantee and g.privilege_type = c.privilege_type)
       and not (c.privilege_type = 'INSERT' and (
-        (c.table_name = 'feedback' and c.column_name in ('type', 'message', 'app_version', 'platform')) or
+        (c.table_name = 'feedback' and c.column_name in ('type', 'message', 'app_version', 'platform', 'beer_id', 'beer_name', 'problem')) or
         (c.table_name = 'beer_submissions' and c.column_name in ('brewery_id', 'brewery_name', 'brewery_place', 'link',
           'beer_name', 'style', 'abv', 'note', 'app_version', 'platform'))))
     order by 1, 2, 3, 4

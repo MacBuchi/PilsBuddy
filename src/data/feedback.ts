@@ -44,19 +44,25 @@ export const validFeedback = (message: string) => {
   return n >= FEEDBACK_MIN && n <= FEEDBACK_MAX
 }
 
+const defaultMeta = () => ({ app_version: __APP_BUILD__, platform: currentPlatform() })
+
 /** Sends one message. Never throws; the caller keeps the draft unless the result is 'ok'. */
 export async function sendFeedback(
   type: FeedbackType,
   message: string,
   fetchFn: typeof fetch = fetch,
-  meta = { app_version: __APP_BUILD__, platform: currentPlatform() },
+  meta = defaultMeta(),
 ): Promise<SendResult> {
-  if (!validFeedback(message)) return 'invalid'
+  return post({ type, message }, fetchFn, meta)
+}
+
+async function post(row: { type: FeedbackType | 'beer'; message: string; [k: string]: string }, fetchFn: typeof fetch, meta: object): Promise<SendResult> {
+  if (!validFeedback(row.message)) return 'invalid'
   try {
     const res = await fetchFn(`${SUPABASE_URL}/rest/v1/feedback`, {
       method: 'POST',
       headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-      body: JSON.stringify({ type, message: message.trim(), ...meta }),
+      body: JSON.stringify({ ...row, message: row.message.trim(), ...meta }),
     })
     if (res.ok) return 'ok'
     const err = (await res.json().catch(() => null)) as { message?: string } | null
@@ -66,6 +72,41 @@ export async function sendFeedback(
   } catch {
     return 'offline'
   }
+}
+
+/* ---------- V2: „Problem melden“ at a beer ---------- */
+
+/** What can be wrong with a beer – the database knows the same list (feedback.problem). */
+export const BEER_PROBLEMS = ['not_a_beer', 'not_exists', 'wrong_values', 'wrong_brewery', 'duplicate', 'other'] as const
+export type BeerProblem = (typeof BEER_PROBLEMS)[number]
+const BEER_ID = /^[a-z0-9-]{1,60}$/
+
+/** „„Schloss Dunkel“: Gibt es nicht (mehr) – seit 2023 eingestellt“ – the issue text; „other“ needs a note. */
+export function beerProblemMessage(name: string, label: string, note: string): string {
+  const n = note.trim()
+  return `„${name.trim().slice(0, 200)}“: ${label}${n ? ` – ${n}` : ''}`.slice(0, FEEDBACK_MAX)
+}
+
+export const validBeerProblem = (problem: BeerProblem, note: string) => problem !== 'other' || note.trim().length >= FEEDBACK_MIN
+
+/**
+ * Reports a problem with one beer: which beer (id + name), what is wrong, an optional note – plus build and
+ * platform like any feedback. Never throws. A second identical report the same day counts as sent ('duplicate').
+ */
+export async function sendBeerProblem(
+  beer: { id: string; name: string },
+  problem: BeerProblem,
+  label: string,
+  note: string,
+  fetchFn: typeof fetch = fetch,
+  meta = defaultMeta(),
+): Promise<SendResult> {
+  if (!BEER_ID.test(beer.id) || !BEER_PROBLEMS.includes(problem) || !validBeerProblem(problem, note)) return 'invalid'
+  return post(
+    { type: 'beer', message: beerProblemMessage(beer.name, label, note), beer_id: beer.id, beer_name: beer.name.trim().slice(0, 200), problem },
+    fetchFn,
+    meta,
+  )
 }
 
 export interface Draft {

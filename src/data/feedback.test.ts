@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { DRAFT_KEY, platformOf, readDraft, sendFeedback, validFeedback, writeDraft } from './feedback'
+import { beerProblemMessage, DRAFT_KEY, platformOf, readDraft, sendBeerProblem, sendFeedback, validFeedback, writeDraft } from './feedback'
 
 const meta = { app_version: 'a74e951', platform: 'iOS · App' }
 const answer = (status: number, body?: unknown) => vi.fn(async (_url: string, _init?: RequestInit) => new Response(body === undefined ? null : JSON.stringify(body), { status }))
@@ -55,5 +55,34 @@ describe('draft', () => {
     expect(readDraft()).toEqual({ type: 'bug', message: 'Halb getippt' })
     writeDraft({ type: 'bug', message: '  ' })
     expect(stored.has(DRAFT_KEY)).toBe(false)
+  })
+})
+
+describe('sendBeerProblem (V2)', () => {
+  const beer = { id: 'r-wb412292101b0b4d0', name: 'T-Shirt Schwarz' }
+
+  it('posts which beer, what is wrong and the note – plus build and platform', async () => {
+    const f = answer(201)
+    expect(await sendBeerProblem(beer, 'not_a_beer', 'Das ist kein Bier', '  ein Shirt aus dem Shop ', f as unknown as typeof fetch, meta)).toBe('ok')
+    expect(JSON.parse(f.mock.calls[0][1]!.body as string)).toEqual({
+      type: 'beer',
+      message: '„T-Shirt Schwarz“: Das ist kein Bier – ein Shirt aus dem Shop',
+      beer_id: 'r-wb412292101b0b4d0',
+      beer_name: 'T-Shirt Schwarz',
+      problem: 'not_a_beer',
+      ...meta,
+    })
+  })
+
+  it('needs a note only for „other“, refuses odd ids, maps answers like feedback', async () => {
+    const f = answer(201)
+    expect(await sendBeerProblem(beer, 'other', 'Etwas anderes', ' ', f as unknown as typeof fetch, meta)).toBe('invalid')
+    expect(await sendBeerProblem({ id: 'R-<x>', name: 'X' }, 'not_exists', 'Gibt es nicht', '', f as unknown as typeof fetch, meta)).toBe('invalid')
+    expect(f).not.toHaveBeenCalled()
+    expect(await sendBeerProblem(beer, 'not_exists', 'Gibt es nicht', '', answer(400, { message: 'feedback duplicate' }) as unknown as typeof fetch, meta)).toBe('duplicate')
+  })
+
+  it('builds the issue text', () => {
+    expect(beerProblemMessage(' Jever ', 'Werte stimmen nicht', '')).toBe('„Jever“: Werte stimmen nicht')
   })
 })
