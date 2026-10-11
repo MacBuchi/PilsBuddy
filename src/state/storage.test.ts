@@ -89,7 +89,7 @@ describe('storage', () => {
   })
 
   it('game stats survive a reload; junk and old profiles count as nothing played', () => {
-    const games = { quartett: { played: 5, won: 3 }, fill: { played: 2, won: 1, best: 412 }, memory: { played: 3, won: 1, best: { bottles: 15, style: 0 } } }
+    const games = { quartett: { played: 5, won: 3 }, fill: { played: 2, won: 1, best: 412 }, memory: { played: 3, won: 1, best: { bottles: 15, style: 0 } }, quiz: { played: 4, won: 2, best: 8 } }
     const p = { ...initialProfile(), games }
     expect(parseProfile(serializeProfile(p))?.games).toEqual(games)
     const old = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: undefined } })
@@ -106,5 +106,9 @@ describe('storage', () => {
     expect(parseProfile(memJunk)?.games.memory).toEqual(NO_GAMES.memory)
     const memOk = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { memory: { played: 2, won: 1, best: { bottles: 12, style: -3 } } } } })
     expect(parseProfile(memOk)?.games.memory).toEqual({ played: 2, won: 1, best: { bottles: 12, style: 0 } })
+    // profiles from before E7 have no quiz record; a best above the question count is clamped
+    expect(parseProfile(e2)?.games.quiz).toEqual(NO_GAMES.quiz)
+    const quizBig = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quiz: { played: 1, won: 1, best: 99 } } } })
+    expect(parseProfile(quizBig)?.games.quiz).toEqual({ played: 1, won: 1, best: 10 })
   })
 })

@@ -1,5 +1,6 @@
 import { progressOf, unlockedIds } from '../domain/achievements'
 import type { BuddySnapshot } from '../domain/buddyLink'
+import { QUIZ_QUESTIONS } from '../domain/games/quiz'
 import { RATINGS } from '../domain/types'
 import type { Rating, Ratings } from '../domain/types'
 import { initialProfile } from './reducer'
@@ -63,14 +64,21 @@ function sanitizeRecord(raw: unknown): GameRecord {
 }
 
 function sanitizeGames(raw: unknown): GameStats {
-  const g = raw as { quartett?: unknown; fill?: { best?: unknown }; memory?: { best?: { bottles?: unknown; style?: unknown } } } | null
+  const g = raw as {
+    quartett?: unknown
+    fill?: { best?: unknown }
+    memory?: { best?: { bottles?: unknown; style?: unknown } }
+    quiz?: { best?: unknown }
+  } | null
   const fill = sanitizeRecord(g?.fill)
+  const quiz = sanitizeRecord(g?.quiz)
   const memory = sanitizeRecord(g?.memory)
   const fewest = (v: unknown) => (memory.played ? count(v) : 0)
   return {
     quartett: sanitizeRecord(g?.quartett),
     fill: { ...fill, best: fill.played ? count(g?.fill?.best) : 0 },
     memory: { ...memory, best: { bottles: fewest(g?.memory?.best?.bottles), style: fewest(g?.memory?.best?.style) } },
+    quiz: { ...quiz, best: quiz.played ? Math.min(QUIZ_QUESTIONS, count(g?.quiz?.best)) : 0 },
   }
 }
 

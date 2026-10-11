@@ -153,6 +153,8 @@ describe('sync', () => {
     )
     expect(m.profile.games.memory).toEqual({ played: 4, won: 2, best: { bottles: 14, style: 16 } })
     expect(m.profile.games.fill).toEqual(f.profile.games.fill)
+    const q = run(m, { type: 'GAME_OVER', game: 'quiz', won: false, score: 5 }, { type: 'GAME_OVER', game: 'quiz', won: true, score: 8 })
+    expect(q.profile.games.quiz).toEqual({ played: 2, won: 1, best: 8 })
     expect(run(s, { type: 'RESET' }).profile.games).toEqual(NO_GAMES)
   })
 })

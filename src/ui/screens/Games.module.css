@@ -200,3 +200,9 @@
   font: 500 12.5px/1.4 var(--font-display);
   color: var(--mut);
 }
+
+/* the quiz tile: the room's round badge in blue (after .room so it wins) */
+.quiz {
+  background: var(--ax-suffig);
+  color: var(--cream-fixed);
+}

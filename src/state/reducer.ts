@@ -19,6 +19,7 @@ export type Screen =
   | 'quartett'
   | 'fill'
   | 'memory'
+  | 'quiz'
   | 'room'
   | 'regional'
   | 'library'
@@ -61,12 +62,15 @@ export interface GameStats {
   fill: GameRecord & { best: number }
   /** Flaschen-Memory – plus the fewest moves per variant (0 = never finished). */
   memory: GameRecord & { best: Record<MemoryVariant, number> }
+  /** Bierquiz – plus the most right answers in one game. */
+  quiz: GameRecord & { best: number }
 }
 
 export const NO_GAMES: GameStats = {
   quartett: { played: 0, won: 0 },
   fill: { played: 0, won: 0, best: 0 },
   memory: { played: 0, won: 0, best: { bottles: 0, style: 0 } },
+  quiz: { played: 0, won: 0, best: 0 },
 }
 
 export interface SyncSettings {
@@ -106,7 +110,7 @@ export type Action =
   | { type: 'IMPORT'; profile: Profile }
   | { type: 'SET_BUDDY'; buddy: BuddySnapshot | null }
   | { type: 'RESET' }
-  | { type: 'GAME_OVER'; game: 'quartett' | 'fill'; won: boolean; score?: number }
+  | { type: 'GAME_OVER'; game: 'quartett' | 'fill' | 'quiz'; won: boolean; score?: number }
   | { type: 'GAME_OVER'; game: 'memory'; won: boolean; variant: MemoryVariant; moves: number }
   | { type: 'SET_SYNC'; sync: Partial<SyncSettings> }
   /** Result of a cloud sync, computed from `sent`; ratings changed meanwhile on this device are kept. */
@@ -209,7 +213,8 @@ export function reducer(state: AppState, action: Action): AppState {
         const old = all.memory.best[action.variant]
         const best = { ...all.memory.best, [action.variant]: old ? Math.min(old, action.moves) : action.moves }
         games = { ...all, memory: { ...played, best } }
-      } else if (action.game === 'fill') games = { ...all, fill: { ...played, best: Math.max(all.fill.best, action.score ?? 0) } }
+      } else if (action.game === 'fill' || action.game === 'quiz')
+        games = { ...all, [action.game]: { ...played, best: Math.max(all[action.game].best, action.score ?? 0) } }
       else games = { ...all, [action.game]: played }
       return { ...state, profile: { ...state.profile, games } }
     }

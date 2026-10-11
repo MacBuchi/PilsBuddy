@@ -160,6 +160,22 @@ await step('spiele: flaschen-memory, one move', async () => {
   page.once('dialog', (d) => d.accept())
   await m.getByRole('button', { name: 'Spiel beenden' }).click()
   await see('Die Flaschen liegen bereit')
+})
+await step('spiele: bierquiz, ten questions to the result (E7)', async () => {
+  await m.getByRole('button', { name: /Quiz starten/ }).click()
+  for (let n = 1; n <= 10; n++) {
+    await see(`Frage ${n} von 10`)
+    await m.getByRole('group').getByRole('button').first().click()
+    await m.getByText(/^(Richtig!|Leider nein)/).first().waitFor({ timeout: 4000 })
+    if (n === 1) {
+      await page.waitForTimeout(400) // colour transition
+      await page.screenshot({ path: `${out}-quiz.png` })
+    }
+    await m.getByRole('button', { name: n < 10 ? 'Nächste Frage' : 'Auswerten' }).click()
+  }
+  await page.getByRole('dialog').getByText(/von 10/).waitFor({ timeout: 4000 })
+  await page.getByRole('button', { name: 'Zur Spielauswahl' }).click()
+  await see('Bestwert') // a finished quiz counts
   await m.getByText('Profil', { exact: true }).click()
 })
 await step('impressum & datenschutz from profile, back', async () => {
