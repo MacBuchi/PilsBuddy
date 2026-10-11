@@ -31,7 +31,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 12. [x] **R7** Aktualität (monatlicher Pipeline-Dry-Run) (#67)
 13. [x] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71, E6 #72)
 14. [ ] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
-    jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73
+    jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73, V2 #74
 15. [ ] **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -326,7 +326,7 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       Merch/Hashtags/Award-Zeilen und säubert Layout-Reste im Namen; Detail zeigt die Datenlage; die erste
       Sequenzierung (Referenz-Set) nur mit geprüften Bieren, „fraglich“ nie im Deck (M)
 - [x] V2 **„Problem melden“** an jedem Bier (falsches Bier, falsche Werte, gibt es nicht) → Issue wie das Feedback (S–M)
-      - umgesetzt (#PR): Detail-Seite unten „Problem mit diesem Bier melden“ – Auswahl (kein Bier · gibt es nicht ·
+      - umgesetzt (#74): Detail-Seite unten „Problem mit diesem Bier melden“ – Auswahl (kein Bier · gibt es nicht ·
         Stil/Alkohol falsch · Brauerei/Ort falsch · doppelt · anderes) + Notiz; Feedback-Tabelle mit `type = 'beer'`,
         Bot → Issue `bier-problem` mit Katalogdaten; Label `ausblenden` → `regional_beers.hidden` (überlebt den Import)
 - [ ] V3 **Lieblingsbiere zuerst:** vor dem Referenz-Set nach Lieblingsbieren fragen (Suche in Katalog + Regionalbieren);
