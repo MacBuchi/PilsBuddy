@@ -134,6 +134,9 @@ describe('sync', () => {
   it('GAME_OVER counts games and wins; RESET clears them', () => {
     const s = run(fresh(), { type: 'GAME_OVER', game: 'quartett', won: true }, { type: 'GAME_OVER', game: 'quartett', won: false })
     expect(s.profile.games.quartett).toEqual({ played: 2, won: 1 })
+    const f = run(s, { type: 'GAME_OVER', game: 'fill', won: true, score: 420 }, { type: 'GAME_OVER', game: 'fill', won: false, score: 180 })
+    expect(f.profile.games.fill).toEqual({ played: 2, won: 1, best: 420 })
+    expect(f.profile.games.quartett).toEqual({ played: 2, won: 1 })
     expect(run(s, { type: 'RESET' }).profile.games).toEqual(NO_GAMES)
   })
 })

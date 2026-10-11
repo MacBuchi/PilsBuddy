@@ -49,7 +49,7 @@ describe('English text bank', () => {
   })
 
   it('is actually translated (no German umlauts outside names)', () => {
-    const names = /Häffner|Tannenzäpfle|Störtebeker|Dröppke|Lübzer|Budějovice|Plzeň|Maß/
+    const names = /Häffner|Tannenzäpfle|Störtebeker|Dröppke|Lübzer|Budějovice|Plzeň|Maß|Kölsch/
     const german = enLeaves.filter(([, t]) => /[äöüß]/.test(t.replace(names, '')))
     expect(german).toEqual([])
   })

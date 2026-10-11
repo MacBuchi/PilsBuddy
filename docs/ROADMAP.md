@@ -29,7 +29,7 @@ Details stehen beim jeweiligen Paket weiter unten.
     N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60, #61) + Live-Import (2026-10-03)
 11. [x] **R9** Brauerei-Weltkarte mit eigenem Standort (Wunsch 2026-10-03, vor R7 gezogen) (#64)
 12. [x] **R7** Aktualität (monatlicher Pipeline-Dry-Run) (#67)
-13. [ ] **E2 → E6** Minispiele, dann **C2/C3**, dann **D1/D2**
+13. [ ] **E2 → E6** Minispiele (E2 #68), dann **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -331,8 +331,8 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
       10 Karten je Seite, max. 30 Runden). Bot nennt den Wert, mit dem seine Karte relativ am stärksten ist
       (Simulation: naiver Mensch gewinnt ~43 %, kluger ~62 %). Statistik im Profil, Achievement
       „Quartett-König“ (3 Siege) (M)
-- [ ] E2 **Wie viel ist drin?** Füllmenge schätzen; Volumen aus der Glasform (Rotationskörper) berechnet –
-      Stange, Tulpe, Weizen, Maß, Willibecher (M)
+- [x] E2 **Wie viel ist drin?** Füllmenge schätzen; Volumen aus der Glasform (Rotationskörper) berechnet –
+      Stange, Tulpe, Weizen, Maß, Willibecher (M) (#68)
 - [ ] E3 **Flaschen-Memory** mit den animierten Flaschen; Variante Flasche ↔ Bierstil (S)
 - [ ] E4 **Mehrspieler-Gerüst:** Raum per Code/QR über Supabase Realtime (Broadcast + Presence, anonym),
       Gastgeber hält den Spielzustand (M)

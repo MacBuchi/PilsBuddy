@@ -3,7 +3,7 @@ import type { BuddySnapshot } from '../domain/buddyLink'
 import { RATINGS } from '../domain/types'
 import type { Rating, Ratings } from '../domain/types'
 import { initialProfile } from './reducer'
-import type { GameStats, Profile, SyncSettings } from './reducer'
+import type { GameRecord, GameStats, Profile, SyncSettings } from './reducer'
 
 /**
  * Local persistence. The MVP keeps the whole profile in localStorage under a
@@ -56,10 +56,16 @@ function sanitizeSync(raw: unknown): SyncSettings {
 
 const count = (v: unknown): number => (typeof v === 'number' && Number.isInteger(v) && v >= 0 ? v : 0)
 
+function sanitizeRecord(raw: unknown): GameRecord {
+  const r = raw as { played?: unknown; won?: unknown } | null | undefined
+  const played = count(r?.played)
+  return { played, won: Math.min(played, count(r?.won)) }
+}
+
 function sanitizeGames(raw: unknown): GameStats {
-  const q = (raw as { quartett?: { played?: unknown; won?: unknown } } | null)?.quartett
-  const played = count(q?.played)
-  return { quartett: { played, won: Math.min(played, count(q?.won)) } }
+  const g = raw as { quartett?: unknown; fill?: { best?: unknown } } | null
+  const fill = sanitizeRecord(g?.fill)
+  return { quartett: sanitizeRecord(g?.quartett), fill: { ...fill, best: fill.played ? count(g?.fill?.best) : 0 } }
 }
 
 /** Accepts whatever is on disk and returns a valid Profile – or null if unusable. */

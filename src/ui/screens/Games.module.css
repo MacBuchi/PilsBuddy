@@ -55,6 +55,15 @@
   top: 0;
 }
 
+.shelf {
+  align-self: center;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 112px;
+  margin-bottom: 4px;
+}
+
 .heroTitle {
   font: 800 26px/1 var(--font-display);
   letter-spacing: -0.03em;
@@ -108,7 +117,7 @@
   border: 2px dashed var(--line-strong);
 }
 
-.soon:last-child {
+.soon:last-child:nth-child(odd) {
   grid-column: 1 / -1;
 }
 
