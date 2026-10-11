@@ -81,12 +81,21 @@ describe('Regional-Modus (R5)', () => {
   const lookup = { ...BEER_BY_ID, ...Object.fromEntries(nearby.map((n) => [n.beer.id, n.beer])) }
   const afterOnboarding = rate(referenceIds)
 
-  it('every third card is regional; the own cards keep their order (reference set first)', () => {
+  it('the reference set comes first and stays researched beers only (V1); then every third card is regional', () => {
     const deck = buildDeck({}, DECK_ORDER, lookup, nearby)
-    expect(deck.slice(0, 9).map((c) => c.pick === 'regional')).toEqual([false, false, true, false, false, true, false, false, true])
+    const n = referenceIds.length
+    expect(deck.slice(0, n).map((c) => c.pick)).toEqual(Array(n).fill('reference'))
+    expect(deck.slice(n, n + 9).filter((c) => c.pick === 'regional')).toHaveLength(3)
     const own = deck.filter((c) => c.pick !== 'regional')
     expect(own).toEqual(buildDeck({}))
     expect(deck).toHaveLength(BEERS.length + nearby.length)
+  })
+
+  it('never deals a „fraglich“ beer (quality 0) – old rows without a level count as „gefunden“', () => {
+    const doubtful = { beer: toRegionalBeer({ ...row('r-alt', 'Helles'), quality: 0 }, brewery), km: 1 }
+    const deck = buildDeck(afterOnboarding, DECK_ORDER, { ...lookup, 'r-alt': doubtful.beer }, [...nearby, doubtful])
+    expect(deck.map((c) => c.id)).not.toContain('r-alt')
+    expect(deck.filter((c) => c.pick === 'regional')).toHaveLength(3)
   })
 
   it('orders regional cards by match, carries pct and distance', () => {

@@ -66,7 +66,12 @@ export interface Beer {
   reference?: boolean
   /** Beer of a regional brewery from open data (Stufe R): its taste is a style estimate, not a tasting. */
   regional?: RegionalInfo
+  /** V1: how well the beer is backed (regional_beers.quality); curated beers have none and count as 3 – see `qualityOf`. */
+  quality?: Quality
 }
+
+/** V1: 0 fraglich · 1 gefunden · 2 bestätigt (EAN/Wikidata or two sources, ABV known) · 3 geprüft (researched by hand). */
+export type Quality = 0 | 1 | 2 | 3
 
 export interface RegionalInfo {
   breweryId: string

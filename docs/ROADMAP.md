@@ -29,7 +29,10 @@ Details stehen beim jeweiligen Paket weiter unten.
     N3 Klassiker USA (#57) · N4 Regionalkatalog Schema + Client (#59) · N5 Pipeline + Crawler (#60, #61) + Live-Import (2026-10-03)
 11. [x] **R9** Brauerei-Weltkarte mit eigenem Standort (Wunsch 2026-10-03, vor R7 gezogen) (#64)
 12. [x] **R7** Aktualität (monatlicher Pipeline-Dry-Run) (#67)
-13. [ ] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71), dann **C2/C3**, dann **D1/D2**
+13. [x] **E2 → E6** Minispiele (E2 #68, E3 #69, E4 #70, E5 #71, E6 #72)
+14. [ ] **V1 → V3** Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen): V1 Qualitätsstufe · V2 „Problem melden“ an
+    jedem Bier · V3 Lieblingsbiere zu Beginn der DNA-Sequenzierung – V1 #73
+15. [ ] **C2/C3**, dann **D1/D2**
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -311,6 +314,20 @@ Nicht genutzt: Untappd, RateBeer, BeerAdvocate (AGB), BreweryDB (eingestellt).
       - live 2026-10-03 (fetch 37062841573, Websites 37102663196, Import 37104983511): 14 055 Brauereien
         (US 10 567 · DE 1 949 · CA 1 046 · CH 268 · AT 225), 10 675 Hauptbiere (US 7 388 · DE 1 733 · CA 1 101 · CH 264 ·
         AT 189), 89 906 PLZ/ZIP/FSA
+
+### Stufe V – Verlässliche Biere (Wunsch 2026-10-11, vor C gezogen)
+
+Viele Regionalbiere sind automatisch gelesen (9 621 von 10 675 nur von Brauerei-Websites), nicht geprüft – dabei
+auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche Werte. Die kuratierten Biere sind recherchiert.
+
+- [x] V1 **Qualitätsstufe** (#73) je Bier, berechnet aus den Belegen: 0 fraglich (nur alte openbeer-Liste, oder weder Stil
+      noch Alkohol) · 1 gefunden (eine aktuelle Quelle) · 2 bestätigt (Strichcode/Wikidata oder zwei Quellen, Alkohol
+      bekannt) · 3 geprüft (von Hand recherchiert = kuratierte Biere). Spalte `regional_beers.quality`, Pipeline filtert
+      Merch/Hashtags/Award-Zeilen und säubert Layout-Reste im Namen; Detail zeigt die Datenlage; die erste
+      Sequenzierung (Referenz-Set) nur mit geprüften Bieren, „fraglich“ nie im Deck (M)
+- [ ] V2 **„Problem melden“** an jedem Bier (falsches Bier, falsche Werte, gibt es nicht) → Issue wie das Feedback (S–M)
+- [ ] V3 **Lieblingsbiere zuerst:** vor dem Referenz-Set nach Lieblingsbieren fragen (Suche in Katalog + Regionalbieren);
+      gefundene zählen als „Mag ich“, fehlende gehen als „Bier fehlt“-Meldung (R6) raus (M)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
