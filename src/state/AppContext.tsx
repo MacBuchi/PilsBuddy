@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { newlyUnlocked, progressOf } from '../domain/achievements'
 import type { AchievementDef } from '../domain/achievements'
 import { decodeBuddy } from '../domain/buddyLink'
+import { normalizeRoomCode } from '../domain/games/room'
 import { countRatings } from '../domain/dna'
 import type { Rating } from '../domain/types'
 import { initialState, reducer, TAB_SCREENS } from './reducer'
@@ -77,14 +78,20 @@ export function withIncomingBuddy(s: AppState, param: string | null): AppState {
   return s.profile.onboarded ? { ...next, screen: 'matches', prevScreen: 'matches', matchTab: 'menschen' } : next
 }
 
+/** A `?room=` invite (Stufe E4) opens the game room and joins; the room screen asks for the age first if needed. */
+export function withIncomingRoom(s: AppState, param: string | null): AppState {
+  const code = normalizeRoomCode(param)
+  return code ? { ...s, screen: 'room', prevScreen: s.screen, roomJoin: code } : s
+}
+
 /** `#impressum` / `#datenschutz` open the legal page directly (back leads to where the user would land). */
 export function withLegalHash(s: AppState, hash: string): AppState {
   return hash === '#impressum' || hash === '#datenschutz' ? { ...s, screen: 'legal', prevScreen: s.screen } : s
 }
 
-function buddyParam(): string | null {
+function urlParam(name: string): string | null {
   try {
-    return new URLSearchParams(window.location.search).get('buddy')
+    return new URLSearchParams(window.location.search).get(name)
   } catch {
     return null
   }
@@ -100,13 +107,14 @@ export function bootState(store: ProfileStore): AppState {
 }
 
 export function AppProvider({ children, initial, store = profileStore }: { children: ReactNode; initial?: AppState; store?: ProfileStore }) {
-  const [state, dispatch] = useReducer(reducer, initial, (i) => i ?? devInitialState() ?? withLegalHash(withIncomingBuddy(bootState(store), buddyParam()), window.location.hash))
+  const [state, dispatch] = useReducer(reducer, initial, (i) => i ?? devInitialState() ?? withLegalHash(withIncomingRoom(withIncomingBuddy(bootState(store), urlParam('buddy')), urlParam('room')), window.location.hash))
 
-  // the buddy payload is in the profile now – keep the address bar clean (and reload-safe)
+  // the buddy payload is in the profile now, the room code in the state – keep the address bar clean (and reload-safe)
   useEffect(() => {
-    if (!buddyParam()) return
+    if (!urlParam('buddy') && !urlParam('room')) return
     const url = new URL(window.location.href)
     url.searchParams.delete('buddy')
+    url.searchParams.delete('room')
     window.history.replaceState(null, '', url.pathname + url.search + url.hash)
   }, [])
   useCloudSync(state.profile, dispatch)

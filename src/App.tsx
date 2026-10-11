@@ -20,6 +20,7 @@ import { Matches } from './ui/screens/Matches'
 import { Profile } from './ui/screens/Profile'
 import { Quartett } from './ui/screens/Quartett'
 import { Regional } from './ui/screens/Regional'
+import { Room } from './ui/screens/Room'
 import { Swipe } from './ui/screens/Swipe'
 import { Welcome } from './ui/screens/Welcome'
 
@@ -37,7 +38,7 @@ function MomentHost() {
   const close = useCallback(() => {
     if (id) dispatch({ type: 'MARK_SEEN', id })
   }, [dispatch, id])
-  if (!pending || ['welcome', 'howto', 'analyzing', 'quartett', 'fill', 'memory'].includes(state.screen)) return null
+  if (!pending || ['welcome', 'howto', 'analyzing', 'quartett', 'fill', 'memory', 'room'].includes(state.screen)) return null
   const onDna =
     pending.id === 'entschluesselt'
       ? () => {
@@ -68,6 +69,7 @@ function Screens() {
         {s === 'quartett' && <Quartett />}
         {s === 'fill' && <FillGame />}
         {s === 'memory' && <Memory />}
+        {s === 'room' && <Room />}
         {s === 'regional' && <Regional />}
         {s === 'library' && <Library />}
         {s === 'map' && (

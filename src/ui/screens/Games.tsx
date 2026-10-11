@@ -1,4 +1,4 @@
-import { BeerBottleIcon, PlayIcon } from '@phosphor-icons/react'
+import { BeerBottleIcon, PlayIcon, UsersThreeIcon } from '@phosphor-icons/react'
 import { BEER_BY_ID } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
 import { GLASS_BY_ID, GLASSES, POINTS_PER_ROUND } from '../../domain/games/fill'
@@ -18,7 +18,7 @@ const SHELF = [
 const FILL_MAX = GLASSES.length * POINTS_PER_ROUND
 const MEMO = BEER_BY_ID.augustiner ?? FAN[1]
 
-/** Stufe E: the mini games. Quartett, „Wie viel ist drin?“ and Flaschen-Memory are playable; the rest is announced. */
+/** Stufe E: the mini games. Quartett, „Wie viel ist drin?“, Flaschen-Memory and the game room are here; the rest is announced. */
 export function Games() {
   const { state, go, withTabs } = useApp()
   const { played, won } = state.profile.games.quartett
@@ -111,6 +111,20 @@ export function Games() {
           </span>
           <span className={styles.play}>
             <PlayIcon weight="fill" /> {COPY.games.memory.cta}
+          </span>
+        </span>
+      </button>
+
+      <button type="button" className={styles.hero} onClick={() => go('room')}>
+        <div className={styles.room} aria-hidden>
+          <UsersThreeIcon weight="fill" />
+        </div>
+        <span className={styles.heroTitle}>{COPY.games.room.title}</span>
+        <span className={styles.heroText}>{COPY.games.room.text}</span>
+        <span className={styles.heroFoot}>
+          <span className={styles.record}>{COPY.games.room.note}</span>
+          <span className={styles.play}>
+            <PlayIcon weight="fill" /> {COPY.games.room.cta}
           </span>
         </span>
       </button>
