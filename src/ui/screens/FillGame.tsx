@@ -1,20 +1,17 @@
 import { MinusIcon, PlusIcon, XIcon } from '@phosphor-icons/react'
 import { useRef, useState } from 'react'
 import { COPY, fill } from '../../data/copy'
-import { capacityOf, GLASS_BY_ID, guess as addGuess, isOver, isWin, maxScore, newFillGame, scoreGuess, STEP_ML, totalScore } from '../../domain/games/fill'
-import type { FillGame as Game, Glass } from '../../domain/games/fill'
+import { GLASS_BY_ID, guess as addGuess, isOver, isWin, maxScore, newFillGame, scoreGuess, STEP_ML, totalScore } from '../../domain/games/fill'
+import type { FillGame as Game } from '../../domain/games/fill'
 import { useApp } from '../../state/AppContext'
 import { Button } from '../components/Button'
 import { FillGlass } from '../components/FillGlass'
 import q from './Quartett.module.css'
+import { litres, maxOf, ml, startValue } from './gameFormat'
 import styles from './FillGame.module.css'
 
 type Phase = 'guess' | 'reveal' | 'end'
 
-const ml = (v: number) => `${v} ml`
-const litres = (v: number) => `${String(v / 1000).replace('.', COPY.app.decimal)} l`
-const maxOf = (g: Glass) => Math.floor(capacityOf(g) / STEP_ML) * STEP_ML
-const startValue = (g: Glass) => Math.round(g.nominal / 2 / STEP_ML) * STEP_ML
 
 function endTitle(game: Game): string {
   const share = totalScore(game) / maxScore(game)
@@ -95,28 +92,7 @@ export function FillGame() {
           {phase === 'guess' ? (
             <>
               <p className={q.status}>{COPY.fill.ask}</p>
-              <div className={styles.picker}>
-                <button type="button" className={styles.step} onClick={() => set(value - STEP_ML)} aria-label={`− ${ml(STEP_ML)}`}>
-                  <MinusIcon weight="bold" />
-                </button>
-                <output className={styles.value} htmlFor="fill-guess">
-                  {ml(value)}
-                </output>
-                <button type="button" className={styles.step} onClick={() => set(value + STEP_ML)} aria-label={`+ ${ml(STEP_ML)}`}>
-                  <PlusIcon weight="bold" />
-                </button>
-              </div>
-              <input
-                id="fill-guess"
-                className={styles.slider}
-                type="range"
-                min={0}
-                max={max}
-                step={STEP_ML}
-                value={value}
-                onChange={(e) => set(Number(e.target.value))}
-                aria-label={COPY.fill.guess}
-              />
+              <FillPicker value={value} max={max} onChange={set} />
               <Button variant="ink" block onClick={submit}>
                 {COPY.fill.submit}
               </Button>
@@ -161,6 +137,36 @@ export function FillGame() {
           </div>
         </div>
       )}
+    </>
+  )
+}
+
+/** The guess: − / + in 10 ml steps and a slider up to the brim. */
+export function FillPicker({ value, max, onChange }: { value: number; max: number; onChange: (v: number) => void }) {
+  return (
+    <>
+      <div className={styles.picker}>
+        <button type="button" className={styles.step} onClick={() => onChange(value - STEP_ML)} aria-label={`− ${ml(STEP_ML)}`}>
+          <MinusIcon weight="bold" />
+        </button>
+        <output className={styles.value} htmlFor="fill-guess">
+          {ml(value)}
+        </output>
+        <button type="button" className={styles.step} onClick={() => onChange(value + STEP_ML)} aria-label={`+ ${ml(STEP_ML)}`}>
+          <PlusIcon weight="bold" />
+        </button>
+      </div>
+      <input
+        id="fill-guess"
+        className={styles.slider}
+        type="range"
+        min={0}
+        max={max}
+        step={STEP_ML}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={COPY.fill.guess}
+      />
     </>
   )
 }
