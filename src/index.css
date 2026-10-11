@@ -161,6 +161,14 @@ a {
   from { transform: translateY(100%); }
   to { transform: none; }
 }
+@keyframes pbGrow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes pbLock {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.25); }
+}
 @keyframes pbFade {
   from { opacity: 0; }
   to { opacity: 1; }

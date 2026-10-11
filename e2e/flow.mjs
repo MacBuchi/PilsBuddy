@@ -176,6 +176,31 @@ await step('spiele: bierquiz, ten questions to the result (E7)', async () => {
   await page.getByRole('dialog').getByText(/von 10/).waitFor({ timeout: 4000 })
   await page.getByRole('button', { name: 'Zur Spielauswahl' }).click()
   await see('Bestwert') // a finished quiz counts
+})
+await step('spiele: wer wird bierionär?, jokers, lock in, result (E9)', async () => {
+  await m.getByRole('button', { name: /Ans Ratepult/ }).click()
+  await see('Frage 1 von 15')
+  await m.getByRole('button', { name: '50:50' }).click()
+  await m.getByRole('button', { name: 'Stammtisch' }).click()
+  await see('Der Stammtisch hat abgestimmt')
+  await page.waitForTimeout(700) // bars grow
+  await page.screenshot({ path: `${out}-bierionaer.png` })
+  const options = m.locator('button[aria-pressed]:not([disabled])')
+  await options.first().click()
+  await see('Ist das deine endgültige Antwort?')
+  await m.getByRole('button', { name: 'Einloggen' }).click()
+  await m.getByText(/^(Richtig!|Leider falsch)/).first().waitFor({ timeout: 5000 })
+  if (await m.getByRole('button', { name: 'Nächste Frage' }).count()) {
+    await m.getByRole('button', { name: 'Nächste Frage' }).click()
+    page.once('dialog', (d) => d.accept())
+    await m.getByRole('button', { name: /^Aussteigen/ }).click()
+  } else {
+    await m.getByRole('button', { name: 'Zum Ergebnis' }).click()
+  }
+  await page.getByRole('dialog').getByText(/Kronkorken/).first().waitFor({ timeout: 4000 })
+  await page.getByRole('button', { name: 'Zur Spielauswahl' }).click()
+  await see('Bestwert 50 Kronkorken') // walked away with 50 or fell to 0 – either way the game counts
+    .catch(() => see('Bestwert 0 Kronkorken'))
   await m.getByText('Profil', { exact: true }).click()
 })
 await step('impressum & datenschutz from profile, back', async () => {

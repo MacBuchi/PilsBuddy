@@ -206,3 +206,37 @@
   background: var(--ax-suffig);
   color: var(--cream-fixed);
 }
+
+/* „Wer wird Bierionär?“: a glimpse of the studio – always dark, gold */
+.studio {
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(242, 181, 58, 0.3), transparent 65%),
+    #120d07;
+  color: var(--cream-fixed);
+}
+
+.studio .heroText,
+.studio .record {
+  color: rgba(255, 251, 243, 0.78);
+}
+
+.crown {
+  align-self: center;
+  width: 112px;
+  height: 112px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  border: 2.5px solid var(--gold);
+  box-shadow: 0 0 28px rgba(242, 181, 58, 0.45);
+  background: radial-gradient(circle at 50% 35%, #3a2c14, #1b140a);
+  color: var(--gold-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+}
+
+.studio .play {
+  background: var(--gold);
+  color: var(--ink-fixed);
+}

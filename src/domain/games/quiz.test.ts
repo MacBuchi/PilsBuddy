@@ -9,15 +9,16 @@ const answerAll = (game: QuizGame, right: (i: number) => boolean) =>
   game.questions.reduce((g, q, i) => pick(g, right(i) ? q.answer : (q.answer + 1) % q.options.length), game)
 
 describe('newQuiz', () => {
-  it('asks ten questions with four distinct options and one right answer', () => {
+  it('asks ten questions with four distinct options (two for A/B estimates) and one right answer', () => {
     for (let seed = 1; seed <= 40; seed++) {
       const game = newQuiz(beers, seed)
       expect(game.questions).toHaveLength(QUIZ_QUESTIONS)
       for (const q of game.questions) {
-        expect(q.options).toHaveLength(4)
-        expect(new Set(q.options).size).toBe(4)
+        expect(q.options).toHaveLength(q.estimate && q.options.length === 2 ? 2 : 4)
+        expect(new Set(q.options).size).toBe(q.options.length)
         expect(q.answer).toBeGreaterThanOrEqual(0)
-        expect(q.answer).toBeLessThan(4)
+        expect(q.answer).toBeLessThan(q.options.length)
+        expect([1, 2, 3]).toContain(q.level)
         expect(q.explain.length).toBeGreaterThan(10)
       }
       const facts = game.questions.filter((q) => q.kind === 'fact')
@@ -95,7 +96,7 @@ describe('playing', () => {
 })
 
 describe('fact bank', () => {
-  it('has the same questions in German and English, four options each, every topic well stocked', () => {
+  it('has the same questions in German and English, four options each (A/B estimates two), every topic and level well stocked', () => {
     const de = COPY_BY_LANG.de.quiz.facts
     const en = COPY_BY_LANG.en.quiz.facts
     expect(de.length).toBeGreaterThanOrEqual(50)
@@ -103,10 +104,15 @@ describe('fact bank', () => {
     expect(en.map((f) => f.topic)).toEqual(de.map((f) => f.topic))
     for (const t of QUIZ_TOPICS) expect(de.filter((f) => f.topic === t).length, t).toBeGreaterThanOrEqual(8)
     expect(new Set(de.map((f) => f.q)).size).toBe(de.length)
+    expect(en.map((f) => [f.level, f.estimate])).toEqual(de.map((f) => [f.level, f.estimate]))
     for (const f of [...de, ...en]) {
-      expect(f.options).toHaveLength(4)
-      expect(new Set(f.options).size).toBe(4)
+      expect(f.options).toHaveLength(f.estimate && f.options.length === 2 ? 2 : 4)
+      expect(new Set(f.options).size).toBe(f.options.length)
+      expect([1, 2, 3]).toContain(f.level)
     }
+    // Bierionär needs five four-option questions per level and game – with room to vary
+    for (const level of [1, 2, 3]) expect(de.filter((f) => f.level === level && f.options.length === 4).length, `level ${level}`).toBeGreaterThanOrEqual(15)
+    expect(de.filter((f) => f.estimate).length).toBeGreaterThanOrEqual(12)
     expect(de.every((f) => (QUIZ_TOPICS as readonly string[]).includes(f.topic))).toBe(true)
     // spot check: the pairs stay aligned (numbers and names are the same in both languages)
     const year = de.findIndex((f) => f.options[0] === '1516')

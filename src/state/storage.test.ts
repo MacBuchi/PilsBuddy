@@ -89,7 +89,7 @@ describe('storage', () => {
   })
 
   it('game stats survive a reload; junk and old profiles count as nothing played', () => {
-    const games = { quartett: { played: 5, won: 3 }, fill: { played: 2, won: 1, best: 412 }, memory: { played: 3, won: 1, best: { bottles: 15, style: 0 } }, quiz: { played: 4, won: 2, best: 8 } }
+    const games = { quartett: { played: 5, won: 3 }, fill: { played: 2, won: 1, best: 412 }, memory: { played: 3, won: 1, best: { bottles: 15, style: 0 } }, quiz: { played: 4, won: 2, best: 8 }, bierionaer: { played: 3, won: 0, best: 32000 } }
     const p = { ...initialProfile(), games }
     expect(parseProfile(serializeProfile(p))?.games).toEqual(games)
     const old = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: undefined } })
@@ -110,5 +110,9 @@ describe('storage', () => {
     expect(parseProfile(e2)?.games.quiz).toEqual(NO_GAMES.quiz)
     const quizBig = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { quiz: { played: 1, won: 1, best: 99 } } } })
     expect(parseProfile(quizBig)?.games.quiz).toEqual({ played: 1, won: 1, best: 10 })
+    // before E9: no Bierionär record; more than the million is junk
+    expect(parseProfile(e2)?.games.bierionaer).toEqual(NO_GAMES.bierionaer)
+    const rich = JSON.stringify({ v: 1, profile: { ...initialProfile(), games: { bierionaer: { played: 2, won: 1, best: 5e9 } } } })
+    expect(parseProfile(rich)?.games.bierionaer).toEqual({ played: 2, won: 1, best: 1000000 })
   })
 })

@@ -1,5 +1,6 @@
 import { progressOf, unlockedIds } from '../domain/achievements'
 import type { BuddySnapshot } from '../domain/buddyLink'
+import { LADDER } from '../domain/games/bierionaer'
 import { QUIZ_QUESTIONS } from '../domain/games/quiz'
 import { RATINGS } from '../domain/types'
 import type { Rating, Ratings } from '../domain/types'
@@ -55,6 +56,8 @@ function sanitizeSync(raw: unknown): SyncSettings {
   return { on: on === true, code: typeof code === 'string' && SYNC_CODE.test(code) ? code : null }
 }
 
+const TOP_PRIZE = LADDER[LADDER.length - 1]
+
 const count = (v: unknown): number => (typeof v === 'number' && Number.isInteger(v) && v >= 0 ? v : 0)
 
 function sanitizeRecord(raw: unknown): GameRecord {
@@ -69,9 +72,11 @@ function sanitizeGames(raw: unknown): GameStats {
     fill?: { best?: unknown }
     memory?: { best?: { bottles?: unknown; style?: unknown } }
     quiz?: { best?: unknown }
+    bierionaer?: { best?: unknown }
   } | null
   const fill = sanitizeRecord(g?.fill)
   const quiz = sanitizeRecord(g?.quiz)
+  const bier = sanitizeRecord(g?.bierionaer)
   const memory = sanitizeRecord(g?.memory)
   const fewest = (v: unknown) => (memory.played ? count(v) : 0)
   return {
@@ -79,6 +84,7 @@ function sanitizeGames(raw: unknown): GameStats {
     fill: { ...fill, best: fill.played ? count(g?.fill?.best) : 0 },
     memory: { ...memory, best: { bottles: fewest(g?.memory?.best?.bottles), style: fewest(g?.memory?.best?.style) } },
     quiz: { ...quiz, best: quiz.played ? Math.min(QUIZ_QUESTIONS, count(g?.quiz?.best)) : 0 },
+    bierionaer: { ...bier, best: bier.played ? Math.min(TOP_PRIZE, count(g?.bierionaer?.best)) : 0 },
   }
 }
 
