@@ -202,6 +202,8 @@ def approve(number: int) -> None:
     api("POST", "/rest/v1/regional_beers?on_conflict=id", {
         "id": beer_id, "brewery_id": brewery_id, "name": values["beer_name"], "style": values["style"], "abv": values["abv"],
         "pack": None, "rank": min(len(others), 99), "source": 5, "source_ref": values["link"], "published": True,
+        # V1: a maintainer checked the report before the label – existence confirmed by hand
+        "quality": 2,
     }, prefer="resolution=merge-duplicates,return=minimal")
 
     run("gh", "issue", "comment", str(number), "--body",

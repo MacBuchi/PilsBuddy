@@ -350,6 +350,15 @@ const DE = {
     estimate: 'Stil-Schätzung',
     match: '{pct} % Match',
     estimateNote: 'Geschmack geschätzt aus Bierstil und Alkohol – keine Verkostung.',
+    /** V1 – regional_beers.quality 0–3 (curated beers are 3) */
+    quality: 'Datenlage',
+    qualityLevels: ['fraglich', 'gefunden', 'bestätigt', 'geprüft'],
+    qualityNotes: [
+      'Nur ein schwacher Hinweis (alte Bierliste oder Website ohne Stil und Alkohol) – kommt deshalb nicht ins Swipe-Deck.',
+      'Eine aktuelle Quelle, meist die Website der Brauerei – automatisch gelesen, nicht von Hand geprüft.',
+      'Mit Strichcode oder Wikidata-Eintrag bzw. von zwei Quellen belegt, Alkohol bekannt.',
+      'Von Hand recherchiert, mit Quellen.',
+    ],
     more: 'Mehr zeigen',
     without: 'Brauereien ohne bekannte Biere · {n}',
     withoutNote: 'Von ihnen kennen offene Daten noch keine Biere. Hingehen und probieren!',

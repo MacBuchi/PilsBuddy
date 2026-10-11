@@ -23,6 +23,9 @@ begin
   if (select string_agg(country, ',' order by country) from public.places where postcode in ('J3L', '95928')) <> 'CA,US' then
     raise exception 'North American places missing';
   end if;
+  -- V1: EAN product with ABV = bestätigt, an openbeer line alone = fraglich
+  if (select quality from public.regional_beers where id = 'r-4001') <> 2 then raise exception 'quality of an EAN beer'; end if;
+  if (select quality from public.regional_beers where id = 'r-o7ab1fdf73ed3a8d1') <> 0 then raise exception 'quality of an openbeer-only beer'; end if;
 end $$;
 reset role;
 -- the second import changed nothing

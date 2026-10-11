@@ -3,6 +3,7 @@ import { BEER_BY_ID, formatAbv } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
 import { DISPLAY_AXES } from '../../domain/dna'
 import { compatibility, whyItFits } from '../../domain/matching'
+import { qualityOf } from '../../domain/quality'
 import { hashId, relationQuip } from '../../domain/quips'
 import { RATINGS } from '../../domain/types'
 import type { Rating } from '../../domain/types'
@@ -17,6 +18,7 @@ export function Detail() {
   const { dna, candidates } = useDerived()
   const beer = (state.detailId && BEER_BY_ID[state.detailId]) || candidates[0]?.beer
   if (!beer) return null
+  const quality = qualityOf(beer)
 
   const pct = compatibility(dna.taste, beer.taste)
   const current = state.profile.ratings[beer.id]?.rating
@@ -66,9 +68,22 @@ export function Detail() {
 
         <p className={styles.description}>{beer.description}</p>
 
+        {!beer.regional && (
+          <p className={styles.estimate}>
+            <b>
+              {COPY.regional.quality}: {COPY.regional.qualityLevels[quality]}.
+            </b>{' '}
+            {COPY.regional.qualityNotes[quality]}
+          </p>
+        )}
+
         {beer.regional && (
           <p className={styles.estimate}>
             <b>{COPY.regional.estimate}.</b> {COPY.regional.estimateNote}{' '}
+            <b>
+              {COPY.regional.quality}: {COPY.regional.qualityLevels[quality]}.
+            </b>{' '}
+            {COPY.regional.qualityNotes[quality]}{' '}
             {beer.regional.sourceUrl ? (
               <a href={beer.regional.sourceUrl} target="_blank" rel="noopener noreferrer">
                 {fill(COPY.regional.source, { source: beer.regional.source })}

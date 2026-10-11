@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
+  beerQuality,
   breweryMatcher,
   cleanBeerName,
   importSql,
   mainBeers,
   mergeBreweries,
   normName,
+  notABeerName,
+  tidyBeerName,
   parseOpenbeer,
   parsePlaces,
   pickMainBeers,
@@ -241,8 +244,8 @@ describe('mainBeers', () => {
       [brewery({ id: 'osm-n4', name: 'Krombacher Brauerei' })],
     )
     expect(beers).toEqual([
-      { id: 'r-4001', breweryId: 'osm-n4', name: 'Krombacher Pils', style: 'Pils', abv: 4.8, pack: { ml: 500 }, rank: 0, source: 1, sourceRef: '4001' },
-      { id: 'r-4002', breweryId: 'osm-n4', name: 'Krombacher Weizen', style: 'Weißbier', abv: null, pack: { ml: 330, can: true }, rank: 1, source: 1, sourceRef: '4002' },
+      { id: 'r-4001', breweryId: 'osm-n4', name: 'Krombacher Pils', style: 'Pils', abv: 4.8, pack: { ml: 500 }, rank: 0, source: 1, sourceRef: '4001', quality: 2 },
+      { id: 'r-4002', breweryId: 'osm-n4', name: 'Krombacher Weizen', style: 'Weißbier', abv: null, pack: { ml: 330, can: true }, rank: 1, source: 1, sourceRef: '4002', quality: 1 },
     ])
   })
 
@@ -388,7 +391,7 @@ describe('parsePlaces', () => {
 describe('importSql', () => {
   const files = importSql(
     [brewery({ id: 'osm-n1', name: "O'Brien's Bräu", sources: ['osm', 'wikidata'] })],
-    [{ id: 'r-4001', breweryId: 'osm-n1', name: 'Pils', style: 'Pils', abv: 4.9, pack: { ml: 500 }, rank: 0, source: 1, sourceRef: '4001' }],
+    [{ id: 'r-4001', breweryId: 'osm-n1', name: 'Pils', style: 'Pils', abv: 4.9, pack: { ml: 500 }, rank: 0, source: 1, sourceRef: '4001', quality: 2 }],
     [{ country: 'DE', postcode: '74906', name: 'Bad Rappenau', lat: 49.2, lon: 9.1 }],
   )
 
@@ -399,7 +402,7 @@ describe('importSql', () => {
     expect(brew.sql).toContain("'O''Brien''s Bräu'")
     expect(brew.sql).toContain("'{\"osm\",\"wikidata\"}'::text[]")
     expect(brew.sql).toContain('on conflict (id) do update set name = excluded.name')
-    expect(beer.sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', true)`)
+    expect(beer.sql).toContain(`'{"ml":500}'::jsonb, 0, 1, '4001', 2, true)`)
     expect(unpublish.sql).toContain(`id <> all('{"r-4001"}'::text[])`)
     // app reports (R6) survive a rebuild
     expect(unpublish.sql).toContain('source <> 5 and id <> all(')
@@ -417,5 +420,62 @@ describe('importSql', () => {
   it('splits large imports into batches', () => {
     const many = Array.from({ length: 1201 }, (_, i) => brewery({ id: `osm-n${i}`, name: `B${i}` }))
     expect(importSql(many, [], []).filter((f) => f.name.startsWith('10-')).length).toBe(3)
+  })
+})
+
+describe('V1 – beer quality', () => {
+  it('rates what backs a beer: EAN/Wikidata or two sources plus ABV = bestätigt, a 2014 list alone = fraglich', () => {
+    expect(beerQuality(new Set([1]), { style: 'Pils', abv: 4.9 })).toBe(2)
+    expect(beerQuality(new Set([2]), { style: null, abv: 5 })).toBe(2)
+    expect(beerQuality(new Set([3, 4]), { style: 'IPA', abv: 6.5 })).toBe(2)
+    expect(beerQuality(new Set([1]), { style: 'Pils', abv: null })).toBe(1)
+    expect(beerQuality(new Set([3]), { style: 'IPA', abv: 6.5 })).toBe(1)
+    expect(beerQuality(new Set([4]), { style: 'Helles', abv: 4.9 })).toBe(0)
+    expect(beerQuality(new Set([3]), { style: null, abv: null })).toBe(0)
+  })
+
+  it('counts every source naming the picked beer', () => {
+    const b = brewery({ id: 'osm-n4', name: 'Krombacher Brauerei', website: 'https://krombacher.de' })
+    const beers = mainBeers(
+      [],
+      [b],
+      [],
+      [{ ref: 'r/beers.txt', brewery: 'Krombacher', city: null, name: 'Krombacher Weizen', abv: 5.3, styles: 'weizen' }],
+      [
+        { breweryId: 'osm-n4', path: '/biere', name: 'Krombacher Pils', abv: 4.8 },
+        { breweryId: 'osm-n4', path: '/biere', name: 'Krombacher Weizen', abv: null },
+      ],
+    )
+    // the Weizen is on the website and in openbeer, with an ABV from the list → bestätigt; the Pils only on the website
+    expect(beers.map((x) => [x.name, x.quality])).toEqual([['Krombacher Weizen', 2], ['Krombacher Pils', 1]])
+  })
+
+  it('tidies website layout around a name, keeps apostrophes and leading numbers that belong to it', () => {
+    expect(tidyBeerName('#10 Pilsner')).toBe('Pilsner')
+    expect(tidyBeerName('> Caramel Porter -->')).toBe('Caramel Porter')
+    expect(tidyBeerName('* Lazy Frog IPA')).toBe('Lazy Frog IPA')
+    expect(tidyBeerName('‹Loncium› Helles')).toBe('Loncium Helles')
+    expect(tidyBeerName('Schwalm Bräu „Pilsener')).toBe('Schwalm Bräu Pilsener')
+    expect(tidyBeerName('Northern Light *NEW*')).toBe('Northern Light')
+    expect(tidyBeerName('Mudcat Rauchbier 🥈')).toBe('Mudcat Rauchbier')
+    for (const n of ["Bill's Pils", 'Coal Miner’s Kölsch', '24 Karat Lager', "Cruisin'", '805']) expect(tidyBeerName(n)).toBe(n)
+  })
+
+  it('shows the tidied name, keeps the id of the raw one', () => {
+    const [beer] = mainBeers([], [brewery({ id: 'osm-n4', name: 'Hopfenhaus' })], [], [], [{ breweryId: 'osm-n4', path: '/', name: '#10 Pilsner', abv: 4.8 }])
+    expect(beer.name).toBe('Pilsner')
+    expect(beer.id).toBe(`r-w${stableHash(`osm-n4|${normName('#10 Pilsner')}`)}`)
+  })
+
+  it('drops merchandise and names that are no name, from every source', () => {
+    for (const n of ['🥉 Bronze – Hoppy Lager', '#LagerIsLife', '** The Ales **', 'Lagers', 'ABV Calculator', 'T-Shirt Schwarz', 'T-Shirt “Schloss” – dunkelgrün', 'Alt Logo Flat Cap', '@ Peculier Ales', '51631', 'Cardigan Cream Ale Six-Pack', 'Gutschein Pils', 'Hoodie IPA'])
+      expect(notABeerName(n), n).toBe(true)
+    for (const n of ['Whitecap American White Ale', 'Shirtless IPA', '805', '1516 Bayrisch Hell', '60 Minute IPA', 'Main Street Lager', 'Hourglass IPA', 'Red Jacket Amber Ale', 'Lager', 'Mudcat Rauchbier 🥈'])
+      expect(notABeerName(n), n).toBe(false)
+    const beers = mainBeers([], [brewery({ id: 'osm-n4', name: 'Schlossbräu' })], [], [], [
+      { breweryId: 'osm-n4', path: '/shop', name: 'T-Shirt Schwarz', abv: null },
+      { breweryId: 'osm-n4', path: '/biere', name: 'Schloss Schwarzbier', abv: 4.9 },
+    ])
+    expect(beers.map((x) => x.name)).toEqual(['Schloss Schwarzbier'])
   })
 })

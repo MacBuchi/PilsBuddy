@@ -76,6 +76,12 @@ stehen zentral in `tools/catalog/countries.json`; Skripte, Merge und Workflow le
    (sonst Abbruch vor dem ersten Schreiben – ein Download kann still unvollständig sein); Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
    setzt Brauereien/Biere, die nicht mehr in den Quellen sind, auf `published = false` (Zeilen bleiben) – außer
    den freigegebenen Meldungen aus der App (Quelle 5, Brauereien `app-…`).
+   **Qualitätsstufe (V1)** je Bier, `regional_beers.quality`, berechnet in `merge.ts` (`beerQuality`): 2 bestätigt =
+   Open-Food-Facts-Produkt (EAN) oder Wikidata-Eintrag oder zwei Quellen nennen dasselbe Bier, und Alkohol bekannt ·
+   1 gefunden = eine aktuelle Quelle · 0 fraglich = nur openbeer (~2014) oder weder Stil noch Alkohol (nie im
+   Swipe-Deck). 3 geprüft bleibt den von Hand recherchierten Bieren vorbehalten (kuratiert; freigegebene Meldungen
+   bekommen 2). Vorher fliegen Merch, Hashtags, Award-Zeilen und Listenüberschriften raus (`notABeerName`), Layout-
+   Reste im Namen werden entfernt (`tidyBeerName`, die ID bleibt am Rohnamen).
 5. Monatlich (R7): Workflow „Regional catalogue (monthly)“ (am 1., 03:17 UTC, oder `gh workflow run catalog-monthly.yml`)
    ruft fetch + Websites auf, baut den Import und vergleicht ihn mit dem Live-Katalog (`npm run catalog:diff`:
    `out/next.json` gegen die öffentliche API, nur lesend) – je Land Brauereien/Biere neu · weg · geändert, Warnung

@@ -56,7 +56,7 @@ interface CellEntry {
   rows: unknown[]
 }
 
-const SELECT = 'id,name,lat,lon,city,postcode,country,website,founded,regional_beers(id,name,style,abv,pack,rank,source,source_ref)'
+const SELECT = 'id,name,lat,lon,city,postcode,country,website,founded,regional_beers(id,name,style,abv,pack,rank,source,source_ref,quality)'
 
 const cellFilter = (key: string) => {
   const b = cellBounds(key)
@@ -349,7 +349,7 @@ export function forgetRegional(): void {
 
 /* ---------- search by name (R8 Bierbibliothek) ---------- */
 
-const BEER_COLS = 'id,name,style,abv,pack,rank,source,source_ref'
+const BEER_COLS = 'id,name,style,abv,pack,rank,source,source_ref,quality'
 const BREWERY_COLS = 'id,name,lat,lon,city,postcode,country,website,founded'
 
 /**

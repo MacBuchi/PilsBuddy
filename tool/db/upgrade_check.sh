@@ -3,13 +3,14 @@
 #
 #   1. migrations already on the base branch are live – they must not change, new ones must sort after them
 #   2. empty local stack, live-like default privileges (live hands anon/authenticated ALL on new tables)
-#   3. the base branch's migrations, then data like live (catalogue fixture, catalogue overlay, accounts,
-#      ratings, inboxes) – then ONLY this branch's new migrations on top, each in one transaction
+#   3. the base branch's migrations, then data like live (catalogue fixture built by the base branch's pipeline,
+#      catalogue overlay, accounts, ratings, inboxes) – then ONLY this branch's new migrations on top, each in one
+#      transaction – then this branch's catalogue import over the upgraded schema (the next live import)
 #   4. tool/db/grants_check.sql (rights as intended?) and tool/db/schema_check.sh (do the app's queries still work?)
 #
 # Needs an EMPTY stack (started without migrations, see .github/workflows/ci.yml job `upgrade`) and:
 #   BASE_REF       e.g. origin/main (PR) or the previous commit (push)
-#   CATALOG_SQL    directory with the fixture import (npm run catalog:build -- --raw tools/catalog/fixtures …)
+#   CATALOG_SQL    directory with this branch's fixture import (npm run catalog:build -- --raw tools/catalog/fixtures …)
 #   SUPABASE_URL / SUPABASE_KEY   local API + publishable key (for schema_check.sh)
 #   DB_URL         default postgresql://postgres:postgres@127.0.0.1:54322/postgres
 set -euo pipefail
@@ -59,14 +60,21 @@ for f in "${base_files[@]}"; do
   echo "Basis:  $f"
   git show "$BASE:$f" | sql -1
 done
-echo "Bestand: Katalog-Fixture, Katalog-Overlay, Konten, Bewertungen, Feedback, Meldungen"
-for f in "$CATALOG"/*.sql; do sql -f "$f"; done
+echo "Bestand: Katalog-Fixture (Pipeline von $BASE), Katalog-Overlay, Konten, Bewertungen, Feedback, Meldungen"
+# the live catalogue was written by the base branch's pipeline – a new column must not be needed before its migration
+base_tree=$(mktemp -d)
+git archive "$BASE" | tar -x -C "$base_tree"
+ln -s "$PWD/node_modules" "$base_tree/node_modules"
+npx tsx "$base_tree/tools/catalog/build.ts" --raw "$base_tree/tools/catalog/fixtures" --out "$base_tree/regional" --min-breweries 0 > /dev/null
+for f in "$base_tree"/regional/*.sql; do sql -f "$f"; done
 sql -f e2e/catalog-seed.sql
 sql -f tool/db/seed_existing.sql
 for f in "${new_files[@]}"; do
   echo "Neu:    $f"
   sql -1 -f "$f"
 done
+echo "Katalog-Import dieses Stands über den Bestand"
+for f in "$CATALOG"/*.sql; do sql -f "$f"; done
 
 # ---- 4. checks ----------------------------------------------------------------------------------------------
 sql -f tool/db/grants_check.sql

@@ -3,6 +3,7 @@
 // Two language profiles for the filters (`de` for DACH, `en` for Canada/USA, countries.json): a German sentence
 // filter would throw away „Son of a Peach“, an English one would keep German events.
 import { normalizeStyle } from '../../src/domain/styleProfile'
+import { notABeerName } from './merge'
 
 export const CRAWLER_UA = 'PilsBuddyBot/0.1 (+https://pilsbuddy.mcbuchi.de; macbuchi.apps@gmail.com)'
 
@@ -194,7 +195,7 @@ const toAbv = (s: string | undefined) => {
 export function beerName(raw: string, abv: number | null = null, lang: string = 'de'): WebBeer | null {
   const name = cleanName(raw)
   const [notName, notBeer] = lang === 'en' ? [NOT_A_NAME_EN, NOT_A_BEER_EN] : [NOT_A_NAME, NOT_A_BEER]
-  if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || notName.test(name) || notBeer.test(name)) return null
+  if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || notName.test(name) || notBeer.test(name) || notABeerName(name)) return null
   if (!normalizeStyle([name])) return null
   return { name, abv: toAbv(abv?.toString()) ?? toAbv(raw.match(ABV_IN_NAME)?.[1]) }
 }

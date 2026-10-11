@@ -130,6 +130,8 @@ export interface RegionalBeer {
   source: number
   /** EAN, Q-id or website path */
   sourceRef: string
+  /** V1: how well the beer is backed – see beerQuality() */
+  quality: Quality
 }
 
 export interface Place {
@@ -469,6 +471,63 @@ export function pickMainBeers(cands: Candidate[], max = MAX_BEERS_PER_BREWERY): 
 const NOT_A_BEER = /brauerei|unternehmen|gewerbebetrieb|marke(nzeichen)?$/i
 
 /**
+ * Merchandise, vouchers and other shop items that brewery websites and product lists name like a beer
+ * („T-Shirt Schwarz“, „Alt Logo Flat Cap“, „Cardigan Cream Ale Six-Pack“) – a merch word at the start, or one that
+ * never names a beer anywhere. „Red Jacket Amber Ale“ or „Sweater Snag Dark Saison“ stay.
+ */
+const MERCH_START = /^(t-?shirts?|shirts?|hoodies?|pullover|sweatshirts?|m(ü|ue)tzen?|beanies?|caps?|kappen?|tassen?|gutscheine?|vouchers?|gift ?cards?|geschenk\w*|aufkleber|stickers?|poster|socken|bierdeckel)\b/i
+const MERCH_ANY = /\b(t-?shirts?|hoodies?|gutscheine?|vouchers?|gift ?cards?|flat cap|logo|six-?pack|\d+er-?pack|tasting ?box|calculator)\b/i
+
+/**
+ * Website layout around a name: list numbers and bullets („#10 Pilsner“, „* Lazy Frog IPA“, „> Pumpkin Ale -->“),
+ * emoji, „*NEW*“, guillemets („‹Loncium› Helles“). Only the shown name changes – ids stay on the raw name.
+ */
+export function tidyBeerName(name: string): string {
+  const t = name
+    .replace(/\p{Extended_Pictographic}|\uFE0F/gu, ' ')
+    .replace(/\*+\s*(new|neu)\s*\*+/gi, ' ')
+    .replace(/[‹›«»„“”"]/g, ' ')
+    .replace(/-+>|<-+/g, ' ')
+    // leading bullets and list numbers („#10 Pilsner“) – a plain leading number is part of the name („24 Karat Lager“)
+    .replace(/^[\s*>•~·–—'‘‚-]*(?:#\d{1,2}\s+(?=\p{L}))?[\s#*>•~·–—-]*/u, '')
+    .replace(/[\s*>•~·–—-]+$/u, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return t || name.trim()
+}
+
+/** Merch, hashtags, awards, bare headings („** The Ales **“) and names that are no name („51631“, „@ …“). */
+export const notABeerName = (name: string) => {
+  const t = tidyBeerName(name)
+  return (
+    MERCH_START.test(t) ||
+    MERCH_ANY.test(t) ||
+    /#\p{L}/u.test(name) ||
+    /^\s*[\u{1F947}-\u{1F949}]/u.test(name) || // „🥉 Bronze – Hoppy Lager“ is an award line
+    // a list heading; a bare „Lager“ is the brewery's lager and stays
+    /^(the )?(ales|beers|lagers|biere)$/i.test(t) ||
+    /^[^\p{L}\p{N}]/u.test(t) ||
+    // a short number is a name („805“, „1516“), a long one an article or postcode („51631“)
+    ((t.match(/\p{L}/gu)?.length ?? 0) < 2 && t.length > 4)
+  )
+}
+
+/**
+ * V1 – how well a beer is backed (regional_beers.quality):
+ * 2 bestätigt – a product with EAN (Open Food Facts) or a Wikidata item, or two independent sources, and the ABV is known;
+ * 0 fraglich  – only the openbeer lists (~2014, may be gone), or neither style nor ABV;
+ * 1 gefunden  – everything else (usually one current website mention).
+ * 3 geprüft is for hand-researched beers only and never computed.
+ */
+export type Quality = 0 | 1 | 2 | 3
+export function beerQuality(sources: ReadonlySet<number>, beer: { style: string | null; abv: number | null }): Quality {
+  const strong = sources.has(SOURCE.off) || sources.has(SOURCE.wikidata)
+  if ((strong || sources.size >= 2) && beer.abv != null) return 2
+  if ((sources.size === 1 && sources.has(SOURCE.openbeer)) || (beer.style == null && beer.abv == null)) return 0
+  return 1
+}
+
+/**
  * Open Food Facts products and Wikidata beers → main beers of the matched breweries (unmatched products
  * are dropped). Both sources compete per style; Open Food Facts usually wins on completeness (pack).
  */
@@ -481,7 +540,9 @@ export function mainBeers(
 ): RegionalBeer[] {
   const match = breweryMatcher(breweries)
   const perBrewery = new Map<string, Candidate[]>()
-  const add = (breweryId: string, c: Candidate) => perBrewery.set(breweryId, [...(perBrewery.get(breweryId) ?? []), c])
+  const add = (breweryId: string, c: Candidate) => {
+    if (!notABeerName(c.name)) perBrewery.set(breweryId, [...(perBrewery.get(breweryId) ?? []), c])
+  }
   const byQid = new Map(breweries.filter((b) => b.qid).map((b) => [b.qid!, b]))
   const seen = new Set<string>()
   for (const p of off) {
@@ -493,7 +554,7 @@ export function mainBeers(
     const abv = p.abv != null && p.abv >= 0 && p.abv <= 20 ? Math.round(p.abv * 10) / 10 : null
     add(b.id, {
       code: p.code,
-      name: cleanBeerName(name),
+      name: tidyBeerName(cleanBeerName(name)),
       style: normalizeStyle([name, p.categories.join(' '), p.labels.join(' ')], abv),
       abv,
       pack: parsePack(p.quantity, p.packaging) ?? null,
@@ -513,7 +574,7 @@ export function mainBeers(
     const abv = w.abv != null && w.abv >= 0 && w.abv <= 20 ? Math.round(w.abv * 10) / 10 : null
     add(b.id, {
       code: qid.toLowerCase(),
-      name,
+      name: tidyBeerName(name),
       style: normalizeStyle([name, ...w.kinds], abv),
       abv,
       pack: null,
@@ -530,7 +591,7 @@ export function mainBeers(
     seenOpenbeer.add(code)
     add(b.id, {
       code,
-      name: o.name,
+      name: tidyBeerName(o.name),
       style: normalizeStyle([o.name, o.styles.replace(/[_|]/g, ' ')], o.abv),
       abv: o.abv,
       pack: null,
@@ -550,7 +611,7 @@ export function mainBeers(
     const abv = w.abv != null && w.abv > 0 && w.abv <= 20 ? Math.round(w.abv * 10) / 10 : null
     add(w.breweryId, {
       code,
-      name,
+      name: tidyBeerName(name),
       style: normalizeStyle([name], abv),
       abv,
       pack: null,
@@ -565,7 +626,9 @@ export function mainBeers(
       ? 'Blonde Ale'
       : c.style
   const out: RegionalBeer[] = []
-  for (const [breweryId, cands] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0])))
+  for (const [breweryId, cands] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0]))) {
+    // the same beer named by several sources (sizes, spellings): what backs the one picked
+    const backing = (c: Candidate) => new Set(cands.filter((o) => normName(o.name) === normName(c.name)).map((o) => o.source ?? SOURCE.off))
     pickMainBeers(cands.map((c) => ({ ...c, style: localStyle(breweryId, c) }))).forEach((c, rank) =>
       out.push({
         id: `r-${c.code}`,
@@ -577,8 +640,10 @@ export function mainBeers(
         rank,
         source: c.source ?? SOURCE.off,
         sourceRef: c.sourceRef ?? c.code,
+        quality: beerQuality(backing(c), c),
       }),
     )
+  }
   return out
 }
 
@@ -742,11 +807,11 @@ export function importSql(breweries: Brewery[], beers: RegionalBeer[], places: P
       sql: tx(
         upsert(
           'regional_beers',
-          ['id', 'brewery_id', 'name', 'style', 'abv', 'pack', 'rank', 'source', 'source_ref', 'published'],
+          ['id', 'brewery_id', 'name', 'style', 'abv', 'pack', 'rank', 'source', 'source_ref', 'quality', 'published'],
           ['id'],
           rows.map((b) => [
             lit(b.id), lit(b.breweryId), lit(b.name), lit(b.style), lit(b.abv),
-            b.pack ? `${lit(JSON.stringify(b.pack))}::jsonb` : 'null', lit(b.rank), lit(b.source), lit(b.sourceRef), 'true',
+            b.pack ? `${lit(JSON.stringify(b.pack))}::jsonb` : 'null', lit(b.rank), lit(b.source), lit(b.sourceRef), lit(b.quality), 'true',
           ]),
         ),
       ),

@@ -2,7 +2,7 @@ import { COPY, fill, pick } from '../data/copy'
 import { hashId } from './hash'
 import type { PlaceCountry } from './postcode'
 import { STYLE_PROFILES, styleColor, styleProfile, tasteFromStyle } from './styleProfile'
-import type { Beer, Pack } from './types'
+import type { Beer, Pack, Quality } from './types'
 
 /**
  * Regional breweries and their main beers as the API delivers them (tables `breweries` +
@@ -27,6 +27,8 @@ export interface RegionalBeerRow {
   /** beer_sources.id */
   source: number
   source_ref: string | null
+  /** V1, 0–3; sanitizeBeerRow sets 1 for rows from before V1 */
+  quality?: Quality
 }
 
 export interface RegionalBrewery {
@@ -100,6 +102,7 @@ export function sanitizeBeerRow(v: unknown): RegionalBeerRow | null {
     rank: num(r.rank, 0, 99) ?? 0,
     source,
     source_ref: text(r.source_ref, 300),
+    quality: (num(r.quality, 0, 3) ?? 1) as Quality,
   }
 }
 
@@ -170,5 +173,7 @@ export function toRegionalBeer(row: RegionalBeerRow, brewery: Omit<RegionalBrewe
     ...(row.pack ? { pack: row.pack } : {}),
     ...(brewery.founded ? { founded: brewery.founded } : {}),
     regional: { breweryId: brewery.id, source: SOURCES[row.source]?.name ?? COPY.regional.openData, ...(url ? { sourceUrl: url } : {}) },
+    // hand-researched (3) is for curated beers; a regional row claiming it is shown as „bestätigt“
+    quality: Math.min(row.quality ?? 1, 2) as Quality,
   }
 }
