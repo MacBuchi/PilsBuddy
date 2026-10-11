@@ -161,13 +161,6 @@
   color: var(--like);
 }
 
-.soon {
-  margin: 4px 0 0;
-  text-align: center;
-  font: 500 12.5px/1.4 var(--font-display);
-  color: var(--mut);
-}
-
 .cheers {
   flex: 1;
   display: flex;
@@ -191,4 +184,41 @@
   font: 800 56px/1 var(--font-display);
   letter-spacing: -0.045em;
   animation: pbPop 0.5s 0.1s ease both;
+}
+
+.games {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 2px dashed var(--line-strong);
+}
+
+.result {
+  margin: 0;
+  font: 800 26px/1.1 var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.place {
+  font: 700 13px/1 var(--font-mono);
+  color: var(--mut);
+}
+
+.points {
+  flex: none;
+  font: 700 12px/1 var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+.abort {
+  align-self: center;
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: var(--mut);
+  font: 600 13px/1 var(--font-display);
+  text-decoration: underline;
+  cursor: pointer;
 }

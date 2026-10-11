@@ -72,6 +72,12 @@ export const DECK_ORDER: readonly string[] = [
   ...BEERS.filter((b) => !b.reference).map((b) => b.id),
 ]
 
+/**
+ * The curated beers shipped with the app – the Quartett deck in a game room (E5): every device of
+ * the same version knows them, whatever its catalogue cache holds.
+ */
+export const BUNDLED_IDS: readonly string[] = (raw as Beer[]).map((b) => b.id)
+
 export const REFERENCE_COUNT = BEERS.filter((b) => b.reference).length
 
 export function getBeer(id: string): Beer {

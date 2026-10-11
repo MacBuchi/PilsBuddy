@@ -1,6 +1,7 @@
 import type { RealtimeChannel } from '@supabase/supabase-js'
 import { acceptSnapshot, applyIntent, isFull, openRoom, parseIntent, withPresent } from '../domain/games/room'
-import type { RoomIntent, RoomMember, RoomState } from '../domain/games/room'
+import type { RoomDeck, RoomIntent, RoomMember, RoomState } from '../domain/games/room'
+import { BEER_BY_ID, BUNDLED_IDS } from '../data/beers'
 import { cloud } from './cloud'
 
 /**
@@ -21,6 +22,9 @@ export interface RoomConnection {
   send: (intent: RoomIntent) => void
   close: () => void
 }
+
+/** The host deals Quartett from the bundled beers, so the guest knows every card. */
+const DECK: RoomDeck = { ids: BUNDLED_IDS, lookup: BEER_BY_ID }
 
 /** A guest waits this long for the host's first snapshot. */
 const FIND_MS = 8000
@@ -77,7 +81,7 @@ export function hostRoom(code: string, me: RoomMember, events: RoomEvents): Room
       ch.on('broadcast', { event: 'intent' }, ({ payload }) => {
         const p = payload as { from?: unknown; intent?: unknown } | null
         const intent = parseIntent(p?.intent)
-        if (intent && typeof p?.from === 'string') publish(applyIntent(state, p.from, intent))
+        if (intent && typeof p?.from === 'string') publish(applyIntent(state, p.from, intent, DECK))
       })
       // a guest that just arrived asks for the current state
       ch.on('broadcast', { event: 'hello' }, () => void ch.send({ type: 'broadcast', event: 'state', payload: state }))
@@ -88,7 +92,7 @@ export function hostRoom(code: string, me: RoomMember, events: RoomEvents): Room
     },
   })
   events.onState(state)
-  return { send: (intent) => publish(applyIntent(state, me.id, intent)), close }
+  return { send: (intent) => publish(applyIntent(state, me.id, intent, DECK)), close }
 }
 
 /** Joins someone else's room. */

@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
+import { BEER_BY_ID, BUNDLED_IDS } from '../../data/beers'
 import {
   acceptSnapshot,
   applyIntent,
   canCheer,
+  canStart,
   cleanName,
   isFull,
   MAX_PLAYERS,
@@ -15,7 +17,7 @@ import {
   roomLink,
   withPresent,
 } from './room'
-import type { RoomMember } from './room'
+import type { RoomMember, RoomState } from './room'
 
 const host: RoomMember = { id: 'h', name: 'Buddy #0427' }
 const anna: RoomMember = { id: 'a', name: 'Buddy #1200' }
@@ -168,5 +170,96 @@ describe('snapshots', () => {
     const t = acceptSnapshot(null, { ...s, players: [s.players[0], { id: 'z', name: '  Bot\u0007tle\n' + 'x'.repeat(40), ready: false }] }, 'K7Q2M')
     expect(t?.players[1].name).toBe('Bottle' + 'x'.repeat(18))
     expect(cleanName('   ')).toBe('?')
+  })
+})
+
+describe('games in the room (E5)', () => {
+  const deck = { ids: BUNDLED_IDS, lookup: BEER_BY_ID }
+  const readyAll = (s: RoomState) =>
+    s.players.reduce((t, p) => (p.id === t.host ? t : applyIntent(t, p.id, { type: 'ready', ready: true })), s)
+  const pair = () => readyAll(withPresent(openRoom('K7Q2M', host), [host, anna]))
+
+  it('starts only from the host, in the lobby, with everyone ready', () => {
+    const s = withPresent(openRoom('K7Q2M', host), [host, anna])
+    expect(applyIntent(s, 'h', { type: 'start', game: 'fill', seed: 1 })).toBe(s)
+    const r = readyAll(s)
+    expect(applyIntent(r, 'a', { type: 'start', game: 'fill', seed: 1 })).toBe(r)
+    const t = applyIntent(r, 'h', { type: 'start', game: 'fill', seed: 1 })
+    expect(t).toMatchObject({ phase: 'play', round: 1, seq: r.seq + 1, game: { kind: 'fill', index: 0 } })
+    expect(applyIntent(t, 'h', { type: 'start', game: 'fill', seed: 2 })).toBe(t)
+  })
+
+  it('Quartett is for exactly two and needs the deck', () => {
+    const three = readyAll(lobby())
+    expect(canStart(three, 'quartett')).toBe(false)
+    expect(canStart(three, 'fill')).toBe(true)
+    expect(applyIntent(three, 'h', { type: 'start', game: 'quartett', seed: 1 }, deck)).toBe(three)
+    const two = pair()
+    expect(applyIntent(two, 'h', { type: 'start', game: 'quartett', seed: 1 })).toBe(two) // no deck
+    const t = applyIntent(two, 'h', { type: 'start', game: 'quartett', seed: 1 }, deck)
+    expect(t.game).toMatchObject({ kind: 'quartett', seats: ['h', 'a'] })
+  })
+
+  it('relays Quartett moves and ends when a player leaves', () => {
+    const t = applyIntent(pair(), 'h', { type: 'start', game: 'quartett', seed: 1 }, deck)
+    expect(applyIntent(t, 'a', { type: 'stat', stat: 'abv' }, deck)).toBe(t) // not a's turn
+    const u = applyIntent(t, 'h', { type: 'stat', stat: 'abv' }, deck)
+    expect(u.seq).toBe(t.seq + 1)
+    expect(u.game?.kind === 'quartett' && u.game.q.round).toBe(1)
+    // a watcher arriving changes nothing about the duel
+    const w = withPresent(u, [host, anna, ben])
+    expect(w).toMatchObject({ phase: 'play', game: u.game })
+    const gone = withPresent(w, [host, ben])
+    expect(gone).toMatchObject({ phase: 'lobby', game: null })
+    expect(gone.players.map((p) => p.ready)).toEqual([true, false])
+  })
+
+  it('collects guesses, reveals when all guessed or the host says so, and goes back', () => {
+    let s = applyIntent(readyAll(lobby()), 'h', { type: 'start', game: 'fill', seed: 4 })
+    s = applyIntent(s, 'a', { type: 'guess', ml: 100 })
+    s = applyIntent(s, 'h', { type: 'guess', ml: 200 })
+    expect(s.game?.kind === 'fill' && s.game.revealed).toBe(false)
+    expect(applyIntent(s, 'a', { type: 'reveal' })).toBe(s) // guests can't
+    // b leaves without guessing → the glass resolves
+    s = withPresent(s, [host, anna])
+    expect(s.game?.kind === 'fill' && s.game.revealed).toBe(true)
+    expect(applyIntent(s, 'a', { type: 'next' })).toBe(s)
+    s = applyIntent(s, 'h', { type: 'next' })
+    expect(s.game).toMatchObject({ index: 1, revealed: false })
+    s = applyIntent(s, 'a', { type: 'guess', ml: 50 })
+    s = applyIntent(s, 'h', { type: 'reveal' })
+    expect(s.game?.kind === 'fill' && Object.keys(s.game.guesses)).toEqual(['a'])
+    expect(s.game?.kind === 'fill' && s.game.revealed).toBe(true)
+    const back = applyIntent(s, 'h', { type: 'lobby' })
+    expect(back).toMatchObject({ phase: 'lobby', game: null })
+  })
+
+  it('ignores game wishes that do not fit the game on the table', () => {
+    const s = readyAll(lobby())
+    expect(applyIntent(s, 'a', { type: 'guess', ml: 100 })).toBe(s)
+    expect(applyIntent(s, 'h', { type: 'stat', stat: 'abv' }, deck)).toBe(s)
+    const f = applyIntent(s, 'h', { type: 'start', game: 'fill', seed: 1 })
+    expect(applyIntent(f, 'h', { type: 'stat', stat: 'abv' }, deck)).toBe(f)
+    expect(applyIntent(f, 'stranger', { type: 'guess', ml: 1 })).toBe(f)
+  })
+
+  it('parses game wishes, never a start from the network', () => {
+    expect(parseIntent({ type: 'stat', stat: 'bitterness' })).toEqual({ type: 'stat', stat: 'bitterness' })
+    expect(parseIntent({ type: 'stat', stat: 'colour' })).toBe(null)
+    expect(parseIntent({ type: 'guess', ml: 250 })).toEqual({ type: 'guess', ml: 250 })
+    expect(parseIntent({ type: 'guess', ml: '250' })).toBe(null)
+    expect(parseIntent({ type: 'guess', ml: Infinity })).toBe(null)
+    expect(parseIntent({ type: 'reveal' })).toEqual({ type: 'reveal' })
+    expect(parseIntent({ type: 'next' })).toEqual({ type: 'next' })
+    expect(parseIntent({ type: 'start', game: 'fill', seed: 1 })).toBe(null)
+  })
+
+  it('takes a running game as a snapshot and rejects a play phase without one', () => {
+    const t = applyIntent(pair(), 'h', { type: 'start', game: 'quartett', seed: 1 }, deck)
+    expect(acceptSnapshot(null, JSON.parse(JSON.stringify(t)), 'K7Q2M')).toEqual(t)
+    expect(acceptSnapshot(null, { ...t, game: null }, 'K7Q2M')).toBe(null)
+    expect(acceptSnapshot(null, { ...t, game: { kind: 'poker' } }, 'K7Q2M')).toBe(null)
+    // a game left in a lobby snapshot is dropped
+    expect(acceptSnapshot(null, { ...pair(), game: t.game }, 'K7Q2M')?.game).toBe(null)
   })
 })

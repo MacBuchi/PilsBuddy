@@ -1,7 +1,8 @@
 import { BeerSteinIcon, CheckIcon, ShareNetworkIcon, XIcon } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import { COPY, fill } from '../../data/copy'
-import { canCheer, MAX_PLAYERS, normalizeRoomCode, roomCode, roomLink } from '../../domain/games/room'
+import { BEER_BY_ID, BUNDLED_IDS } from '../../data/beers'
+import { canCheer, canStart, MAX_PLAYERS, normalizeRoomCode, roomCode, roomLink } from '../../domain/games/room'
 import type { RoomState } from '../../domain/games/room'
 import { useApp } from '../../state/AppContext'
 import { useRoom } from '../../sync/useRoom'
@@ -9,7 +10,13 @@ import type { RoomView } from '../../sync/useRoom'
 import { Button } from '../components/Button'
 import { RoomQr } from '../components/RoomQr'
 import q from './Quartett.module.css'
+import { RoomDuel, RoomFill } from './RoomGames'
 import styles from './Room.module.css'
+
+/** Quartett cards the host can deal – every bundled beer this device knows. */
+const DECK_SIZE = BUNDLED_IDS.filter((id) => BEER_BY_ID[id]).length
+
+const newSeed = () => Date.now() ^ Math.floor(Math.random() * 0x7fffffff)
 
 function endText(view: Extract<RoomView, { kind: 'ended' }>): string {
   return fill(COPY.room.end[view.reason], { code: view.code, max: String(MAX_PLAYERS) })
@@ -81,7 +88,7 @@ export function Room() {
       {ageConfirmed && view.kind === 'idle' && (
         <div className={styles.panel}>
           <p className={styles.text}>{COPY.room.intro}</p>
-          <Button variant="ink" block onClick={() => void start(roomCode(Date.now() ^ Math.floor(Math.random() * 0x7fffffff)), true)}>
+          <Button variant="ink" block onClick={() => void start(roomCode(newSeed()), true)}>
             {COPY.room.open}
           </Button>
           <span className={styles.or}>{COPY.room.or}</span>
@@ -145,6 +152,21 @@ function Table({ room, meId, isHost, onInvite, send }: TableProps) {
   const self = room.players.find((p) => p.id === meId)
   const link = roomLink(window.location.origin, room.code)
 
+  if (room.phase === 'play' && room.game) {
+    const props = { room, meId, isHost, send }
+    const over = room.game.kind === 'quartett' ? room.game.q.winner !== null : room.game.over
+    return (
+      <>
+        {room.game.kind === 'quartett' ? <RoomDuel {...props} game={room.game} /> : <RoomFill {...props} game={room.game} />}
+        {isHost && !over && (
+          <button type="button" className={styles.abort} onClick={() => window.confirm(COPY.room.abortConfirm) && send({ type: 'lobby' })}>
+            {COPY.room.abort}
+          </button>
+        )}
+      </>
+    )
+  }
+
   if (room.phase === 'cheers') {
     return (
       <div className={styles.cheers} aria-live="polite">
@@ -200,6 +222,21 @@ function Table({ room, meId, isHost, onInvite, send }: TableProps) {
               <BeerSteinIcon weight="fill" /> {COPY.room.cheers}
             </Button>
             {!canCheer(room) && <p className={styles.hint}>{room.players.length < 2 ? COPY.room.alone : COPY.room.waitReady}</p>}
+            <div className={styles.games}>
+              <span className={styles.label}>{COPY.room.games}</span>
+              <Button variant="ink" block disabled={!canStart(room, 'fill')} onClick={() => send({ type: 'start', game: 'fill', seed: newSeed() })}>
+                {COPY.room.startFill}
+              </Button>
+              <Button
+                variant="ghost"
+                block
+                disabled={!canStart(room, 'quartett', DECK_SIZE)}
+                onClick={() => send({ type: 'start', game: 'quartett', seed: newSeed() })}
+              >
+                {COPY.room.startQuartett}
+              </Button>
+              {canCheer(room) && room.players.length !== 2 && <p className={styles.hint}>{COPY.room.needTwo}</p>}
+            </div>
           </>
         ) : (
           <>
@@ -210,8 +247,6 @@ function Table({ room, meId, isHost, onInvite, send }: TableProps) {
           </>
         )}
       </section>
-
-      <p className={styles.soon}>{COPY.room.soon}</p>
     </>
   )
 }

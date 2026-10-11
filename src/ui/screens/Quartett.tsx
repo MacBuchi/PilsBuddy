@@ -1,6 +1,6 @@
 import { XIcon } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
-import { BEER_BY_ID, BEERS, formatAbv } from '../../data/beers'
+import { BEER_BY_ID, BEERS } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
 import { botChoice, newQuartett, playStat, QUARTETT_STATS, statValue } from '../../domain/games/quartett'
 import type { QuartettRound, QuartettState, StatKey } from '../../domain/games/quartett'
@@ -9,16 +9,15 @@ import { useApp } from '../../state/AppContext'
 import { textOnBeer } from '../color'
 import { BeerBottle } from '../components/BeerBottle'
 import { Button } from '../components/Button'
+import { markOf, show, STAT_LABEL } from './gameFormat'
+import type { Mark } from './gameFormat'
 import styles from './Quartett.module.css'
 
 type Phase = 'choose' | 'bot' | 'reveal' | 'end'
-type Mark = 'win' | 'lose' | 'tie'
 
 const BOT_THINK_MS = 1100
 const IDS = BEERS.map((b) => b.id)
-const STAT_LABEL = Object.fromEntries(QUARTETT_STATS.map((s) => [s.key, s.label])) as Record<StatKey, string>
 
-const show = (key: StatKey, v: number) => (key === 'abv' ? formatAbv(v) : String(v))
 /** Bar length: taste axes are 0–100, alcohol is scaled to a strong Doppelbock (12 %). */
 const barPct = (key: StatKey, v: number) => Math.min(100, key === 'abv' ? (v / 12) * 100 : v)
 
@@ -34,7 +33,6 @@ function quip(r: QuartettRound, round: number): string {
   })
 }
 
-const markOf = (r: QuartettRound): Mark => (r.outcome === 'tie' ? 'tie' : r.outcome === 0 ? 'win' : 'lose')
 const startPhase = (g: QuartettState): Phase => (g.turn === 0 ? 'choose' : 'bot')
 
 /** Bier-Quartett against the Kneipen-Bot (Stufe E1). The rules live in domain/games/quartett.ts. */
@@ -172,7 +170,7 @@ export function Quartett() {
   )
 }
 
-function QuartettCard({ beer, picked, mark, onPick }: { beer: Beer; picked: StatKey | null; mark: Mark | null; onPick?: (s: StatKey) => void }) {
+export function QuartettCard({ beer, picked, mark, onPick }: { beer: Beer; picked: StatKey | null; mark: Mark | null; onPick?: (s: StatKey) => void }) {
   const ink = textOnBeer(beer.color)
   return (
     <article className={styles.card} aria-label={beer.fullName}>
@@ -216,25 +214,28 @@ function QuartettCard({ beer, picked, mark, onPick }: { beer: Beer; picked: Stat
   )
 }
 
-function OpponentCard({
+/** The other side's card: face down with its pile size, or – after a round – the value it showed. */
+export function OpponentCard({
   beer,
   round,
   thinking,
   cards,
   mark,
+  name = COPY.quartett.bot,
 }: {
   beer: Beer | null
   round: QuartettRound | null
   thinking: boolean
   cards: number
   mark: Mark | null
+  name?: string
 }) {
   if (!beer || !round) {
     return (
-      <div className={`${styles.opp} ${styles.oppBack} ${thinking ? styles.thinking : ''}`} aria-label={COPY.quartett.bot}>
+      <div className={`${styles.opp} ${styles.oppBack} ${thinking ? styles.thinking : ''}`} aria-label={name}>
         <span className={styles.oppBackText}>{COPY.quartett.cardBack}</span>
         <span className={styles.oppCount}>
-          {COPY.quartett.bot} · {fill(COPY.quartett.cards, { n: String(cards) })}
+          {name} · {fill(COPY.quartett.cards, { n: String(cards) })}
         </span>
       </div>
     )
@@ -246,7 +247,7 @@ function OpponentCard({
     <div
       className={`${styles.opp} ${styles.flip}`}
       style={{ background: beer.color, color: ink }}
-      aria-label={`${COPY.quartett.bot}: ${beer.fullName}`}
+      aria-label={`${name}: ${beer.fullName}`}
     >
       <BeerBottle beer={beer} size={56} className={styles.oppBottle} />
       <span className={styles.oppName}>
