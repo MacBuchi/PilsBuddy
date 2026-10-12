@@ -245,7 +245,7 @@ describe('mainBeers', () => {
     )
     expect(beers).toEqual([
       { id: 'r-4001', breweryId: 'osm-n4', name: 'Krombacher Pils', style: 'Pils', abv: 4.8, pack: { ml: 500 }, rank: 0, source: 1, sourceRef: '4001', quality: 2 },
-      { id: 'r-4002', breweryId: 'osm-n4', name: 'Krombacher Weizen', style: 'Weißbier', abv: null, pack: { ml: 330, can: true }, rank: 1, source: 1, sourceRef: '4002', quality: 1 },
+      { id: 'r-4002', breweryId: 'osm-n4', name: 'Krombacher Weizen', style: 'Weißbier', abv: null, pack: { ml: 330, can: true }, rank: 1, source: 1, sourceRef: '4002', quality: 2 },
     ])
   })
 
@@ -423,15 +423,32 @@ describe('importSql', () => {
   })
 })
 
-describe('V1 – beer quality', () => {
-  it('rates what backs a beer: EAN/Wikidata or two sources plus ABV = bestätigt, a 2014 list alone = fraglich', () => {
-    expect(beerQuality(new Set([1]), { style: 'Pils', abv: 4.9 })).toBe(2)
-    expect(beerQuality(new Set([2]), { style: null, abv: 5 })).toBe(2)
-    expect(beerQuality(new Set([3, 4]), { style: 'IPA', abv: 6.5 })).toBe(2)
-    expect(beerQuality(new Set([1]), { style: 'Pils', abv: null })).toBe(1)
-    expect(beerQuality(new Set([3]), { style: 'IPA', abv: 6.5 })).toBe(1)
-    expect(beerQuality(new Set([4]), { style: 'Helles', abv: 4.9 })).toBe(0)
-    expect(beerQuality(new Set([3]), { style: null, abv: null })).toBe(0)
+describe('V1/V4 – beer quality', () => {
+  const e = (source: number, style: string | null, abv: number | null) => ({ source, style, abv })
+
+  it('crawler raw data = gefunden, a beer that exists = bestätigt, a 2014 list alone = fraglich', () => {
+    expect(beerQuality([e(1, 'Pils', 4.9)], { style: 'Pils', abv: 4.9 })).toBe(2)
+    expect(beerQuality([e(2, null, 5)], { style: null, abv: 5 })).toBe(2)
+    expect(beerQuality([e(1, 'Pils', null)], { style: 'Pils', abv: null })).toBe(2)
+    expect(beerQuality([e(3, 'IPA', 6.5), e(4, null, null)], { style: 'IPA', abv: 6.5 })).toBe(2)
+    expect(beerQuality([e(3, 'IPA', 6.5)], { style: 'IPA', abv: 6.5 })).toBe(1)
+    expect(beerQuality([e(3, 'IPA', 6.5), e(3, 'IPA', 6.5)], { style: 'IPA', abv: 6.5 })).toBe(1)
+    expect(beerQuality([e(4, 'Helles', 4.9)], { style: 'Helles', abv: 4.9 })).toBe(0)
+    expect(beerQuality([e(3, null, null)], { style: null, abv: null })).toBe(0)
+  })
+
+  it('all data agree = geprüft: style known, two sources with the same ABV, none contradicting', () => {
+    expect(beerQuality([e(1, 'Pils', 4.8), e(3, 'Pils', 4.9)], { style: 'Pils', abv: 4.8 })).toBe(3)
+    expect(beerQuality([e(2, null, 5.2), e(3, 'Weißbier', 5.2)], { style: 'Weißbier', abv: 5.2 })).toBe(3)
+    // one source alone, even a barcode, only shows that the beer exists
+    expect(beerQuality([e(1, 'Pils', 4.8), e(1, 'Pils', 4.8)], { style: 'Pils', abv: 4.8 })).toBe(2)
+    // the second source names the beer but no ABV
+    expect(beerQuality([e(1, 'Pils', 4.8), e(3, 'Pils', null)], { style: 'Pils', abv: 4.8 })).toBe(2)
+    // contradictions keep it at bestätigt
+    expect(beerQuality([e(1, 'Pils', 4.8), e(3, 'Pils', 4.8), e(4, 'Pils', 5.4)], { style: 'Pils', abv: 4.8 })).toBe(2)
+    expect(beerQuality([e(1, 'Pils', 4.8), e(3, 'Helles', 4.8)], { style: 'Pils', abv: 4.8 })).toBe(2)
+    // no style → the data are not complete
+    expect(beerQuality([e(1, null, 4.8), e(2, null, 4.8)], { style: null, abv: 4.8 })).toBe(2)
   })
 
   it('counts every source naming the picked beer', () => {

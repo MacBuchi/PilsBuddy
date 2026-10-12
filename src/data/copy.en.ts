@@ -383,9 +383,9 @@ export const EN: Copy = {
     qualityLevels: ['doubtful', 'found', 'confirmed', 'checked'],
     qualityNotes: [
       'Only a weak hint (an old beer list, or a website without style and alcohol) – so it stays out of the swipe deck.',
-      'One current source, usually the brewery website – read automatically, not checked by hand.',
-      'Backed by a barcode or Wikidata entry, or by two sources; alcohol known.',
-      'Researched by hand, with sources.',
+      'One current source, usually the brewery website – read automatically, not confirmed yet.',
+      'The beer exists: barcode, Wikidata entry or two independent sources.',
+      'All data agree: style known, alcohol given alike by two sources – or researched by hand.',
     ],
     more: 'Show more',
     without: 'Breweries without known beers · {n}',

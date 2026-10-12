@@ -19,8 +19,8 @@ describe('V1 – beer quality in the app', () => {
     expect(qualityOf(toRegionalBeer(row, brewery))).toBe(1)
   })
 
-  it('a regional beer is never „geprüft“ – that takes research by hand', () => {
-    expect(qualityOf(toRegionalBeer({ ...row, quality: 3 }, brewery))).toBe(2)
+  it('V4: a regional beer whose data all agree across sources is „geprüft“', () => {
+    expect(qualityOf(toRegionalBeer({ ...row, quality: 3 }, brewery))).toBe(3)
   })
 
   it('only „fraglich“ stays out of the deck', () => {

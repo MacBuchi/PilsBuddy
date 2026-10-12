@@ -173,7 +173,7 @@ export function toRegionalBeer(row: RegionalBeerRow, brewery: Omit<RegionalBrewe
     ...(row.pack ? { pack: row.pack } : {}),
     ...(brewery.founded ? { founded: brewery.founded } : {}),
     regional: { breweryId: brewery.id, source: SOURCES[row.source]?.name ?? COPY.regional.openData, ...(url ? { sourceUrl: url } : {}) },
-    // hand-researched (3) is for curated beers; a regional row claiming it is shown as „bestätigt“
-    quality: Math.min(row.quality ?? 1, 2) as Quality,
+    // V4: the pipeline raises a regional beer to 3 when all its data agree across sources
+    quality: (row.quality ?? 1) as Quality,
   }
 }

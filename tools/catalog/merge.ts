@@ -513,18 +513,29 @@ export const notABeerName = (name: string) => {
 }
 
 /**
- * V1 – how well a beer is backed (regional_beers.quality):
- * 2 bestätigt – a product with EAN (Open Food Facts) or a Wikidata item, or two independent sources, and the ABV is known;
+ * V1/V4 – how well a beer is backed (regional_beers.quality), checked automatically against every source naming it:
+ * 3 geprüft   – all data agree: it exists (2), the style is known, two sources give the same ABV (± 0.3) and no source
+ *               contradicts style or ABV (hand-researched curated beers are 3 as well);
+ * 2 bestätigt – the beer exists: a product with EAN (Open Food Facts), a Wikidata item, or two independent sources;
  * 0 fraglich  – only the openbeer lists (~2014, may be gone), or neither style nor ABV;
- * 1 gefunden  – everything else (usually one current website mention).
- * 3 geprüft is for hand-researched beers only and never computed.
+ * 1 gefunden  – everything else: the crawler's raw result (usually one website mention).
  */
 export type Quality = 0 | 1 | 2 | 3
-export function beerQuality(sources: ReadonlySet<number>, beer: { style: string | null; abv: number | null }): Quality {
-  const strong = sources.has(SOURCE.off) || sources.has(SOURCE.wikidata)
-  if ((strong || sources.size >= 2) && beer.abv != null) return 2
+export interface Evidence {
+  source: number
+  style: string | null
+  abv: number | null
+}
+const ABV_TOLERANCE = 0.3
+export function beerQuality(evidence: readonly Evidence[], beer: { style: string | null; abv: number | null }): Quality {
+  const sources = new Set(evidence.map((e) => e.source))
   if ((sources.size === 1 && sources.has(SOURCE.openbeer)) || (beer.style == null && beer.abv == null)) return 0
-  return 1
+  if (!(sources.has(SOURCE.off) || sources.has(SOURCE.wikidata) || sources.size >= 2)) return 1
+  if (beer.style == null || beer.abv == null) return 2
+  const abvAgrees = (e: Evidence) => e.abv != null && Math.abs(e.abv - beer.abv!) <= ABV_TOLERANCE + 1e-9
+  const contradicts = (e: Evidence) => (e.abv != null && !abvAgrees(e)) || (e.style != null && e.style !== beer.style)
+  if (evidence.some(contradicts)) return 2
+  return new Set(evidence.filter(abvAgrees).map((e) => e.source)).size >= 2 ? 3 : 2
 }
 
 /**
@@ -626,10 +637,12 @@ export function mainBeers(
       ? 'Blonde Ale'
       : c.style
   const out: RegionalBeer[] = []
-  for (const [breweryId, cands] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0]))) {
+  for (const [breweryId, raw] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const cands = raw.map((c) => ({ ...c, style: localStyle(breweryId, c) }))
     // the same beer named by several sources (sizes, spellings): what backs the one picked
-    const backing = (c: Candidate) => new Set(cands.filter((o) => normName(o.name) === normName(c.name)).map((o) => o.source ?? SOURCE.off))
-    pickMainBeers(cands.map((c) => ({ ...c, style: localStyle(breweryId, c) }))).forEach((c, rank) =>
+    const backing = (c: Candidate) =>
+      cands.filter((o) => normName(o.name) === normName(c.name)).map((o) => ({ source: o.source ?? SOURCE.off, style: o.style, abv: o.abv }))
+    pickMainBeers(cands).forEach((c, rank) =>
       out.push({
         id: `r-${c.code}`,
         breweryId,
