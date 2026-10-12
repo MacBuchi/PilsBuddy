@@ -35,7 +35,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 15. [x] **C2/C3** Pils-Match: Feed, Anstoßen, Blockieren (Absprache 2026-10-11: Vergleich + Anstoßen, Feed nur für Sichtbare) (#78)
 16. [x] **D1/D2** Optionale KI-Texte (Absprache 2026-10-11: Workers AI, nur Gratis-Kontingent, Opt-in im Profil) (#79)
 17. [x] **E7** Bierquiz allein (Wunsch #45, eingeplant 2026-10-11) (#80)
-18. [ ] **E8** Bierquiz und „Mitspieler fragen“-Joker im Spielraum (#45, Mehrspieler auf E4)
+18. [x] **E8** Bierquiz und „Mitspieler fragen“-Joker im Spielraum (#45, Mehrspieler auf E4) (#85)
 19. [x] **E9** „Wer wird Bierionär?“ + Schätzfragen (Wunsch 2026-10-11, vor E8 gezogen) (#81)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -382,9 +382,12 @@ damit derselbe Zustand später an Mitspieler gesendet werden kann. Keine Trinkre
       Geschichte, Herstellung, Reinheitsgebot & Recht, Sortenkunde, Zutaten – jedes Thema mindestens einmal pro
       Quiz, Wunsch 2026-10-11), 3 aus den kuratierten Bierdaten (Land, Stil ohne Fast-Zwillinge, stärkstes von vier
       mit ≥ 0,5 % Abstand); nach jeder Antwort die Auflösung mit einem Satz dazu, Sieg ab 7 richtig, Bestwert im Profil
-- [ ] E8 **Bierquiz im Spielraum** (#45) auf E4: Gastgeber teilt dieselben Fragen (Seed) aus, alle antworten,
-      Auflösung von selbst oder per Gastgeber, Rangliste am Ende; dazu der Joker „Mitspieler fragen“ für den
-      Bierionär: die anderen am Tisch stimmen ab (M)
+- [x] E8 **Bierquiz im Spielraum** (#45) auf E4 (M) (#85) – Regeln rein in `domain/games/quizparty.ts`: Gastgeber
+      teilt dieselben Fragen (Seed, seine Sprache) aus und schickt sie im Snapshot mit, alle antworten, Auflösung von
+      selbst oder per Gastgeber, Rangliste am Ende. Dazu „Wer wird Bierionär?“ am Tisch: der Gastgeber setzt jemanden
+      auf den Ratestuhl, alle sehen das Studio (`BierStudio.tsx`, geteilt mit E9), und der vierte Joker
+      „Mitspieler fragen“ lässt die anderen abstimmen (schließt von selbst, wenn alle abgestimmt haben, oder per
+      Kandidat/Gastgeber). Zählt nicht in die Solo-Statistik
 - [x] E9 **„Wer wird Bierionär?“** (Wunsch 2026-10-11) (M) (#81) – Regeln rein in `domain/games/bierionaer.ts`:
       15 Fragen leicht → schwer (Stufe 1–3 je Frage im Katalog), Gewinnleiter in Kronkorken 50 … 1 000 000,
       Sicherheitsstufen nach Frage 5 und 10, Aussteigen jederzeit; Joker 50:50, Stammtisch (Abstimmung, bei schweren

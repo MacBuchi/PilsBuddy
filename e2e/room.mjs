@@ -5,7 +5,8 @@
 // A opens a room; B comes in through the invite link (new user: age first), C types the code.
 // The host holds the state: toasting only once every guest is ready, everyone sees „Prost!“, the host
 // brings them back. All three play „Wie viel ist drin?“ (E5) and hold a Tasting-Abend (E6: a catalog beer
-// resolving by itself, B keeps the verdict, a typed beer the host resolves); C leaves, A and B start Quartett zu zweit.
+// resolving by itself, B keeps the verdict, a typed beer the host resolves), a Bierquiz (E8) and „Wer wird Bierionär?“ with
+// B in the chair asking the table; C leaves, A and B start Quartett zu zweit.
 // Then A closes the room and B is told. An unknown code is not found.
 import { chromium, devices } from 'playwright'
 
@@ -170,6 +171,86 @@ await step('Tasting-Abend for all three: pour, rate, reveal, keep, end', async (
   for (const d of [A, B, C]) await d.m.getByText('Liebling des Abends: Omas Kellerbier').waitFor({ timeout: 10000 })
   await C.m.getByText('Streitbier des Abends: Jever (2–5 Sterne)').waitFor()
   await C.page.screenshot({ path: `${out}-c-tasting-end.png` })
+  await A.m.getByRole('button', { name: 'Zurück an den Tisch' }).click()
+  await B.m.getByRole('button', { name: 'Ich bin bereit' }).waitFor({ timeout: 10000 })
+})
+
+const everyoneReady = async (label) => {
+  for (const d of [B, C]) await d.m.getByRole('button', { name: 'Ich bin bereit' }).click()
+  await A.page.waitForFunction(
+    (text) => {
+      const b = [...document.querySelectorAll('main button')].find((x) => x.textContent?.includes(text))
+      return b && !b.disabled
+    },
+    label,
+    { timeout: 10000 },
+  )
+}
+const answerAll = async (devices) => {
+  for (const d of devices) await d.m.getByRole('group').getByRole('button').first().click()
+}
+
+await step('Bierquiz for all three: same questions, answers, reveal, ranking', async () => {
+  await everyoneReady('Bierquiz für alle')
+  await A.m.getByRole('button', { name: 'Bierquiz für alle' }).click()
+  for (const d of [A, B, C]) await d.m.getByText('Frage 1 von 10').waitFor({ timeout: 10000 })
+  const prompts = await Promise.all([A, B, C].map((d) => d.m.locator('h2').first().textContent()))
+  if (new Set(prompts).size !== 1) throw new Error(`different questions: ${prompts.join(' | ')}`)
+  // question 1: C dawdles, the host resolves
+  await answerAll([A, B])
+  await A.m.getByText('2 von 3 haben geantwortet').waitFor({ timeout: 10000 })
+  await A.m.getByRole('button', { name: 'Auflösen' }).click()
+  await C.m.getByText('keine Antwort').waitFor({ timeout: 10000 })
+  await B.page.screenshot({ path: `${out}-b-quiz-reveal.png` })
+  // questions 2–10: everyone answers → resolves by itself
+  for (let n = 2; n <= 10; n++) {
+    await A.m.getByRole('button', { name: 'Nächste Frage' }).click()
+    for (const d of [A, B, C]) await d.m.getByText(`Frage ${n} von 10`).waitFor({ timeout: 10000 })
+    await answerAll([A, B, C])
+    await A.m.getByRole('button', { name: n === 10 ? 'Zur Auswertung' : 'Nächste Frage' }).waitFor({ timeout: 10000 })
+  }
+  await A.m.getByRole('button', { name: 'Zur Auswertung' }).click()
+  for (const d of [A, B, C]) await d.m.getByText('Auswertung', { exact: true }).waitFor({ timeout: 10000 })
+  await C.m.getByText(/ richtig$/).first().waitFor()
+  await C.page.screenshot({ path: `${out}-c-quiz-result.png` })
+  await A.m.getByRole('button', { name: 'Zurück an den Tisch' }).click()
+  await B.m.getByRole('button', { name: 'Ich bin bereit' }).waitFor({ timeout: 10000 })
+})
+
+await step('„Wer wird Bierionär?“: B in the chair asks the table, A and C vote, B answers', async () => {
+  await everyoneReady('Wer wird Bierionär?')
+  const select = A.m.getByRole('combobox', { name: 'Auf den Ratestuhl' })
+  const values = await select.locator('option').evaluateAll((os) => os.map((o) => o.value))
+  await select.selectOption(values[1]) // the first guest, B
+  await A.m.getByRole('button', { name: '„Wer wird Bierionär?“' }).click()
+  await B.m.getByText('Du sitzt auf dem Ratestuhl').waitFor({ timeout: 10000 })
+  await A.m.getByText(/sitzt auf dem Ratestuhl$/).waitFor({ timeout: 10000 })
+  if (!(await A.m.getByRole('button', { name: /^A:/ }).isDisabled())) throw new Error('a watcher can answer for the candidate')
+  await B.m.getByRole('button', { name: 'Mitspieler fragen' }).click()
+  for (const d of [A, C]) await d.m.getByText(/fragt den Tisch! Was meinst du\?/).waitFor({ timeout: 10000 })
+  await A.m.getByRole('button', { name: /^A:/ }).click()
+  await B.m.getByText('1 von 2 haben abgestimmt').waitFor({ timeout: 10000 })
+  await C.m.getByRole('button', { name: /^B:/ }).click()
+  for (const d of [A, B, C]) await d.m.getByText('Der Tisch hat abgestimmt').waitFor({ timeout: 10000 })
+  await B.m.getByText('50 %').first().waitFor()
+  await A.page.screenshot({ path: `${out}-a-bier-table.png` })
+  await B.page.screenshot({ path: `${out}-b-bier-table.png` })
+  await B.m.getByRole('button', { name: /^A:/ }).click()
+  await B.m.getByRole('button', { name: 'Einloggen' }).click()
+  for (const d of [A, B, C]) await d.m.getByText(/^(Richtig!|Leider falsch)/).waitFor({ timeout: 10000 })
+  await C.m.getByText(/macht gleich weiter\.$/).waitFor()
+  const goOn = B.m.getByRole('button', { name: /Nächste Frage|Zum Ergebnis/ })
+  if ((await goOn.textContent()).includes('Nächste Frage')) {
+    await goOn.click()
+    for (const d of [A, B, C]) await d.m.getByText('Frage 2 von 15').waitFor({ timeout: 10000 })
+    B.page.once('dialog', (d) => d.accept())
+    await B.m.getByRole('button', { name: /^Aussteigen/ }).click()
+  } else {
+    await goOn.click()
+  }
+  for (const d of [A, C]) await d.m.getByText(/ geht mit .* Kronkorken nach Hause\.$/).waitFor({ timeout: 10000 })
+  await B.m.getByText(/^Du gehst mit .* Kronkorken nach Hause\.$/).waitFor({ timeout: 10000 })
+  await C.page.screenshot({ path: `${out}-c-bier-end.png` })
   await A.m.getByRole('button', { name: 'Zurück an den Tisch' }).click()
   await B.m.getByRole('button', { name: 'Ich bin bereit' }).waitFor({ timeout: 10000 })
 })

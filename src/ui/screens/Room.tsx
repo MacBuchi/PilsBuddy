@@ -11,6 +11,7 @@ import { Button } from '../components/Button'
 import { RoomQr } from '../components/RoomQr'
 import q from './Quartett.module.css'
 import { RoomDuel, RoomFill } from './RoomGames'
+import { RoomBier, RoomQuiz } from './RoomQuiz'
 import { RoomTasting } from './RoomTasting'
 import styles from './Room.module.css'
 
@@ -136,7 +137,7 @@ export function Room() {
         </div>
       )}
 
-      {live && <Table room={live} meId={me.id} isHost={isHost} onInvite={() => void invite(live.code)} send={send} />}
+      {live && <Table room={live} meId={me.id} isHost={isHost} onInvite={() => void invite(live.code)} send={send} onExit={exit} />}
     </div>
   )
 }
@@ -147,14 +148,19 @@ interface TableProps {
   isHost: boolean
   onInvite: () => void
   send: ReturnType<typeof useRoom>['send']
+  onExit: () => void
 }
 
-function Table({ room, meId, isHost, onInvite, send }: TableProps) {
+function Table({ room, meId, isHost, onInvite, send, onExit }: TableProps) {
   const self = room.players.find((p) => p.id === meId)
   const link = roomLink(window.location.origin, room.code)
+  const [candidate, setCandidate] = useState(room.host)
+  const chair = room.players.some((p) => p.id === candidate) ? candidate : room.host
 
   if (room.phase === 'play' && room.game) {
     const props = { room, meId, isHost, send }
+    // the Bierionär studio fills the screen and brings its own way out
+    if (room.game.kind === 'bierionaer') return <RoomBier {...props} game={room.game} onExit={onExit} />
     const over = room.game.kind === 'quartett' ? room.game.q.winner !== null : room.game.over
     return (
       <>
@@ -162,6 +168,8 @@ function Table({ room, meId, isHost, onInvite, send }: TableProps) {
           <RoomDuel {...props} game={room.game} />
         ) : room.game.kind === 'fill' ? (
           <RoomFill {...props} game={room.game} />
+        ) : room.game.kind === 'quiz' ? (
+          <RoomQuiz {...props} game={room.game} />
         ) : (
           <RoomTasting {...props} game={room.game} />
         )}
@@ -237,6 +245,29 @@ function Table({ room, meId, isHost, onInvite, send }: TableProps) {
               <Button variant="ink" block disabled={!canStart(room, 'tasting')} onClick={() => send({ type: 'start', game: 'tasting', seed: newSeed() })}>
                 {COPY.room.startTasting}
               </Button>
+              <Button variant="ink" block disabled={!canStart(room, 'quiz')} onClick={() => send({ type: 'start', game: 'quiz', seed: newSeed() })}>
+                {COPY.room.startQuiz}
+              </Button>
+              <div className={styles.chair}>
+                <Button
+                  variant="ink"
+                  block
+                  disabled={!canStart(room, 'bierionaer')}
+                  onClick={() => send({ type: 'start', game: 'bierionaer', seed: newSeed(), candidate: chair })}
+                >
+                  {COPY.room.startBierionaer}
+                </Button>
+                <label className={styles.chairPick}>
+                  <span className={styles.label}>{COPY.room.candidate}</span>
+                  <select className={styles.select} value={chair} onChange={(e) => setCandidate(e.target.value)}>
+                    {room.players.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.id === meId ? `${p.name} (${COPY.room.you})` : p.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
               <Button
                 variant="ghost"
                 block
