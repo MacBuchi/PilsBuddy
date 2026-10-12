@@ -37,6 +37,11 @@ Details stehen beim jeweiligen Paket weiter unten.
 17. [x] **E7** Bierquiz allein (Wunsch #45, eingeplant 2026-10-11) (#80)
 18. [x] **E8** Bierquiz und „Mitspieler fragen“-Joker im Spielraum (#45, Mehrspieler auf E4) (#85)
 19. [x] **E9** „Wer wird Bierionär?“ + Schätzfragen (Wunsch 2026-10-11, vor E8 gezogen) (#81)
+20. [x] **V4** Qualitätsstufen verifizieren (Wunsch 2026-10-12, Absprache: nur automatisch): Crawler-Rohdaten → es gibt
+    das Bier → alle Daten stimmen (#86)
+21. [ ] **R10** Brauerei-Profil als Rückfall für Brauereien ohne bekannte Biere (offen aus R0)
+22. [ ] **R11** Regional-Snapshots auf dem zweiten Gerät (Sync/Import, offen aus R4)
+23. [ ] **R12** Freigegebene Meldungen sofort im Finder statt nach bis zu 30 Tagen Zell-Cache (offen aus R6)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -258,6 +263,14 @@ Leitplanken:
         `src/domain/library.ts` (Stilgruppen, Alkohol-Bänder, Bewertung inkl. „unbewertet“). Offline: kuratierte +
         angefasste Regionalbiere; ab 3 Zeichen sucht `searchRegional` Bier-, Brauerei- und Ortsnamen, eine PLZ die
         Brauereien im Umkreis von 25 km. Keine Migration; die beiden Abfragen stehen in `schema_check.sh`
+- [ ] R10 **Brauerei-Profil als Rückfall** (offen aus R0, eingeplant 2026-10-12): nur 7 % der Brauereien haben ein Bier
+      in offenen Daten. Für die übrigen ein ehrliches Profil der Brauerei (Region, typische Stile des Landes, Gründung) –
+      ohne erfundene Biere oder Geschmackswerte (M)
+- [ ] R11 **Regional-Snapshots auf dem zweiten Gerät** (offen aus R4, eingeplant 2026-10-12): Bewertungen von
+      Regionalbieren (`r-…`) gehen per Sync/Import nicht verloren – fehlende Snapshots werden per ID aus
+      `regional_beers` nachgeladen (S–M)
+- [ ] R12 **Freigegebene Meldungen sofort sichtbar** (offen aus R6, eingeplant 2026-10-12): gecachte Finder-Zellen
+      zeigen ein freigegebenes Bier heute erst nach bis zu 30 Tagen (S)
 
 ### Stufe Q – Qualität der Datenbank-Auslieferung (Wunsch 2026-10-02, #37)
 
@@ -340,6 +353,11 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
         Suche kuratiert offline (`domain/favorites.ts`, Rangfolge Name > Wortanfang > Brauerei) + ab 3 Zeichen
         Regionalbiere (nicht „fraglich“), bis 5 Favoriten → „Mag ich“ (nie über eine vorhandene Bewertung);
         „Nicht dabei? Bier melden“ öffnet die R6-Meldung mit dem Suchtext als Biername
+- [x] V4 **Qualitätsstufen verifizieren** (#86) (Wunsch 2026-10-12, Absprache: nur automatisch, kein Handschritt): die Stufen
+      bedeuten 1 gefunden = Rohdaten des Crawlers (eine Quelle) · 2 bestätigt = es gibt das Bier (Strichcode, Wikidata
+      oder zwei unabhängige Quellen; Alkohol nicht mehr nötig) · 3 geprüft = alle Daten stimmen (Stil bekannt, Alkohol
+      von zwei Quellen übereinstimmend, keine Quelle widerspricht) – oder von Hand recherchiert (kuratiert). Regionalbiere
+      können jetzt 3 erreichen; Widersprüche halten ein Bier auf 2 (S–M)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

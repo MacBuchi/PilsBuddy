@@ -82,11 +82,12 @@ stehen zentral in `tools/catalog/countries.json`; Skripte, Merge und Workflow le
    (sonst Abbruch vor dem ersten Schreiben – ein Download kann still unvollständig sein); Upserts per Quell-ID ändern nur, was anders ist (`updated_at` bleibt sonst), `30-unpublish.sql`
    setzt Brauereien/Biere, die nicht mehr in den Quellen sind, auf `published = false` (Zeilen bleiben) – außer
    den freigegebenen Meldungen aus der App (Quelle 5, Brauereien `app-…`).
-   **Qualitätsstufe (V1)** je Bier, `regional_beers.quality`, berechnet in `merge.ts` (`beerQuality`): 2 bestätigt =
-   Open-Food-Facts-Produkt (EAN) oder Wikidata-Eintrag oder zwei Quellen nennen dasselbe Bier, und Alkohol bekannt ·
-   1 gefunden = eine aktuelle Quelle · 0 fraglich = nur openbeer (~2014) oder weder Stil noch Alkohol (nie im
-   Swipe-Deck). 3 geprüft bleibt den von Hand recherchierten Bieren vorbehalten (kuratiert; freigegebene Meldungen
-   bekommen 2). Vorher fliegen Merch, Hashtags, Award-Zeilen und Listenüberschriften raus (`notABeerName`), Layout-
+   **Qualitätsstufe (V1/V4)** je Bier, `regional_beers.quality`, automatisch geprüft in `merge.ts` (`beerQuality`)
+   gegen alle Quellen, die dasselbe Bier nennen: 3 geprüft = alle Daten stimmen (Stil bekannt, zwei Quellen mit
+   gleichem Alkohol ± 0,3, keine widerspricht) · 2 bestätigt = es gibt das Bier (Open-Food-Facts-Produkt mit EAN,
+   Wikidata-Eintrag oder zwei Quellen) · 1 gefunden = Rohdaten des Crawlers, eine aktuelle Quelle · 0 fraglich = nur
+   openbeer (~2014) oder weder Stil noch Alkohol (nie im Swipe-Deck). Kuratierte Biere sind 3 (von Hand recherchiert),
+   freigegebene Meldungen bekommen 2. Vorher fliegen Merch, Hashtags, Award-Zeilen und Listenüberschriften raus (`notABeerName`), Layout-
    Reste im Namen werden entfernt (`tidyBeerName`, die ID bleibt am Rohnamen).
    **Problem melden (V2):** An jedem Bier meldet die App ein Problem über die Feedback-Tabelle (`type = 'beer'`,
    `beer_id`, `beer_name`, `problem`); der Feedback-Bot macht daraus ein Issue `bier-problem` mit den Katalogdaten.

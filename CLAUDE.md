@@ -62,7 +62,7 @@ no state library, no CSS framework. Design source of truth: `docs/pilsbuddy-mobi
   the user's location never leaves the device – query only coarse grid cells (or the typed postcode).
   Every regional beer has a quality level (V1, `regional_beers.quality`, computed by `beerQuality` in
   `tools/catalog/merge.ts`): 0 fraglich never enters the swipe deck, regional cards come only after the reference
-  set; 3 geprüft means researched by hand and is never computed.
+  set; 3 geprüft (V4) = all data agree across sources – computed, never by hand for regional rows.
 - Work follows `docs/ROADMAP.md`: keep its order (A0 → A1 → A2 → A9 → …). One package = one branch + PR that
   also ticks its roadmap checkbox (with the PR number) – no separate roadmap PR.
 - The gate runs in CI, not locally. Locally: write code, run the affected `vitest` files and `npm run typecheck`

@@ -98,7 +98,7 @@ const report = [
   `  Quellen: ${count(beers, (b) => String(b.source))} (1 = OFF, 2 = Wikidata, 3 = Website, 4 = openbeer)`,
   `  je Land: ${COUNTRIES.map((c) => `${c} ${beers.filter((b) => countryOf.get(b.breweryId) === c).length} bei ${new Set(beers.filter((b) => countryOf.get(b.breweryId) === c).map((b) => b.breweryId)).size}`).join(' · ')}`,
   `  mit ABV ${beers.filter((b) => b.abv != null).length} · mit Gebinde ${beers.filter((b) => b.pack).length}`,
-  `  Qualität (V1): bestätigt ${beers.filter((b) => b.quality === 2).length} · gefunden ${beers.filter((b) => b.quality === 1).length} · fraglich ${beers.filter((b) => b.quality === 0).length}`,
+  `  Qualität (V4): geprüft ${beers.filter((b) => b.quality === 3).length} · bestätigt ${beers.filter((b) => b.quality === 2).length} · gefunden ${beers.filter((b) => b.quality === 1).length} · fraglich ${beers.filter((b) => b.quality === 0).length}`,
   `Postleitzahlen: ${places.length} (${count(places, (p) => p.country)})`,
   `SQL: ${readdirSync(OUT).filter((f) => f.endsWith('.sql')).length} Dateien in ${OUT}`,
 ].join('\n')
