@@ -22,8 +22,12 @@ const BEER_SLOTS: readonly [BeerKind, QuizLevel][] = [
   ['abv', 3],
 ]
 
-export type Joker = 'fifty' | 'stammtisch' | 'braumeister'
+/** `tisch` – „Mitspieler fragen“ (Stufe E8): only in the game room, where the others at the table vote. */
+export type Joker = 'fifty' | 'stammtisch' | 'braumeister' | 'tisch'
+/** The jokers of a game on one phone. */
 export const JOKERS: readonly Joker[] = ['fifty', 'stammtisch', 'braumeister']
+/** In the game room the table can be asked as well. */
+export const ROOM_JOKERS: readonly Joker[] = [...JOKERS, 'tisch']
 
 export interface JokerHelp {
   /** 50:50 – the two wrong options taken away. */
@@ -32,6 +36,8 @@ export interface JokerHelp {
   poll?: number[]
   /** Braumeister – the option he names and whether he sounds sure. */
   tip?: { option: number; sure: boolean }
+  /** Mitspieler fragen – the votes by player id; `closed` once everyone voted or the vote was called. */
+  table?: { votes: Record<string, number>; closed: boolean }
 }
 
 export type BierionaerStatus = 'playing' | 'won' | 'lost' | 'walked'
@@ -111,6 +117,7 @@ const BREWER_KNOWS: Record<QuizLevel, number> = { 1: 0.95, 2: 0.8, 3: 0.6 }
 export function playJoker(game: BierionaerGame, joker: Joker): BierionaerGame {
   const q = currentQuestion(game)
   if (!q || game.used[joker] !== undefined) return game
+  if (joker === 'tisch') return { ...game, used: { ...game.used, tisch: game.step }, help: { ...game.help, table: { votes: {}, closed: false } } }
   const rnd = helpRandom(game, joker)
   const open = visibleOptions(game)
   const wrong = open.filter((i) => i !== q.answer)
@@ -143,6 +150,40 @@ export function playJoker(game: BierionaerGame, joker: Joker): BierionaerGame {
   // he sounds sure when he knows – mostly; a bluff now and then on hard questions
   const sure = knows ? rnd() < 0.85 : q.level === 3 && rnd() < 0.3
   return { ...game, used, help: { ...game.help, tip: { option, sure } } }
+}
+
+/** A vote of someone at the table while „Mitspieler fragen“ is open – once each, only for an option still shown. */
+export function tableVote(game: BierionaerGame, from: string, option: number): BierionaerGame {
+  const table = game.help.table
+  if (!table || table.closed || Object.hasOwn(table.votes, from) || !visibleOptions(game).includes(option)) return game
+  return { ...game, help: { ...game.help, table: { ...table, votes: { ...table.votes, [from]: option } } } }
+}
+
+/** Closes the vote – by itself once everyone in `voters` has voted, or when called (`voters` omitted). Needs a vote. */
+export function tableClose(game: BierionaerGame, voters?: readonly string[]): BierionaerGame {
+  const table = game.help.table
+  if (!table || table.closed || !Object.keys(table.votes).length) return game
+  if (voters && !(voters.length && voters.every((id) => Object.hasOwn(table.votes, id)))) return game
+  return { ...game, help: { ...game.help, table: { ...table, closed: true } } }
+}
+
+/** Votes per option in percent (rounded, summing to 100), for the bars. */
+export function tableShares(game: BierionaerGame): number[] {
+  const q = game.questions[game.step]
+  const votes = Object.values(game.help.table?.votes ?? {})
+  if (!q || !votes.length) return q ? q.options.map(() => 0) : []
+  const counts = q.options.map((_, i) => votes.filter((v) => v === i).length)
+  const pct = counts.map((c) => Math.floor((c * 100) / votes.length))
+  // the remainder goes to the largest counts, so the bars add up to 100
+  let rest = 100 - pct.reduce((a, b) => a + b, 0)
+  for (const i of [...counts.keys()].sort((a, b) => counts[b] - counts[a] || a - b)) {
+    if (!rest) break
+    if (counts[i]) {
+      pct[i]++
+      rest--
+    }
+  }
+  return pct
 }
 
 /** Locks in an answer: right climbs a rung (the last one wins), wrong ends the game. */

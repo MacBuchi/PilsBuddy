@@ -3,6 +3,10 @@ import { duelPlay, fillGuess, fillNext, fillReveal, fillSettle, newDuel, newFill
 import type { PartyGame, PartyKind } from './party'
 import { seededRandom } from './quartett'
 import type { StatKey } from './quartett'
+import { bierMove, bierSettle, newBierParty, newQuizParty, quizAnswer, quizNext, quizReveal, quizSettle } from './quizparty'
+import type { BierMove } from './quizparty'
+import { ROOM_JOKERS } from './bierionaer'
+import type { Joker } from './bierionaer'
 import { newTasting, tastingEnd, tastingPour, tastingRate, tastingReveal, tastingSettle, TASTING_AXES } from './tasting'
 import type { TastingBeer, TastingVerdict } from './tasting'
 
@@ -53,8 +57,8 @@ export type RoomIntent =
   | { type: 'ready'; ready: boolean }
   | { type: 'cheers' }
   | { type: 'lobby' }
-  /** Host only; the seed comes from the host's UI. */
-  | { type: 'start'; game: PartyKind; seed: number }
+  /** Host only; the seed comes from the host's UI. `candidate`: who sits in the Bierionär chair (default the host). */
+  | { type: 'start'; game: PartyKind; seed: number; candidate?: string }
   | { type: 'stat'; stat: StatKey }
   | { type: 'guess'; ml: number }
   /** Host only: resolve the glass (or the tasting round) without waiting for the last one, then the next glass. */
@@ -65,6 +69,10 @@ export type RoomIntent =
   | { type: 'rate'; verdict: TastingVerdict }
   /** Tasting-Abend: host only, close the evening. */
   | { type: 'end' }
+  /** Bierquiz (E8): an answer to the question on the table. */
+  | { type: 'answer'; option: number }
+  /** „Wer wird Bierionär?“ at the table (E8). */
+  | { type: 'bier'; move: BierMove }
 
 /** What the host needs to deal Quartett cards: the card ids and the beers behind them. */
 export interface RoomDeck {
@@ -131,8 +139,11 @@ export function withPresent(state: RoomState, present: readonly RoomMember[]): R
   if (players.length < 2 || (game?.kind === 'quartett' && !game.seats.every((id) => here.has(id) || id === state.host))) {
     return state.phase === 'play' ? toLobby(next) : { ...next, phase: players.length < 2 ? 'lobby' : state.phase }
   }
+  if (game?.kind === 'bierionaer' && !here.has(game.candidate) && game.candidate !== state.host) return state.phase === 'play' ? toLobby(next) : next
   const ids = players.map((p) => p.id)
   if (game?.kind === 'fill') return { ...next, game: fillSettle(game, ids) }
+  if (game?.kind === 'quiz') return { ...next, game: quizSettle(game, ids) }
+  if (game?.kind === 'bierionaer') return { ...next, game: bierSettle(game, ids) }
   if (game?.kind === 'tasting') return { ...next, game: tastingSettle(game, ids) }
   return next
 }
@@ -142,6 +153,9 @@ function toLobby(state: RoomState): RoomState {
   const players = state.players.map((p) => ({ ...p, ready: p.id === state.host }))
   return { ...state, phase: 'lobby', game: null, players }
 }
+
+/** Beers the quiz games may ask about: the deck's curated ones (regional beers carry estimates, not facts). */
+const quizBeers = (deck: RoomDeck) => deck.ids.map((id) => deck.lookup[id]).filter((b) => b && !b.regional)
 
 /** Quartett is for exactly two, everyone ready, and needs a full deck; the others for everyone ready. */
 export function canStart(state: RoomState, kind: PartyKind, deckSize = DUEL_CARDS): boolean {
@@ -178,12 +192,26 @@ export function applyIntent(state: RoomState, from: string, intent: RoomIntent, 
     case 'start': {
       const ids = deck.ids.filter((id) => deck.lookup[id])
       if (!isHost || state.phase !== 'lobby' || !canStart(state, intent.game, ids.length)) return state
-      const game =
-        intent.game === 'fill'
-          ? newFillParty(intent.seed)
-          : intent.game === 'tasting'
-            ? newTasting()
-            : newDuel([state.players[0].id, state.players[1].id], ids, intent.seed)
+      let game: PartyGame
+      try {
+        game =
+          intent.game === 'fill'
+            ? newFillParty(intent.seed)
+            : intent.game === 'tasting'
+              ? newTasting()
+              : intent.game === 'quiz'
+                ? newQuizParty(quizBeers(deck), intent.seed)
+                : intent.game === 'bierionaer'
+                  ? newBierParty(
+                      quizBeers(deck),
+                      intent.seed,
+                      state.players.some((p) => p.id === intent.candidate) ? intent.candidate! : state.host,
+                    )
+                  : newDuel([state.players[0].id, state.players[1].id], ids, intent.seed)
+      } catch {
+        // too few beers on this device for the quiz games
+        return state
+      }
       return { ...state, phase: 'play', game, round: state.round + 1, seq: state.seq + 1 }
     }
     case 'stat': {
@@ -202,6 +230,7 @@ export function applyIntent(state: RoomState, from: string, intent: RoomIntent, 
       const game = state.game
       if (!isHost) return state
       if (game?.kind === 'tasting' && intent.type === 'reveal') return withGame(state, tastingReveal(game))
+      if (game?.kind === 'quiz') return withGame(state, intent.type === 'reveal' ? quizReveal(game) : quizNext(game))
       if (game?.kind !== 'fill') return state
       return withGame(state, intent.type === 'reveal' ? fillReveal(game) : fillNext(game))
     }
@@ -210,6 +239,17 @@ export function applyIntent(state: RoomState, from: string, intent: RoomIntent, 
       const game = state.game
       if (!isHost || game?.kind !== 'tasting') return state
       return withGame(state, intent.type === 'pour' ? tastingPour(game, intent.beer) : tastingEnd(game))
+    }
+    case 'answer': {
+      const game = state.game
+      if (game?.kind !== 'quiz') return state
+      const answered = quizAnswer(game, from, intent.option)
+      return withGame(state, answered === game ? game : quizSettle(answered, state.players.map((p) => p.id)))
+    }
+    case 'bier': {
+      const game = state.game
+      if (game?.kind !== 'bierionaer') return state
+      return withGame(state, bierMove(game, from, isHost, intent.move, state.players.map((p) => p.id)))
     }
     case 'rate': {
       const game = state.game
@@ -241,7 +281,7 @@ export function acceptSnapshot(current: RoomState | null, incoming: unknown, cod
 }
 
 export function parseIntent(raw: unknown): RoomIntent | null {
-  const i = raw as { type?: unknown; ready?: unknown; stat?: unknown; ml?: unknown; verdict?: unknown } | null
+  const i = raw as { type?: unknown; ready?: unknown; stat?: unknown; ml?: unknown; verdict?: unknown; option?: unknown; move?: unknown } | null
   if (!i || typeof i !== 'object') return null
   if (i.type === 'ready' && typeof i.ready === 'boolean') return { type: 'ready', ready: i.ready }
   if (i.type === 'cheers' || i.type === 'lobby' || i.type === 'reveal' || i.type === 'next') return { type: i.type }
@@ -250,6 +290,11 @@ export function parseIntent(raw: unknown): RoomIntent | null {
     return stat ? { type: 'stat', stat } : null
   }
   if (i.type === 'guess' && typeof i.ml === 'number' && Number.isFinite(i.ml)) return { type: 'guess', ml: i.ml }
+  if (i.type === 'answer') return isOption(i.option) ? { type: 'answer', option: i.option } : null
+  if (i.type === 'bier') {
+    const move = parseMove(i.move)
+    return move ? { type: 'bier', move } : null
+  }
   if (i.type === 'rate') {
     const v = i.verdict as { stars?: unknown; axes?: Record<string, unknown> } | null
     const num = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n)
@@ -263,6 +308,17 @@ export function parseIntent(raw: unknown): RoomIntent | null {
     return { type: 'rate', verdict: { stars: v.stars, axes } }
   }
   // `start`, `pour` and `end` never come over the network: only the host does them, on its own device
+  return null
+}
+
+const isOption = (n: unknown): n is number => typeof n === 'number' && Number.isInteger(n) && n >= 0 && n < 4
+
+function parseMove(raw: unknown): BierMove | null {
+  const m = raw as { type?: unknown; joker?: unknown; option?: unknown } | null
+  if (!m || typeof m !== 'object') return null
+  if (m.type === 'walk' || m.type === 'tally' || m.type === 'next') return { type: m.type }
+  if (m.type === 'joker') return ROOM_JOKERS.includes(m.joker as Joker) ? { type: 'joker', joker: m.joker as Joker } : null
+  if ((m.type === 'pick' || m.type === 'vote') && isOption(m.option)) return { type: m.type, option: m.option }
   return null
 }
 

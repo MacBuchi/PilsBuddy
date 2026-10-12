@@ -365,3 +365,20 @@ p.help {
   font: 600 11.5px/1.3 var(--font-display);
   color: var(--gold-2);
 }
+
+/* game room (E8): who sits in the chair */
+.sub {
+  margin: -4px 0 0;
+  text-align: center;
+  font: 700 11px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+}
+
+.voteHint {
+  margin: 0;
+  text-align: center;
+  font: 600 14px/1.35 var(--font-display);
+  color: var(--gold-2);
+}

@@ -222,3 +222,28 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* „Wer wird Bierionär?“: who takes the chair (E8) */
+.chair {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chairPick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.select {
+  min-width: 0;
+  max-width: 60%;
+  font: 600 14px var(--font-display);
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 2px solid var(--edge);
+  background: var(--bg);
+  color: var(--ink);
+}
