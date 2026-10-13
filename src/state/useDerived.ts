@@ -23,7 +23,8 @@ export interface Derived {
 
 /** Everything computed from the ratings, memoised per ratings object. */
 export function useDerived(): Derived {
-  const { ratings, games } = useApp().state.profile
+  const { profile, beersRev } = useApp().state
+  const { ratings, games } = profile
   // Session start, taken once; newer ratings push "now" forward so fresh swipes count as activity.
   const [sessionStart] = useState(() => Date.now())
   return useMemo(() => {
@@ -42,5 +43,7 @@ export function useDerived(): Derived {
       candidates: rankCandidates(dna.taste, ratings),
       achievements,
     }
-  }, [games, ratings, sessionStart])
+    // beersRev: regional beers restored after start (R11) change what the ratings mean
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [games, ratings, sessionStart, beersRev])
 }

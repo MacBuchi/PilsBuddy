@@ -97,6 +97,8 @@ export interface AppState {
   lastRated: { id: string; rating: Rating; previous: RatingEntry | null } | null
   /** Room code from a `?room=` invite (Stufe E4), joined when the room screen opens. Not persisted. */
   roomJoin: string | null
+  /** Bumped when beers became known after start (R11), so everything computed from ratings is recomputed. Not persisted. */
+  beersRev: number
 }
 
 export type Action =
@@ -113,6 +115,7 @@ export type Action =
   | { type: 'MARK_SEEN'; id: string }
   | { type: 'IMPORT'; profile: Profile }
   | { type: 'SET_BUDDY'; buddy: BuddySnapshot | null }
+  | { type: 'BEERS_KNOWN' }
   | { type: 'RESET' }
   | { type: 'GAME_OVER'; game: 'quartett' | 'fill' | 'quiz' | 'bierionaer'; won: boolean; score?: number }
   | { type: 'GAME_OVER'; game: 'memory'; won: boolean; variant: MemoryVariant; moves: number }
@@ -143,6 +146,7 @@ export function initialState(profile: Profile = initialProfile()): AppState {
     matchTab: 'biere',
     lastRated: null,
     roomJoin: null,
+    beersRev: 0,
   }
 }
 
@@ -201,6 +205,8 @@ export function reducer(state: AppState, action: Action): AppState {
     case 'MARK_SEEN':
       if (state.profile.seen.includes(action.id)) return state
       return { ...state, profile: { ...state.profile, seen: [...state.profile.seen, action.id] } }
+    case 'BEERS_KNOWN':
+      return { ...state, beersRev: state.beersRev + 1 }
     case 'SET_BUDDY':
       return { ...state, profile: { ...state.profile, buddy: action.buddy } }
     case 'IMPORT':

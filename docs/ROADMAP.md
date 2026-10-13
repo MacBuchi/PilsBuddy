@@ -40,7 +40,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 20. [x] **V4** Qualitätsstufen verifizieren (Wunsch 2026-10-12, Absprache: nur automatisch): Crawler-Rohdaten → es gibt
     das Bier → alle Daten stimmen (#86)
 21. [x] **R10** Brauerei-Profil als Rückfall für Brauereien ohne bekannte Biere (offen aus R0) (#88)
-22. [ ] **R11** Regional-Snapshots auf dem zweiten Gerät (Sync/Import, offen aus R4)
+22. [x] **R11** Regional-Snapshots auf dem zweiten Gerät (Sync/Import, offen aus R4) (#89)
 23. [ ] **R12** Freigegebene Meldungen sofort im Finder statt nach bis zu 30 Tagen Zell-Cache (offen aus R6)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -269,9 +269,11 @@ Leitplanken:
       - umgesetzt (2026-10-13, #88): `src/domain/breweryProfile.ts` – Stile aus dem Namen (nur ausgeschriebene Stile),
         sonst Region aus den Koordinaten (Bierstädte als Kreise, Bayern-Umriss → Franken/Altbayern, Norden), sonst
         Land; im Brauerei-Sheet als „Brauerei-Profil“, in der Finder-Liste als „Typisch hier“. Keine Migration
-- [ ] R11 **Regional-Snapshots auf dem zweiten Gerät** (offen aus R4, eingeplant 2026-10-12): Bewertungen von
+- [x] R11 **Regional-Snapshots auf dem zweiten Gerät** (offen aus R4, eingeplant 2026-10-12): Bewertungen von
       Regionalbieren (`r-…`) gehen per Sync/Import nicht verloren – fehlende Snapshots werden per ID aus
       `regional_beers` nachgeladen (S–M)
+      - umgesetzt (2026-10-13, #89): `restoreRegional` lädt fehlende `r-`-IDs einmal nach (nur IDs, nur veröffentlichte
+        Biere), `AppState.beersRev` lässt DNA und Listen neu rechnen; offline beim nächsten Start erneut
 - [ ] R12 **Freigegebene Meldungen sofort sichtbar** (offen aus R6, eingeplant 2026-10-12): gecachte Finder-Zellen
       zeigen ein freigegebenes Bier heute erst nach bis zu 30 Tagen (S)
 

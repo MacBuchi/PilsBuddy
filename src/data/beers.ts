@@ -6,7 +6,7 @@ import { COPY } from './copy'
 import { toRegionalBeer } from '../domain/regionalBeer'
 import type { RegionalBeerRow, RegionalBrewery } from '../domain/regionalBeer'
 import { mergeCatalog, readCachedRows } from './catalog'
-import { readSnapshots, writeSnapshot } from './regional'
+import { fetchRegionalByIds, readSnapshots, writeSnapshot } from './regional'
 
 /**
  * All beers in dataset order: beers.json plus the rows last fetched from the database (B3, see
@@ -64,6 +64,23 @@ export function rememberRegional(row: RegionalBeerRow, brewery: RegionalBrewery 
 export function knowRegional(row: RegionalBeerRow, brewery: RegionalBrewery | Omit<RegionalBrewery, 'beers'>): Beer {
   if (!byId[row.id]) byId[row.id] = toRegionalBeer(row, brewery)
   return byId[row.id]
+}
+
+/** Regional beer ids (`r-…`) among `ids` this device knows nothing about – rated on another device. */
+export function missingRegional(ids: Iterable<string>): string[] {
+  return [...ids].filter((id) => id.startsWith('r-') && !byId[id])
+}
+
+/**
+ * R11: loads the missing regional beers by id and keeps their snapshots, so ratings from another device
+ * count here too. Returns how many became known; throws when offline (the caller tries again later).
+ */
+export async function restoreRegional(ids: readonly string[], fetchFn: typeof fetch = fetch): Promise<number> {
+  const missing = missingRegional(ids)
+  if (!missing.length) return 0
+  const found = await fetchRegionalByIds(missing, fetchFn)
+  for (const f of found) rememberRegional(f.row, f.brewery)
+  return found.length
 }
 
 /** Deck order: reference beers first (they cover diverse profiles), then the rest. */

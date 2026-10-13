@@ -6,11 +6,12 @@ import type { AchievementDef } from '../domain/achievements'
 import { decodeBuddy } from '../domain/buddyLink'
 import { normalizeRoomCode } from '../domain/games/room'
 import { countRatings } from '../domain/dna'
-import type { Rating } from '../domain/types'
+import type { Rating, Ratings } from '../domain/types'
 import { initialState, reducer, TAB_SCREENS } from './reducer'
 import type { Action, AppState, Screen } from './reducer'
 import { profileStore } from './storage'
 import { useCloudSync } from '../sync/useCloudSync'
+import { missingRegional, restoreRegional } from '../data/beers'
 import type { ProfileStore } from './storage'
 
 export interface ToastMsg {
@@ -118,6 +119,7 @@ export function AppProvider({ children, initial, store = profileStore }: { child
     window.history.replaceState(null, '', url.pathname + url.search + url.hash)
   }, [])
   useCloudSync(state.profile, dispatch)
+  useRegionalRestore(state.profile.ratings, dispatch)
   const [globalToast, setGlobalToast] = useState<ToastMsg | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
@@ -170,4 +172,22 @@ export function useApp(): AppApi {
   const v = useContext(Ctx)
   if (!v) throw new Error('useApp must be used inside <AppProvider>')
   return v
+}
+
+/**
+ * R11: ratings from another device (sync, import) may name regional beers without a snapshot here – load
+ * them by id once, so they count in DNA and lists. Offline: tried again with the next ratings change or start.
+ */
+function useRegionalRestore(ratings: Ratings, dispatch: (a: Action) => void) {
+  const asked = useRef(new Set<string>())
+  useEffect(() => {
+    const ids = missingRegional(Object.keys(ratings)).filter((id) => !asked.current.has(id))
+    if (!ids.length) return
+    for (const id of ids) asked.current.add(id)
+    restoreRegional(ids)
+      .then((n) => n && dispatch({ type: 'BEERS_KNOWN' }))
+      .catch(() => {
+        for (const id of ids) asked.current.delete(id)
+      })
+  }, [ratings, dispatch])
 }

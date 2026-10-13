@@ -68,6 +68,8 @@ check_get "Weltkarte: alle Brauereien seitenweise (regional.ts)" \
   "/rest/v1/breweries?select=$map_cols&published=eq.true&order=id.asc&limit=1000&offset=1000"
 check_get "Bibliothek: Regionalbiere nach Name (regional.ts)" \
   "/rest/v1/regional_beers?select=$beer_cols,breweries!inner($brewery_cols)&published=eq.true&name=ilike.*pils*&order=name.asc&limit=40"
+check_get "Zweites Gerät: Regionalbiere nach ID (regional.ts)" \
+  "/rest/v1/regional_beers?select=$beer_cols,breweries!inner($brewery_cols)&published=eq.true&id=in.(r-test1,r-test2)&limit=40"
 check_get "Bibliothek: Brauereien nach Name/Ort (regional.ts)" \
   "/rest/v1/breweries?select=$regional_select&published=eq.true&or=(name.ilike.*brau*,city.ilike.*brau*)&order=name.asc&limit=20"
 check_get "Sync: ratings-Spalten (cloud.ts)" "/rest/v1/ratings?select=user_id,beer_id,rating,previous,at,deleted&limit=1" allow_denied

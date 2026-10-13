@@ -403,6 +403,35 @@ export async function searchRegional(q: string, fetchFn: FetchFn = fetch): Promi
   return [...out.values()]
 }
 
+/** How many ids one request asks for – keeps the URL short. */
+const ID_BATCH = 40
+
+/**
+ * Regional beers by id (R11): ratings that came from another device (sync, import) name beers this device
+ * has no snapshot of. Only the beer ids go to the API – no rating, no position. Unpublished beers stay
+ * unknown. Throws if the API is unreachable.
+ */
+export async function fetchRegionalByIds(ids: readonly string[], fetchFn: FetchFn = fetch): Promise<RegionalFound[]> {
+  const valid = [...new Set(ids)].filter((id) => /^r-[a-z0-9]{2,40}$/.test(id))
+  const batches: string[][] = []
+  for (let i = 0; i < valid.length; i += ID_BATCH) batches.push(valid.slice(i, i + ID_BATCH))
+  const found = await Promise.all(
+    batches.map(async (batch) => {
+      const q = `select=${BEER_COLS},breweries!inner(${BREWERY_COLS})&published=eq.true&id=in.(${batch.join(',')})&limit=${ID_BATCH}`
+      const res = await fetchFn(`${SUPABASE_URL}/rest/v1/regional_beers?${q}`, { headers: { apikey: SUPABASE_KEY } })
+      if (!res.ok) throw new Error(`regional_beers ${res.status}`)
+      const rows = (await res.json()) as unknown
+      if (!Array.isArray(rows)) throw new Error('regional_beers: no list')
+      return (rows as { breweries?: unknown }[]).flatMap((r) => {
+        const row = sanitizeBeerRow(r)
+        const brewery = sanitizeBrewery(r?.breweries)
+        return row && brewery && batch.includes(row.id) ? [{ row, brewery: withoutBeers(brewery) }] : []
+      })
+    }),
+  )
+  return found.flat()
+}
+
 /** Regional beers of the breweries within `radius` km of a typed postcode (the library's PLZ search). */
 export async function searchNear(place: LatLon, radius: number, fetchFn: FetchFn = fetch): Promise<RegionalFound[]> {
   const { breweries } = await loadRegion(place, radius, fetchFn)
