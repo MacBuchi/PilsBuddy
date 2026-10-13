@@ -2,9 +2,11 @@ import { ArrowSquareOutIcon, NavigationArrowIcon, PlusCircleIcon } from '@phosph
 import { formatAbv, rememberRegional } from '../../data/beers'
 import { COPY, fill, pick } from '../../data/copy'
 import { hashId } from '../../domain/hash'
+import { breweryProfile } from '../../domain/breweryProfile'
 import { compatibility } from '../../domain/matching'
 import { formatKm, routeUrl } from '../../domain/regional'
 import { toRegionalBeer } from '../../domain/regionalBeer'
+import { styleColor } from '../../domain/styleProfile'
 import type { RegionalBeerRow, RegionalBrewery } from '../../domain/regionalBeer'
 import { useApp } from '../../state/AppContext'
 import { useDerived } from '../../state/useDerived'
@@ -54,7 +56,12 @@ export function BrewerySheet({ brewery, km, onClose, onReport }: Props) {
         )}
       </div>
       <span className="t-label">{COPY.regional.sheetBeers}</span>
-      {brewery.beers.length === 0 && <p className={styles.note}>{COPY.regional.sheetNone}</p>}
+      {brewery.beers.length === 0 && (
+        <>
+          <p className={styles.note}>{COPY.regional.sheetNone}</p>
+          <ProfileBlock brewery={brewery} />
+        </>
+      )}
       {brewery.beers.map((row) => {
         const beer = toRegionalBeer(row, brewery)
         const onList = ratings[beer.id]?.rating === 'WANT_TO_TRY'
@@ -87,5 +94,26 @@ export function BrewerySheet({ brewery, km, onClose, onReport }: Props) {
         <PlusCircleIcon weight="bold" /> {COPY.submit.entry}
       </button>
     </Sheet>
+  )
+}
+
+/** R10: what is typically brewed where the brewery is – styles only, never a beer or a taste. */
+function ProfileBlock({ brewery }: { brewery: RegionalBrewery }) {
+  const p = breweryProfile(brewery)
+  const where = p.region ? COPY.regional.regions[p.region] : COPY.countries[p.country]
+  return (
+    <div className={styles.profile}>
+      <span className="t-label">{COPY.regional.profile}</span>
+      <div className={styles.profileWhere}>{fill(COPY.regional.profileTypical, { where })}</div>
+      <div className={styles.profileStyles}>
+        {p.styles.map((s) => (
+          <span key={s} className={styles.profileChip}>
+            <span className={styles.profileDot} style={{ background: styleColor(s) }} />
+            {s}
+          </span>
+        ))}
+      </div>
+      <p className={styles.note}>{COPY.regional.profileNotes[p.basis]}</p>
+    </div>
   )
 }
