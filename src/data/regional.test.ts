@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CELL_TTL_MS, CELLS_KEY, fetchBreweryMap, fetchCells, findPostcode, forgetRegional, loadBrewery, loadBreweryMap, loadRegion, MAP_KEY, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
+import { CELL_TTL_MS, CELLS_KEY, fetchBreweryMap, fetchRegionalByIds, fetchCells, findPostcode, forgetRegional, loadBrewery, loadBreweryMap, loadRegion, MAP_KEY, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
 
 const MANNHEIM = { lat: 49.49, lon: 8.47 }
 const eichbaum = {
@@ -244,5 +244,30 @@ describe('world map', () => {
     // the cell is cached: a second tap needs no request
     await loadBrewery({ id: 'osm-n1', lat: 49.4954, lon: 8.4823 }, f as unknown as typeof fetch, 2000)
     expect(f).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('fetchRegionalByIds (R11)', () => {
+  const beerRow = (id: string) => ({ ...eichbaum.regional_beers[0], id, breweries: { ...eichbaum, regional_beers: undefined } })
+
+  it('asks only for valid ids, in batches, and keeps only what it asked for', async () => {
+    const ids = Array.from({ length: 45 }, (_, i) => `r-40000000001${String(i).padStart(2, '0')}`)
+    const f = vi.fn(async (url: string) => {
+      const asked = decodeURIComponent(url).match(/id=in\.\(([^)]*)\)/)![1].split(',')
+      return new Response(JSON.stringify([beerRow(asked[0]), beerRow('r-9999999999999')]), { status: 200 })
+    })
+    const found = await fetchRegionalByIds([...ids, ids[0], 'pils-1', 'r-;drop'], f as unknown as typeof fetch)
+    expect(f).toHaveBeenCalledTimes(2)
+    const urls = f.mock.calls.map((c) => decodeURIComponent(c[0]))
+    expect(urls[0]).toContain('/rest/v1/regional_beers?')
+    expect(urls[0]).toContain('published=eq.true')
+    expect(urls.join()).not.toContain('pils-1')
+    expect(urls.join()).not.toMatch(/drop|lat\.|lon\./)
+    expect(found.map((x) => x.row.id)).toEqual([ids[0], ids[40]])
+    expect(found[0].brewery.name).toBe('Privatbrauerei Eichbaum')
+  })
+
+  it('throws when the API is down', async () => {
+    await expect(fetchRegionalByIds(['r-4000000000001'], offline() as unknown as typeof fetch)).rejects.toThrow()
   })
 })

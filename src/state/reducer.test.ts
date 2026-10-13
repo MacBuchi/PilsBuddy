@@ -160,3 +160,12 @@ describe('sync', () => {
     expect(run(s, { type: 'RESET' }).profile.games).toEqual(NO_GAMES)
   })
 })
+
+describe('BEERS_KNOWN (R11)', () => {
+  it('bumps the beer revision without touching the profile', () => {
+    const s = initialState()
+    const next = reducer(s, { type: 'BEERS_KNOWN' })
+    expect(next.beersRev).toBe(s.beersRev + 1)
+    expect(next.profile).toBe(s.profile)
+  })
+})
