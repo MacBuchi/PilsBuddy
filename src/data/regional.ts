@@ -20,9 +20,13 @@ export const SNAPS_KEY = 'pilsbuddy.regional.beers'
 export const PREFS_KEY = 'pilsbuddy.regional.prefs'
 export const POOL_KEY = 'pilsbuddy.regional.pool'
 export const MAP_KEY = 'pilsbuddy.regional.map'
+export const FRESH_KEY = 'pilsbuddy.regional.fresh'
 const VERSION = 1
 
 export const CELL_TTL_MS = 30 * 24 * 3600 * 1000
+/** R12: how often cached cells ask whether something in them changed (an approved report, an import). */
+export const FRESH_EVERY_MS = 3600 * 1000
+const CHANGES_LIMIT = 500
 /** Cells per request: a dense cell has ~50 breweries, so a batch stays far below the API's row cap. */
 const BATCH = 6
 const MAX_CELLS = 200
@@ -100,10 +104,29 @@ export interface RegionLoad {
 async function loadCells(keys: readonly string[], fetchFn: FetchFn, now: number): Promise<RegionLoad> {
   const cache = read<Record<string, CellEntry>>(CELLS_KEY) ?? {}
   const missing = keys.filter((k) => !cache[k] || now - cache[k].at > CELL_TTL_MS)
+  // R12: cached cells with a change since the last look are loaded again – an approved beer shows up right away
+  const freshness = read<Freshness>(FRESH_KEY)
+  const known = typeof freshness?.mark === 'string' && !Number.isNaN(Date.parse(freshness.mark)) ? freshness.mark : null
+  const cached = keys.filter((k) => !missing.includes(k))
+  // cells fetched now are current – with nothing else cached, this load counts as a look
+  let marked: Freshness | null = cached.length ? null : { checked: now, mark: known }
+  if (cached.length && (!freshness || !(now - freshness.checked < FRESH_EVERY_MS))) {
+    try {
+      // no mark yet: a day before the oldest cached cell (device clock) – a cell may load twice, none is missed
+      const since = known ?? new Date(Math.min(...cached.map((k) => cache[k].at)) - 24 * 3600 * 1000).toISOString()
+      const changes = await fetchChanges(since, fetchFn)
+      for (const k of cached) if (changes.all || changes.cells.has(k)) missing.push(k)
+      marked = { checked: now, mark: changes.mark ?? known }
+    } catch {
+      /* offline – the cache answers, the next load asks again */
+    }
+  }
   let offline = false
+  if (!missing.length && marked) write(FRESH_KEY, marked)
   if (missing.length) {
     try {
       const fresh = await fetchCells(missing, fetchFn)
+      if (marked) write(FRESH_KEY, marked)
       for (const k of missing) cache[k] = { at: now, rows: fresh[k] }
       // keep the cache small: drop expired cells, then the oldest
       const kept = Object.entries(cache)
@@ -117,6 +140,50 @@ async function loadCells(keys: readonly string[], fetchFn: FetchFn, now: number)
   }
   const breweries = keys.flatMap((k) => (cache[k]?.rows ?? []).map(sanitizeBrewery).filter((b): b is RegionalBrewery => !!b))
   return { breweries, offline }
+}
+
+interface Freshness {
+  /** Device time of the last look. */
+  checked: number
+  /** Newest `updated_at` seen – server time, so a wrong device clock misses nothing. */
+  mark: string | null
+}
+
+export interface Changes {
+  cells: Set<string>
+  /** Too many changes to list (a catalogue import) – every cached cell is stale. */
+  all: boolean
+  mark: string | null
+}
+
+/**
+ * Grid cells with breweries or beers changed after `since` (R12). Only that timestamp goes to the API –
+ * no cell, no position; the cells are worked out on the device.
+ */
+export async function fetchChanges(since: string, fetchFn: FetchFn = fetch): Promise<Changes> {
+  const t = encodeURIComponent(since)
+  const headers = { apikey: SUPABASE_KEY }
+  const tail = `updated_at=gt.${t}&order=updated_at.desc&limit=${CHANGES_LIMIT}`
+  const [beers, breweries] = await Promise.all([
+    fetchFn(`${SUPABASE_URL}/rest/v1/regional_beers?select=updated_at,breweries!inner(lat,lon)&${tail}`, { headers }),
+    fetchFn(`${SUPABASE_URL}/rest/v1/breweries?select=updated_at,lat,lon&${tail}`, { headers }),
+  ])
+  if (!beers.ok || !breweries.ok) throw new Error(`changes ${beers.status}/${breweries.status}`)
+  const beerRows = (await beers.json()) as unknown
+  const breweryRows = (await breweries.json()) as unknown
+  if (!Array.isArray(beerRows) || !Array.isArray(breweryRows)) throw new Error('changes: no list')
+  const cells = new Set<string>()
+  let mark: string | null = null
+  const points = [
+    ...(beerRows as { updated_at?: unknown; breweries?: { lat?: unknown; lon?: unknown } }[]).map((r) => ({ at: r?.updated_at, ...r?.breweries })),
+    ...(breweryRows as { updated_at?: unknown; lat?: unknown; lon?: unknown }[]).map((r) => ({ at: r?.updated_at, lat: r?.lat, lon: r?.lon })),
+  ]
+  for (const p of points) {
+    if (typeof p.at !== 'string' || Number.isNaN(Date.parse(p.at))) continue
+    if (!mark || Date.parse(p.at) > Date.parse(mark)) mark = p.at
+    if (typeof p.lat === 'number' && typeof p.lon === 'number') cells.add(cellOf({ lat: p.lat, lon: p.lon }))
+  }
+  return { cells, all: beerRows.length >= CHANGES_LIMIT || breweryRows.length >= CHANGES_LIMIT, mark }
 }
 
 /** All breweries in the cells around `origin`. */
@@ -340,7 +407,7 @@ export function readPool(): PoolItem[] {
 
 /** „Profil zurücksetzen“: postcode, radius, snapshots, pool, cached cells and the map list go too. */
 export function forgetRegional(): void {
-  for (const key of [CELLS_KEY, SNAPS_KEY, PREFS_KEY, POOL_KEY, MAP_KEY]) {
+  for (const key of [CELLS_KEY, SNAPS_KEY, PREFS_KEY, POOL_KEY, MAP_KEY, FRESH_KEY]) {
     try {
       localStorage.removeItem(key)
     } catch {
