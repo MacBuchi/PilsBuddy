@@ -1,7 +1,7 @@
 import { COPY, fill, pick } from '../data/copy'
 import { hashId } from './hash'
 import type { PlaceCountry } from './postcode'
-import { STYLE_PROFILES, styleColor, styleProfile, tasteFromStyle } from './styleProfile'
+import { ABV_RANGE, STYLE_PROFILES, styleColor, styleProfile, tasteFromStyle } from './styleProfile'
 import type { Beer, Pack, Quality } from './types'
 
 /**
@@ -93,7 +93,7 @@ export function sanitizeBeerRow(v: unknown): RegionalBeerRow | null {
   const name = text(r.name, 200)
   const source = num(r.source, 1, 999)
   if (!id || !name || source === null) return null
-  return {
+  const row: RegionalBeerRow = {
     id,
     name,
     style: text(r.style, 40),
@@ -103,6 +103,29 @@ export function sanitizeBeerRow(v: unknown): RegionalBeerRow | null {
     source,
     source_ref: text(r.source_ref, 300),
     quality: (num(r.quality, 0, 3) ?? 1) as Quality,
+  }
+  return applyCorrection(row, r.correction)
+}
+
+/**
+ * V6: a correction from a confirmed problem report (`regional_beers.correction`) beats the imported values – each
+ * value only if it is sound (a known style, an ABV that fits it). Anything applied makes the beer „geprüft“.
+ */
+export function applyCorrection(row: RegionalBeerRow, v: unknown): RegionalBeerRow {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return row
+  const c = v as Record<string, unknown>
+  const name = text(c.name, 200)
+  const style = typeof c.style === 'string' && Object.hasOwn(STYLE_PROFILES, c.style) ? c.style : null
+  const finalStyle = style ?? row.style
+  const range = (finalStyle && ABV_RANGE[finalStyle]) || [0, 20]
+  const abv = num(c.abv, range[0], range[1])
+  if (!name && !style && abv === null) return row
+  return {
+    ...row,
+    ...(name ? { name } : {}),
+    ...(style ? { style } : {}),
+    ...(abv !== null ? { abv } : {}),
+    quality: 3,
   }
 }
 

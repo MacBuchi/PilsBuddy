@@ -68,6 +68,7 @@ check_get "Weltkarte: alle Brauereien seitenweise (regional.ts)" \
   "/rest/v1/breweries?select=$map_cols&published=eq.true&order=id.asc&limit=1000&offset=1000"
 check_get "Bibliothek: Regionalbiere nach Name (regional.ts)" \
   "/rest/v1/regional_beers?select=$beer_cols,breweries!inner($brewery_cols)&published=eq.true&name=ilike.*pils*&order=name.asc&limit=40"
+check_get "Korrekturen aus Meldungen (V6, regionalBeer.ts)" "/rest/v1/regional_beers?select=id,correction&limit=1"
 check_get "Zweites Gerät: Regionalbiere nach ID (regional.ts)" \
   "/rest/v1/regional_beers?select=$beer_cols,breweries!inner($brewery_cols)&published=eq.true&id=in.(r-test1,r-test2)&limit=40"
 check_get "Finder: geänderte Biere seit (regional.ts)" \
