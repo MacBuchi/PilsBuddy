@@ -7,7 +7,8 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
-const FILES = ['ca.json', 'us.json']
+// eu.json (V7): sources of the hand-made beers – facts only, an ABV of null means „< 0,5 % vol“ (alcohol-free)
+const FILES = ['ca.json', 'us.json', 'eu.json']
 const out = process.argv.includes('--out') ? process.argv[process.argv.indexOf('--out') + 1] : null
 const UA = 'PilsBuddy-classics-check/1.0 (+https://github.com/MacBuchi/PilsBuddy)'
 
@@ -33,9 +34,9 @@ async function check(c) {
     const res = await fetch(c.source, { headers: { 'user-agent': UA }, redirect: 'follow', signal: AbortSignal.timeout(20000) })
     if (!res.ok) return { ...c, status: `HTTP ${res.status}` }
     const page = text(await res.text())
-    const abv = hasAbv(page, c.abv)
+    const abv = c.abv == null ? null : hasAbv(page, c.abv)
     const ibu = c.ibu == null ? null : hasIbu(page, c.ibu)
-    return { ...c, status: abv && ibu !== false ? 'ok' : 'differs', abvFound: abv, ibuFound: ibu }
+    return { ...c, status: abv !== false && ibu !== false ? 'ok' : 'differs', abvFound: abv, ibuFound: ibu }
   } catch (e) {
     return { ...c, status: `error: ${e.name}` }
   }
@@ -53,7 +54,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     '',
     '| id | ABV | IBU | status | source |',
     '|---|---|---|---|---|',
-    ...results.map((r) => `| ${r.id} | ${r.abv} ${mark(r.abvFound)} | ${r.ibu ?? ''} ${mark(r.ibuFound)} | ${r.status} | ${r.source} |`),
+    ...results.map((r) => `| ${r.id} | ${r.abv ?? '< ' + r.abvMax} ${mark(r.abvFound)} | ${r.ibu ?? ''} ${mark(r.ibuFound)} | ${r.status} | ${r.source} |`),
   ]
   const report = lines.join('\n') + '\n'
   if (out) writeFileSync(out, report)

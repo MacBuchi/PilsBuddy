@@ -1,0 +1,485 @@
+[
+  {
+    "id": "jever",
+    "source": "https://www.jever.de/biere/jever-pilsener/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "Brewery page: \"Alk. 4,9 % vol\""
+  },
+  {
+    "id": "augustiner",
+    "source": "https://www.augustiner-braeu.de/unser-bier/",
+    "verified": "2026-10-14",
+    "style": "Helles",
+    "abv": 5.2,
+    "note": "Brewery beer list, Augustiner Lagerbier Hell: \"alc. 5,2 % vol.\""
+  },
+  {
+    "id": "paulaner-weisse",
+    "source": "https://www.paulaner.de/produkte/weissbiere/hefe-weissbier-naturtrueb",
+    "verified": "2026-10-14",
+    "style": "Weißbier",
+    "abv": 5.5,
+    "note": "Brewery page: \"ALKOHOL: 5,5 % vol\""
+  },
+  {
+    "id": "becks",
+    "source": "https://www.perfectdraft.com/en-gb/perfectdraft-becks-6l-keg/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "becks.de shows no ABV; AB InBev keg shop: 4.9%"
+  },
+  {
+    "id": "koestritzer",
+    "source": "https://www.koestritzer.de/biere/spezialitaeten/schwarzbier/",
+    "verified": "2026-10-14",
+    "style": "Schwarzbier",
+    "abv": 4.8,
+    "note": "Brewery page: \"Alkohol 4,8 % vol\""
+  },
+  {
+    "id": "ratsherrn",
+    "source": "https://www.ratsherrn.de/biere/pale-ale/",
+    "verified": "2026-10-14",
+    "style": "Pale Ale",
+    "abv": 5.6,
+    "note": "Brewery page: \"ALKOHOL 5,6 % vol\""
+  },
+  {
+    "id": "corona",
+    "source": "https://www.corona.com/en-ca/node/776",
+    "verified": "2026-10-14",
+    "style": "Lager",
+    "abv": 4.5,
+    "note": "corona.com (Canada): \"ABV 4.5%\""
+  },
+  {
+    "id": "schlenkerla",
+    "source": "https://www.schlenkerla.de/rauchbier/sorten/sorten.html",
+    "verified": "2026-10-14",
+    "style": "Rauchbier",
+    "abv": 5.1,
+    "note": "Brewery list, Märzen: \"Alkohol: 5,1% Vol.\""
+  },
+  {
+    "id": "rothaus",
+    "source": "https://www.rothaus.de/biere/tannenzaepfle",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 5.1,
+    "note": "Brewery page: \"Alkohol 5,1% Vol.\""
+  },
+  {
+    "id": "punk-ipa",
+    "source": "https://www.brewdog.com/uk/punk-ipa",
+    "verified": "2026-10-14",
+    "style": "IPA",
+    "abv": 5.4,
+    "note": "BrewDog shop: \"ABV 5.4%\""
+  },
+  {
+    "id": "frueh",
+    "source": "https://www.frueh.de/geniessen",
+    "verified": "2026-10-14",
+    "style": "Kölsch",
+    "abv": 4.8,
+    "note": "Brewery page, FRÜH Kölsch: \"Alkoholgehalt 4,8 %\""
+  },
+  {
+    "id": "guinness",
+    "source": "https://www.guinness.com/en/our-beers/guinness-draught",
+    "verified": "2026-10-14",
+    "style": "Stout",
+    "abv": 4.2,
+    "note": "Brewery page: \"Alcohol 4.2%\""
+  },
+  {
+    "id": "salvator",
+    "source": "https://www.paulaner.de/produkte/bierspezialitaten/salvator",
+    "verified": "2026-10-14",
+    "style": "Doppelbock",
+    "abv": 7.9,
+    "note": "Brewery page: \"ALKOHOL: 7,9 % vol\""
+  },
+  {
+    "id": "duvel",
+    "source": "https://www.duvel.com/en/the-beer/duvel",
+    "verified": "2026-10-14",
+    "style": "Belgian Strong Ale",
+    "abv": 8.5,
+    "note": "Brewery page: \"8.5 %\""
+  },
+  {
+    "id": "krombacher",
+    "source": "https://www.krombacher.de/unsere-produkte/krombacher-pils",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.8,
+    "note": "Brewery page: \"4,8% vol Alkohol\""
+  },
+  {
+    "id": "tegernseer",
+    "source": "https://www.brauhaus-tegernsee.de/tegernseer-biere/biersorten/",
+    "verified": "2026-10-14",
+    "style": "Helles",
+    "abv": 4.8,
+    "note": "Brewery list: \"Tegernseer Hell Alk. 4,8% vol.\""
+  },
+  {
+    "id": "astra",
+    "source": "https://www.astra-bier.de/biersorten/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "Brand page: Astra Urtyp \"4,9% Alkohol\""
+  },
+  {
+    "id": "veltins",
+    "source": "https://www.veltins.de/sortiment/veltins-pilsener/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.8,
+    "note": "Brewery page: \"Alkoholgehalt 4,8 % vol\""
+  },
+  {
+    "id": "stoertebeker",
+    "source": "https://www.stoertebeker.com/brauspezialitaten/sorten/keller-bier-1402",
+    "verified": "2026-10-14",
+    "style": "Kellerbier",
+    "abv": 4.8,
+    "note": "Brewery page: \"Alkoholgehalt: 4,8% vol.\" (now organic)"
+  },
+  {
+    "id": "bitburger",
+    "source": "https://www.bitburger.de/klassiker/premium-pils/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.8,
+    "note": "Brewery page: \"Alkohol 4,8 % vol\""
+  },
+  {
+    "id": "radeberger",
+    "source": "https://www.radeberger.com/beers/pilsner/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.8,
+    "note": "Official brand page (EN), Brewing Facts: ABV 4.8 %"
+  },
+  {
+    "id": "flensburger",
+    "source": "https://www.flens.de/produkt/flensburger-pilsener/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.8,
+    "note": "Brewery page, nutrition widget: Alkoholgehalt 4,8 % vol (in HTML attribute)"
+  },
+  {
+    "id": "urquell",
+    "source": "https://www.prazdroj.cz/znacka/pilsner-urquell",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.4,
+    "note": "Plzeňský Prazdroj brand page: \"obsahem alkoholu 4,4 %\""
+  },
+  {
+    "id": "warsteiner",
+    "source": "https://www.carlsberggroup.com/products/warsteiner/warsteiner-premium-verum",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.8,
+    "note": "warsteiner.de shows no ABV; Carlsberg Group (licensee): 4.8%"
+  },
+  {
+    "id": "erdinger",
+    "source": "https://www.erdinger.de/de-DE/biersorten/weissbier",
+    "verified": "2026-10-14",
+    "style": "Weißbier",
+    "abv": 5.3,
+    "note": "Brewery page: Alkohol 5,3 % vol"
+  },
+  {
+    "id": "weihenstephaner",
+    "source": "https://www.weihenstephaner.de/unsere-biere/hefeweissbier",
+    "verified": "2026-10-14",
+    "style": "Weißbier",
+    "abv": 5.4,
+    "note": "Brewery page: \"Alkoholgehalt 5,4 % Vol.\""
+  },
+  {
+    "id": "gaffel",
+    "source": "https://gaffel-shop.de/products/gaffel-koelsch-24-x-0-5l-liter-dose-tray",
+    "verified": "2026-10-14",
+    "style": "Kölsch",
+    "abv": 4.8,
+    "note": "Brewery shop: \"Alk. 4,8% vol\""
+  },
+  {
+    "id": "uerige",
+    "source": "https://www.uerige.de/erzeugnisse/biere",
+    "verified": "2026-10-14",
+    "style": "Altbier",
+    "abv": 4.7,
+    "note": "Brewery page: \"Alkoholgehalt von 4,7 %\""
+  },
+  {
+    "id": "diebels",
+    "source": "https://www.diebels.de/",
+    "verified": "2026-10-14",
+    "style": "Altbier",
+    "abv": 4.9,
+    "note": "Brewery homepage, Diebels Alt: \"ABV: 4,9%\""
+  },
+  {
+    "id": "heineken",
+    "source": "https://www.heineken.com/de/de/unsere-produkte/heineken-original/",
+    "verified": "2026-10-14",
+    "style": "Lager",
+    "abv": 5.0,
+    "note": "Official DE page: Alc. 5.0 %"
+  },
+  {
+    "id": "stella",
+    "source": "https://www.ages.at/mensch/produktwarnungen-produktrueckrufe/produkt/stella-artois-5-alkohol-330ml",
+    "verified": "2026-10-14",
+    "style": "Lager",
+    "abv": 5.0,
+    "note": "stellaartois.com blocks bots; AGES (AB InBev Austria product): 5 % (Belgian market 5,2 %)"
+  },
+  {
+    "id": "leffe",
+    "source": "https://www.leffe.com/beer?name=leffe-blonde",
+    "verified": "2026-10-14",
+    "style": "Abbey Blonde",
+    "abv": 6.6,
+    "note": "Official page: \"VOL 6,6%\""
+  },
+  {
+    "id": "celebrator",
+    "source": "https://www.brauerei-ayinger.de/ayinger-bierspezialitaeten/ayinger-celebrator/",
+    "verified": "2026-10-14",
+    "style": "Doppelbock",
+    "abv": 6.7,
+    "note": "Brewery page: \"Alkoholgehalt: 6,7%\""
+  },
+  {
+    "id": "drunken-sailor",
+    "source": "https://www.crew-republic-shop.de/CREW-Republic-Drunken-Sailor-India-Pale-Ale/",
+    "verified": "2026-10-14",
+    "style": "IPA",
+    "abv": 6.4,
+    "note": "Brewery shop: \"Alkoholgehalt 6,4 %\""
+  },
+  {
+    "id": "sternburg",
+    "source": "https://www.sternburg-bier.de/sortiment/export/",
+    "verified": "2026-10-14",
+    "style": "Export",
+    "abv": 5.2,
+    "note": "Brewery page: \"Alkoholgehalt: 5,2 % vol.\""
+  },
+  {
+    "id": "oettinger",
+    "source": "https://oettinger1731.de/bier/pils/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.7,
+    "note": "Brewery page: \"Alk. 4,7% vol\""
+  },
+  {
+    "id": "hasseroeder",
+    "source": "https://www.tapintoyourbeer.com/beer/en/hasseroder-premium-pils",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "hasseroeder.de links to AB InBev nutrition site: ABV 4.90"
+  },
+  {
+    "id": "wernesgruener",
+    "source": "https://www.wernesgruener.de/produkte/pils-legende/index.html",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "Brewery page: \"Alkoholgehalt 4,9 % Vol.\""
+  },
+  {
+    "id": "hofbraeu",
+    "source": "https://www.hofbraeu-muenchen.de/biere-von-hb-muenchen/hofbraeu-original",
+    "verified": "2026-10-14",
+    "style": "Helles",
+    "abv": 5.1,
+    "note": "Brewery page: \"Alkoholgehalt 5,1 % Vol.\""
+  },
+  {
+    "id": "andechser-doppelbock",
+    "source": "https://www.andechs.de/klosterbrauerei/sortiment/doppelbock-dunkel.html",
+    "verified": "2026-10-14",
+    "style": "Doppelbock",
+    "abv": 7.1,
+    "note": "Brewery page: \"Alkoholgehalt 7,1 %Vol\""
+  },
+  {
+    "id": "moenchshof-keller",
+    "source": "https://www.beverfood.com/birra/moenchshof-kellerbier",
+    "verified": "2026-10-14",
+    "style": "Kellerbier",
+    "abv": 5.4,
+    "note": "No brewery product page (Kulmbacher lists none); Beverfood beer database: 5,40 % Alc."
+  },
+  {
+    "id": "einbecker-urbock",
+    "source": "https://www.einbecker.de/echt-geniessen/sortiment/ur-bock-hell",
+    "verified": "2026-10-14",
+    "style": "Bock",
+    "abv": 6.5,
+    "note": "Brewery page: \"6,5% VOL. 16,5° P\""
+  },
+  {
+    "id": "jever-fun",
+    "source": "https://www.jever.de/biere/jever-fun/",
+    "verified": "2026-10-14",
+    "style": "Alkoholfrei",
+    "abv": null,
+    "abvMax": 0.5,
+    "note": "Brewery page: \"Alk. <0,5 % vol\""
+  },
+  {
+    "id": "erdinger-af",
+    "source": "https://www.erdinger.de/de-DE/biersorten/alkoholfreies-weissbier",
+    "verified": "2026-10-14",
+    "style": "Alkoholfreies Weißbier",
+    "abv": null,
+    "abvMax": 0.5,
+    "note": "Brewery page: \"weniger als 0,5% vol\""
+  },
+  {
+    "id": "clausthaler",
+    "source": "https://www.clausthaler.de/produkte/original/",
+    "verified": "2026-10-14",
+    "style": "Alkoholfrei",
+    "abv": null,
+    "abvMax": 0.5,
+    "note": "Brand FAQ: \"maximal 0,5 Volumenprozent\"; no exact figure"
+  },
+  {
+    "id": "schneider-tap7",
+    "source": "https://www.schneider-weisse.de/node/12",
+    "verified": "2026-10-14",
+    "style": "Weißbier",
+    "abv": 5.4,
+    "note": "Brewery page: \"5,4% Alkohol\""
+  },
+  {
+    "id": "franziskaner",
+    "source": "https://world.openfoodfacts.org/product/4072700001126",
+    "verified": "2026-10-14",
+    "style": "Weißbier",
+    "abv": 5.0,
+    "note": "Official page shows no ABV; Open Food Facts (0,5 l): 5 % vol"
+  },
+  {
+    "id": "augustiner-edelstoff",
+    "source": "https://www.augustiner-braeu.de/unser-bier/",
+    "verified": "2026-10-14",
+    "style": "Export",
+    "abv": 5.6,
+    "note": "Brewery beer list, Edelstoff: \"5,6 % vol.\""
+  },
+  {
+    "id": "schoenramer-pils",
+    "source": "https://www.schoenramer.de/getranke/schoenramer-pils/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 5.0,
+    "note": "Brewery page: Alkohol 5,0%"
+  },
+  {
+    "id": "brlo-pale-ale",
+    "source": "https://www.brlo.de/house-of-brewing/biere",
+    "verified": "2026-10-14",
+    "style": "Pale Ale",
+    "abv": 5.0,
+    "note": "Brewery beer page: \"ALC 5 % vol\" (was 5.5 in our data)"
+  },
+  {
+    "id": "maisel-pale-ale",
+    "source": "https://www.maiselandfriends.com/de/biere/sessionbiere/pale-ale/",
+    "verified": "2026-10-14",
+    "style": "Pale Ale",
+    "abv": 5.2,
+    "note": "Brewery page: \"Alkoholgehalt 5.2 % Vol.\""
+  },
+  {
+    "id": "sierra-nevada",
+    "source": "https://sierranevada.com/brews/pale-ale",
+    "verified": "2026-10-14",
+    "style": "Pale Ale",
+    "abv": 5.6,
+    "note": "Official page (blocks bots; search copy): 5.6 % ABV, 38 IBU"
+  },
+  {
+    "id": "peroni",
+    "source": "https://www.birraperoni.it/prodotto/nastro-azzurro/",
+    "verified": "2026-10-14",
+    "style": "Lager",
+    "abv": 5.0,
+    "note": "Brewery page, Nastro Azzurro: \"5,0% vol\" (was 5.1 in our data)"
+  },
+  {
+    "id": "budvar",
+    "source": "https://www.budejovickybudvar.cz/sortiment/budweiser-budvar-original",
+    "verified": "2026-10-14",
+    "style": "Lager",
+    "abv": 5.0,
+    "note": "Brewery page: \"5 % VOL.\""
+  },
+  {
+    "id": "kozel-dark",
+    "source": "https://kozel.cz/cs/nase-piva",
+    "verified": "2026-10-14",
+    "style": "Dunkles",
+    "abv": 3.8,
+    "note": "Brewery page: Kozel Černý \"3,8 % obj.\""
+  },
+  {
+    "id": "chimay-blue",
+    "source": "https://chimay.com/beers/la-chimay-bleue/",
+    "verified": "2026-10-14",
+    "style": "Trappist",
+    "abv": 9.0,
+    "note": "Brewery page: \"9% vol. alc.\""
+  },
+  {
+    "id": "licher",
+    "source": "https://www.licher.de/produkte/pilsner",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "Brewery page: \"Alkoholgehalt 4,9 % vol\""
+  },
+  {
+    "id": "luebzer",
+    "source": "https://www.luebzer.de/biere/pils/luebzer-pils/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "Brewery page: \"Alkoholgehalt 4,9 %\""
+  },
+  {
+    "id": "ur-krostitzer",
+    "source": "https://www.ur-krostitzer.de/sortiment/pilsner/",
+    "verified": "2026-10-14",
+    "style": "Pils",
+    "abv": 4.9,
+    "note": "Brewery page: \"4,9 Vol. %\""
+  },
+  {
+    "id": "berliner-weisse",
+    "source": "https://www.berliner-kindl.de/berliner-kindl-weisse/das-original/",
+    "verified": "2026-10-14",
+    "style": "Berliner Weisse",
+    "abv": 3.0,
+    "note": "Brewery page, Das Original: \"3,0 %\" (was 2.5 in our data)"
+  }
+]
