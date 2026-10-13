@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { COPY, fill } from '../../data/copy'
 import { findPostcode, loadRegion, readPrefs, writePool, writePrefs } from '../../data/regional'
 import type { RegionalPrefs, RegionLoad } from '../../data/regional'
+import { breweryProfile } from '../../domain/breweryProfile'
 import { isPostcode } from '../../domain/postcode'
 import { formatKm, RADII, rankRegional } from '../../domain/regional'
 import type { LatLon, RegionalHit } from '../../domain/regional'
@@ -249,7 +250,12 @@ export function RegionalFinder() {
               <div className={styles.plain}>
                 {result.breweries.slice(0, 30).map((h) => (
                   <button key={h.brewery.id} type="button" className={styles.plainRow} onClick={() => setOpen(h)}>
-                    <span className={styles.plainName}>{h.brewery.name}</span>
+                    <span className={styles.plainName}>
+                      {h.brewery.name}
+                      <span className={styles.plainStyles}>
+                        {COPY.regional.profileShort}: {breweryProfile(h.brewery).styles.slice(0, 2).join(' · ')}
+                      </span>
+                    </span>
                     <span className={styles.plainMeta}>
                       {h.brewery.city ?? ''} · {formatKm(h.km)}
                     </span>

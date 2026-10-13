@@ -194,6 +194,13 @@
   min-width: 0;
 }
 
+.plainStyles {
+  display: block;
+  margin-top: 4px;
+  font: 600 12px/1.3 var(--font-display);
+  color: var(--mut);
+}
+
 .plainMeta {
   flex: none;
   font: 700 10px/1 var(--font-mono);
@@ -342,4 +349,41 @@
 .mapEntry svg {
   font-size: 18px;
   color: var(--gold-text);
+}
+
+/* R10 brewery profile */
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--sf2);
+}
+
+.profileWhere {
+  font: 700 15px/1.2 var(--font-display);
+}
+
+.profileStyles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.profileChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  font: 700 12px/1 var(--font-display);
+}
+
+.profileDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.15);
 }
