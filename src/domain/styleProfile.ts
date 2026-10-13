@@ -81,6 +81,64 @@ export const STYLE_PROFILES: Record<string, StyleProfile> = {
 const NEUTRAL: StyleProfile = { abv: 5, color: '#E6BC52', taste: [40, 35, 50, 45, 42, 45, 70, 50] }
 
 /**
+ * V5 – the ABV a beer of the style can plausibly have, generous on both sides (BJCP 2021 for the international
+ * styles, the curated beers for the German ones, plus light and strong variants). A value outside is a reading
+ * error far more often than a beer: original gravity read as ABV („Maibock 17,5“), a bottle size („Hell 1,0“).
+ */
+export const ABV_RANGE: Record<string, readonly [number, number]> = {
+  Pils: [2.5, 6.5],
+  Helles: [2.5, 6.5],
+  Lager: [2.5, 7],
+  Export: [4, 6.5],
+  Märzen: [4.5, 7.5],
+  Landbier: [3.5, 6.5],
+  Kellerbier: [3.5, 7],
+  Zwickel: [3.5, 7],
+  Weißbier: [2.5, 7],
+  'Dunkles Weißbier': [2.5, 7],
+  'Alkoholfreies Weißbier': [0, 0.5],
+  Dunkles: [3, 6.5],
+  Schwarzbier: [3.5, 6.5],
+  Bock: [5.5, 9],
+  Doppelbock: [6.5, 14],
+  Rauchbier: [4, 9.5],
+  Kölsch: [4, 5.5],
+  Altbier: [4, 7],
+  'Pale Ale': [3.5, 8],
+  IPA: [4, 10],
+  Amber: [4, 8],
+  Stout: [3.5, 12.5],
+  Porter: [3.5, 12],
+  'Belgian Strong Ale': [7, 13],
+  'Abbey Blonde': [5, 9],
+  Trappist: [5, 12],
+  Alkoholfrei: [0, 0.5],
+  'Berliner Weisse': [1.5, 5],
+  Gose: [3, 6.5],
+  Radler: [0, 4],
+  'American Lager': [3.5, 6.5],
+  'Light Lager': [2.5, 5],
+  'Cream Ale': [4, 6.5],
+  'Blonde Ale': [3.5, 7],
+  'Wheat Ale': [3.5, 7],
+  Witbier: [3.5, 7],
+  'California Common': [4, 6.5],
+  Bitter: [3, 6.5],
+  'Brown Ale': [3.5, 8],
+  'Scotch Ale': [3, 10.5],
+  'Double IPA': [6.5, 13],
+  'Hazy IPA': [4, 10],
+  'Milk Stout': [3.5, 10],
+  'Imperial Stout': [7, 18],
+  Barleywine: [7, 18],
+  Saison: [3, 9.5],
+  Tripel: [7, 11.5],
+  Dubbel: [5.5, 9],
+  Quadrupel: [8, 14],
+  'Sour Ale': [2, 12],
+}
+
+/**
  * Style patterns, most specific first (a „Weizenbock“ is a Bock, an „alkoholfreies Weizen“ is not a
  * Weißbier). Matched against lower-case text with umlauts kept; ae/oe/ue spellings are covered.
  */

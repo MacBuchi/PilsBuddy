@@ -3,6 +3,8 @@
 import { parsePack } from '../../src/domain/bottles/pack'
 import { parsePostcode } from '../../src/domain/postcode'
 import { normalizeStyle, STYLE_PROFILES } from '../../src/domain/styleProfile'
+import { checkAbv } from './plausible'
+import type { PlausibilityNote } from './plausible'
 import type { Pack } from '../../src/domain/types'
 import COUNTRY_TABLE from './countries.json'
 
@@ -506,6 +508,8 @@ export const notABeerName = (name: string) => {
     /^\s*[\u{1F947}-\u{1F949}]/u.test(name) || // „🥉 Bronze – Hoppy Lager“ is an award line
     // a list heading; a bare „Lager“ is the brewery's lager and stays
     /^(the )?(ales|beers|lagers|biere)$/i.test(t) ||
+    // V5: section headings of a beer page („Non-Alcoholic Offerings“, „Unser Sortiment“, „Our Beers“)
+    /\b(offerings|sortiment)$|^(unsere|our|all) (biere|beers)\b/i.test(t) ||
     /^[^\p{L}\p{N}]/u.test(t) ||
     // a short number is a name („805“, „1516“), a long one an article or postcode („51631“)
     ((t.match(/\p{L}/gu)?.length ?? 0) < 2 && t.length > 4)
@@ -541,6 +545,7 @@ export function beerQuality(evidence: readonly Evidence[], beer: { style: string
 /**
  * Open Food Facts products and Wikidata beers → main beers of the matched breweries (unmatched products
  * are dropped). Both sources compete per style; Open Food Facts usually wins on completeness (pack).
+ * V5: an ABV that does not fit the style is dropped before anything else sees it; `notes` collects what was dropped.
  */
 export function mainBeers(
   off: OffRow[],
@@ -548,6 +553,7 @@ export function mainBeers(
   wdBeers: WikidataBeerRow[] = [],
   openbeer: OpenbeerRow[] = [],
   web: WebRow[] = [],
+  notes: PlausibilityNote[] = [],
 ): RegionalBeer[] {
   const match = breweryMatcher(breweries)
   const perBrewery = new Map<string, Candidate[]>()
@@ -638,7 +644,12 @@ export function mainBeers(
       : c.style
   const out: RegionalBeer[] = []
   for (const [breweryId, raw] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0]))) {
-    const cands = raw.map((c) => ({ ...c, style: localStyle(breweryId, c) }))
+    const cands = raw.map((c) => {
+      const style = localStyle(breweryId, c)
+      const checked = checkAbv(style, c.abv)
+      if (checked.flag) notes.push({ breweryId, name: c.name, style, abv: c.abv!, flag: checked.flag })
+      return { ...c, style, abv: checked.abv }
+    })
     // the same beer named by several sources (sizes, spellings): what backs the one picked
     const backing = (c: Candidate) =>
       cands.filter((o) => normName(o.name) === normName(c.name)).map((o) => ({ source: o.source ?? SOURCE.off, style: o.style, abv: o.abv }))
