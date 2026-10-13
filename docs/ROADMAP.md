@@ -43,7 +43,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 22. [x] **R11** Regional-Snapshots auf dem zweiten Gerät (Sync/Import, offen aus R4) (#89)
 23. [x] **R12** Freigegebene Meldungen sofort im Finder statt nach bis zu 30 Tagen Zell-Cache (offen aus R6) (#90)
 24. [x] **V5** Plausibilität im Katalog-Build: Alkohol passt nicht zum Stil → Wert verwerfen, Bier bleibt (Wunsch 2026-10-13) (#92)
-25. [ ] **V6** Korrekturen aus „Problem melden“: Label `korrigieren` setzt Name/Stil/Alkohol, überlebt Importe
+25. [x] **V6** Korrekturen aus „Problem melden“: Label `korrigieren` setzt Name/Stil/Alkohol, überlebt Importe (#93)
 26. [ ] **V7** Quellen für die 60 handgepflegten Biere (DE/EU), Alkohol und Stil gegengeprüft, Tests für alle kuratierten
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -374,9 +374,12 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       Auswahl – Stammwürze als Alkohol („Maibock 17,5“), Gebinde als Alkohol („Hell 1,0“), sonst außerhalb des Stils.
       Überschriften („Non-Alcoholic Offerings“, „Unser Sortiment“) sind kein Bier. Der Bericht (`report.txt` →
       „Katalog-Stand“-PR) zählt das Verworfene mit Beispielen. Live erst mit dem nächsten Import (S)
-- [ ] V6 **Korrekturen aus „Problem melden“:** Spalte `regional_beers.correction` (Name, Stil, Alkohol), nie vom Import
+- [x] V6 **Korrekturen aus „Problem melden“** (#93): Spalte `regional_beers.correction` (Name, Stil, Alkohol), nie vom Import
       gesetzt; Label `korrigieren` am `bier-problem`-Issue → `tool/feedback_bot.py` setzt sie, der Client legt sie über die
       Importwerte (Stufe 3) (M)
+      - umgesetzt (2026-10-14, #93): Migration `20261014120000_beer_corrections` (CHECK: nur `name`/`style`/`abv`, Alkohol
+        0–20), Issue bekommt einen Abschnitt „Korrektur“ (Name/Stil/Alkohol), der Bot prüft Stil gegen `STYLE_PROFILES` und
+        Alkohol gegen `ABV_RANGE`; `applyCorrection` im Client nimmt nur stimmige Werte. Kuratierte Biere weiter von Hand
 - [ ] V7 **Quellen für die handgepflegten Biere:** `tools/classics/eu.json` mit Quelle, Prüfdatum, belegtem Alkohol und Stil
       für die 60 Biere ohne Herkunft; Tests: jedes kuratierte Bier hat eine Quelle, Stil bekannt, Alkohol in `ABV_RANGE` (M)
 

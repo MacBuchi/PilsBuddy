@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { compatibility } from './matching'
 import { cellBounds, cellOf, cellsWithin, formatKm, haversineKm, rankRegional, routeUrl } from './regional'
-import { sanitizeBrewery, sourceUrl, toRegionalBeer } from './regionalBeer'
+import { sanitizeBeerRow, sanitizeBrewery, sourceUrl, toRegionalBeer } from './regionalBeer'
 import type { RegionalBrewery } from './regionalBeer'
 import { tasteFromStyle } from './styleProfile'
 import type { TasteVector } from './types'
@@ -163,5 +163,30 @@ describe('formatting', () => {
 
   it('the route link carries only the brewery position', () => {
     expect(routeUrl({ lat: 49.4954, lon: 8.4823 })).toBe('https://www.google.com/maps/dir/?api=1&destination=49.49540,8.48230')
+  })
+})
+
+describe('corrections from problem reports (V6)', () => {
+  const raw = { id: 'r-maibock', name: 'Maibock', style: 'Bock', abv: null, pack: null, rank: 0, source: 3, source_ref: '/biere', quality: 1 }
+
+  it('lays the corrected values over the imported ones and marks the beer as checked', () => {
+    expect(sanitizeBeerRow({ ...raw, correction: { abv: 7.2, name: 'Kloster Maibock' } })).toMatchObject({
+      name: 'Kloster Maibock', style: 'Bock', abv: 7.2, quality: 3,
+    })
+    expect(sanitizeBeerRow({ ...raw, style: 'Pils', correction: { style: 'Doppelbock', abv: 7.5 } })).toMatchObject({ style: 'Doppelbock', abv: 7.5, quality: 3 })
+  })
+
+  it('ignores what is not sound – the imported values stay', () => {
+    // unknown style, ABV that does not fit the style, junk
+    expect(sanitizeBeerRow({ ...raw, correction: { style: 'Kräuterbier' } })).toMatchObject({ style: 'Bock', quality: 1 })
+    expect(sanitizeBeerRow({ ...raw, correction: { abv: 17.5 } })).toMatchObject({ abv: null, quality: 1 })
+    for (const c of [null, 'abv=7', [7.2], {}, { taste: 90 }]) expect(sanitizeBeerRow({ ...raw, correction: c })).toMatchObject({ name: 'Maibock', quality: 1 })
+    // a sound value next to an unsound one still counts
+    expect(sanitizeBeerRow({ ...raw, correction: { style: 'Kräuterbier', abv: 7 } })).toMatchObject({ style: 'Bock', abv: 7, quality: 3 })
+  })
+
+  it('a remembered (already corrected) row stays corrected', () => {
+    const once = sanitizeBeerRow({ ...raw, correction: { abv: 7.2 } })
+    expect(sanitizeBeerRow(once)).toEqual(once)
   })
 })
