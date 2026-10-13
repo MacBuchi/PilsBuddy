@@ -44,7 +44,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 23. [x] **R12** Freigegebene Meldungen sofort im Finder statt nach bis zu 30 Tagen Zell-Cache (offen aus R6) (#90)
 24. [x] **V5** Plausibilität im Katalog-Build: Alkohol passt nicht zum Stil → Wert verwerfen, Bier bleibt (Wunsch 2026-10-13) (#92)
 25. [x] **V6** Korrekturen aus „Problem melden“: Label `korrigieren` setzt Name/Stil/Alkohol, überlebt Importe (#93)
-26. [x] **V7** Quellen für die 60 handgepflegten Biere (DE/EU), Alkohol und Stil gegengeprüft, Tests für alle kuratierten (#PR)
+26. [x] **V7** Quellen für die 60 handgepflegten Biere (DE/EU), Alkohol und Stil gegengeprüft, Tests für alle kuratierten (#95)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -380,9 +380,9 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       - umgesetzt (2026-10-14, #93): Migration `20261014120000_beer_corrections` (CHECK: nur `name`/`style`/`abv`, Alkohol
         0–20), Issue bekommt einen Abschnitt „Korrektur“ (Name/Stil/Alkohol), der Bot prüft Stil gegen `STYLE_PROFILES` und
         Alkohol gegen `ABV_RANGE`; `applyCorrection` im Client nimmt nur stimmige Werte. Kuratierte Biere weiter von Hand
-- [x] V7 **Quellen für die handgepflegten Biere** (#PR): `tools/classics/eu.json` mit Quelle, Prüfdatum, belegtem Alkohol und Stil
+- [x] V7 **Quellen für die handgepflegten Biere** (#95): `tools/classics/eu.json` mit Quelle, Prüfdatum, belegtem Alkohol und Stil
       für die 60 Biere ohne Herkunft; Tests: jedes kuratierte Bier hat eine Quelle, Stil bekannt, Alkohol in `ABV_RANGE` (M)
-      - umgesetzt (2026-10-14, #PR): 60/60 noch gebraut, Stile stimmen; korrigiert BRLO Pale Ale 5,5 → 5,0, Peroni
+      - umgesetzt (2026-10-14, #95): 60/60 noch gebraut, Stile stimmen; korrigiert BRLO Pale Ale 5,5 → 5,0, Peroni
         Nastro Azzurro 5,1 → 5,0, Berliner Kindl Weisse 2,5 → 3,0. Details und schwächere Quellen: `docs/research/EUROPA.md`
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
