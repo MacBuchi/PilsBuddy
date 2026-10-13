@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CELL_TTL_MS, CELLS_KEY, fetchBreweryMap, fetchRegionalByIds, fetchCells, findPostcode, forgetRegional, loadBrewery, loadBreweryMap, loadRegion, MAP_KEY, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
+import { CELL_TTL_MS, CELLS_KEY, fetchBreweryMap, fetchChanges, FRESH_EVERY_MS, FRESH_KEY, fetchRegionalByIds, fetchCells, findPostcode, forgetRegional, loadBrewery, loadBreweryMap, loadRegion, MAP_KEY, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
 
 const MANNHEIM = { lat: 49.49, lon: 8.47 }
 const eichbaum = {
@@ -56,11 +56,13 @@ describe('loadRegion', () => {
     const first = await loadRegion(MANNHEIM, 10, f as unknown as typeof fetch, 1000)
     expect(first.breweries.map((b) => b.id)).toEqual(['osm-n1'])
     expect(first.offline).toBe(false)
-    const calls = f.mock.calls.length
+    // the hourly change check (R12) may ask – but the cells themselves come from the cache
+    const cellCalls = () => f.mock.calls.filter((c) => decodeURIComponent(c[0]).includes('or=(and(lat')).length
+    const calls = cellCalls()
     await loadRegion(MANNHEIM, 10, f as unknown as typeof fetch, 1000 + CELL_TTL_MS - 1)
-    expect(f.mock.calls.length).toBe(calls)
+    expect(cellCalls()).toBe(calls)
     await loadRegion(MANNHEIM, 10, f as unknown as typeof fetch, 1000 + CELL_TTL_MS + 1)
-    expect(f.mock.calls.length).toBeGreaterThan(calls)
+    expect(cellCalls()).toBeGreaterThan(calls)
   })
 
   it('offline: stale cells are better than none', async () => {
@@ -269,5 +271,81 @@ describe('fetchRegionalByIds (R11)', () => {
 
   it('throws when the API is down', async () => {
     await expect(fetchRegionalByIds(['r-4000000000001'], offline() as unknown as typeof fetch)).rejects.toThrow()
+  })
+})
+
+describe('changed cells (R12)', () => {
+  const HOUR = FRESH_EVERY_MS
+  /** API double: cells answer with `cell`, the change queries with `beerChanges` / `breweryChanges`. */
+  function backend(cell: unknown[], beerChanges: unknown[] = [], breweryChanges: unknown[] = []) {
+    return vi.fn(async (url: string) => {
+      const u = decodeURIComponent(url)
+      const rows = u.includes('updated_at=gt.') ? (u.includes('/regional_beers?') ? beerChanges : breweryChanges) : cell
+      return new Response(JSON.stringify(rows), { status: 200 })
+    })
+  }
+  const cellCalls = (f: ReturnType<typeof backend>) => f.mock.calls.filter((c) => decodeURIComponent(c[0]).includes('or=(and(lat')).length
+  const changeUrls = (f: ReturnType<typeof backend>) => f.mock.calls.map((c) => decodeURIComponent(c[0])).filter((u) => u.includes('updated_at=gt.'))
+
+  it('fetchChanges: only a timestamp goes out, the cells are worked out on the device', async () => {
+    const f = backend([], [{ updated_at: '2026-10-13T10:00:00+00:00', breweries: { lat: 49.4954, lon: 8.4823 } }], [{ updated_at: '2026-10-13T11:00:00+00:00', lat: 52.52, lon: 13.4 }])
+    const c = await fetchChanges('2026-10-01T00:00:00.000Z', f as unknown as typeof fetch)
+    expect([...c.cells].sort()).toEqual(['98:16', '105:26'].sort())
+    expect(c).toMatchObject({ all: false, mark: '2026-10-13T11:00:00+00:00' })
+    for (const u of changeUrls(f)) {
+      expect(u).toContain('updated_at=gt.2026-10-01T00:00:00.000Z')
+      expect(u).not.toMatch(/lat\.|lon\.|or=/)
+    }
+  })
+
+  it('reloads a cached cell once something in it changed – an approved beer shows up', async () => {
+    const stored = stubStorage()
+    const t0 = 1_000_000
+    const before = backend([eichbaum])
+    await loadRegion(MANNHEIM, 10, before as unknown as typeof fetch, t0)
+    expect(changeUrls(before)).toEqual([]) // just loaded – nothing to check
+
+    const approved = { id: 'r-app12', name: 'Gemeldetes Hell', style: 'Helles', abv: 5, pack: null, rank: 1, source: 5, source_ref: null }
+    const after = backend(
+      [{ ...eichbaum, regional_beers: [...eichbaum.regional_beers, approved] }],
+      [{ updated_at: '2026-10-13T12:00:00+00:00', breweries: { lat: eichbaum.lat, lon: eichbaum.lon } }],
+    )
+    // within the hour: cache only
+    await loadRegion(MANNHEIM, 10, after as unknown as typeof fetch, t0 + HOUR - 1)
+    expect(after).not.toHaveBeenCalled()
+    // an hour later: the check finds the change, the cell comes again
+    const r = await loadRegion(MANNHEIM, 10, after as unknown as typeof fetch, t0 + HOUR + 1)
+    expect(r.breweries[0].beers.map((b) => b.id)).toContain('r-app12')
+    expect(cellCalls(after)).toBe(1)
+    expect(JSON.parse(stored.get(FRESH_KEY)!).data.mark).toBe('2026-10-13T12:00:00+00:00')
+
+    // next look asks from the server mark on; nothing new → no cell request
+    const quiet = backend([eichbaum])
+    await loadRegion(MANNHEIM, 10, quiet as unknown as typeof fetch, t0 + 3 * HOUR)
+    expect(changeUrls(quiet)[0]).toContain('updated_at=gt.2026-10-13T12:00:00+00:00')
+    expect(cellCalls(quiet)).toBe(0)
+  })
+
+  it('changes elsewhere leave the cache alone; too many changes reload everything', async () => {
+    stubStorage()
+    await loadRegion(MANNHEIM, 10, backend([eichbaum]) as unknown as typeof fetch, 0)
+    const elsewhere = backend([eichbaum], [{ updated_at: '2026-10-13T12:00:00+00:00', breweries: { lat: 52.52, lon: 13.4 } }])
+    await loadRegion(MANNHEIM, 10, elsewhere as unknown as typeof fetch, 2 * HOUR)
+    expect(cellCalls(elsewhere)).toBe(0)
+    const many = Array.from({ length: 500 }, () => ({ updated_at: '2026-10-13T13:00:00+00:00', lat: 52.52, lon: 13.4 }))
+    const imported = backend([eichbaum], [], many)
+    await loadRegion(MANNHEIM, 10, imported as unknown as typeof fetch, 4 * HOUR)
+    expect(cellCalls(imported)).toBeGreaterThan(0)
+  })
+
+  it('offline check: the cache answers and the next load asks again', async () => {
+    stubStorage()
+    await loadRegion(MANNHEIM, 10, backend([eichbaum]) as unknown as typeof fetch, 0)
+    const r = await loadRegion(MANNHEIM, 10, offline() as unknown as typeof fetch, 2 * HOUR)
+    expect(r).toEqual({ breweries: expect.any(Array), offline: false })
+    expect(r.breweries).toHaveLength(1)
+    const again = backend([eichbaum])
+    await loadRegion(MANNHEIM, 10, again as unknown as typeof fetch, 2 * HOUR + 1)
+    expect(changeUrls(again).length).toBeGreaterThan(0)
   })
 })

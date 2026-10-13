@@ -41,7 +41,7 @@ Details stehen beim jeweiligen Paket weiter unten.
     das Bier → alle Daten stimmen (#86)
 21. [x] **R10** Brauerei-Profil als Rückfall für Brauereien ohne bekannte Biere (offen aus R0) (#88)
 22. [x] **R11** Regional-Snapshots auf dem zweiten Gerät (Sync/Import, offen aus R4) (#89)
-23. [ ] **R12** Freigegebene Meldungen sofort im Finder statt nach bis zu 30 Tagen Zell-Cache (offen aus R6)
+23. [x] **R12** Freigegebene Meldungen sofort im Finder statt nach bis zu 30 Tagen Zell-Cache (offen aus R6) (#90)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -274,8 +274,11 @@ Leitplanken:
       `regional_beers` nachgeladen (S–M)
       - umgesetzt (2026-10-13, #89): `restoreRegional` lädt fehlende `r-`-IDs einmal nach (nur IDs, nur veröffentlichte
         Biere), `AppState.beersRev` lässt DNA und Listen neu rechnen; offline beim nächsten Start erneut
-- [ ] R12 **Freigegebene Meldungen sofort sichtbar** (offen aus R6, eingeplant 2026-10-12): gecachte Finder-Zellen
+- [x] R12 **Freigegebene Meldungen sofort sichtbar** (offen aus R6, eingeplant 2026-10-12): gecachte Finder-Zellen
       zeigen ein freigegebenes Bier heute erst nach bis zu 30 Tagen (S)
+      - umgesetzt (2026-10-13, #90): höchstens stündlich fragt der Finder `updated_at > Marke` (nur der Zeitpunkt geht
+        raus, Marke = Serverzeit) und lädt nur Zellen mit Änderungen neu; ≥ 500 Änderungen (Import) → alle. Zurückgezogene
+        Biere (published = false) sieht RLS nicht – sie verschwinden weiter erst mit dem 30-Tage-Cache
 
 ### Stufe Q – Qualität der Datenbank-Auslieferung (Wunsch 2026-10-02, #37)
 
