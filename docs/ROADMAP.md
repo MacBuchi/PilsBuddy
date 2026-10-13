@@ -42,6 +42,9 @@ Details stehen beim jeweiligen Paket weiter unten.
 21. [x] **R10** Brauerei-Profil als Rückfall für Brauereien ohne bekannte Biere (offen aus R0) (#88)
 22. [x] **R11** Regional-Snapshots auf dem zweiten Gerät (Sync/Import, offen aus R4) (#89)
 23. [x] **R12** Freigegebene Meldungen sofort im Finder statt nach bis zu 30 Tagen Zell-Cache (offen aus R6) (#90)
+24. [x] **V5** Plausibilität im Katalog-Build: Alkohol passt nicht zum Stil → Wert verwerfen, Bier bleibt (Wunsch 2026-10-13) (#92)
+25. [ ] **V6** Korrekturen aus „Problem melden“: Label `korrigieren` setzt Name/Stil/Alkohol, überlebt Importe
+26. [ ] **V7** Quellen für die 60 handgepflegten Biere (DE/EU), Alkohol und Stil gegengeprüft, Tests für alle kuratierten
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -366,6 +369,16 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       oder zwei unabhängige Quellen; Alkohol nicht mehr nötig) · 3 geprüft = alle Daten stimmen (Stil bekannt, Alkohol
       von zwei Quellen übereinstimmend, keine Quelle widerspricht) – oder von Hand recherchiert (kuratiert). Regionalbiere
       können jetzt 3 erreichen; Widersprüche halten ein Bier auf 2 (S–M)
+- [x] V5 **Plausibilität im Katalog-Build** (#92) (Wunsch 2026-10-13, Absprache: unplausibler Wert wird verworfen, das
+      Bier bleibt): `ABV_RANGE` je Stil in `styleProfile.ts`, `tools/catalog/plausible.ts` prüft jeden Kandidaten vor der
+      Auswahl – Stammwürze als Alkohol („Maibock 17,5“), Gebinde als Alkohol („Hell 1,0“), sonst außerhalb des Stils.
+      Überschriften („Non-Alcoholic Offerings“, „Unser Sortiment“) sind kein Bier. Der Bericht (`report.txt` →
+      „Katalog-Stand“-PR) zählt das Verworfene mit Beispielen. Live erst mit dem nächsten Import (S)
+- [ ] V6 **Korrekturen aus „Problem melden“:** Spalte `regional_beers.correction` (Name, Stil, Alkohol), nie vom Import
+      gesetzt; Label `korrigieren` am `bier-problem`-Issue → `tool/feedback_bot.py` setzt sie, der Client legt sie über die
+      Importwerte (Stufe 3) (M)
+- [ ] V7 **Quellen für die handgepflegten Biere:** `tools/classics/eu.json` mit Quelle, Prüfdatum, belegtem Alkohol und Stil
+      für die 60 Biere ohne Herkunft; Tests: jedes kuratierte Bier hat eine Quelle, Stil bekannt, Alkohol in `ABV_RANGE` (M)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

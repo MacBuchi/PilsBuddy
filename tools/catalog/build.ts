@@ -12,6 +12,8 @@ import COUNTRY_TABLE from './countries.json'
 import { COUNTRIES, COUNTRY_INFO, importSql, mainBeers, mergeBreweries, parseOpenbeer, parsePlaces, tooFew } from './merge'
 import { beerRow, breweryRow } from './diff'
 import { beerName } from './web'
+import { plausibilityReport } from './plausible'
+import type { PlausibilityNote } from './plausible'
 import type { Country, ObdbRow, OffRow, OpenbeerRow, OsmRow, WebRow, WikidataBeerRow, WikidataRow } from './merge'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -75,7 +77,8 @@ const web = readdirSync(RAW)
     const beer = beerName(w.name, w.abv, langOf.get(w.breweryId))
     return beer ? [{ ...w, ...beer }] : []
   })
-const beers = mainBeers(off, breweries, wdBeers, openbeer, web)
+const notes: PlausibilityNote[] = []
+const beers = mainBeers(off, breweries, wdBeers, openbeer, web, notes)
 
 rmSync(OUT, { recursive: true, force: true })
 mkdirSync(OUT, { recursive: true })
@@ -99,6 +102,7 @@ const report = [
   `  je Land: ${COUNTRIES.map((c) => `${c} ${beers.filter((b) => countryOf.get(b.breweryId) === c).length} bei ${new Set(beers.filter((b) => countryOf.get(b.breweryId) === c).map((b) => b.breweryId)).size}`).join(' · ')}`,
   `  mit ABV ${beers.filter((b) => b.abv != null).length} · mit Gebinde ${beers.filter((b) => b.pack).length}`,
   `  Qualität (V4): geprüft ${beers.filter((b) => b.quality === 3).length} · bestätigt ${beers.filter((b) => b.quality === 2).length} · gefunden ${beers.filter((b) => b.quality === 1).length} · fraglich ${beers.filter((b) => b.quality === 0).length}`,
+  ...plausibilityReport(notes),
   `Postleitzahlen: ${places.length} (${count(places, (p) => p.country)})`,
   `SQL: ${readdirSync(OUT).filter((f) => f.endsWith('.sql')).length} Dateien in ${OUT}`,
 ].join('\n')
