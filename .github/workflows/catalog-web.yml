@@ -1,7 +1,8 @@
 name: Regional catalogue (brewery websites)
 
 # R1b: crawls the websites of the published breweries for their beers (crawl.ts) and uploads
-# raw/web-<shard>.json as the artifact catalog-web. Nothing is written to the database here.
+# raw/web-<shard>.json as the artifact catalog-web-<shard>, together with web-diag-<shard>.json (V8: why each site gave
+# beers or none); the job „Crawler diagnosis“ adds those up in the summary. Nothing is written to the database here.
 # Manual (gh workflow run catalog-web.yml) or called by „Regional catalogue (monthly)“ (R7).
 on:
   workflow_dispatch:
@@ -42,5 +43,34 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: catalog-web-${{ matrix.shard }}
-          path: tools/catalog/raw/web-${{ matrix.shard }}.json
+          path: |
+            tools/catalog/raw/web-${{ matrix.shard }}.json
+            tools/catalog/raw/web-diag-${{ matrix.shard }}.json
+          retention-days: 14
+
+  diagnosis:
+    name: Crawler diagnosis
+    needs: crawl
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: catalog-web-*
+          merge-multiple: true
+          path: tools/catalog/raw
+      - run: npx tsx tools/catalog/diag-report.ts tools/catalog/raw | tee diagnosis.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: crawl-diagnosis
+          path: |
+            diagnosis.md
+            tools/catalog/raw/web-diag-*.json
           retention-days: 14

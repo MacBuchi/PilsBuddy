@@ -45,6 +45,10 @@ Details stehen beim jeweiligen Paket weiter unten.
 24. [x] **V5** Plausibilität im Katalog-Build: Alkohol passt nicht zum Stil → Wert verwerfen, Bier bleibt (Wunsch 2026-10-13) (#92)
 25. [x] **V6** Korrekturen aus „Problem melden“: Label `korrigieren` setzt Name/Stil/Alkohol, überlebt Importe (#93)
 26. [x] **V7** Quellen für die 60 handgepflegten Biere (DE/EU), Alkohol und Stil gegengeprüft, Tests für alle kuratierten (#95)
+27. [x] **V8** Crawler-Diagnose: je Website der Grund, warum sie kein Bier liefert – Bericht entscheidet V9 (Wunsch 2026-10-14) (#96)
+28. [ ] **V9** Crawler-Ausbau nach dem V8-Befund: Erkennung lockern („missed“) + Sitemap/Links („no-beer-page“), dann JS-Seiten und PDF-Karten (Ziel: deutlich mehr als 22 % der Brauereien mit Bier)
+29. [ ] **V10** Zweite Quellen besser abgleichen: Wikidata-/Open-Food-Facts-Biere zuverlässiger den Brauereien zuordnen → „bestätigt“
+30. [ ] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -384,6 +388,25 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       für die 60 Biere ohne Herkunft; Tests: jedes kuratierte Bier hat eine Quelle, Stil bekannt, Alkohol in `ABV_RANGE` (M)
       - umgesetzt (2026-10-14, #95): 60/60 noch gebraut, Stile stimmen; korrigiert BRLO Pale Ale 5,5 → 5,0, Peroni
         Nastro Azzurro 5,1 → 5,0, Berliner Kindl Weisse 2,5 → 3,0. Details und schwächere Quellen: `docs/research/EUROPA.md`
+- [x] V8 **Crawler-Diagnose** (#96) (Wunsch 2026-10-14: „sehr viele Brauereien ohne Bier und viele Biere mit niedriger
+      Qualitätsstufe“): nur 3 037 von 14 086 Brauereien (22 %) haben ein Bier, obwohl 10 474 eine Website haben; der
+      Crawler fand auf ≈ 2 500 von ≈ 9 600 Websites Biere, ≈ 1 900 antworteten nicht. `tools/catalog/diagnose.ts` gibt
+      jeder Website einen Grund (robots · offline · blocked · http-error · not-html · offsite · beers · widget · js · pdf ·
+      no-beer-page · unnamed · missed) samt Baukasten und Stilnamen auf der Seite; Job „Crawler diagnosis“ fasst das je
+      Land zusammen (Artefakt `crawl-diagnosis`). Ändert den Katalog nicht (S)
+      - Befund (2026-10-14, Lauf 38636176948, 9 677 Websites): Biere 2 498 (26 %) · **no-beer-page 1 785 (18 %)** – keine
+        Bierseite verlinkt, keine Stilnamen auf der Startseite · **missed 1 352 (14 %)** – Stilnamen stehen da, die Erkennung
+        nimmt keinen (871 Seiten mit ≥ 5 Stilnamen) · offline 900 (DNS 548 – oft aufgegebene Brauereien, 39 auf hugedomains) ·
+        blocked 717 (fast nur 403, Bot-Schutz – wird respektiert) · js 660 · unnamed 548 (Bierseite ohne Stilwort) ·
+        widget 499 (Untappd 374) · http-error 304 · pdf 244 (DE 71) · robots 139. Baukästen ohne Bier: WordPress 1 268 ·
+        Squarespace 976 · Wix 603. US 18 % mit Bier der Websites, DE 34 %
+- [ ] V9 **Crawler-Ausbau** nach dem V8-Befund, in dieser Reihenfolge: (a) Erkennung über h1–h4 hinaus (h5/h6, Produkt-
+      kacheln, Listen) mit denselben Filtern – Zielgruppe „missed“; (b) `sitemap.xml` und mehr Link-Wörter für die Bierseite –
+      „no-beer-page“; (c) PDF-Getränkekarten als Text; (d) JS-Seiten nur, wenn (a)–(c) nicht reichen (Headless-Browser im
+      CI). Untappd-Widgets nicht auslesen (Nutzungsbedingungen), Bot-Schutz nicht umgehen (M)
+- [ ] V10 **Zweite Quellen abgleichen:** Wikidata kennt 8 939 Biere, Open Food Facts 2 534 – als Bestätigung zählen nur
+      wenige hundert. Zuordnung zur Brauerei über Wikidata-ID, Marke und Ort verbessern, OFF für alle Länder (M)
+- [ ] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
