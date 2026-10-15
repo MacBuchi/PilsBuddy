@@ -414,7 +414,7 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
             Websites mit Bier 39 → 40 % (94 über PDF), „pdf“ 230 → 148 (#100)
       - [x] (d) JS-Seiten (Signal „js“, ohne Tap-Listen-Widget, ohne Bier aus HTML/PDF) in Chromium gerendert – Startseite
             + ≤ 2 Bierseiten, eigener User-Agent, ohne Bilder/Schriften, Untappd & Co. blockiert: 596 gerendert, 88 mit Bier,
-            „js“ 609 → 508, Websites mit Bier 40 → 41 % (#PR)
+            „js“ 609 → 508, Websites mit Bier 40 → 41 % (#101)
 - [ ] V10 **Zweite Quellen abgleichen:** Wikidata kennt 8 939 Biere, Open Food Facts 2 534 – als Bestätigung zählen nur
       wenige hundert. Zuordnung zur Brauerei über Wikidata-ID, Marke und Ort verbessern, OFF für alle Länder (M)
 - [ ] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)
