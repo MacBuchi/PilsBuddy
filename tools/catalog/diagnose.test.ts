@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { diagnoseSite, diagnosisReport, pageSignals, styleNames } from './diagnose'
+import { diagnoseSite, diagnosisReport, pageSignals, styleNames, wantsBrowser } from './diagnose'
 import type { Fetched, SiteRow } from './diagnose'
 
 const page = (html: string, url = 'https://brauerei.de/'): Fetched => ({ url, status: 200, html })
@@ -63,6 +63,14 @@ describe('diagnoseSite', () => {
     expect(site(page(`${filler}<b>Kellerbier</b>`)).reason).toBe('missed')
   })
 
+  it('renders only JavaScript pages without a tap-list widget', () => {
+    const app = page('<div id="root"></div><script src="/app.js"></script>')
+    expect(wantsBrowser([app])).toBe(true)
+    expect(wantsBrowser([page(filler)])).toBe(false)
+    expect(wantsBrowser([app, page(`${filler}<script src="https://embed-menu-preloader.untappdapi.com/x.js"></script>`)])).toBe(false)
+    expect(wantsBrowser([{ url: 'https://brauerei.de/', html: '' }])).toBe(false)
+  })
+
   it('keeps the final host only when the site moved to another domain', () => {
     expect(site(page(filler, 'https://www.brauerei.de/start')).finalHost).toBeNull()
     expect(site(page(filler, 'https://neue-brauerei.de/')).finalHost).toBe('neue-brauerei.de')
@@ -84,6 +92,7 @@ describe('diagnosisReport', () => {
       links: 0,
       sitemap: false,
       fromPdf: false,
+      rendered: false,
       styleNames: 0,
       jsonLd: false,
       ...extra,
@@ -95,9 +104,11 @@ describe('diagnosisReport', () => {
       row('https://d.com', 'US', 'offline', { error: 'dns', status: 0 }),
       row('https://e.de', 'DE', 'beers', { fromPdf: true }),
       row('https://f.de', 'DE', 'pdf'),
+      row('https://g.com', 'US', 'beers', { rendered: true }),
     ])
-    expect(report).toContain('6 Websites · mit Bieren 2 (33 %)')
-    expect(report).toContain('| js | 1 | 1 | 2 | 33 % |')
+    expect(report).toContain('7 Websites · mit Bieren 3 (43 %)')
+    expect(report).toContain('| js | 1 | 1 | 2 | 29 % |')
+    expect(report).toContain('im Browser gerendert: 1 Websites, davon mit Bier 1')
     expect(report).toContain('PDF-Getränkekarten: 2 Websites, davon mit Bier 1')
     expect(report).toContain('Baukasten: wix 2')
     expect(report).toContain('**Nicht erreichbar:** dns 1')
