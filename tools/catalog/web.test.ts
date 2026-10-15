@@ -303,6 +303,29 @@ describe('PDF drinks lists (V9c)', () => {
     ])
   })
 
+  it('drops menu items, broken description lines, choices and headings', () => {
+    const junk = [
+      'barrel smoked paprikaWELCOME PLATES',
+      'Smoked Trout Dip 14',
+      'blonde ale. Cheers to the',
+      'Cilantro Lime Avo Crema, Sour',
+      'Centennial IPA OR Pineapple IPA',
+      'Ipas & Pale Ales',
+      'Hausgemachte Weißbier-Kasspatzen',
+      'enthält Laktose, Gluten- Weizen',
+      'full bodied Scottish wee heavy with',
+      'Kinley "Tonic“ | "Ginger Ale',
+      'Pilsner brewed with Italian-grown barley',
+    ]
+    expect(extractPdfBeers([...junk, 'Kiki Lemongrass Lager', 'Trifecta Belgian Tripel', 'GUSSWERK Rhabarber Radler Glutenfrei'], 'en').map((b) => b.name)).toEqual([
+      'Kiki Lemongrass Lager',
+      'Trifecta Belgian Tripel',
+      'GUSSWERK Rhabarber Radler Glutenfrei',
+    ])
+    const at = (str: string, y: number) => ({ str, x: 40, y, w: 100, h: 12 })
+    expect(pdfBlocks([[at('Helles Lager ………………………….. 0,5', 700), at('Dunkel 18', 680)]])).toEqual(['Helles Lager', 'Dunkel'])
+  })
+
   it('takes a single beer word of a food menu for nothing', () => {
     expect(extractPdfBeers(['Schnitzel Wiener Art', 'Bierbratensoße', 'Pils', 'Apfelstrudel'])).toEqual([])
   })

@@ -355,11 +355,11 @@ function extractBlocks(body: string, lang: Lang): WebBeer[] {
   return blockBeers(body.split(BLOCK).map(textOf).filter(Boolean), lang)
 }
 
-function blockBeers(blocks: string[], lang: Lang): WebBeer[] {
+function blockBeers(blocks: string[], lang: Lang, notBeer: (t: string) => boolean = () => false): WebBeer[] {
   const notName = lang === 'en' ? NOT_A_NAME_EN : NOT_A_NAME
   const found: { at: number; beer: WebBeer }[] = []
   blocks.forEach((t, at) => {
-    const beer = t.length <= 80 ? beerName(t, null, lang) : null
+    const beer = t.length <= 80 && !notBeer(t) ? beerName(t, null, lang) : null
     if (!beer) return
     // „Fidelis“ / „Hazy IPA“ or „Super Simcoe IPA“ / „West Coast IPA“: a style line right under a short fancy name, or
     // under a named beer of the same style, is that beer's style („Pils“ / „Helles“, „Kellerpils“ / „Hefeweizen“ stay)
@@ -426,7 +426,7 @@ export interface PdfItem {
 }
 
 /** „Pils 0,5 l 4,20 €“, „Hazy IPA 16oz $8“: sizes and prices at the end of a menu line. */
-const PRICE_TAIL = /(?:\s+(?:[$€£]\s*\d+(?:[.,]\d{1,2})?|\d+[.,]\d{2}\s*(?:€|eur|chf|\$)?|\d+\s*(?:€|eur|chf)|\d+(?:[.,]\d+)?\s*(?:l|cl|ml|oz)\.?|\.{2,}|…+))+\s*$/i
+const PRICE_TAIL = /\s*(?:\.{3,}|…{2,}|[.…]{4,}).*$|(?:\s+(?:\d{1,2}|[$€£]\s*\d+(?:[.,]\d{1,2})?|\d+[.,]\d{2}\s*(?:€|eur|chf|\$)?|\d+\s*(?:€|eur|chf)|\d+(?:[.,]\d+)?\s*(?:l|cl|ml|oz)\.?|\.{2,}|…+))+\s*$/i
 
 /**
  * PDF text → blocks like the cells of an HTML table (V9c): pieces on one baseline make a line, a wide gap
@@ -464,8 +464,28 @@ export function pdfBlocks(pages: PdfItem[][]): string[] {
   return out
 }
 
+/**
+ * PDF lines that are no beer although they name a style: a sentence of a description broken into lines
+ * („blonde ale. Cheers to the“), menu items („Smoked Trout Dip“, „Weißbier-Kasspatzen“), soft drinks, choices
+ * („Amber or Roast“) and section headings („IPAs & Pale Ales“).
+ */
+const PDF_NOT_BEER = new RegExp(
+  [
+    String.raw`[,:+]|\b(or|oder)\b|\b(with|mit|and|und|the|to|of|a|an|seine|ihre|den|der|die|das)$`,
+    String.raw`\b(ales|lagers|ipas|stouts|sours|beers|biere)$`,
+    String.raw`salmon|trout|sausage|\bdips?\b|aioli|butter|chowder|tortilla|vinaigrette|\bplates?\b|crema\b|sour cream|cashew|sliced|pimento`,
+    String.raw`served|drizzled|spatzen|sp[äa]tzle|salat|salad|dough|vegan|mayo|sauce|so[ßs]e|fries|pommes|wurst|k[äa]se|\bbrot|bread|pretzel|brezn?`,
+    String.raw`chips|tacos?|nachos|pizza|burger|wings|chicken|pork|beef|steak|bacon|shrimp|fish|soup|suppe|braten|schnitzel|kn[öo]del|kraut`,
+    String.raw`coca|cola|fanta|sprite|tonic|ginger ale|lemonade|limo|schorle|wasser|water|juice|saft|coffee|kaffee|\btee\b|\btea\b`,
+    String.raw`laktose|\bgluten\b|allergen|brewed with|aged until|notes|radiates|abgang|zeichnen|enth[äa]lt`,
+  ].join('|'),
+  'iu',
+)
+/** A line that starts small or holds the end of a sentence – case matters here. */
+const PDF_PROSE = /^\p{Ll}|\p{Ll}[.!?]\s/u
+
 /** Beers in a PDF drinks list: blocks whose whole text names a beer – at least two, like lists on a page. */
 export function extractPdfBeers(blocks: string[], lang: Lang = 'de'): WebBeer[] {
-  const beers = blockBeers(blocks, lang)
+  const beers = blockBeers(blocks, lang, (t) => PDF_PROSE.test(t) || PDF_NOT_BEER.test(t))
   return beers.length >= 2 ? beers : []
 }
