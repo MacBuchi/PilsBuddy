@@ -19,7 +19,8 @@ export interface Fetched {
  * robots – robots.txt forbids us · offline – no response (DNS, TLS, timeout) · blocked – 401/403/429/503 (bot shield)
  * · http-error – another status · not-html · offsite – the website is Facebook, Instagram, Linktree, Untappd …
  * · beers – found beers · widget – menu embedded from Untappd/Taplist/BeerMenus/… · js – page built by JavaScript
- * · pdf – the beer list is a PDF · no-beer-page – no link that looks like the beers, home page has no beer names
+ * · pdf – the beer list is a PDF · page-failed – a beer link was found, but no beer page loaded (V9)
+ * · no-beer-page – no link (nor sitemap entry) that looks like the beers, home page has no beer names
  * · unnamed – a beer page loaded, but no text on it names a style (fancy names only, or beers as images)
  * · missed – beer names are on the pages, but the extractor took none (too strict, or not in h1–h4).
  */
@@ -34,11 +35,12 @@ export type Reason =
   | 'widget'
   | 'js'
   | 'pdf'
+  | 'page-failed'
   | 'no-beer-page'
   | 'unnamed'
   | 'missed'
 
-export const REASONS: Reason[] = ['beers', 'robots', 'offline', 'blocked', 'http-error', 'not-html', 'offsite', 'widget', 'js', 'pdf', 'no-beer-page', 'unnamed', 'missed']
+export const REASONS: Reason[] = ['beers', 'robots', 'offline', 'blocked', 'http-error', 'not-html', 'offsite', 'widget', 'js', 'pdf', 'page-failed', 'no-beer-page', 'unnamed', 'missed']
 
 /** Site builders – tells V9 which kinds of pages are worth a dedicated reader. */
 const BUILDERS: [string, RegExp][] = [
@@ -121,6 +123,10 @@ export interface SiteInput {
   pages: Fetched[]
   /** beers found on all pages */
   beers: number
+  /** beer links found (home page or sitemap) – 0 when none */
+  links?: number
+  /** the links came from the sitemap */
+  sitemap?: boolean
 }
 
 export interface Diagnosis {
@@ -132,6 +138,9 @@ export interface Diagnosis {
   widget: string | null
   /** beer pages found and loaded besides the home page */
   beerPages: number
+  /** beer links found, and whether from the sitemap (V9) */
+  links: number
+  sitemap: boolean
   styleNames: number
   jsonLd: boolean
 }
@@ -156,6 +165,8 @@ export function diagnoseSite(origin: string, site: SiteInput): Diagnosis {
     builder: any('builder'),
     widget: any('widget'),
     beerPages: site.pages.filter((p) => p.html).length,
+    links: site.links ?? site.pages.length,
+    sitemap: !!site.sitemap,
     styleNames: Math.max(0, ...signals.map((s) => s.styleNames)),
     jsonLd: !!any('jsonLd'),
   }
@@ -170,6 +181,7 @@ export function diagnoseSite(origin: string, site: SiteInput): Diagnosis {
   else if (d.widget) d.reason = 'widget'
   else if (signals.some((s) => s.js)) d.reason = 'js'
   else if (signals.some((s) => s.pdf)) d.reason = 'pdf'
+  else if (d.beerPages === 0 && d.links > 0 && d.styleNames === 0) d.reason = 'page-failed'
   else if (d.beerPages === 0 && d.styleNames === 0) d.reason = 'no-beer-page'
   else if (d.styleNames === 0) d.reason = 'unnamed'
   return d
@@ -206,6 +218,7 @@ export function diagnosisReport(rows: SiteRow[], examples = 8): string {
   out.push('', `**Erreichbar, aber ohne Bier: ${reached.length}**`, '')
   out.push(`- Baukasten: ${tally((r) => r.builder ?? 'unbekannt', reached)}`)
   out.push(`- mit Bierseite geladen: ${count((r) => r.beerPages > 0, reached)} · ohne: ${count((r) => r.beerPages === 0, reached)}`)
+  out.push(`- Bier-Links aus der Sitemap: ${count((r) => r.sitemap, rows)} Websites, davon mit Bier ${count((r) => r.sitemap && r.reason === 'beers', rows)}`)
   out.push(`- Stilnamen auf der Seite (≥ 1 / ≥ 5): ${count((r) => r.styleNames >= 1, reached)} / ${count((r) => r.styleNames >= 5, reached)}`)
   out.push(`- schema.org-Produktdaten: ${count((r) => r.jsonLd, reached)}`)
   out.push(`- Widgets: ${tally((r) => r.widget, reached)}`)

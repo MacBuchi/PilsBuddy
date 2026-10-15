@@ -52,6 +52,9 @@ describe('diagnoseSite', () => {
     expect(site(page('<div id="root"></div>')).reason).toBe('js')
     expect(site(page(`${filler}<a href="/bierkarte.pdf">Bierkarte</a>`)).reason).toBe('pdf')
     expect(site(page(filler)).reason).toBe('no-beer-page')
+    expect(site(page(filler), [{ url: 'https://brauerei.de/biere', status: 403, html: '' }])).toMatchObject({ reason: 'page-failed', links: 1 })
+    const viaSitemap = diagnoseSite('https://brauerei.de', { robotsAllowed: true, home: page(filler), pages: [], beers: 0, links: 2, sitemap: true })
+    expect(viaSitemap).toMatchObject({ reason: 'page-failed', sitemap: true })
     const missed = site(page(filler), [page(`${filler}<div class="name">Kellerbier</div>`, 'https://brauerei.de/biere')])
     expect(missed).toMatchObject({ reason: 'missed', beerPages: 1, styleNames: 1 })
     expect(site(page(filler), [page(filler, 'https://brauerei.de/biere')])).toMatchObject({ reason: 'unnamed', beerPages: 1 })
@@ -76,6 +79,8 @@ describe('diagnosisReport', () => {
       builder: null,
       widget: null,
       beerPages: 0,
+      links: 0,
+      sitemap: false,
       styleNames: 0,
       jsonLd: false,
       ...extra,

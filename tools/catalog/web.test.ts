@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beerLinks, beerName, cleanName, extractBeers, robotsAllows, textOf } from './web'
+import { beerLinks, beerName, breweryKey, cleanName, extractBeers, guestBeer, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
 
 describe('robotsAllows', () => {
   it('follows the * group and our own group, wildcards included', () => {
@@ -27,6 +27,61 @@ describe('beerLinks', () => {
       <a href="/beers-of-the-past">Retired Beers</a>
       <a href="/bier-archiv">Bierarchiv</a>`
     expect(beerLinks(html, 'https://brauerei.de/')).toEqual(['https://www.brauerei.de/sortiment', 'https://brauerei.de/de/unsere-biere/', 'https://brauerei.de/%E0%A4%A/biere'])
+  })
+})
+
+describe('drinks links and sitemaps (V9)', () => {
+  it('takes drinks pages and tap lists after beer links, never food, wine or cocktails', () => {
+    const html = `
+      <a href="/menus/getraenke/">Getränke</a><a href="/menus/speisekarte/">Speisekarte</a>
+      <a href="/basic-01">Draft Lists</a><a href="/cocktails">Cocktail Menu</a><a href="/winelist.html">Wine List</a>
+      <a href="/beers/">Beers</a><a href="/gegen-den-durst">Gegen den Durst</a>`
+    expect(beerLinks(html, 'https://pub.de/', 4)).toEqual([
+      'https://pub.de/beers/',
+      'https://pub.de/gegen-den-durst',
+      'https://pub.de/menus/getraenke/',
+      'https://pub.de/basic-01',
+    ])
+  })
+
+  it('reads sitemaps and sitemap indexes', () => {
+    const index = `<?xml version="1.0"?><sitemapindex><sitemap><loc>https://b.com/post-sitemap.xml</loc></sitemap>
+      <sitemap><loc>https://b.com/page-sitemap.xml</loc></sitemap><sitemap><loc>https://b.com/beer-sitemap.xml</loc></sitemap></sitemapindex>`
+    expect(sitemapUrls(index)).toEqual({ pages: [], sitemaps: ['https://b.com/post-sitemap.xml', 'https://b.com/page-sitemap.xml', 'https://b.com/beer-sitemap.xml'] })
+    expect(pickSitemaps(sitemapUrls(index).sitemaps)).toEqual(['https://b.com/page-sitemap.xml', 'https://b.com/beer-sitemap.xml'])
+    const pages = `<urlset><url><loc><![CDATA[https://www.b.com/beer/sculpin/]]></loc><lastmod>2026-01-01</lastmod></url>
+      <url><loc>https://b.com/beers/</loc></url><url><loc>https://b.com/about/</loc></url><url><loc>https://b.com/shop/beer-pack</loc></url>
+      <url><loc>https://other.com/beers/</loc></url><url><loc>https://b.com/drinks/</loc></url></urlset>`
+    expect(sitemapUrls(pages).pages).toHaveLength(6)
+    expect(sitemapBeerLinks(sitemapUrls(pages).pages, 'https://b.com')).toEqual(['https://b.com/beers/', 'https://www.b.com/beer/sculpin/', 'https://b.com/drinks/'])
+  })
+})
+
+describe('guestBeer (V9)', () => {
+  it('drops big brands and „Brand - Beer“ of other breweries, keeps the own ones', () => {
+    expect(guestBeer('Miller Lite', 'Chilly Water Brewing')).toBe(true)
+    expect(guestBeer('Odell IPA', 'Broomfield Brewpub')).toBe(true)
+    const others = new Set(['New Belgium Brewing Company', "Bell's Brewery, Inc.", 'Chelsea Brewing Company'].map(breweryKey))
+    expect(guestBeer('New Belgium - Voodoo Ranger IPA', 'Manayunk Brewery', '', others)).toBe(true)
+    expect(guestBeer("Bell's | Two Hearted IPA", 'Manayunk Brewery', '', others)).toBe(true)
+    expect(guestBeer('Dawn Patrol - Tangerine Blonde Ale', 'Manayunk Brewery', '', others)).toBe(false)
+    expect(guestBeer('Paulaner Hefe-Weißbier', 'Gasthof Adler')).toBe(true)
+    expect(guestBeer('Run Wild IPA', 'Chilly Water Brewing')).toBe(false)
+    expect(guestBeer('Solid Gold – Lager', 'Chelsea Brewing')).toBe(false)
+    expect(guestBeer('Chelsea - Hazy Days IPA', 'Chelsea Brewing Company', '', others)).toBe(false)
+    expect(guestBeer('Ayinger Celebrator', 'Brauerei Aying')).toBe(false)
+    expect(guestBeer('Weihenstephaner Hefeweissbier', 'Bayerische Staatsbrauerei Weihenstephan')).toBe(false)
+    expect(guestBeer('Sierra Nevada Pale Ale', 'Sierra Nevada Brewing Co.')).toBe(false)
+    expect(guestBeer('Samuel Adams Boston Lager', 'Boston Beer Company', 'https://www.samueladams.com')).toBe(false)
+  })
+
+  it('leaves food, wine, descriptions and list numbers out', () => {
+    for (const t of ['Smoked Prime Rib', 'Beer Cheese, Ale Mustard', 'A crispy and refreshing Pilsner', 'Blonde with a malt profile', 'Small Batch Sour Mash 86º'])
+      expect(beerName(t, null, 'en')).toBeNull()
+    expect(beerName('Riesling Kabinett feinherb')).toBeNull()
+    expect(beerName('Bourbon Barrel Stout', null, 'en')).toEqual({ name: 'Bourbon Barrel Stout', abv: null })
+    expect(beerName('#6. Strawberry Blonde', null, 'en')).toEqual({ name: 'Strawberry Blonde', abv: null })
+    expect(beerName('*Non-Alcoholic Hazy IPA', null, 'en')).toEqual({ name: 'Non-Alcoholic Hazy IPA', abv: null })
   })
 })
 

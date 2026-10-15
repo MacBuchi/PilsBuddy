@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 import COUNTRY_TABLE from './countries.json'
 import { COUNTRIES, COUNTRY_INFO, importSql, mainBeers, mergeBreweries, parseOpenbeer, parsePlaces, tooFew } from './merge'
 import { beerRow, breweryRow } from './diff'
-import { beerName } from './web'
+import { beerName, breweryKey, guestBeer } from './web'
 import { plausibilityReport } from './plausible'
 import type { PlausibilityNote } from './plausible'
 import type { Country, ObdbRow, OffRow, OpenbeerRow, OsmRow, WebRow, WikidataBeerRow, WikidataRow } from './merge'
@@ -68,14 +68,17 @@ const walk = (dir: string, rel: string): void => {
 }
 if (existsSync(OPENBEER)) walk(OPENBEER, '')
 // brewery websites (crawl.ts, one file per shard); names re-checked with the current filters (in the brewery
-// country's language), so a stricter beerName() needs no new crawl
+// country's language), so a stricter beerName() needs no new crawl; guest beers of other breweries are dropped
 const langOf = new Map(breweries.map((b) => [b.id, COUNTRY_INFO[b.country].lang]))
+const breweryOf = new Map(breweries.map((b) => [b.id, b]))
+const breweryKeys = new Set(breweries.map((b) => breweryKey(b.name)))
 const web = readdirSync(RAW)
   .filter((f) => /^web-\d+\.json$/.test(f))
   .flatMap((f) => read<WebRow[]>(f))
   .flatMap((w): WebRow[] => {
     const beer = beerName(w.name, w.abv, langOf.get(w.breweryId))
-    return beer ? [{ ...w, ...beer }] : []
+    // V9: drinks menus of brewpubs also list other breweries' beers
+    return beer && !guestBeer(beer.name, breweryOf.get(w.breweryId)?.name ?? '', breweryOf.get(w.breweryId)?.website ?? '', breweryKeys) ? [{ ...w, ...beer }] : []
   })
 const notes: PlausibilityNote[] = []
 const beers = mainBeers(off, breweries, wdBeers, openbeer, web, notes)

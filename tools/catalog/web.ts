@@ -64,8 +64,14 @@ export const textOf = (html: string) =>
 
 const BEER_LINK =
   /(unsere[-_\s]?)?biere?\b|bierspezialit|sortiment|produkte|unsere[-_\s]?marken|beers?\b|bierwelt|on[-_\s]?tap|tap[-_\s]?list|line[-_\s]?up|brews\b|bi[eè]res\b/i
+/** Drinks pages and tap lists – the beers are often there (V9); they count less than a link that says beer. */
+const DRINK_LINK = /\bdrinks?\b|getr[äa]nke|\bdraft|\bdraught|\btaps?\b|\bmenus?\b|ausschank|durst|pouring/i
 const SKIP_LINK =
-  /shop|store|merch|warenkorb|cart|checkout|jobs?|careers?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|tickets?|gift[-_\s]?cards?|archiv|retired|of[-_\s]the[-_\s]past|past[-_\s]beers|\.(pdf|jpe?g|png|gif|zip)$/i
+  /food|speise|fr[üu]hst[üu]ck|breakfast|brunch|lunch|dinner|catering|kids|\bwines?\b|cocktail|spirits|shop|store|merch|warenkorb|cart|checkout|jobs?|careers?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|tickets?|gift[-_\s]?cards?|archiv|retired|of[-_\s]the[-_\s]past|past[-_\s]beers|\.(pdf|jpe?g|png|gif|zip)$/i
+
+/** How much a link looks like the beer overview: beer words in text 8 / path 4, drinks words in text 2 / path 1. */
+const linkScore = (path: string, text: string) =>
+  (BEER_LINK.test(text) ? 8 : 0) + (BEER_LINK.test(path) ? 4 : 0) + (DRINK_LINK.test(text) ? 2 : 0) + (DRINK_LINK.test(path) ? 1 : 0)
 
 /** Same-site links that look like the beer overview, best first (max `limit`). */
 export function beerLinks(html: string, base: string, limit = 3): string[] {
@@ -87,13 +93,94 @@ export function beerLinks(html: string, base: string, limit = 3): string[] {
       // malformed %-escape: match on the raw path
     }
     if (SKIP_LINK.test(path) || SKIP_LINK.test(text)) continue
-    const score = (BEER_LINK.test(text) ? 2 : 0) + (BEER_LINK.test(path) ? 1 : 0)
+    const score = linkScore(path, text)
     if (!score) continue
     url.hash = ''
     const key = url.toString()
     scored.set(key, Math.max(scored.get(key) ?? 0, score))
   }
   return [...scored].sort((a, b) => b[1] - a[1] || a[0].length - b[0].length).slice(0, limit).map(([u]) => u)
+}
+
+/** A sitemap: its page URLs, or – for a sitemap index – the sitemaps it lists. */
+export function sitemapUrls(xml: string): { pages: string[]; sitemaps: string[] } {
+  const locs = (tag: string) =>
+    [...xml.matchAll(new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?<loc>\\s*(?:<!\\[CDATA\\[)?([^<\\]]+?)(?:\\]\\]>)?\\s*<\\/loc>`, 'gi'))].map((m) => decode(m[1]))
+  return { pages: locs('url'), sitemaps: locs('sitemap') }
+}
+
+/** Child sitemaps of an index worth reading: pages, products and beers before posts, tags and authors (max `limit`). */
+export function pickSitemaps(urls: string[], limit = 2): string[] {
+  const rank = (u: string) => (/beer|bier|product|produkt|page/i.test(u) ? 0 : /post|tag|author|categor|attachment|image|video/i.test(u) ? 2 : 1)
+  return [...urls].sort((a, b) => rank(a) - rank(b) || a.length - b.length).slice(0, limit)
+}
+
+/**
+ * Sitemap pages that look like the beer overview – when the home page links none (V9): same site, path words only,
+ * overview pages („/beers/“) before single beers („/beer/sculpin/“).
+ */
+export function sitemapBeerLinks(urls: string[], base: string, limit = 3): string[] {
+  const host = new URL(base).hostname.replace(/^www\./, '')
+  const scored: [string, number, number][] = []
+  for (const u of new Set(urls)) {
+    let url: URL
+    try {
+      url = new URL(u)
+    } catch {
+      continue
+    }
+    if (!/^https?:$/.test(url.protocol) || url.hostname.replace(/^www\./, '') !== host) continue
+    let path = url.pathname
+    try {
+      path = decodeURIComponent(path)
+    } catch {
+      // keep the raw path
+    }
+    if (SKIP_LINK.test(path)) continue
+    const score = linkScore(path, '')
+    if (score) scored.push([url.toString(), score, path.split('/').filter(Boolean).length])
+  }
+  return scored.sort((a, b) => b[1] - a[1] || a[2] - b[2] || a[0].length - b[0].length).slice(0, limit).map(([u]) => u)
+}
+
+/** Big brands that brewpubs pour as guest beers („Miller Lite“, „Voodoo Ranger IPA“). */
+const GUEST_BRAND =
+  /\b(miller|coors|bud light|budweiser|michelob|busch|natural light|keystone|corona|modelo|pacifico|tecate|dos equis|heineken|stella artois|blue moon|guinness|pabst|pbr|yuengling|new belgium|voodoo ranger|sierra nevada|lagunitas|sam(uel)? adams|odell|founders|deschutes|bell'?s|goose island|elysian|shock top|leinenkugel|truly|white claw|beck'?s|warsteiner|paulaner|spaten|hofbr[äa]u|erdinger|weihenstephaner|krombacher|bitburger|veltins|radeberger|franziskaner|ayinger|schneider weisse)\b/i
+
+const plain = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, ' ').trim()
+
+/** A brewery's name without the generic words – „Bell's Brewery, Inc.“ → „bell s“ – to spot it on other menus. */
+export const breweryKey = (name: string) =>
+  plain(name)
+    .replace(/\b(the|brewing|brewery|breweries|brewpub|brewhouse|brew|works|company|co|inc|llc|ltd|beer|beers|ales?|craft|taproom|and|brauerei|brauhaus|gmbh|kg|ag)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+/**
+ * A beer of another brewery on a brewpub's drinks menu (V9): a big brand that is not the brewery's own, or
+ * „Brewery - Beer“ where the part before the dash is another brewery of the catalogue (`others`, from `breweryKey`)
+ * – „Bell's | Two Hearted IPA“, not „Dawn Patrol - Tangerine Blonde Ale“.
+ */
+export function guestBeer(name: string, breweryName: string, website = '', others: ReadonlySet<string> = new Set()): boolean {
+  const ownWords = plain(breweryName).split(' ').filter((w) => w.length >= 3)
+  let host = ''
+  try {
+    host = plain(new URL(website).hostname).replace(/ /g, '')
+  } catch {
+    // no website
+  }
+  // „Ayinger“ is Brauerei Aying's, „Beck's“ Brauerei Beck's, „Samuel Adams“ samueladams.com's
+  const isOwn = (brand: string) => {
+    const words = plain(brand).split(' ').filter((w) => w.length >= 3)
+    if (host && words.length && host.includes(words.join(''))) return true
+    return words.length > 0 && words.every((w) => ownWords.some((o) => o.startsWith(w) || (w.startsWith(o) && o.length >= 4)))
+  }
+  const brand = name.match(GUEST_BRAND)?.[0]
+  if (brand && !isOwn(brand)) return true
+  const parts = name.split(/\s+[-–—|]\s+/)
+  if (parts.length !== 2) return false
+  const key = breweryKey(parts[0])
+  return key.length >= 4 && others.has(key) && !isOwn(parts[0])
 }
 
 export interface WebBeer {
@@ -117,11 +204,11 @@ const NOT_A_NAME_EN =
 
 /** English sentences, other drinks, food, merch, events and pack sizes rather than a beer. */
 const NOT_A_BEER_EN =
-  /\b(is|are|was|were|we|you|your|join|come|try|get|today|tonight|tomorrow)\b|\b(19|20)\d\d\b|\b(hard )?(seltzers?|ciders?|kombucha|sodas?|vodka|gin|whiske?y|spirits|mead|cocktails?|food|kitchen|salads?|burgers?|pizzas?|wings|fries|sandwich(es)?|tacos?|nachos|pretzels?|malts?$|trivia|music|festival|release party|ginger ale|root beer(?! (porter|stout|ale))|(new )?releases?|series|trends|takeover|(mon|tues|wednes|thurs|fri|satur|sun)days?|tours?|tickets?|reservations?|club|membership|patio|locations?|blog|recipes?|pairings?|awards?|medals?|winners?|growlers?|crowlers?|kegs?|glass(ware)?|t-?shirts?|hats?|hoodies?)\b|\b(?<!barley[\s-])wines?\b|\d+\s*(x|pack|pk|-pack)\b|\d+\s*(oz|ml|l)\b|\bales? & lagers?\b|\bparty$|[.,]$|,.*,/iu
+  /\b(is|are|was|were|we|you|your|join|come|try|get|today|tonight|tomorrow)\b|\b(19|20)\d\d\b|\b(hard )?(seltzers?|ciders?|kombucha|sodas?|vodka|gin|whiske?y|spirits|mead|cocktails?|food|kitchen|salads?|ribs?|cheese|mustard|paprika|cr[èe]me|fra[îi]che|peppers?|steaks?|chicken|brisket|sauce|sour mash|tequila|^(a|an) |\bwith (a|an)\b|refreshing|profile|flavou?rs?|notes of|hints? of|burgers?|pizzas?|wings|fries|sandwich(es)?|tacos?|nachos|pretzels?|malts?$|trivia|music|festival|release party|ginger ale|root beer(?! (porter|stout|ale))|(new )?releases?|series|trends|takeover|(mon|tues|wednes|thurs|fri|satur|sun)days?|tours?|tickets?|reservations?|club|membership|patio|locations?|blog|recipes?|pairings?|awards?|medals?|winners?|growlers?|crowlers?|kegs?|glass(ware)?|t-?shirts?|hats?|hoodies?)\b|\b(?<!barley[\s-])wines?\b|riesling|chardonnay|merlot|sauvignon|pinot|ros[ée]\b(?! (ale|sour|saison|gose))|prosecco|\d+\s*(x|pack|pk|-pack)\b|\d+\s*(oz|ml|l)\b|\bales? & lagers?\b|\bparty$|[.,]$|,.*,/iu
 
 /** Sentences, events, rooms and news rather than a beer: function words, years, typical nouns. */
 const NOT_A_BEER =
-  /\b(und|ist|nicht|der|die|das|den|dem|des|im|auf|für|von|vom|mit|aus|als|wie|zum|zur|bei|nach|ein|eine|einen|einem|in|an|us|em|oder|or|the|and|of|for|with)\b|\b(19|20)\d\d\b|\p{L}+(ung|verkauf|hütten?|fest|feste|welt|abend|tour|markt|stube|garten|laden|vielfalt|keller)\b|vorgestellt|offiziell|ab sofort|gewinn|mitarbeiter|\(m\/w|\(w\/m|\p{L}*(brand|geist|likör|schnaps)\b|schnitzel|braten|generator|siphon|paradies|\bschweiz\b|\d+\s*x\s*\d+|\d\s*cl\b|events?\b|steckbrief|gastronomie|\p{L}+land\b|glas|gelee|alternativ|genießen|\d\s*l\b|[.,]$|,.*,/iu
+  /\b(und|ist|nicht|der|die|das|den|dem|des|im|auf|für|von|vom|mit|aus|als|wie|zum|zur|bei|nach|ein|eine|einen|einem|in|an|us|em|oder|or|the|and|of|for|with)\b|\b(19|20)\d\d\b|\p{L}+(ung|verkauf|hütten?|fest|feste|welt|abend|tour|markt|stube|garten|laden|vielfalt|keller)\b|vorgestellt|offiziell|ab sofort|gewinn|mitarbeiter|\(m\/w|\(w\/m|\p{L}*(brand|geist|likör|schnaps)\b|riesling|kabinett|sp[äa]tlese|burgunder|silvaner|trollinger|lemberger|dornfelder|prosecco|\bsekt\b|secco|spritz|aperol|schnitzel|braten|generator|siphon|paradies|\bschweiz\b|\d+\s*x\s*\d+|\d\s*cl\b|events?\b|steckbrief|gastronomie|\p{L}+land\b|glas|gelee|alternativ|genießen|\d\s*l\b|[.,]$|,.*,/iu
 
 const ABBREVIATIONS = new Set(['IPA', 'APA', 'IRA', 'DIPA', 'NEIPA', 'ESB', 'IPL', 'XPA', 'DDH'])
 
@@ -162,6 +249,7 @@ export function cleanName(raw: string): string {
   let name = strip(
     decode(raw)
       .replace(/[\u00ad\u200b]/g, '')
+      .replace(/^\s*(?:[#*]\s*\d{0,2}[.)]?|\d{1,2}[.)])\s*(?=\p{L})/u, '') // „#6. Strawberry Blonde“, „*Non-Alcoholic“
       .replace(ABV_BEFORE_NAME, '')
       .replace(ABV_IN_NAME, '')
       .replace(/\s+\d{1,2}(?:[.,]\d{1,2})?\s*abv\b.*$/i, '') // „Porter 4.6 ABV • 28 IBU“
