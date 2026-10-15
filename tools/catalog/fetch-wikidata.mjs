@@ -7,13 +7,15 @@ const { country, beers } = args()
 const ENDPOINT = 'https://query.wikidata.org/sparql'
 
 // --beers: beers whose manufacturer (P176) is a brewery in one of the countries → raw/wikidata-beers.json
+// (with the brewery's website – V10 finds breweries without coordinates by it)
 if (beers) {
-  const q = `SELECT ?beer ?beerLabel ?brewery ?breweryLabel ?placeLabel ?abv (GROUP_CONCAT(DISTINCT ?kindLabel; separator="|") AS ?kinds) WHERE {
+  const q = `SELECT ?beer ?beerLabel ?brewery ?breweryLabel ?placeLabel ?abv (SAMPLE(?site) AS ?website) (GROUP_CONCAT(DISTINCT ?kindLabel; separator="|") AS ?kinds) WHERE {
     VALUES ?c { ${Object.values(COUNTRIES).map((c) => `wd:${c.wikidata}`).join(' ')} }
     ?brewery wdt:P17 ?c ; wdt:P31/wdt:P279* wd:Q131734 .
     ?beer wdt:P176 ?brewery .
     OPTIONAL { ?beer wdt:P2665 ?abv }
     OPTIONAL { ?brewery wdt:P131 ?place }
+    OPTIONAL { ?brewery wdt:P856 ?site }
     OPTIONAL { ?beer wdt:P31 ?kind . ?kind rdfs:label ?kindLabel . FILTER(LANG(?kindLabel) IN ("de", "en")) }
     SERVICE wikibase:label { bd:serviceParam wikibase:language "de,mul,en,fr,it" . ?beer rdfs:label ?beerLabel . ?brewery rdfs:label ?breweryLabel . ?place rdfs:label ?placeLabel . }
   } GROUP BY ?beer ?beerLabel ?brewery ?breweryLabel ?placeLabel ?abv`
@@ -30,6 +32,7 @@ if (beers) {
       // many brewery items have no coordinates → matched by name + place like Open Food Facts brands
       breweryName: b.breweryLabel?.value ?? null,
       breweryPlace: b.placeLabel?.value ?? null,
+      breweryWebsite: b.website?.value ?? null,
       abv: Number.isFinite(abv) ? abv : null,
       kinds: b.kinds?.value ? b.kinds.value.split('|') : [],
     })

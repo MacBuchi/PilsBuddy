@@ -1,7 +1,8 @@
 // Beers from Open Food Facts (ODbL), streamed from the daily full export (~1.3 GB gzip, TSV).
 // The search API stops at page 10 for anonymous clients, the export has everything.
 // Run on a runner (see .github/workflows/catalog.yml) – it downloads the whole file once.
-//   node tools/catalog/fetch-off.mjs   → raw/off-<country>.json for every country of countries.json
+//   node tools/catalog/fetch-off.mjs   → raw/off-<country>.json for every country of countries.json, plus
+//   raw/off-other.json: beers with a brand sold only elsewhere (V10 – export beers of our breweries, exact brand only)
 import { createInterface } from 'node:readline'
 import { Readable } from 'node:stream'
 import { createGunzip } from 'node:zlib'
@@ -16,6 +17,7 @@ const lines = createInterface({ input: Readable.fromWeb(res.body).pipe(createGun
 let col = null
 let seen = 0
 const out = Object.fromEntries(Object.keys(COUNTRIES).map((c) => [c, []]))
+const other = []
 for await (const line of lines) {
   const f = line.split('\t')
   if (!col) {
@@ -43,7 +45,10 @@ for await (const line of lines) {
     packaging: f[col.packaging_tags] || f[col.packaging] || null,
     modified: Number(f[col.last_modified_t]) || null,
   }
-  for (const [c, { off }] of Object.entries(COUNTRIES)) if (countries.includes(off)) out[c].push(row)
+  const ours = Object.entries(COUNTRIES).filter(([, { off }]) => countries.includes(off))
+  for (const [c] of ours) out[c].push(row)
+  if (!ours.length && row.brands) other.push(row)
 }
 console.log(`${seen} products scanned`)
 for (const [c, rows] of Object.entries(out)) writeRaw(`off-${c}.json`, rows)
+writeRaw('off-other.json', other)

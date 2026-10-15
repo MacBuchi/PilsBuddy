@@ -46,8 +46,20 @@ const breweries = mergeBreweries(perCountry<OsmRow>('osm'), perCountry<WikidataR
 const missing = tooFew(breweries, MIN_BREWERIES)
 if (missing.length) throw new Error(`too few breweries (${missing.join(', ')}) – incomplete download?`)
 
-const offSeen = new Set<string>()
-const off = COUNTRIES.flatMap((c) => read<OffRow[]>(`off-${c}.json`)).filter((p) => !offSeen.has(p.code) && offSeen.add(p.code))
+// one row per product, with every catalogue country selling it (V10: a product not sold in the brewery's country
+// needs the exact brewery name)
+const offByCode = new Map<string, OffRow & { countries: Country[] }>()
+for (const c of COUNTRIES)
+  for (const p of read<OffRow[]>(`off-${c}.json`)) {
+    const seen = offByCode.get(p.code)
+    if (seen) seen.countries.push(c)
+    else offByCode.set(p.code, { ...p, countries: [c] })
+  }
+const off = [...offByCode.values()]
+// V10: beers sold only in other countries (export beers of our breweries) – matched by the exact brewery name only
+const offAbroad = existsSync(join(RAW, 'off-other.json'))
+  ? read<OffRow[]>('off-other.json').filter((p) => !offByCode.has(p.code)).map((p) => ({ ...p, abroad: true }))
+  : []
 const wdBeers = existsSync(join(RAW, 'wikidata-beers.json')) ? read<WikidataBeerRow[]>('wikidata-beers.json') : []
 // openbeer/beer.db clones (raw/openbeer/<repo>/…): beer lists only, no award lists, setups or drafts; the North
 // American repos list breweries under their region („- New York City“), so only their beers files count there
@@ -81,7 +93,7 @@ const web = readdirSync(RAW)
     return beer && !guestBeer(beer.name, breweryOf.get(w.breweryId)?.name ?? '', breweryOf.get(w.breweryId)?.website ?? '', breweryKeys) ? [{ ...w, ...beer }] : []
   })
 const notes: PlausibilityNote[] = []
-const beers = mainBeers(off, breweries, wdBeers, openbeer, web, notes)
+const beers = mainBeers([...off, ...offAbroad], breweries, wdBeers, openbeer, web, notes)
 
 rmSync(OUT, { recursive: true, force: true })
 mkdirSync(OUT, { recursive: true })
@@ -99,7 +111,7 @@ const countryOf = new Map(breweries.map((b) => [b.id, b.country]))
 const report = [
   `Brauereien: ${breweries.length} (${count(breweries, (b) => b.country)}) · Quellen: ${count(breweries, (b) => b.sources.join('+'))}`,
   `  mit Gründungsjahr ${breweries.filter((b) => b.founded).length} · mit Ort ${breweries.filter((b) => b.city).length} · mit Website ${breweries.filter((b) => b.website).length}`,
-  `Open-Brewery-DB-Zeilen: ${Object.values(obdb).flat().length} · Open-Food-Facts-Biere: ${off.length} · Wikidata-Biere: ${wdBeers.length} · openbeer-Biere: ${openbeer.length} · Website-Biere: ${web.length} → Hauptbiere: ${beers.length} bei ${withBeers} Brauereien (${Math.round((withBeers / breweries.length) * 100)} %)`,
+  `Open-Brewery-DB-Zeilen: ${Object.values(obdb).flat().length} · Open-Food-Facts-Biere: ${off.length} (+ ${offAbroad.length} nur im Ausland) · Wikidata-Biere: ${wdBeers.length} · openbeer-Biere: ${openbeer.length} · Website-Biere: ${web.length} → Hauptbiere: ${beers.length} bei ${withBeers} Brauereien (${Math.round((withBeers / breweries.length) * 100)} %)`,
   `  Stile: ${count(beers, (b) => b.style ?? '—')}`,
   `  Quellen: ${count(beers, (b) => String(b.source))} (1 = OFF, 2 = Wikidata, 3 = Website, 4 = openbeer)`,
   `  je Land: ${COUNTRIES.map((c) => `${c} ${beers.filter((b) => countryOf.get(b.breweryId) === c).length} bei ${new Set(beers.filter((b) => countryOf.get(b.breweryId) === c).map((b) => b.breweryId)).size}`).join(' · ')}`,

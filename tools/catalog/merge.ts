@@ -49,6 +49,8 @@ export interface WikidataBeerRow {
   /** label + municipality of the brewery item – for breweries Wikidata has no coordinates for */
   breweryName?: string | null
   breweryPlace?: string | null
+  /** V10: website of the brewery item – finds the brewery when the item has no coordinates and the name is ambiguous */
+  breweryWebsite?: string | null
   abv: number | null
   /** labels of „instance of“ (e.g. „Pils“, „Weizenbier“) – style hints */
   kinds: string[]
@@ -98,6 +100,10 @@ export interface OffRow {
   labels: string[]
   quantity: string | null
   packaging?: string | null
+  /** V10: the catalogue countries it is sold in (the off-XX.json files naming it) */
+  countries?: Country[]
+  /** V10: sold only outside the catalogue countries (raw/off-other.json) – counts only with the exact brewery name */
+  abroad?: boolean
 }
 
 export interface Brewery {
@@ -151,7 +157,7 @@ export interface Place {
 
 const LEGAL = /\b(gmbh|ag|kg|co|ohg|eg|e\.?\s?k|mbh|ug|haftungsbeschraenkt|sarl|sa|inc|llc|ltd|ltee|corp|company|limited)\b/g
 const FILLER =
-  /\b(privat|privatbrauerei|familienbrauerei|brauerei|brauereigasthof|brauereigaststaette|brauhaus|hausbrauerei|braeu|braeuhaus|brau|bier|biere|bieres|beer|beers|brewery|breweries|brewing|brew|brewpub|brewhouse|brewers|taproom|ales|microbrasserie|brasserie|brasseurs|craft|gasthaus|gasthof|wirtshaus|und|the|der|die|das|zum|zur|zu|am|im|von|st)\b/g
+  /\b(privat|privatbrauerei|familienbrauerei|brauerei|brauereigasthof|brauereigaststaette|brauhaus|hausbrauerei|braeu|braeuhaus|brau|bier|biere|bieres|beer|beers|pivo|birra|cerveza|brewery|breweries|brewing|brew|brewpub|brewhouse|brewers|taproom|ales|microbrasserie|brasserie|brasseurs|craft|blending|gasthaus|gasthof|wirtshaus|und|and|the|of|les|des|aux|der|die|das|zum|zur|zu|am|im|von|st)\b/g
 
 /** Lower-case, no umlaut variants, no legal forms / filler words – for name matching. */
 export function normName(s: unknown): string {
@@ -169,15 +175,14 @@ export function normName(s: unknown): string {
     .trim()
 }
 
-/**
- * Distinctive name tokens (≥ 4 letters) for matching; the adjective „-er“ goes („Zwettler“ = „Zwettl“,
- * „Gösser“ = „Göss“, „Haller“ = „Hall“) – applied to both sides, so it never splits a match.
- */
-const tokens = (s: unknown) =>
-  normName(s)
-    .split(' ')
-    .map((t) => (t.length > 5 && t.endsWith('er') ? t.slice(0, -2) : t))
-    .filter((t) => t.length >= 4)
+/** The place adjective „-er“ → the place („Zwettler“ → „Zwettl“, „Gösser“ → „Göss“, „Haller“ → „Hall“). */
+const stem = (t: string) => (t.length > 5 && t.endsWith('er') ? t.slice(0, -2) : t)
+
+/** Name words for matching: ≥ 3 letters or a number – „Flying Dog“ is not „Flying Monkeys“, „Mill 77“ not „Miller“. */
+const words = (s: unknown) => normName(s).split(' ').filter((t) => t.length >= 3 || /^\d+$/.test(t))
+
+/** Distinctive tokens (≥ 4 letters) with the „-er“ adjective as its place – for beer names, either form on both sides. */
+const tokens = (s: unknown) => normName(s).split(' ').map(stem).filter((t) => t.length >= 4)
 
 export function haversineKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }): number {
   const r = (d: number) => (d * Math.PI) / 180
@@ -342,19 +347,76 @@ export function tooFew(breweries: Brewery[], min?: number): string[] {
 
 /** Words many breweries share – a name made only of these („Hofbräu“, „Die Weisse“) needs the place. */
 const GENERIC = new Set(
-  'klosterbrauerei schlossbrauerei stadtbrauerei landbrauerei bierbrauerei burgbrauerei dorfbrauerei hofbrauerei gutsbrauerei klosterbraeu hofbraeu hofbraeuhaus hofbrauhaus weisse weissbraeu weissbierbrauerei union koenig braeustueberl braeustuebl braeustuben bierhaus brauwerk braumanufaktur biermanufaktur manufaktur kloster schloss stadt'
-    .split(' ')
-    .map((t) => (t.length > 5 && t.endsWith('er') ? t.slice(0, -2) : t)),
+  'klosterbrauerei schlossbrauerei stadtbrauerei landbrauerei bierbrauerei burgbrauerei dorfbrauerei hofbrauerei gutsbrauerei klosterbraeu hofbraeu hofbraeuhaus hofbrauhaus weisse weissbraeu weissbierbrauerei union koenig braeustueberl braeustuebl braeustuben bierhaus brauwerk braumanufaktur biermanufaktur manufaktur kloster schloss stadt'.split(
+    ' ',
+  ),
 )
+const isGeneric = (names: Iterable<string>) => [...names].every((t) => GENERIC.has(t) || GENERIC.has(stem(t)))
+
+/** Hosts many breweries share (social pages, link lists) – they say nothing about which brewery it is. */
+const SHARED_HOSTS = /(^|\.)(facebook|instagram|twitter|x|untappd|linktr|linktree|yelp|google|tripadvisor|beeradvocate|ratebeer)\.[a-z.]+$|^sites\.google\.com$/
+
+/** V10: the website as a key – host without „www.“; null for shared hosts. */
+export function siteKey(url: string | null | undefined): string | null {
+  if (!url) return null
+  try {
+    const host = new URL(/^https?:\/\//i.test(url) ? url : `https://${url}`).hostname.toLowerCase().replace(/^www\./, '')
+    return host.includes('.') && !SHARED_HOSTS.test(host) ? host : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * V10: same-named entries that are one company (taprooms, sites, a node and a building of one brewery) → its main
+ * entry; null when they may be different breweries („Adler“ in Dettingen and in Bonndorf). One company: every entry
+ * with a website has the same one, and either two entries share it or exactly one is a Wikidata item. The main entry:
+ * the Wikidata item, else the shortest website (the home page, not „/raleigh“).
+ */
+export function oneCompany(group: readonly Brewery[]): Brewery | null {
+  if (group.length === 1) return group[0]
+  const sites = group.map((b) => siteKey(b.website))
+  const known = new Set(sites.filter(Boolean))
+  const withQid = group.filter((b) => b.qid)
+  if (known.size > 1 || withQid.length > 1) return null
+  if (withQid.length === 1) return withQid[0]
+  if (sites.filter(Boolean).length < 2) return null
+  return [...group]
+    .filter((b) => siteKey(b.website))
+    .sort((a, b) => a.website!.length - b.website!.length || a.id.localeCompare(b.id))[0]
+}
+
+/**
+ * V10: a full brewery name word for word – whole words and numbers, no „-er“ stem: „Pizza Port“ is not „Porter Pizza“,
+ * „450 North“ not „32 North“, „Kane Brewing“ not „Kane's“.
+ */
+const exactKey = (s: unknown, drop: ReadonlySet<string> = new Set()) =>
+  [...new Set(normName(String(s ?? '').replace(/['’]s\b/gi, 's')).split(' '))]
+    .filter((w) => (w.length >= 3 || /^\d+$/.test(w)) && !drop.has(w))
+    .sort()
+    .join(' ')
 
 export function breweryMatcher(breweries: Brewery[]) {
-  // every name the brewery is known by (OSM name + a different Wikidata label) is a variant
+  // every name the brewery is known by (OSM name + a different Wikidata label) is a variant; V10: for a brewery with a
+  // Wikidata item, the name without its own place as a word of its own, too („Augustiner Bräu München“ in München is
+  // „Augustiner“; „Haller Löwenbräu“ stays – the adjective is part of the brand; „Stella Fulda“ is no „Stella“)
   const info = new Map(
-    breweries.map((b) => [
-      b,
-      { key: normName(b.name), variants: [b.name, ...(b.aliases ?? [])].map((n) => new Set(tokens(n))).filter((v) => v.size) },
-    ]),
+    breweries.map((b) => {
+      const all = [b.name, ...(b.aliases ?? [])]
+      const city = new Set(normName(b.city).split(' '))
+      const placeless = (b.qid ? all : [])
+        .map((n) => normName(n).split(' '))
+        .filter((w) => w.some((t) => city.has(t)))
+        .map((w) => new Set(words(w.filter((t) => !city.has(t)).join(' '))))
+      return [b, { key: normName(b.name), variants: [...all.map((n) => new Set(words(n))), ...placeless].filter((v) => v.size) }]
+    }),
   )
+  const byExact = new Map<string, Brewery[]>()
+  for (const b of breweries) {
+    const city = new Set(normName(b.city).split(' '))
+    for (const k of new Set([b.name, ...(b.aliases ?? [])].flatMap((n) => [exactKey(n), exactKey(n, city)])))
+      if (k) byExact.set(k, [...(byExact.get(k) ?? []), b])
+  }
   const byToken = new Map<string, Brewery[]>()
   for (const [b, { variants }] of info)
     for (const t of new Set(variants.flatMap((v) => [...v]))) byToken.set(t, [...(byToken.get(t) ?? []), b])
@@ -363,14 +425,26 @@ export function breweryMatcher(breweries: Brewery[]) {
    * strict (full brewery names from lists like openbeer, which name breweries we may not have): the place
    * must match, or the names are the same and we know no place for the brewery – „Hofbräu Kaltenhausen“
    * must not land on „Hofbräu“ in Abensberg.
+   * exact (V10: Wikidata brewery names, products sold abroad): the brand is the brewery's name word for word (its
+   * place may be missing) – see exactKey.
    */
-  return (p: Pick<OffRow, 'brands' | 'owner' | 'places'>, strict = false): Brewery | null => {
-    const hay = new Set([...tokens(p.brands), ...tokens(p.owner)])
-    if (!hay.size) return null
-    const cands = new Set<Brewery>()
-    for (const t of hay) for (const b of byToken.get(t) ?? []) cands.add(b)
-    let best: { b: Brewery; score: number } | null = null
+  return (p: Pick<OffRow, 'brands' | 'owner' | 'places'>, strict = false, exact = false): Brewery | null => {
     const place = normName(p.places)
+    const atPlace = (b: Brewery) => !!place && !!b.city && place.includes(normName(b.city))
+    if (exact) {
+      const hits = (byExact.get(exactKey(p.brands)) ?? []).filter((b) => atPlace(b) || !isGeneric(words(b.name)))
+      const here = hits.filter(atPlace)
+      return hits.length ? oneCompany(here.length ? here : hits) : null
+    }
+    // brand words, plus the place of a place adjective: „Zwettler“ finds „Zwettl“ – but only as the whole brand
+    // („Berliner Kindl“ is no brewery called „Berlin“), and „Beck's“ never finds „Becker“
+    const hay = new Set([...words(p.brands), ...words(p.owner)])
+    if (!hay.size) return null
+    const hayAll = new Set([...hay, ...[...hay].map(stem)])
+    const inBrewery = (toks: Set<string>, t: string) => toks.has(t) || toks.has(stem(t))
+    const cands = new Set<Brewery>()
+    for (const t of hayAll) for (const b of byToken.get(t) ?? []) cands.add(b)
+    let best: { b: Brewery; score: number } | null = null
     for (const b of cands) {
       // manufacturing place = brewery city: decides between same-named breweries („Adler“, „Hirsch“)
       const city = normName(b.city)
@@ -378,21 +452,36 @@ export function breweryMatcher(breweries: Brewery[]) {
       for (const toks of info.get(b)!.variants) {
         // „Löwenbräu“ alone does not match „Haller Löwenbräu“ – unless it is made in Schwäbisch Hall
         // („Augustiner Bräu, München“ → „Augustiner-Bräu Wagner“)
-        const generic = [...toks].every((t) => GENERIC.has(t))
-        const full = [...toks].every((t) => hay.has(t)) && (!generic || atPlace)
+        const named = [...toks].every((t) => hay.has(t)) || ([...toks].every((t) => hayAll.has(t)) && [...hay].every((t) => inBrewery(toks, t)))
+        const full = named && (!isGeneric(toks) || atPlace)
         // the brand must say more than the place („Berliner“ is not „Craftzentrum Berlin“)
-        const short = atPlace && [...hay].every((t) => toks.has(t)) && [...hay].some((t) => !place.includes(t))
+        const short = atPlace && [...hay].every((t) => inBrewery(toks, t)) && [...hay].some((t) => !place.includes(stem(t)))
         if (!full && !short) continue
         if (strict && !atPlace && !(full && toks.size === hay.size && !city)) continue
-        let score = [...hay].filter((t) => toks.has(t)).length / (full ? toks.size : Math.max(toks.size, hay.size))
+        let score = [...hay].filter((t) => inBrewery(toks, t)).length / (full ? toks.size : Math.max(toks.size, hay.size))
         if (atPlace) score += 1
-        if (!best || score > best.score || (score === best.score && b.id < best.b.id)) best = { b, score }
+        // a tie goes to the Wikidata item (the brewery, not its taproom „Paulaner Bräuhaus“)
+        const better = !best || score > best.score || (score === best.score && (Number(!!b.qid) - Number(!!best.b.qid) || best.b.id.localeCompare(b.id)) > 0)
+        if (better) best = { b, score }
       }
     }
     if (!best) return null
     const key = info.get(best.b)!.key
-    const sameName = [...cands].filter((b) => info.get(b)!.key === key).length
-    return sameName > 1 && best.score < 1.5 ? null : best.b
+    const sameName = [...cands].filter((b) => info.get(b)!.key === key)
+    return sameName.length > 1 && best.score < 1.5 ? oneCompany(sameName) : best.b
+  }
+}
+
+/** V10: breweries by website – a Wikidata beer whose brewery item has no coordinates still names the website. */
+export function breweryBySite(breweries: Brewery[]) {
+  const bySite = new Map<string, Brewery[]>()
+  for (const b of breweries) {
+    const k = siteKey(b.website)
+    if (k) bySite.set(k, [...(bySite.get(k) ?? []), b])
+  }
+  return (url: string | null | undefined): Brewery | null => {
+    const group = bySite.get(siteKey(url) ?? '')
+    return group ? oneCompany(group) : null
   }
 }
 
@@ -427,6 +516,18 @@ interface Candidate {
   pack: Pack | null
   source?: number
   sourceRef?: string
+  /** V10: the name without the brewery's („Augustiner Edelstoff“ = „Edelstoff“) – the same beer in another source */
+  twin?: string
+  /** V10: the beer exists – Open Food Facts, Wikidata or two sources name it (directly or as a twin) */
+  backed?: boolean
+}
+
+/** V10: a beer name without the brewery's own name words and pack sizes – equal keys = the same beer. */
+export function twinKey(name: string, breweryNames: readonly string[]): string {
+  const own = new Set(breweryNames.flatMap(tokens))
+  const words = normName(cleanBeerName(name)).split(' ').filter(Boolean)
+  const rest = words.filter((w) => !own.has(w.length > 5 && w.endsWith('er') ? w.slice(0, -2) : w))
+  return (rest.length ? rest : words).join(' ')
 }
 
 const completeness = (c: Candidate) => (c.abv != null ? 1 : 0) + (c.pack ? 1 : 0)
@@ -440,11 +541,13 @@ export function pickMainBeers(cands: Candidate[], max = MAX_BEERS_PER_BREWERY): 
   const groups = new Map<string, Candidate[]>()
   for (const c of cands) groups.set(c.style ?? '', [...(groups.get(c.style ?? '') ?? []), c])
   const order = (s: string) => (s === '' ? 2 : SIDE_STYLES.has(s) ? 1 : 0)
+  const backed = (s: string) => Number(groups.get(s)!.some((c) => c.backed))
   const styles = [...groups.keys()]
     .filter((s) => s !== '' || groups.size === 1)
     .sort(
       (a, b) =>
         order(a) - order(b) ||
+        backed(b) - backed(a) ||
         groups.get(b)!.length - groups.get(a)!.length ||
         STYLE_ORDER.indexOf(a) - STYLE_ORDER.indexOf(b),
     )
@@ -454,6 +557,7 @@ export function pickMainBeers(cands: Candidate[], max = MAX_BEERS_PER_BREWERY): 
     const g = [...groups.get(s)!].sort(
       (a, b) =>
         Number(styleOnly(a.name)) - Number(styleOnly(b.name)) ||
+        Number(b.backed ?? false) - Number(a.backed ?? false) ||
         completeness(b) - completeness(a) ||
         SOURCE_PRIORITY[a.source ?? 1] - SOURCE_PRIORITY[b.source ?? 1] ||
         a.name.length - b.name.length ||
@@ -463,11 +567,13 @@ export function pickMainBeers(cands: Candidate[], max = MAX_BEERS_PER_BREWERY): 
     // fill gaps from the other sizes of the same beer – one name starts with the other („Hell“, „Hell 0,33“), not
     // just the same style („Hop Drop IPA“ takes no ABV from a bare „IPA“)
     const k = normName(best.name)
-    const same = g.filter((c) => normName(c.name).startsWith(k) || k.startsWith(normName(c.name)))
+    const same = g.filter((c) => normName(c.name).startsWith(k) || k.startsWith(normName(c.name)) || (!!best.twin && c.twin === best.twin))
     best.abv ??= same.find((c) => c.abv != null)?.abv ?? null
     best.pack ??= same.find((c) => c.pack)?.pack ?? null
-    if (seenNames.has(k)) continue
+    // the same beer under two styles in two sources („Lager“ on Wikidata, „Helles“ on the website) counts once
+    if (seenNames.has(k) || (best.twin && seenNames.has(`twin:${best.twin}`))) continue
     seenNames.add(k)
+    if (best.twin) seenNames.add(`twin:${best.twin}`)
     out.push(best)
     if (out.length >= max) break
   }
@@ -547,6 +653,19 @@ export function beerQuality(evidence: readonly Evidence[], beer: { style: string
 }
 
 /**
+ * V10: the name is the brewery and a style („Tucher Helles“, „Krombacher“) – not a beer that only begins with a
+ * brewery's word („Modern Times Hazy Galaxy IPA“ is no beer of „Modern Brewery“) or names it somewhere („Bier hell Olching“).
+ */
+function breweryAndStyle(name: string, b: Brewery): boolean {
+  const own = new Set([b.name, ...(b.aliases ?? [])].flatMap(words))
+  const rest = cleanBeerName(name).split(/\s+/)
+  const isOwn = (w: string) => words(w).length > 0 && words(w).every((t) => own.has(t) || own.has(stem(t)))
+  let i = 0
+  while (i < rest.length && (isOwn(rest[i]) || (i > 0 && !words(rest[i]).length))) i++
+  return i > 0 && (i === rest.length || styleOnly(rest.slice(i).join(' ')))
+}
+
+/**
  * Open Food Facts products and Wikidata beers → main beers of the matched breweries (unmatched products
  * are dropped). Both sources compete per style; Open Food Facts usually wins on completeness (pack).
  * V5: an ABV that does not fit the style is dropped before anything else sees it; `notes` collects what was dropped.
@@ -560,6 +679,7 @@ export function mainBeers(
   notes: PlausibilityNote[] = [],
 ): RegionalBeer[] {
   const match = breweryMatcher(breweries)
+  const bySite = breweryBySite(breweries)
   const perBrewery = new Map<string, Candidate[]>()
   const add = (breweryId: string, c: Candidate) => {
     if (!notABeerName(c.name)) perBrewery.set(breweryId, [...(perBrewery.get(breweryId) ?? []), c])
@@ -570,8 +690,14 @@ export function mainBeers(
     const name = text(p.name, 200)
     if (!name || !/^[0-9]{4,20}$/.test(p.code) || seen.has(p.code)) continue
     seen.add(p.code)
-    const b = match(p)
-    if (!b) continue
+    // V10: no brand field – the brand is in the name („Tucher Helles“); products sold only abroad need the exact name
+    // of a brewery that exports – one with a Wikidata item („Adler Beer Company“ in Italy is not our Adler)
+    const fromName = !p.brands && !p.owner
+    const b = p.abroad ? match(p, false, true) : match(fromName ? { ...p, brands: cleanBeerName(name) } : p)
+    if (!b || (p.abroad && !b.qid) || (fromName && !breweryAndStyle(name, b))) continue
+    // not sold in the brewery's country: a same-named brewery elsewhere is as likely („Desperados“ is no Texan
+    // „Dos Desperados“) – the exact name or nothing
+    if (p.countries && !p.countries.includes(b.country) && match(p, false, true)?.id !== b.id) continue
     const abv = p.abv != null && p.abv >= 0 && p.abv <= 20 ? Math.round(p.abv * 10) / 10 : null
     add(b.id, {
       code: p.code,
@@ -588,7 +714,9 @@ export function mainBeers(
     const name = text(w.name, 200)
     const b =
       byQid.get(w.brewery.replace(/^wd:/, '')) ??
-      (w.breweryName ? match({ brands: w.breweryName, owner: null, places: w.breweryPlace ?? null }) : null)
+      bySite(w.breweryWebsite) ??
+      // a full brewery name, like the lists: „Modern Times Beer“ is not „Modern Brewery“
+      (w.breweryName ? match({ brands: w.breweryName, owner: null, places: w.breweryPlace ?? null }, false, true) : null)
     if (!name || !b || !/^Q\d+$/.test(qid) || /^Q\d+$/.test(name)) continue
     // brand and company items („Biermarke“, „Brauerei“) are not a single beer
     if (w.kinds.some((k) => NOT_A_BEER.test(k))) continue
@@ -646,17 +774,37 @@ export function mainBeers(
     c.style === 'Abbey Blonde' && lang.get(breweryId) === 'en' && !/abbey|abbaye|abdij|belgian|belge/i.test(c.name)
       ? 'Blonde Ale'
       : c.style
+  const breweryById = new Map(breweries.map((b) => [b.id, b]))
   const out: RegionalBeer[] = []
   for (const [breweryId, raw] of [...perBrewery].sort((a, b) => a[0].localeCompare(b[0]))) {
-    const cands = raw.map((c) => {
+    const brewery = breweryById.get(breweryId)!
+    const names = [brewery.name, ...(brewery.aliases ?? [])]
+    const checked = raw.map((c) => {
       const style = localStyle(breweryId, c)
       const checked = checkAbv(style, c.abv)
       if (checked.flag) notes.push({ breweryId, name: c.name, style, abv: c.abv!, flag: checked.flag })
-      return { ...c, style, abv: checked.abv }
+      return { ...c, style, abv: checked.abv, twin: twinKey(c.name, names) || undefined }
     })
-    // the same beer named by several sources (sizes, spellings): what backs the one picked
-    const backing = (c: Candidate) =>
-      cands.filter((o) => normName(o.name) === normName(c.name)).map((o) => ({ source: o.source ?? SOURCE.off, style: o.style, abv: o.abv }))
+    // the same beer named by several sources (sizes, spellings, with or without the brewery name): what backs it –
+    // the values each source gives, before gaps are filled from the twins
+    const evidence = new Map<string, Evidence[]>()
+    for (const c of checked)
+      if (c.twin) evidence.set(c.twin, [...(evidence.get(c.twin) ?? []), { source: c.source ?? SOURCE.off, style: c.style, abv: c.abv }])
+    const backing = (c: Candidate): Evidence[] =>
+      c.twin ? evidence.get(c.twin)! : [{ source: c.source ?? SOURCE.off, style: c.style, abv: c.abv }]
+    const exists = (ev: Evidence[]) => {
+      const sources = new Set(ev.map((e) => e.source))
+      return sources.has(SOURCE.off) || sources.has(SOURCE.wikidata) || sources.size >= 2
+    }
+    const cands = checked.map((c) => {
+      const twins = c.twin ? checked.filter((o) => o.twin === c.twin) : []
+      return {
+        ...c,
+        abv: c.abv ?? twins.find((o) => o.abv != null)?.abv ?? null,
+        pack: c.pack ?? twins.find((o) => o.pack)?.pack ?? null,
+        backed: exists(backing(c)),
+      }
+    })
     pickMainBeers(cands).forEach((c, rank) =>
       out.push({
         id: `r-${c.code}`,

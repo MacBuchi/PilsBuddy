@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   beerQuality,
+  breweryBySite,
   breweryMatcher,
   cleanBeerName,
   importSql,
@@ -8,7 +9,10 @@ import {
   mergeBreweries,
   normName,
   notABeerName,
+  oneCompany,
+  siteKey,
   tidyBeerName,
+  twinKey,
   parseOpenbeer,
   parsePlaces,
   pickMainBeers,
@@ -188,6 +192,105 @@ describe('breweryMatcher', () => {
 
   it('ignores products without brand', () => {
     expect(match({ brands: null, owner: null, places: 'Kreuztal' })).toBeNull()
+  })
+
+  it('knows a Wikidata brewery without the place in its name (V10), but keeps a place adjective', () => {
+    const m = breweryMatcher([
+      brewery({ id: 'osm-n1', name: 'Augustiner Bräu München', city: 'München', qid: 'Q153546' }),
+      brewery({ id: 'osm-n2', name: 'Haller Löwenbräu', city: 'Schwäbisch Hall', qid: 'Q1' }),
+      brewery({ id: 'osm-n3', name: 'Stella Fulda', city: 'Fulda' }),
+    ])
+    expect(m({ brands: 'Augustiner-Bräu', owner: null, places: null })?.id).toBe('osm-n1')
+    expect(m({ brands: 'Löwenbräu', owner: null, places: null })).toBeNull()
+    expect(m({ brands: 'Stella Artois', owner: null, places: null })).toBeNull()
+  })
+
+  it('reads „-er“ as the place only when it is the whole brand, and counts short words (V10)', () => {
+    const m = breweryMatcher([
+      brewery({ id: 'osm-n1', name: 'Brewery Becker', country: 'US' }),
+      brewery({ id: 'osm-n2', name: 'Brauerei Göss' }),
+      brewery({ id: 'osm-n3', name: 'Berlin Brewing Company', city: 'Berlin', country: 'US' }),
+      brewery({ id: 'osm-n4', name: 'Flying Dog Brewery', country: 'US' }),
+      brewery({ id: 'osm-n5', name: 'Mill 77 Brewing', country: 'US' }),
+    ])
+    expect(m({ brands: "Beck's", owner: null, places: null })).toBeNull()
+    expect(m({ brands: 'Gösser', owner: null, places: null })?.id).toBe('osm-n2')
+    expect(m({ brands: 'Berliner Kindl', owner: null, places: null })).toBeNull()
+    expect(m({ brands: 'Flying Monkeys', owner: null, places: null })).toBeNull()
+    expect(m({ brands: 'Flying Dog', owner: null, places: null })?.id).toBe('osm-n4')
+    expect(m({ brands: 'Miller', owner: null, places: null })).toBeNull()
+  })
+
+  it('gives a tie to the Wikidata item, not its taproom', () => {
+    const m = breweryMatcher([
+      brewery({ id: 'osm-n1', name: 'Paulaner Bräuhaus', city: 'München', website: 'https://paulaner-brauhaus.de' }),
+      brewery({ id: 'osm-w2', name: 'Paulaner Brauerei', city: 'München', qid: 'Q127305', website: 'https://paulaner.de' }),
+    ])
+    expect(m({ brands: 'Paulaner', owner: null, places: 'München' })?.id).toBe('osm-w2')
+  })
+
+  it('takes the main entry of one company with several entries (V10)', () => {
+    const m = breweryMatcher([
+      brewery({ id: 'osm-n1', name: 'Burial Beer', city: 'Raleigh', website: 'https://burialbeer.com/pages/raleigh' }),
+      brewery({ id: 'osm-n2', name: 'Burial Beer Company', city: 'Asheville', website: 'https://burialbeer.com/' }),
+      brewery({ id: 'osm-n3', name: 'Burial Beer', city: 'Asheville' }),
+      brewery({ id: 'osm-n4', name: 'Bitburger Brauerei', website: 'https://www.bitburger.de/' }),
+      brewery({ id: 'osm-n5', name: 'Bitburger Brauerei', city: 'Bitburg', qid: 'Q706698' }),
+    ])
+    expect(m({ brands: 'Burial', owner: null, places: null })?.id).toBe('osm-n2')
+    expect(m({ brands: 'Bitburger', owner: null, places: null })?.id).toBe('osm-n5')
+    // different websites or two Wikidata items: maybe two breweries – no guess
+    expect(match({ brands: 'Adler', owner: null, places: null })).toBeNull()
+    expect(oneCompany([brewery({ id: 'a', name: 'Adler', qid: 'Q1' }), brewery({ id: 'b', name: 'Adler', qid: 'Q2' })])).toBeNull()
+    expect(oneCompany([brewery({ id: 'a', name: 'Adler', website: 'a.de' }), brewery({ id: 'b', name: 'Adler', website: 'b.de', qid: 'Q2' })])).toBeNull()
+    // one website alone does not make a company
+    expect(oneCompany([brewery({ id: 'a', name: 'Adler', website: 'a.de' }), brewery({ id: 'b', name: 'Adler' })])).toBeNull()
+  })
+
+  it('matches full brewery names word for word in exact mode (V10)', () => {
+    const m = breweryMatcher([
+      brewery({ id: 'osm-n1', name: 'Modern Brewery', city: 'Saint Louis', country: 'US' }),
+      brewery({ id: 'osm-n2', name: 'Porter Pizza & Brewery', country: 'US' }),
+      brewery({ id: 'osm-n3', name: '32 North Brewing Co', country: 'US' }),
+      brewery({ id: 'osm-n4', name: "Kane's", country: 'US' }),
+      brewery({ id: 'osm-n5', name: 'Odell Brewing Co - Denver', city: 'Denver', country: 'US' }),
+      brewery({ id: 'osm-n6', name: 'Rahr and Sons Brewing Co', country: 'US' }),
+      brewery({ id: 'osm-n7', name: 'Hofbräu', city: 'Abensberg' }),
+    ])
+    const exact = (brands: string, places: string | null = null) => m({ brands, owner: null, places }, false, true)?.id ?? null
+    expect(exact('Modern Times Beer')).toBeNull()
+    expect(m({ brands: 'Modern Times Beer', owner: null, places: null })?.id).toBe('osm-n1') // what the loose mode did
+    expect(exact('Pizza Port Brewing Company')).toBeNull()
+    expect(exact('450 North Brewing Company')).toBeNull()
+    expect(exact('Kane Brewing Company')).toBeNull()
+    expect(exact('Odell Brewing Company')).toBe('osm-n5')
+    expect(exact('Rahr & Sons Brewing Company')).toBe('osm-n6')
+    // a generic name needs the place
+    expect(exact('Hofbräu')).toBeNull()
+    expect(exact('Hofbräu', 'Abensberg')).toBe('osm-n7')
+  })
+})
+
+describe('siteKey / breweryBySite (V10)', () => {
+  it('keys a website by its host and ignores hosts many breweries share', () => {
+    expect(siteKey('https://www.Bitburger.de/biere')).toBe('bitburger.de')
+    expect(siteKey('burialbeer.com')).toBe('burialbeer.com')
+    expect(siteKey('https://www.facebook.com/somebrewery')).toBeNull()
+    expect(siteKey('https://untappd.com/b/x')).toBeNull()
+    expect(siteKey('not a url')).toBeNull()
+    expect(siteKey(null)).toBeNull()
+  })
+
+  it('finds the brewery by its website, the main entry when several share it', () => {
+    const bySite = breweryBySite([
+      brewery({ id: 'osm-n1', name: 'Aslin Beer Company', website: 'https://www.aslinbeer.com/pittsburgh' }),
+      brewery({ id: 'osm-n2', name: 'Aslin Beer Company', website: 'https://www.aslinbeer.com/' }),
+      brewery({ id: 'osm-n3', name: 'Krombacher', website: 'https://krombacher.de' }),
+    ])
+    expect(bySite('http://aslinbeer.com')?.id).toBe('osm-n2')
+    expect(bySite('https://www.krombacher.de/biere')?.id).toBe('osm-n3')
+    expect(bySite('https://other.com')).toBeNull()
+    expect(bySite(null)).toBeNull()
   })
 })
 
@@ -426,6 +529,101 @@ describe('importSql', () => {
   it('splits large imports into batches', () => {
     const many = Array.from({ length: 1201 }, (_, i) => brewery({ id: `osm-n${i}`, name: `B${i}` }))
     expect(importSql(many, [], []).filter((f) => f.name.startsWith('10-')).length).toBe(3)
+  })
+})
+
+describe('V10 – second sources', () => {
+  it('finds a Wikidata beer by the brewery website and full brewery names word for word', () => {
+    const beers = mainBeers(
+      [],
+      [
+        brewery({ id: 'osm-n1', name: 'Great Notion Brewing NW', country: 'US', website: 'https://greatnotion.com/nw' }),
+        brewery({ id: 'osm-n2', name: 'Great Notion Brewing', country: 'US', website: 'https://greatnotion.com' }),
+        brewery({ id: 'osm-n3', name: 'Modern Brewery', country: 'US' }),
+      ],
+      [
+        { id: 'wd:Q1', name: 'Ripe IPA', brewery: 'wd:Q10', breweryName: 'Great Notion Brewing', breweryWebsite: 'https://www.greatnotion.com/', abv: 7, kinds: ['IPA'] },
+        { id: 'wd:Q2', name: 'Orderville', brewery: 'wd:Q20', breweryName: 'Modern Times Beer', abv: 7.2, kinds: ['IPA'] },
+      ],
+    )
+    expect(beers.map((b) => [b.breweryId, b.name])).toEqual([['osm-n2', 'Ripe IPA']])
+  })
+
+  it('needs the exact brewery name for a product not sold in the brewery\'s country', () => {
+    const breweries = [brewery({ id: 'obdb-1', name: 'Desperados Brewery', country: 'US' }), brewery({ id: 'osm-n2', name: 'Flying Dog Brewery', country: 'US' })]
+    const beers = mainBeers(
+      [
+        off({ code: '4001', name: 'Desperados Original', brands: 'Desperados Tequila', countries: ['DE'] }),
+        off({ code: '4002', name: 'Desperados Lime', brands: 'Desperados Tequila', countries: ['DE', 'US'] }),
+        off({ code: '4003', name: 'Snake Dog IPA', brands: 'Flying Dog', countries: ['DE'] }),
+      ],
+      breweries,
+    )
+    expect(beers.map((b) => b.sourceRef)).toEqual(['4002', '4003'])
+  })
+
+  it('reads the brand from the name when Open Food Facts has none, and takes beers sold abroad by the exact name', () => {
+    const breweries = [
+      brewery({ id: 'osm-n1', name: 'Tucher Bräu', city: 'Fürth', qid: 'Q2453287' }),
+      brewery({ id: 'osm-n2', name: 'Brauerei Adler', city: 'Dettingen' }),
+    ]
+    const beers = mainBeers(
+      [
+        off({ code: '4001', name: 'Tucher Helles' }),
+        off({ code: '4005', name: 'Dunkles aus Fürth von Tucher' }),
+        off({ code: '4006', name: 'Tucher Bräu Hefeweizen Dunkel 0,5l' }),
+        off({ code: '4007', name: 'Tucher Zwickl Spezial Edition' }),
+        off({ code: '4002', name: 'Tucher Weizen', brands: 'Tucher', abroad: true }),
+        off({ code: '4003', name: 'Adler Lager', brands: 'Adler Beer Company', abroad: true }),
+        off({ code: '4004', name: 'Adler Pils', abroad: true }),
+      ],
+      breweries,
+    )
+    expect(beers.map((b) => [b.breweryId, b.name])).toEqual([
+      ['osm-n1', 'Tucher Helles'],
+      ['osm-n1', 'Tucher Weizen'],
+      ['osm-n1', 'Tucher Bräu Hefeweizen Dunkel'],
+    ])
+  })
+
+  it('knows the same beer with and without the brewery name', () => {
+    expect(twinKey('Augustiner Edelstoff 0,5l', ['Augustiner Bräu München'])).toBe(twinKey('Edelstoff', ['Augustiner Bräu München']))
+    expect(twinKey('Zwettler Pils', ['Privatbrauerei Zwettl'])).toBe('pils')
+    expect(twinKey('Krombacher', ['Krombacher Brauerei'])).toBe('krombacher')
+    expect(twinKey('Pils Alkoholfrei', ['Krombacher'])).not.toBe(twinKey('Pils', ['Krombacher']))
+  })
+
+  it('counts a twin from another source, prefers backed beers and fills the ABV from the twin', () => {
+    const b = brewery({ id: 'osm-n9', name: 'Augustiner Bräu München', city: 'München', qid: 'Q153546' })
+    const beers = mainBeers(
+      [],
+      [b],
+      [{ id: 'wd:Q1', name: 'Augustiner Edelstoff', brewery: 'wd:Q153546', abv: null, kinds: ['Exportbier'] }],
+      [],
+      [
+        { breweryId: 'osm-n9', path: '/biere', name: 'Edelstoff', abv: 5.6 },
+        { breweryId: 'osm-n9', path: '/biere', name: 'Export Spezial', abv: 5.5 },
+        { breweryId: 'osm-n9', path: '/biere', name: 'Lagerbier Hell', abv: 5.2 },
+      ],
+    )
+    // Edelstoff wins the Export slot over the website-only beer, keeps the Wikidata id and gets the website's ABV
+    expect(beers.map((x) => [x.id, x.name, x.style, x.abv, x.quality])).toEqual([
+      ['r-q1', 'Augustiner Edelstoff', 'Export', 5.6, 2],
+      [beers[1].id, 'Lagerbier Hell', 'Helles', 5.2, 1],
+    ])
+  })
+
+  it('lists the same beer once even when two sources give it different styles', () => {
+    const b = brewery({ id: 'osm-n4', name: 'Krombacher Brauerei', qid: 'Q100' })
+    const beers = mainBeers(
+      [],
+      [b],
+      [{ id: 'wd:Q1', name: 'Krombacher Hell', brewery: 'wd:Q100', abv: 5, kinds: ['Lagerbier'] }],
+      [],
+      [{ breweryId: 'osm-n4', path: '/', name: 'Hell', abv: 5 }],
+    )
+    expect(beers).toHaveLength(1)
+    expect(beers[0].quality).toBe(3)
   })
 })
 
