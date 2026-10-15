@@ -566,6 +566,8 @@ describe('V10 – second sources', () => {
     const breweries = [
       brewery({ id: 'osm-n1', name: 'Tucher Bräu', city: 'Fürth', qid: 'Q2453287' }),
       brewery({ id: 'osm-n2', name: 'Brauerei Adler', city: 'Dettingen' }),
+      brewery({ id: 'osm-n3', name: 'The Lion Brewery', city: 'Wilkes-Barre', country: 'US', qid: 'Q7747745' }),
+      brewery({ id: 'osm-n4', name: 'Lancaster Brewing Company', city: 'Lancaster', country: 'US', qid: 'Q6483720' }),
     ]
     const beers = mainBeers(
       [
@@ -576,6 +578,8 @@ describe('V10 – second sources', () => {
         off({ code: '4002', name: 'Tucher Weizen', brands: 'Tucher', abroad: true }),
         off({ code: '4003', name: 'Adler Lager', brands: 'Adler Beer Company', abroad: true }),
         off({ code: '4004', name: 'Adler Pils', abroad: true }),
+        off({ code: '4008', name: 'Lion Stout', brands: 'Lion', abroad: true }),
+        off({ code: '4009', name: 'Lancaster Bomber', brands: 'Lancaster Brewery Ltd', abroad: true }),
       ],
       breweries,
     )

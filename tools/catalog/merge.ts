@@ -653,6 +653,16 @@ export function beerQuality(evidence: readonly Evidence[], beer: { style: string
 }
 
 /**
+ * V10: a product sold only abroad names a brewery that exports – one with a Wikidata item – by its full name, and that
+ * name is distinctive: not just its place („Lancaster“), not one short word („Lion“, „Star“).
+ */
+function exportBrand(p: Pick<OffRow, 'brands'>, b: Brewery): boolean {
+  const key = exactKey(p.brands)
+  const own = [b.name, ...(b.aliases ?? [])].map((n) => exactKey(n))
+  return !!b.qid && own.includes(key) && key !== exactKey(b.city) && (key.includes(' ') || key.length >= 6)
+}
+
+/**
  * V10: the name is the brewery and a style („Tucher Helles“, „Krombacher“) – not a beer that only begins with a
  * brewery's word („Modern Times Hazy Galaxy IPA“ is no beer of „Modern Brewery“) or names it somewhere („Bier hell Olching“).
  */
@@ -694,7 +704,7 @@ export function mainBeers(
     // of a brewery that exports – one with a Wikidata item („Adler Beer Company“ in Italy is not our Adler)
     const fromName = !p.brands && !p.owner
     const b = p.abroad ? match(p, false, true) : match(fromName ? { ...p, brands: cleanBeerName(name) } : p)
-    if (!b || (p.abroad && !b.qid) || (fromName && !breweryAndStyle(name, b))) continue
+    if (!b || (p.abroad && !exportBrand(p, b)) || (fromName && !breweryAndStyle(name, b))) continue
     // not sold in the brewery's country: a same-named brewery elsewhere is as likely („Desperados“ is no Texan
     // „Dos Desperados“) – the exact name or nothing
     if (p.countries && !p.countries.includes(b.country) && match(p, false, true)?.id !== b.id) continue
