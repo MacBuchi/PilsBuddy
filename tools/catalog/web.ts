@@ -65,7 +65,7 @@ export const textOf = (html: string) =>
 const BEER_LINK =
   /(unsere[-_\s]?)?biere?\b|bierspezialit|sortiment|produkte|unsere[-_\s]?marken|beers?\b|bierwelt|on[-_\s]?tap|tap[-_\s]?list|line[-_\s]?up|brews\b|bi[eè]res\b/i
 const SKIP_LINK =
-  /shop|store|merch|warenkorb|cart|checkout|jobs?|careers?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|tickets?|gift[-_\s]?cards?|\.(pdf|jpe?g|png|gif|zip)$/i
+  /shop|store|merch|warenkorb|cart|checkout|jobs?|careers?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|tickets?|gift[-_\s]?cards?|archiv|retired|of[-_\s]the[-_\s]past|past[-_\s]beers|\.(pdf|jpe?g|png|gif|zip)$/i
 
 /** Same-site links that look like the beer overview, best first (max `limit`). */
 export function beerLinks(html: string, base: string, limit = 3): string[] {
@@ -248,13 +248,30 @@ export function extractBeers(html: string, lang: Lang = 'de'): WebBeer[] {
 /** Block-level tags: their text is one piece – „<li><a>Hazy <b>IPA</b></a></li>“ is „Hazy IPA“. */
 const BLOCK = /<\/?(?:div|p|li|ul|ol|dl|dt|dd|h[1-6]|td|th|tr|table|section|article|aside|main|figure|figcaption|blockquote|br|hr)\b[^>]*>/i
 
+/** Words of style lines („Hazy IPA“, „German-Style Pilsner“, „Barrel-Aged Imperial Stout“) – no beer's own name. */
+const STYLE_WORD =
+  /^(ipa|dipa|tipa|neipa|apa|esb|ale|ales|lager|pils|pilsner|pilsener|stout|porter|sour|gose|saison|tripel|dubbel|quad|witbier|wit|wheat|weizen|hefeweizen|weissbier|weißbier|kölsch|kolsch|märzen|marzen|oktoberfest|festbier|helles|hell|dunkel|dunkles|bock|doppelbock|maibock|eisbock|schwarzbier|kellerbier|keller|zwickel|export|rauchbier|altbier|alt|radler|barleywine|barley|wine|hazy|juicy|double|triple|imperial|session|west|east|coast|new|england|india|pale|light|cream|blonde|blond|amber|red|brown|golden|dark|black|white|american|german|belgian|czech|mexican|vienna|munich|english|irish|scotch|scottish|baltic|russian|oatmeal|milk|pastry|fruited|sweet|dry|hopped|hoppy|dry-hopped|barrel|aged|barrel-aged|nitro|style|non-alcoholic|alkoholfrei|alkoholfreies|naturtrüb|unfiltered|fresh|hop|farmhouse|wild|kettle|berliner|weisse|lambic|kriek|cider|beer|bier|traditional|classic|premium|original|spezial|extra|special|bitter|strong|mild|smoked|rye|and|&|\/|-)$/i
+
+/** „Hazy IPA“, „Imperial Stout“: a line that only names a style – on product tiles the subtitle under the name. */
+export const styleOnly = (name: string) => name.split(/[\s-]+/).every((w) => STYLE_WORD.test(w))
+
 /** Blocks whose whole text names a beer, with the ABV from the blocks up to the next beer. */
 function extractBlocks(body: string, lang: Lang): WebBeer[] {
   const blocks = body.split(BLOCK).map(textOf).filter(Boolean)
+  const notName = lang === 'en' ? NOT_A_NAME_EN : NOT_A_NAME
   const found: { at: number; beer: WebBeer }[] = []
   blocks.forEach((t, at) => {
     const beer = t.length <= 80 ? beerName(t, null, lang) : null
-    if (beer) found.push({ at, beer })
+    if (!beer) return
+    // „Fidelis“ / „Hazy IPA“ or „Super Simcoe IPA“ / „West Coast IPA“: a style line right under a short fancy name, or
+    // under a named beer of the same style, is that beer's style („Pils“ / „Helles“, „Kellerpils“ / „Hefeweizen“ stay)
+    const prev = blocks[at - 1]
+    const prevBeer = prev ? beerName(prev, null, lang) : null
+    const subtitle = prevBeer
+      ? !styleOnly(prevBeer.name) && normalizeStyle([prevBeer.name]) === normalizeStyle([beer.name])
+      : !!prev && prev.length <= 40 && !/\d/.test(prev) && !notName.test(prev)
+    if (styleOnly(beer.name) && subtitle) return
+    found.push({ at, beer })
   })
   const seen = new Set<string>()
   return found.flatMap(({ at, beer }, i) => {

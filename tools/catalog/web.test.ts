@@ -23,7 +23,9 @@ describe('beerLinks', () => {
       <a href="/impressum">Impressum</a>
       <a href="https://facebook.com/biere">Biere</a>
       <a href="/geschichte">Geschichte</a>
-      <a href="/%E0%A4%A/biere">kaputt</a>`
+      <a href="/%E0%A4%A/biere">kaputt</a>
+      <a href="/beers-of-the-past">Retired Beers</a>
+      <a href="/bier-archiv">Bierarchiv</a>`
     expect(beerLinks(html, 'https://brauerei.de/')).toEqual(['https://www.brauerei.de/sortiment', 'https://brauerei.de/de/unsere-biere/', 'https://brauerei.de/%E0%A4%A/biere'])
   })
 })
@@ -68,6 +70,16 @@ describe('extractBeers', () => {
       { name: 'Märzen', abv: 5.6 },
       { name: 'Festbier', abv: null },
     ])
+  })
+
+  it('skips the style line under a fancy name on product tiles', () => {
+    const tiles = `<h1>Our Beers</h1>
+      <div class="tile"><div>Fidelis</div><div>Hazy IPA</div><div>6.5% ABV</div></div>
+      <div class="tile"><div>Night Owl</div><div>Imperial Stout</div></div>
+      <div class="tile"><div>Super Simcoe IPA</div><div>West Coast IPA</div></div>
+      <div class="tile"><div>Lake Day Lager</div></div>`
+    expect(extractBeers(tiles, 'en').map((b) => b.name)).toEqual(['Super Simcoe IPA', 'Lake Day Lager'])
+    expect(extractBeers('<h2>Unsere Biere</h2><ul><li>Pils</li><li>Helles</li></ul>').map((b) => b.name)).toEqual(['Pils', 'Helles'])
   })
 
   it('takes no single loose name and no style word inside a sentence', () => {
