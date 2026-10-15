@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beerLinks, beerName, cleanName, extractBeers, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
+import { beerLinks, beerName, breweryKey, cleanName, extractBeers, guestBeer, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
 
 describe('robotsAllows', () => {
   it('follows the * group and our own group, wildcards included', () => {
@@ -54,6 +54,34 @@ describe('drinks links and sitemaps (V9)', () => {
       <url><loc>https://other.com/beers/</loc></url><url><loc>https://b.com/drinks/</loc></url></urlset>`
     expect(sitemapUrls(pages).pages).toHaveLength(6)
     expect(sitemapBeerLinks(sitemapUrls(pages).pages, 'https://b.com')).toEqual(['https://b.com/beers/', 'https://www.b.com/beer/sculpin/', 'https://b.com/drinks/'])
+  })
+})
+
+describe('guestBeer (V9)', () => {
+  it('drops big brands and „Brand - Beer“ of other breweries, keeps the own ones', () => {
+    expect(guestBeer('Miller Lite', 'Chilly Water Brewing')).toBe(true)
+    expect(guestBeer('Odell IPA', 'Broomfield Brewpub')).toBe(true)
+    const others = new Set(['New Belgium Brewing Company', "Bell's Brewery, Inc.", 'Chelsea Brewing Company'].map(breweryKey))
+    expect(guestBeer('New Belgium - Voodoo Ranger IPA', 'Manayunk Brewery', '', others)).toBe(true)
+    expect(guestBeer("Bell's | Two Hearted IPA", 'Manayunk Brewery', '', others)).toBe(true)
+    expect(guestBeer('Dawn Patrol - Tangerine Blonde Ale', 'Manayunk Brewery', '', others)).toBe(false)
+    expect(guestBeer('Paulaner Hefe-Weißbier', 'Gasthof Adler')).toBe(true)
+    expect(guestBeer('Run Wild IPA', 'Chilly Water Brewing')).toBe(false)
+    expect(guestBeer('Solid Gold – Lager', 'Chelsea Brewing')).toBe(false)
+    expect(guestBeer('Chelsea - Hazy Days IPA', 'Chelsea Brewing Company', '', others)).toBe(false)
+    expect(guestBeer('Ayinger Celebrator', 'Brauerei Aying')).toBe(false)
+    expect(guestBeer('Weihenstephaner Hefeweissbier', 'Bayerische Staatsbrauerei Weihenstephan')).toBe(false)
+    expect(guestBeer('Sierra Nevada Pale Ale', 'Sierra Nevada Brewing Co.')).toBe(false)
+    expect(guestBeer('Samuel Adams Boston Lager', 'Boston Beer Company', 'https://www.samueladams.com')).toBe(false)
+  })
+
+  it('leaves food, wine, descriptions and list numbers out', () => {
+    for (const t of ['Smoked Prime Rib', 'Beer Cheese, Ale Mustard', 'A crispy and refreshing Pilsner', 'Blonde with a malt profile', 'Small Batch Sour Mash 86º'])
+      expect(beerName(t, null, 'en')).toBeNull()
+    expect(beerName('Riesling Kabinett feinherb')).toBeNull()
+    expect(beerName('Bourbon Barrel Stout', null, 'en')).toEqual({ name: 'Bourbon Barrel Stout', abv: null })
+    expect(beerName('#6. Strawberry Blonde', null, 'en')).toEqual({ name: 'Strawberry Blonde', abv: null })
+    expect(beerName('*Non-Alcoholic Hazy IPA', null, 'en')).toEqual({ name: 'Non-Alcoholic Hazy IPA', abv: null })
   })
 })
 

@@ -406,6 +406,9 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       CI). Untappd-Widgets nicht auslesen (Nutzungsbedingungen), Bot-Schutz nicht umgehen (M)
       - [x] (a) Blöcke (Kacheln, Listen, Tabellen, h5/h6) ab zwei Bieren pro Seite, Stil-Untertitel und Archivseiten
             ausgelassen, echte Namen vor reinen Stilzeilen: Websites mit Bier 26 → 35 %, Brauereien 2 787 → 3 801 (#97)
+      - [x] (b) Getränke-/Menü-Links (schwächer als Bier-Links, ohne Speisen/Wein/Cocktails), `sitemap.xml` als Rückfall,
+            Gastbiere (große Marken, „Brauerei – Bier“ anderer Katalog-Brauereien) und Speisen/Wein aussortiert, Diagnose
+            `page-failed`: Websites mit Bier 35 → 39 %, „no-beer-page“ 1 794 → 1 081, Brauereien 3 761 → 4 167 (#PR)
 - [ ] V10 **Zweite Quellen abgleichen:** Wikidata kennt 8 939 Biere, Open Food Facts 2 534 – als Bestätigung zählen nur
       wenige hundert. Zuordnung zur Brauerei über Wikidata-ID, Marke und Ort verbessern, OFF für alle Länder (M)
 - [ ] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)
