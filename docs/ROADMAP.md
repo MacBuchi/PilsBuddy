@@ -47,7 +47,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 26. [x] **V7** Quellen für die 60 handgepflegten Biere (DE/EU), Alkohol und Stil gegengeprüft, Tests für alle kuratierten (#95)
 27. [x] **V8** Crawler-Diagnose: je Website der Grund, warum sie kein Bier liefert – Bericht entscheidet V9 (Wunsch 2026-10-14) (#96)
 28. [x] **V9** Crawler-Ausbau nach dem V8-Befund: Erkennung lockern („missed“) + Sitemap/Links („no-beer-page“), dann JS-Seiten und PDF-Karten (Ziel: deutlich mehr als 22 % der Brauereien mit Bier)
-29. [ ] **V10** Zweite Quellen besser abgleichen: Wikidata-/Open-Food-Facts-Biere zuverlässiger den Brauereien zuordnen → „bestätigt“
+29. [x] **V10** Zweite Quellen besser abgleichen: Wikidata-/Open-Food-Facts-Biere zuverlässiger den Brauereien zuordnen → „bestätigt“
 30. [ ] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
@@ -415,8 +415,14 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       - [x] (d) JS-Seiten (Signal „js“, ohne Tap-Listen-Widget, ohne Bier aus HTML/PDF) in Chromium gerendert – Startseite
             + ≤ 2 Bierseiten, eigener User-Agent, ohne Bilder/Schriften, Untappd & Co. blockiert: 596 gerendert, 88 mit Bier,
             „js“ 609 → 508, Websites mit Bier 40 → 41 % (#101)
-- [ ] V10 **Zweite Quellen abgleichen:** Wikidata kennt 8 939 Biere, Open Food Facts 2 534 – als Bestätigung zählen nur
+- [x] V10 **Zweite Quellen abgleichen:** Wikidata kennt 8 939 Biere, Open Food Facts 2 534 – als Bestätigung zählen nur
       wenige hundert. Zuordnung zur Brauerei über Wikidata-ID, Marke und Ort verbessern, OFF für alle Länder (M)
+      - umgesetzt (2026-10-15, #102): Website der Wikidata-Brauerei (P856), Wikidata-Brauereinamen Wort für Wort (bisher
+        z. B. „Hop Butcher“ → „World of Beer“), Firmen mit mehreren Einträgen (gleiche Website / ein Wikidata-Eintrag),
+        Name ohne Ort, kurze Wörter und Zahlen zählen, „-er“ nur als ganze Marke, OFF-Marke aus dem Namen (Brauerei + Stil),
+        Produkt außerhalb des Brauerei-Landes nur mit exaktem Namen, `off-other.json` (7 087 Biere, nur Wikidata-Brauereien);
+        Zwillinge über Quellen (`twinKey`), bestätigte Biere zuerst. Gleiche Rohdaten: geprüft 13 → 28, bestätigt 811 → 1 034,
+        Wikidata-Biere mit Brauerei 7 730 / 9 014. Grenze: nur ≈ 500 Brauereien haben eine zweite Quelle
 - [ ] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
