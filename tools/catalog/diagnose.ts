@@ -127,6 +127,8 @@ export interface SiteInput {
   links?: number
   /** the links came from the sitemap */
   sitemap?: boolean
+  /** beers found in PDF drinks lists (V9c) */
+  pdfBeers?: number
 }
 
 export interface Diagnosis {
@@ -141,6 +143,8 @@ export interface Diagnosis {
   /** beer links found, and whether from the sitemap (V9) */
   links: number
   sitemap: boolean
+  /** the beers came from a PDF drinks list (V9c) */
+  fromPdf: boolean
   styleNames: number
   jsonLd: boolean
 }
@@ -167,6 +171,7 @@ export function diagnoseSite(origin: string, site: SiteInput): Diagnosis {
     beerPages: site.pages.filter((p) => p.html).length,
     links: site.links ?? site.pages.length,
     sitemap: !!site.sitemap,
+    fromPdf: (site.pdfBeers ?? 0) > 0,
     styleNames: Math.max(0, ...signals.map((s) => s.styleNames)),
     jsonLd: !!any('jsonLd'),
   }
@@ -219,6 +224,7 @@ export function diagnosisReport(rows: SiteRow[], examples = 8): string {
   out.push(`- Baukasten: ${tally((r) => r.builder ?? 'unbekannt', reached)}`)
   out.push(`- mit Bierseite geladen: ${count((r) => r.beerPages > 0, reached)} · ohne: ${count((r) => r.beerPages === 0, reached)}`)
   out.push(`- Bier-Links aus der Sitemap: ${count((r) => r.sitemap, rows)} Websites, davon mit Bier ${count((r) => r.sitemap && r.reason === 'beers', rows)}`)
+  out.push(`- PDF-Getränkekarten: ${count((r) => r.reason === 'pdf' || r.fromPdf, rows)} Websites, davon mit Bier ${count((r) => r.fromPdf, rows)}`)
   out.push(`- Stilnamen auf der Seite (≥ 1 / ≥ 5): ${count((r) => r.styleNames >= 1, reached)} / ${count((r) => r.styleNames >= 5, reached)}`)
   out.push(`- schema.org-Produktdaten: ${count((r) => r.jsonLd, reached)}`)
   out.push(`- Widgets: ${tally((r) => r.widget, reached)}`)
