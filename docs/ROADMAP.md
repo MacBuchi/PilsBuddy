@@ -46,7 +46,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 25. [x] **V6** Korrekturen aus „Problem melden“: Label `korrigieren` setzt Name/Stil/Alkohol, überlebt Importe (#93)
 26. [x] **V7** Quellen für die 60 handgepflegten Biere (DE/EU), Alkohol und Stil gegengeprüft, Tests für alle kuratierten (#95)
 27. [x] **V8** Crawler-Diagnose: je Website der Grund, warum sie kein Bier liefert – Bericht entscheidet V9 (Wunsch 2026-10-14) (#96)
-28. [ ] **V9** Crawler-Ausbau nach dem V8-Befund: Erkennung lockern („missed“) + Sitemap/Links („no-beer-page“), dann JS-Seiten und PDF-Karten (Ziel: deutlich mehr als 22 % der Brauereien mit Bier)
+28. [x] **V9** Crawler-Ausbau nach dem V8-Befund: Erkennung lockern („missed“) + Sitemap/Links („no-beer-page“), dann JS-Seiten und PDF-Karten (Ziel: deutlich mehr als 22 % der Brauereien mit Bier)
 29. [ ] **V10** Zweite Quellen besser abgleichen: Wikidata-/Open-Food-Facts-Biere zuverlässiger den Brauereien zuordnen → „bestätigt“
 30. [ ] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3)
 
@@ -400,7 +400,7 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
         blocked 717 (fast nur 403, Bot-Schutz – wird respektiert) · js 660 · unnamed 548 (Bierseite ohne Stilwort) ·
         widget 499 (Untappd 374) · http-error 304 · pdf 244 (DE 71) · robots 139. Baukästen ohne Bier: WordPress 1 268 ·
         Squarespace 976 · Wix 603. US 18 % mit Bier der Websites, DE 34 %
-- [ ] V9 **Crawler-Ausbau** nach dem V8-Befund, in dieser Reihenfolge: (a) Erkennung über h1–h4 hinaus (h5/h6, Produkt-
+- [x] V9 **Crawler-Ausbau** nach dem V8-Befund, in dieser Reihenfolge: (a) Erkennung über h1–h4 hinaus (h5/h6, Produkt-
       kacheln, Listen) mit denselben Filtern – Zielgruppe „missed“; (b) `sitemap.xml` und mehr Link-Wörter für die Bierseite –
       „no-beer-page“; (c) PDF-Getränkekarten als Text; (d) JS-Seiten nur, wenn (a)–(c) nicht reichen (Headless-Browser im
       CI). Untappd-Widgets nicht auslesen (Nutzungsbedingungen), Bot-Schutz nicht umgehen (M)
@@ -412,6 +412,9 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       - [x] (c) PDF-Getränkekarten (eigene Website oder Datei-Host des Baukastens, ≤ 2 je Website, nur ohne Bier im HTML)
             als Text in Zellen wie eine Tabelle; Speisen, umbrochene Beschreibungen und Auswahlzeilen aussortiert:
             Websites mit Bier 39 → 40 % (94 über PDF), „pdf“ 230 → 148 (#100)
+      - [x] (d) JS-Seiten (Signal „js“, ohne Tap-Listen-Widget, ohne Bier aus HTML/PDF) in Chromium gerendert – Startseite
+            + ≤ 2 Bierseiten, eigener User-Agent, ohne Bilder/Schriften, Untappd & Co. blockiert: 596 gerendert, 88 mit Bier,
+            „js“ 609 → 508, Websites mit Bier 40 → 41 % (#PR)
 - [ ] V10 **Zweite Quellen abgleichen:** Wikidata kennt 8 939 Biere, Open Food Facts 2 534 – als Bestätigung zählen nur
       wenige hundert. Zuordnung zur Brauerei über Wikidata-ID, Marke und Ort verbessern, OFF für alle Länder (M)
 - [ ] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)
