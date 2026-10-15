@@ -52,6 +52,30 @@ describe('extractBeers', () => {
     expect(extractBeers(html)).toEqual([{ name: 'Ureich Premium Pils', abv: 4.9 }])
   })
 
+  it('reads product tiles, lists and tables beyond headings (V9)', () => {
+    const tiles = `
+      <div class="product"><div class="product-title"><a href="/hell">Lager <b>Hell</b></a></div><span>4,8 % vol</span></div>
+      <div class="product"><div class="product-title"><a href="/dunkel">Dunkles Bockbier</a></div><span>7,1 % vol</span></div>
+      <div class="product"><div class="product-title"><a href="/radler">Zitronenlimo</a></div></div>
+      <ul><li>Kellerpils</li><li>Hefeweizen hell 5,3 % vol</li></ul>
+      <table><tr><td>Märzen</td><td>5,6 % vol</td></tr></table>
+      <h5>Festbier</h5><p>Im Herbst.</p>`
+    expect(extractBeers(tiles)).toEqual([
+      { name: 'Lager Hell', abv: 4.8 },
+      { name: 'Dunkles Bockbier', abv: 7.1 },
+      { name: 'Kellerpils', abv: null },
+      { name: 'Hefeweizen hell', abv: 5.3 },
+      { name: 'Märzen', abv: 5.6 },
+      { name: 'Festbier', abv: null },
+    ])
+  })
+
+  it('takes no single loose name and no style word inside a sentence', () => {
+    expect(extractBeers('<p>Unser <strong>Pils</strong> ist das beste weit und breit.</p><li>Kellerbier</li>')).toEqual([])
+    expect(extractBeers('<p>Bei uns gibt es <b>Pils</b> und <b>Weizen</b> vom Fass.</p>')).toEqual([])
+    expect(extractBeers('<footer><li>Pils</li><li>Helles</li></footer><h2>Dunkel</h2>')).toEqual([{ name: 'Dunkel', abv: null }])
+  })
+
   it('ignores names without a style and broken JSON', () => {
     expect(extractBeers('<script type="application/ld+json">{oops</script><h2>Sommerfest 2026</h2><h2>Kaufen Sie Pils</h2>')).toEqual([])
   })

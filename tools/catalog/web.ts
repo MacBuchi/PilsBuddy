@@ -238,5 +238,30 @@ export function extractBeers(html: string, lang: Lang = 'de'): WebBeer[] {
     const after = body.slice(h.index! + h[0].length, heads[i + 1]?.index ?? body.length).slice(0, 2000)
     add(textOf(h[2]), abvIn(textOf(after)))
   })
+  // V9: product tiles, lists, table cells, h5/h6 – a block whose whole text is a beer name. Counts only as a list
+  // (≥ 2 beers), so a single style word somewhere on the page does not become a beer.
+  const loose = extractBlocks(body, lang)
+  if (loose.length >= 2) loose.forEach((b) => add(b.name, b.abv))
   return [...out.values()]
+}
+
+/** Block-level tags: their text is one piece – „<li><a>Hazy <b>IPA</b></a></li>“ is „Hazy IPA“. */
+const BLOCK = /<\/?(?:div|p|li|ul|ol|dl|dt|dd|h[1-6]|td|th|tr|table|section|article|aside|main|figure|figcaption|blockquote|br|hr)\b[^>]*>/i
+
+/** Blocks whose whole text names a beer, with the ABV from the blocks up to the next beer. */
+function extractBlocks(body: string, lang: Lang): WebBeer[] {
+  const blocks = body.split(BLOCK).map(textOf).filter(Boolean)
+  const found: { at: number; beer: WebBeer }[] = []
+  blocks.forEach((t, at) => {
+    const beer = t.length <= 80 ? beerName(t, null, lang) : null
+    if (beer) found.push({ at, beer })
+  })
+  const seen = new Set<string>()
+  return found.flatMap(({ at, beer }, i) => {
+    const key = beer.name.toLowerCase()
+    if (seen.has(key)) return []
+    seen.add(key)
+    const after = blocks.slice(at + 1, found[i + 1]?.at ?? blocks.length).join(' ').slice(0, 500)
+    return [{ name: beer.name, abv: beer.abv ?? abvIn(after) }]
+  })
 }
