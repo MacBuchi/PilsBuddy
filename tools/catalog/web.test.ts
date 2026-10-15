@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beerLinks, beerName, breweryKey, cleanName, extractBeers, guestBeer, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
+import { beerLinks, beerName, beerPdfLinks, breweryKey, cleanName, extractBeers, extractPdfBeers, guestBeer, pdfBlocks, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
 
 describe('robotsAllows', () => {
   it('follows the * group and our own group, wildcards included', () => {
@@ -265,5 +265,45 @@ describe('extractBeers', () => {
 
   it('decodes entities', () => {
     expect(textOf('Wei&szlig;bier &amp; mehr')).toBe('Weißbier & mehr')
+  })
+})
+
+describe('PDF drinks lists (V9c)', () => {
+  it('picks beer and drinks PDFs of the site or its builder, beer lists first', () => {
+    const html = `
+      <a href="/files/speisekarte.pdf">Speisekarte</a>
+      <a href="/files/Getraenkekarte.pdf?v=3">Getränke</a>
+      <a href="https://static1.squarespace.com/static/abc/Beer-List.pdf">Tap list</a>
+      <a href="https://other-site.com/bier.pdf">Bier</a>
+      <a href="/files/weinkarte.pdf">Weinkarte</a>
+      <a href="/impressum.pdf">Impressum</a>`
+    expect(beerPdfLinks(html, 'https://www.brauerei.de/', 3)).toEqual([
+      'https://static1.squarespace.com/static/abc/Beer-List.pdf',
+      'https://www.brauerei.de/files/Getraenkekarte.pdf?v=3',
+      'https://www.brauerei.de/files/speisekarte.pdf',
+    ])
+  })
+
+  it('splits lines at wide gaps and drops sizes and prices', () => {
+    const at = (str: string, x: number, y: number) => ({ str, x, y, w: str.length * 6, h: 12 })
+    const blocks = pdfBlocks([
+      [
+        at('Hazy', 40, 700),
+        at('IPA', 70, 700.5),
+        at('6.5% ABV', 200, 700),
+        at('Pils 0,5 l 4,20 €', 40, 680),
+        at('Two Hearted Ale 16oz $7', 300, 680),
+      ],
+    ])
+    expect(blocks).toEqual(['Hazy IPA', '6.5% ABV', 'Pils', 'Two Hearted Ale'])
+    expect(extractPdfBeers(blocks, 'en')).toEqual([
+      { name: 'Hazy IPA', abv: 6.5 },
+      { name: 'Pils', abv: null },
+      { name: 'Two Hearted Ale', abv: null },
+    ])
+  })
+
+  it('takes a single beer word of a food menu for nothing', () => {
+    expect(extractPdfBeers(['Schnitzel Wiener Art', 'Bierbratensoße', 'Pils', 'Apfelstrudel'])).toEqual([])
   })
 })

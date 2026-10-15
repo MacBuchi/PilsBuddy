@@ -352,7 +352,10 @@ export const styleOnly = (name: string) => name.split(/[\s-]+/).filter((w) => !/
 
 /** Blocks whose whole text names a beer, with the ABV from the blocks up to the next beer. */
 function extractBlocks(body: string, lang: Lang): WebBeer[] {
-  const blocks = body.split(BLOCK).map(textOf).filter(Boolean)
+  return blockBeers(body.split(BLOCK).map(textOf).filter(Boolean), lang)
+}
+
+function blockBeers(blocks: string[], lang: Lang): WebBeer[] {
   const notName = lang === 'en' ? NOT_A_NAME_EN : NOT_A_NAME
   const found: { at: number; beer: WebBeer }[] = []
   blocks.forEach((t, at) => {
@@ -376,4 +379,93 @@ function extractBlocks(body: string, lang: Lang): WebBeer[] {
     const after = blocks.slice(at + 1, found[i + 1]?.at ?? blocks.length).join(' ').slice(0, 500)
     return [{ name: beer.name, abv: beer.abv ?? abvIn(after) }]
   })
+}
+
+/** Linked PDFs that look like a beer or drinks list – text or file name; beer words before menus, food menus last. */
+const PDF_BEER = /bier|beer|sortiment|tap|draft|draught/i
+const PDF_MENU = /getr[äa]nke|karte|menu|drinks?|ausschank/i
+const PDF_FOOD = /speise|food/i
+/** Site builders keep the site's files on their own CDN – a PDF there is the brewery's own. */
+const FILE_HOSTS = /(^|\.)(squarespace(-cdn)?\.com|wixstatic\.com|shopify\.com|wsimg\.com|editmysite\.com|weebly\.com|jimdo(cdn)?\.com|webflow\.com|website-files\.com)$/i
+
+/** Beer and drinks PDFs linked from a page (V9c), best first: same site or the site builder's file host (max `limit`). */
+export function beerPdfLinks(html: string, base: string, limit = 2): string[] {
+  const baseUrl = new URL(base)
+  const site = baseUrl.hostname.replace(/^www\./, '')
+  const scored = new Map<string, number>()
+  for (const m of html.matchAll(/<a\b[^>]*href\s*=\s*["']([^"'#]+\.pdf(?:\?[^"'#]*)?)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    let url: URL
+    try {
+      url = new URL(decode(m[1]), baseUrl)
+    } catch {
+      continue
+    }
+    const host = url.hostname.replace(/^www\./, '')
+    if (!/^https?:$/.test(url.protocol) || (host !== site && !FILE_HOSTS.test(host))) continue
+    let file = url.pathname
+    try {
+      file = decodeURIComponent(file)
+    } catch {
+      // keep the raw path
+    }
+    const words = `${file} ${textOf(m[2])}`
+    if (/\b(wines?|weinkarte|cocktails?|jobs?|karriere|impressum|datenschutz|privacy|agb|allergen)/i.test(words)) continue
+    const score = PDF_BEER.test(words) ? 3 : PDF_FOOD.test(words) ? 1 : PDF_MENU.test(words) ? 2 : 0
+    if (score) scored.set(url.toString(), Math.max(scored.get(url.toString()) ?? 0, score))
+  }
+  return [...scored].sort((a, b) => b[1] - a[1]).slice(0, limit).map(([u]) => u)
+}
+
+/** A text piece of a PDF page (a pdf.js text item): left end and baseline, width, font height. */
+export interface PdfItem {
+  str: string
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+/** „Pils 0,5 l 4,20 €“, „Hazy IPA 16oz $8“: sizes and prices at the end of a menu line. */
+const PRICE_TAIL = /(?:\s+(?:[$€£]\s*\d+(?:[.,]\d{1,2})?|\d+[.,]\d{2}\s*(?:€|eur|chf|\$)?|\d+\s*(?:€|eur|chf)|\d+(?:[.,]\d+)?\s*(?:l|cl|ml|oz)\.?|\.{2,}|…+))+\s*$/i
+
+/**
+ * PDF text → blocks like the cells of an HTML table (V9c): pieces on one baseline make a line, a wide gap
+ * (the next column, the price) starts a new block; sizes and prices at the end of a block go.
+ */
+export function pdfBlocks(pages: PdfItem[][]): string[] {
+  const out: string[] = []
+  for (const items of pages) {
+    const sorted = items.filter((i) => i.str.trim()).sort((a, b) => b.y - a.y || a.x - b.x)
+    const lines: PdfItem[][] = []
+    for (const item of sorted) {
+      const line = lines[lines.length - 1]
+      if (line && Math.abs(line[0].y - item.y) <= Math.max(line[0].h, item.h, 1) * 0.4) line.push(item)
+      else lines.push([item])
+    }
+    for (const line of lines) {
+      line.sort((a, b) => a.x - b.x)
+      let cell = ''
+      let end = -Infinity
+      const flush = () => {
+        const t = cell.replace(/\s+/g, ' ').replace(PRICE_TAIL, '').trim()
+        if (t) out.push(t)
+        cell = ''
+      }
+      for (const item of line) {
+        const h = Math.max(item.h, 1)
+        const gap = item.x - end
+        if (gap > 1.5 * h) flush()
+        cell += (cell && gap > 0.15 * h && !/\s$/.test(cell) ? ' ' : '') + item.str
+        end = Math.max(end, item.x + item.w)
+      }
+      flush()
+    }
+  }
+  return out
+}
+
+/** Beers in a PDF drinks list: blocks whose whole text names a beer – at least two, like lists on a page. */
+export function extractPdfBeers(blocks: string[], lang: Lang = 'de'): WebBeer[] {
+  const beers = blockBeers(blocks, lang)
+  return beers.length >= 2 ? beers : []
 }

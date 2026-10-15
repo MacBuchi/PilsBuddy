@@ -2,7 +2,8 @@
 //   npx tsx tools/catalog/crawl.ts [--shard 0 --shards 1] [--limit 50] [--out tools/catalog/raw]
 // Breweries come from the live catalogue (public API, published rows with a website), so every beer is
 // already tied to its brewery; the brewery's country picks the language profile and Accept-Language. Polite: robots.txt, own User-Agent, ≤ 4 pages per site
-// (plus ≤ 3 sitemap files when the home page links no beer page, V9), 1 s between requests.
+// (plus ≤ 3 sitemap files when the home page links no beer page, V9, and ≤ 2 PDF drinks lists when the pages name no
+// beer, V9c), 1 s between requests.
 // V8: every site also gets a reason (diagnose.ts) in raw/web-diag-<shard>.json – why it gave beers or none.
 /// <reference types="node" />
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -11,7 +12,8 @@ import { fileURLToPath } from 'node:url'
 import COUNTRY_TABLE from './countries.json'
 import { diagnoseSite } from './diagnose'
 import type { Fetched, SiteRow } from './diagnose'
-import { beerLinks, CRAWLER_UA, extractBeers, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls } from './web'
+import { pdfItems } from './pdf'
+import { beerLinks, beerPdfLinks, CRAWLER_UA, extractBeers, extractPdfBeers, pdfBlocks, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls } from './web'
 import type { Lang } from './web'
 
 const arg = (k: string) => {
@@ -58,6 +60,23 @@ async function getPage(url: string, country: string): Promise<Fetched> {
   }
 }
 
+/** A PDF drinks list (V9c) → its text pieces; null when it is no PDF, too big or unreadable. */
+async function getPdf(url: string, country: string) {
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': CRAWLER_UA, Accept: 'application/pdf', 'Accept-Language': ACCEPT_LANGUAGE[country] ?? 'en,de;q=0.5' },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(20_000),
+    })
+    if (!res.ok || !/pdf|octet-stream/.test(res.headers.get('content-type') ?? '') || Number(res.headers.get('content-length') ?? 0) > 8e6) return null
+    const bytes = new Uint8Array(await res.arrayBuffer())
+    if (bytes.length > 8e6) return null
+    return await pdfItems(bytes)
+  } catch {
+    return null
+  }
+}
+
 interface Row {
   breweryId: string
   path: string
@@ -95,7 +114,7 @@ console.log(`${breweries.length} breweries with website, ${sites.size} sites, sh
 
 const rows: Row[] = []
 const diag: SiteRow[] = []
-const stats = { sites: 0, unreachable: 0, robots: 0, withBeers: 0, pages: 0 }
+const stats = { sites: 0, unreachable: 0, robots: 0, withBeers: 0, pages: 0, pdfs: 0, withPdfBeers: 0 }
 
 async function crawl(origin: string, ids: string[]) {
   stats.sites++
@@ -106,8 +125,13 @@ async function crawl(origin: string, ids: string[]) {
   const allowed = (u: string) => robotsAllows(robotsTxt, new URL(u).pathname)
   let links: string[] = []
   let fromSitemap = false
+  let pdfBeers = 0
   const note = (home: Fetched | null, beerPages: Fetched[], beers: number) =>
-    diag.push({ origin, country, ...diagnoseSite(origin, { robotsAllowed: !!home, home, pages: beerPages, beers, links: links.length, sitemap: fromSitemap }) })
+    diag.push({
+      origin,
+      country,
+      ...diagnoseSite(origin, { robotsAllowed: !!home, home, pages: beerPages, beers, links: links.length, sitemap: fromSitemap, pdfBeers }),
+    })
   if (!allowed(`${origin}/`)) {
     stats.robots++
     note(null, [], 0)
@@ -135,14 +159,31 @@ async function crawl(origin: string, ids: string[]) {
   }
   stats.pages += pages.length
   const found = new Map<string, Row>()
-  for (const page of pages) {
-    const path = new URL(page.url).pathname + new URL(page.url).search
-    for (const beer of extractBeers(page.html, langOf(country)))
+  const add = (url: string, beers: { name: string; abv: number | null }[]) => {
+    const path = new URL(url).pathname + new URL(url).search
+    for (const beer of beers)
       for (const breweryId of ids) {
         const key = `${breweryId}|${beer.name.toLowerCase()}`
         const prev = found.get(key)
         if (!prev || (prev.abv == null && beer.abv != null)) found.set(key, { breweryId, path, ...beer })
       }
+  }
+  for (const page of pages) add(page.url, extractBeers(page.html, langOf(country)))
+  // V9c: no beer on the pages – the drinks list may be a PDF (own site: robots.txt applies; builder file hosts too)
+  if (!found.size) {
+    const pdfs = [...new Set(pages.flatMap((p) => beerPdfLinks(p.html, p.url)))]
+      .filter((u) => new URL(u).origin !== origin || allowed(u))
+      .slice(0, 2)
+    for (const pdf of pdfs) {
+      await sleep(1000)
+      const items = await getPdf(pdf, country)
+      if (!items) continue
+      stats.pdfs++
+      const beers = extractPdfBeers(pdfBlocks(items), langOf(country))
+      pdfBeers += beers.length
+      add(pdf, beers)
+    }
+    if (found.size) stats.withPdfBeers++
   }
   if (found.size) stats.withBeers++
   rows.push(...found.values())
@@ -191,5 +232,5 @@ mkdirSync(OUT, { recursive: true })
 writeFileSync(join(OUT, `web-${SHARD}.json`), JSON.stringify(rows, null, 1))
 writeFileSync(join(OUT, `web-diag-${SHARD}.json`), JSON.stringify(diag, null, 1))
 console.log(
-  `sites ${stats.sites} · robots.txt says no ${stats.robots} · unreachable ${stats.unreachable} · pages ${stats.pages} · sites with beers ${stats.withBeers} · beers ${rows.length}`,
+  `sites ${stats.sites} · robots.txt says no ${stats.robots} · unreachable ${stats.unreachable} · pages ${stats.pages} · PDFs ${stats.pdfs} · sites with beers ${stats.withBeers} (from PDF ${stats.withPdfBeers}) · beers ${rows.length}`,
 )

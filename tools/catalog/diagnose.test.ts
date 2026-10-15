@@ -55,6 +55,8 @@ describe('diagnoseSite', () => {
     expect(site(page(filler), [{ url: 'https://brauerei.de/biere', status: 403, html: '' }])).toMatchObject({ reason: 'page-failed', links: 1 })
     const viaSitemap = diagnoseSite('https://brauerei.de', { robotsAllowed: true, home: page(filler), pages: [], beers: 0, links: 2, sitemap: true })
     expect(viaSitemap).toMatchObject({ reason: 'page-failed', sitemap: true })
+    const viaPdf = diagnoseSite('https://brauerei.de', { robotsAllowed: true, home: page(filler), pages: [], beers: 3, pdfBeers: 3 })
+    expect(viaPdf).toMatchObject({ reason: 'beers', fromPdf: true })
     const missed = site(page(filler), [page(`${filler}<div class="name">Kellerbier</div>`, 'https://brauerei.de/biere')])
     expect(missed).toMatchObject({ reason: 'missed', beerPages: 1, styleNames: 1 })
     expect(site(page(filler), [page(filler, 'https://brauerei.de/biere')])).toMatchObject({ reason: 'unnamed', beerPages: 1 })
@@ -81,6 +83,7 @@ describe('diagnosisReport', () => {
       beerPages: 0,
       links: 0,
       sitemap: false,
+      fromPdf: false,
       styleNames: 0,
       jsonLd: false,
       ...extra,
@@ -90,9 +93,12 @@ describe('diagnosisReport', () => {
       row('https://b.de', 'DE', 'js', { builder: 'wix' }),
       row('https://c.com', 'US', 'js', { builder: 'wix' }),
       row('https://d.com', 'US', 'offline', { error: 'dns', status: 0 }),
+      row('https://e.de', 'DE', 'beers', { fromPdf: true }),
+      row('https://f.de', 'DE', 'pdf'),
     ])
-    expect(report).toContain('4 Websites · mit Bieren 1 (25 %)')
-    expect(report).toContain('| js | 1 | 1 | 2 | 50 % |')
+    expect(report).toContain('6 Websites · mit Bieren 2 (33 %)')
+    expect(report).toContain('| js | 1 | 1 | 2 | 33 % |')
+    expect(report).toContain('PDF-Getränkekarten: 2 Websites, davon mit Bier 1')
     expect(report).toContain('Baukasten: wix 2')
     expect(report).toContain('**Nicht erreichbar:** dns 1')
     expect(report).toContain('- **js**: b.de · c.com')
