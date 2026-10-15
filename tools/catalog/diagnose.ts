@@ -115,6 +115,15 @@ export function styleNames(html: string): number {
   return seen.size
 }
 
+/**
+ * Worth rendering in a browser (V9d): a page looks built by JavaScript and none embeds a tap-list widget – those
+ * menus belong to Untappd & Co. and stay out.
+ */
+export function wantsBrowser(pages: { html: string; url: string }[]): boolean {
+  const signals = pages.filter((p) => p.html).map((p) => pageSignals(p.html, p.url))
+  return signals.some((s) => s.js) && !signals.some((s) => s.widget)
+}
+
 export interface SiteInput {
   robotsAllowed: boolean
   /** the home page fetch (null when robots.txt forbids it) */
@@ -129,6 +138,8 @@ export interface SiteInput {
   sitemap?: boolean
   /** beers found in PDF drinks lists (V9c) */
   pdfBeers?: number
+  /** the pages were rendered in a browser (V9d) */
+  rendered?: boolean
 }
 
 export interface Diagnosis {
@@ -145,6 +156,8 @@ export interface Diagnosis {
   sitemap: boolean
   /** the beers came from a PDF drinks list (V9c) */
   fromPdf: boolean
+  /** the pages were rendered in a browser (V9d) */
+  rendered: boolean
   styleNames: number
   jsonLd: boolean
 }
@@ -172,6 +185,7 @@ export function diagnoseSite(origin: string, site: SiteInput): Diagnosis {
     links: site.links ?? site.pages.length,
     sitemap: !!site.sitemap,
     fromPdf: (site.pdfBeers ?? 0) > 0,
+    rendered: !!site.rendered,
     styleNames: Math.max(0, ...signals.map((s) => s.styleNames)),
     jsonLd: !!any('jsonLd'),
   }
@@ -225,6 +239,7 @@ export function diagnosisReport(rows: SiteRow[], examples = 8): string {
   out.push(`- mit Bierseite geladen: ${count((r) => r.beerPages > 0, reached)} · ohne: ${count((r) => r.beerPages === 0, reached)}`)
   out.push(`- Bier-Links aus der Sitemap: ${count((r) => r.sitemap, rows)} Websites, davon mit Bier ${count((r) => r.sitemap && r.reason === 'beers', rows)}`)
   out.push(`- PDF-Getränkekarten: ${count((r) => r.reason === 'pdf' || r.fromPdf, rows)} Websites, davon mit Bier ${count((r) => r.fromPdf, rows)}`)
+  out.push(`- im Browser gerendert: ${count((r) => r.rendered, rows)} Websites, davon mit Bier ${count((r) => r.rendered && r.reason === 'beers', rows)}`)
   out.push(`- Stilnamen auf der Seite (≥ 1 / ≥ 5): ${count((r) => r.styleNames >= 1, reached)} / ${count((r) => r.styleNames >= 5, reached)}`)
   out.push(`- schema.org-Produktdaten: ${count((r) => r.jsonLd, reached)}`)
   out.push(`- Widgets: ${tally((r) => r.widget, reached)}`)

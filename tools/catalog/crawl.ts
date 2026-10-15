@@ -3,14 +3,15 @@
 // Breweries come from the live catalogue (public API, published rows with a website), so every beer is
 // already tied to its brewery; the brewery's country picks the language profile and Accept-Language. Polite: robots.txt, own User-Agent, ≤ 4 pages per site
 // (plus ≤ 3 sitemap files when the home page links no beer page, V9, and ≤ 2 PDF drinks lists when the pages name no
-// beer, V9c), 1 s between requests.
+// beer, V9c, and ≤ 3 pages rendered in Chromium when they are built by JavaScript, V9d), 1 s between requests.
 // V8: every site also gets a reason (diagnose.ts) in raw/web-diag-<shard>.json – why it gave beers or none.
 /// <reference types="node" />
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import COUNTRY_TABLE from './countries.json'
-import { diagnoseSite } from './diagnose'
+import { openBrowser } from './browser'
+import { diagnoseSite, wantsBrowser } from './diagnose'
 import type { Fetched, SiteRow } from './diagnose'
 import { pdfItems } from './pdf'
 import { beerLinks, beerPdfLinks, CRAWLER_UA, extractBeers, extractPdfBeers, pdfBlocks, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls } from './web'
@@ -114,7 +115,9 @@ console.log(`${breweries.length} breweries with website, ${sites.size} sites, sh
 
 const rows: Row[] = []
 const diag: SiteRow[] = []
-const stats = { sites: 0, unreachable: 0, robots: 0, withBeers: 0, pages: 0, pdfs: 0, withPdfBeers: 0 }
+const stats = { sites: 0, unreachable: 0, robots: 0, withBeers: 0, pages: 0, pdfs: 0, withPdfBeers: 0, rendered: 0, withRenderedBeers: 0 }
+const browser = await openBrowser()
+console.log(browser ? 'browser: Chromium for JavaScript pages' : 'browser: none (PW_DIR not set or Playwright missing)')
 
 async function crawl(origin: string, ids: string[]) {
   stats.sites++
@@ -126,11 +129,12 @@ async function crawl(origin: string, ids: string[]) {
   let links: string[] = []
   let fromSitemap = false
   let pdfBeers = 0
+  let rendered = false
   const note = (home: Fetched | null, beerPages: Fetched[], beers: number) =>
     diag.push({
       origin,
       country,
-      ...diagnoseSite(origin, { robotsAllowed: !!home, home, pages: beerPages, beers, links: links.length, sitemap: fromSitemap, pdfBeers }),
+      ...diagnoseSite(origin, { robotsAllowed: !!home, home, pages: beerPages, beers, links: links.length, sitemap: fromSitemap, pdfBeers, rendered }),
     })
   if (!allowed(`${origin}/`)) {
     stats.robots++
@@ -185,6 +189,25 @@ async function crawl(origin: string, ids: string[]) {
     }
     if (found.size) stats.withPdfBeers++
   }
+  // V9d: still nothing and the pages are built by JavaScript – render the home page and up to two beer pages
+  if (!found.size && browser && wantsBrowser([home, ...beerPages])) {
+    rendered = true
+    stats.rendered++
+    const locale = (ACCEPT_LANGUAGE[country] ?? 'en').split(',')[0]
+    await sleep(1000)
+    const start = await browser.render(`${origin}/`, locale)
+    if (start?.html) {
+      add(start.url, extractBeers(start.html, langOf(country)))
+      const more = beerLinks(start.html, start.url).filter(allowed).filter((u) => u !== start.url).slice(0, 2)
+      if (!links.length) links = more
+      for (const link of more) {
+        await sleep(1000)
+        const page = await browser.render(link, locale)
+        if (page?.html) add(page.url, extractBeers(page.html, langOf(country)))
+      }
+    }
+    if (found.size) stats.withRenderedBeers++
+  }
   if (found.size) stats.withBeers++
   rows.push(...found.values())
   note(home, beerPages, found.size)
@@ -228,9 +251,11 @@ await Promise.all(
   }),
 )
 
+await browser?.close()
+
 mkdirSync(OUT, { recursive: true })
 writeFileSync(join(OUT, `web-${SHARD}.json`), JSON.stringify(rows, null, 1))
 writeFileSync(join(OUT, `web-diag-${SHARD}.json`), JSON.stringify(diag, null, 1))
 console.log(
-  `sites ${stats.sites} · robots.txt says no ${stats.robots} · unreachable ${stats.unreachable} · pages ${stats.pages} · PDFs ${stats.pdfs} · sites with beers ${stats.withBeers} (from PDF ${stats.withPdfBeers}) · beers ${rows.length}`,
+  `sites ${stats.sites} · robots.txt says no ${stats.robots} · unreachable ${stats.unreachable} · pages ${stats.pages} · PDFs ${stats.pdfs} · sites with beers ${stats.withBeers} (from PDF ${stats.withPdfBeers}, rendered ${stats.withRenderedBeers} of ${stats.rendered}) · beers ${rows.length}`,
 )

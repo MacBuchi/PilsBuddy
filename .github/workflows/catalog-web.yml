@@ -37,8 +37,12 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # V9d: Chromium for pages built by JavaScript (crawl.ts finds it through PW_DIR)
+      - uses: ./.github/actions/playwright
       - name: Crawl shard ${{ matrix.shard }} of 12
         shell: bash -o pipefail {0}
+        env:
+          PW_DIR: /tmp/pw
         run: npx tsx tools/catalog/crawl.ts --shard ${{ matrix.shard }} --shards 12 ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:

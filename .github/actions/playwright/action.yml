@@ -4,8 +4,9 @@ description: >
   given e2e scripts next to it – ES module imports need node_modules/playwright beside the script.
 inputs:
   scripts:
-    description: Space-separated e2e scripts to copy into /tmp/pw
-    required: true
+    description: Space-separated e2e scripts to copy into /tmp/pw (none for the catalogue crawler, V9d)
+    required: false
+    default: ''
 runs:
   using: composite
   steps:
@@ -23,4 +24,4 @@ runs:
         else
           npx --prefix /tmp/pw playwright install --with-deps chromium
         fi
-        cp ${{ inputs.scripts }} /tmp/pw/
+        if [ -n "${{ inputs.scripts }}" ]; then cp ${{ inputs.scripts }} /tmp/pw/; fi
