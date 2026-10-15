@@ -23,7 +23,9 @@ describe('beerLinks', () => {
       <a href="/impressum">Impressum</a>
       <a href="https://facebook.com/biere">Biere</a>
       <a href="/geschichte">Geschichte</a>
-      <a href="/%E0%A4%A/biere">kaputt</a>`
+      <a href="/%E0%A4%A/biere">kaputt</a>
+      <a href="/beers-of-the-past">Retired Beers</a>
+      <a href="/bier-archiv">Bierarchiv</a>`
     expect(beerLinks(html, 'https://brauerei.de/')).toEqual(['https://www.brauerei.de/sortiment', 'https://brauerei.de/de/unsere-biere/', 'https://brauerei.de/%E0%A4%A/biere'])
   })
 })
@@ -50,6 +52,40 @@ describe('extractBeers', () => {
   it('reads schema.org products from JSON-LD', () => {
     const html = `<script type="application/ld+json">{"@graph":[{"@type":"Product","name":"Ureich Premium Pils","description":"<p>4,9 % vol</p>"},{"@type":"Organization","name":"Eichbaum"}]}</script>`
     expect(extractBeers(html)).toEqual([{ name: 'Ureich Premium Pils', abv: 4.9 }])
+  })
+
+  it('reads product tiles, lists and tables beyond headings (V9)', () => {
+    const tiles = `
+      <div class="product"><div class="product-title"><a href="/hell">Lager <b>Hell</b></a></div><span>4,8 % vol</span></div>
+      <div class="product"><div class="product-title"><a href="/dunkel">Dunkles Bockbier</a></div><span>7,1 % vol</span></div>
+      <div class="product"><div class="product-title"><a href="/radler">Zitronenlimo</a></div></div>
+      <ul><li>Kellerpils</li><li>Hefeweizen hell 5,3 % vol</li></ul>
+      <table><tr><td>Märzen</td><td>5,6 % vol</td></tr></table>
+      <h5>Festbier</h5><p>Im Herbst.</p>`
+    expect(extractBeers(tiles)).toEqual([
+      { name: 'Lager Hell', abv: 4.8 },
+      { name: 'Dunkles Bockbier', abv: 7.1 },
+      { name: 'Kellerpils', abv: null },
+      { name: 'Hefeweizen hell', abv: 5.3 },
+      { name: 'Märzen', abv: 5.6 },
+      { name: 'Festbier', abv: null },
+    ])
+  })
+
+  it('skips the style line under a fancy name on product tiles', () => {
+    const tiles = `<h1>Our Beers</h1>
+      <div class="tile"><div>Fidelis</div><div>Hazy IPA</div><div>6.5% ABV</div></div>
+      <div class="tile"><div>Night Owl</div><div>Imperial Stout</div></div>
+      <div class="tile"><div>Super Simcoe IPA</div><div>West Coast IPA</div></div>
+      <div class="tile"><div>Lake Day Lager</div></div>`
+    expect(extractBeers(tiles, 'en').map((b) => b.name)).toEqual(['Super Simcoe IPA', 'Lake Day Lager'])
+    expect(extractBeers('<h2>Unsere Biere</h2><ul><li>Pils</li><li>Helles</li></ul>').map((b) => b.name)).toEqual(['Pils', 'Helles'])
+  })
+
+  it('takes no single loose name and no style word inside a sentence', () => {
+    expect(extractBeers('<p>Unser <strong>Pils</strong> ist das beste weit und breit.</p><li>Kellerbier</li>')).toEqual([])
+    expect(extractBeers('<p>Bei uns gibt es <b>Pils</b> und <b>Weizen</b> vom Fass.</p>')).toEqual([])
+    expect(extractBeers('<footer><li>Pils</li><li>Helles</li></footer><h2>Dunkel</h2>')).toEqual([{ name: 'Dunkel', abv: null }])
   })
 
   it('ignores names without a style and broken JSON', () => {
@@ -87,6 +123,13 @@ describe('extractBeers', () => {
 
   it('tidies names', () => {
     expect(cleanName('„Dunkler Doppelbock“ – im Rumfass veredelt')).toBe('Dunkler Doppelbock')
+    // tile labels and menu separators (V9)
+    expect(beerName('Fresh Hop Lager•4.5%', null, 'en')).toEqual({ name: 'Fresh Hop Lager', abv: 4.5 })
+    expect(beerName('5.5% ABV - NE-Style IPA', null, 'en')).toEqual({ name: 'NE-Style IPA', abv: 5.5 })
+    expect(beerName('Porter│6.0% ABV│Year-Round', null, 'en')).toEqual({ name: 'Porter', abv: 6 })
+    expect(cleanName('Imperial IPA ·')).toBe('Imperial IPA')
+    expect(cleanName('Non-Alcoholic Beer Non-Alcoholic Beer')).toBe('Non-Alcoholic Beer')
+    for (const food of ['Lemon Herb Arugula Salad', 'Italian Pilsner Malt', 'IPA Beer Battered Fries']) expect(beerName(food, null, 'en')).toBeNull()
     expect(cleanName('Easy Rider – Alkoholfreies, BIO')).toBe('Easy Rider – Alkoholfreies, BIO')
     expect(cleanName('UR-KROSTITZER SCHWARZBIER')).toBe('UR-Krostitzer Schwarzbier')
     expect(cleanName('HADERNER WEIßBIER')).toBe('Haderner Weißbier')

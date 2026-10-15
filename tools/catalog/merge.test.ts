@@ -215,6 +215,12 @@ describe('pickMainBeers', () => {
     expect(picked.map((p) => p.code)).toEqual(['2', '4'])
   })
 
+  it('prefers a real name over a bare style line (V9)', () => {
+    const picked = pickMainBeers([c('1', 'IPA', 'IPA', 6.5), c('2', 'Hop Drop IPA', 'IPA'), c('3', 'Pils', 'Pils')])
+    expect(picked.map((p) => p.name)).toEqual(['Hop Drop IPA', 'Pils'])
+    expect(picked[0].abv).toBeNull()
+  })
+
   it('fills ABV and pack from other sizes of the same beer', () => {
     const [p] = pickMainBeers([c('1', 'Hell', 'Helles', null, { ml: 500 }), c('2', 'Hell 0,33', 'Helles', 5.1)])
     expect(p).toMatchObject({ code: '1', abv: 5.1, pack: { ml: 500 } })

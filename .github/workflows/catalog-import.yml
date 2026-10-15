@@ -57,7 +57,7 @@ jobs:
           echo "STAND_RUN=$run" >> "$GITHUB_ENV"
       - name: Download raw data
         run: |
-          latest() { gh run list --repo "$GITHUB_REPOSITORY" --workflow "$1" --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty'; }
+          latest() { gh run list --repo "$GITHUB_REPOSITORY" --workflow "$1" --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty'; }
           # the monthly run (R7) has both: its catalog-raw and catalog-web-<n> artifacts
           FETCH_RUN=${STAND_RUN:-${FETCH_RUN:-$(latest catalog.yml)}}
           WEB_RUN=${STAND_RUN:-${WEB_RUN:-$(latest catalog-web.yml)}}

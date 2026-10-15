@@ -4,6 +4,7 @@ import { parsePack } from '../../src/domain/bottles/pack'
 import { parsePostcode } from '../../src/domain/postcode'
 import { normalizeStyle, STYLE_PROFILES } from '../../src/domain/styleProfile'
 import { checkAbv } from './plausible'
+import { styleOnly } from './web'
 import type { PlausibilityNote } from './plausible'
 import type { Pack } from '../../src/domain/types'
 import COUNTRY_TABLE from './countries.json'
@@ -431,8 +432,8 @@ interface Candidate {
 const completeness = (c: Candidate) => (c.abv != null ? 1 : 0) + (c.pack ? 1 : 0)
 
 /**
- * The beers a brewery stands for: candidates grouped by style, the most complete entry with the
- * shortest name per style (sizes and packs of one beer collapse into one), styles with more entries
+ * The beers a brewery stands for: candidates grouped by style, a real name before a bare style („Hop Drop IPA“
+ * before „IPA“), then the most complete entry with the shortest name per style (sizes and packs of one beer collapse into one), styles with more entries
  * first, Radler/alcohol-free last, unknown style only when nothing else is known.
  */
 export function pickMainBeers(cands: Candidate[], max = MAX_BEERS_PER_BREWERY): Candidate[] {
@@ -452,16 +453,19 @@ export function pickMainBeers(cands: Candidate[], max = MAX_BEERS_PER_BREWERY): 
   for (const s of styles) {
     const g = [...groups.get(s)!].sort(
       (a, b) =>
+        Number(styleOnly(a.name)) - Number(styleOnly(b.name)) ||
         completeness(b) - completeness(a) ||
         SOURCE_PRIORITY[a.source ?? 1] - SOURCE_PRIORITY[b.source ?? 1] ||
         a.name.length - b.name.length ||
         a.code.localeCompare(b.code),
     )
     const best = { ...g[0] }
-    // fill gaps from the other sizes of the same beer
-    best.abv ??= g.find((c) => c.abv != null)?.abv ?? null
-    best.pack ??= g.find((c) => c.pack)?.pack ?? null
+    // fill gaps from the other sizes of the same beer – one name starts with the other („Hell“, „Hell 0,33“), not
+    // just the same style („Hop Drop IPA“ takes no ABV from a bare „IPA“)
     const k = normName(best.name)
+    const same = g.filter((c) => normName(c.name).startsWith(k) || k.startsWith(normName(c.name)))
+    best.abv ??= same.find((c) => c.abv != null)?.abv ?? null
+    best.pack ??= same.find((c) => c.pack)?.pack ?? null
     if (seenNames.has(k)) continue
     seenNames.add(k)
     out.push(best)
