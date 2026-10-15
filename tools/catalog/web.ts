@@ -117,7 +117,7 @@ const NOT_A_NAME_EN =
 
 /** English sentences, other drinks, food, merch, events and pack sizes rather than a beer. */
 const NOT_A_BEER_EN =
-  /\b(is|are|was|were|we|you|your|join|come|try|get|today|tonight|tomorrow)\b|\b(19|20)\d\d\b|\b(hard )?(seltzers?|ciders?|kombucha|sodas?|vodka|gin|whiske?y|spirits|mead|cocktails?|food|kitchen|trivia|music|festival|release party|ginger ale|root beer(?! (porter|stout|ale))|(new )?releases?|series|trends|takeover|(mon|tues|wednes|thurs|fri|satur|sun)days?|tours?|tickets?|reservations?|club|membership|patio|locations?|blog|recipes?|pairings?|awards?|medals?|winners?|growlers?|crowlers?|kegs?|glass(ware)?|t-?shirts?|hats?|hoodies?)\b|\b(?<!barley[\s-])wines?\b|\d+\s*(x|pack|pk|-pack)\b|\d+\s*(oz|ml|l)\b|\bales? & lagers?\b|\bparty$|[.,]$|,.*,/iu
+  /\b(is|are|was|were|we|you|your|join|come|try|get|today|tonight|tomorrow)\b|\b(19|20)\d\d\b|\b(hard )?(seltzers?|ciders?|kombucha|sodas?|vodka|gin|whiske?y|spirits|mead|cocktails?|food|kitchen|salads?|burgers?|pizzas?|wings|fries|sandwich(es)?|tacos?|nachos|pretzels?|malts?$|trivia|music|festival|release party|ginger ale|root beer(?! (porter|stout|ale))|(new )?releases?|series|trends|takeover|(mon|tues|wednes|thurs|fri|satur|sun)days?|tours?|tickets?|reservations?|club|membership|patio|locations?|blog|recipes?|pairings?|awards?|medals?|winners?|growlers?|crowlers?|kegs?|glass(ware)?|t-?shirts?|hats?|hoodies?)\b|\b(?<!barley[\s-])wines?\b|\d+\s*(x|pack|pk|-pack)\b|\d+\s*(oz|ml|l)\b|\bales? & lagers?\b|\bparty$|[.,]$|,.*,/iu
 
 /** Sentences, events, rooms and news rather than a beer: function words, years, typical nouns. */
 const NOT_A_BEER =
@@ -162,6 +162,7 @@ export function cleanName(raw: string): string {
   let name = strip(
     decode(raw)
       .replace(/[\u00ad\u200b]/g, '')
+      .replace(ABV_BEFORE_NAME, '')
       .replace(ABV_IN_NAME, '')
       .replace(/\s+\d{1,2}(?:[.,]\d{1,2})?\s*abv\b.*$/i, '') // „Porter 4.6 ABV • 28 IBU“
       .replace(/\s*\((sold out|ausverkauft|neu|new|limit|saison)[^)]*\)/gi, ''),
@@ -170,8 +171,11 @@ export function cleanName(raw: string): string {
   const label = name.match(/^([^:]{1,20}):\s+(.+)$/)
   if (label && !normalizeStyle([label[1]])) name = strip(label[2])
   // separators left over from menus: „Hazy West Coast IPA |“, „Lucky Cat Rice Lager //“
-  name = unbracket(name.replace(/([\s,]+(abv|ibu))?[\s|/\\•~–—:-]*$/i, '').replace(/^[\s|/\\•~–—:-]+/, ''))
-  const head = strip(name.split(/\s[–—|•-]\s/)[0])
+  name = unbracket(name.replace(/([\s,]+(abv|ibu))?[\s|/\\•·│+~–—:-]*$/i, '').replace(/^[\s|/\\•·│~–—:-]+/, ''))
+  // „Non-Alcoholic Beer Non-Alcoholic Beer“ – a name repeated by a tile's two labels
+  const twice = name.match(/^(.{3,}) \1$/i)
+  if (twice) name = twice[1]
+  const head = strip(name.split(/\s[–—|•-]\s|\s*[•·│]\s*/)[0])
   return unshout(head !== name && normalizeStyle([head]) ? head : name)
 }
 
@@ -184,7 +188,10 @@ const abvIn = (t: string) => {
 }
 
 /** „West Coast IPA 6.4% ABV“: the ABV at the end of a name is cut off (and used if the text had none). */
-const ABV_IN_NAME = /[\s,(–-]+(\d{1,2}(?:[.,]\d{1,2})?)\s*%.*$/
+const ABV_IN_NAME = /[\s,(–•·│|-]+(\d{1,2}(?:[.,]\d{1,2})?)\s*%.*$/
+
+/** „5.5% ABV - NE-Style IPA“: the ABV in front of the name. */
+const ABV_BEFORE_NAME = /^\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:abv|vol\.?|alc\.?)?\s*[-–—|•·│:]\s*/i
 
 const toAbv = (s: string | undefined) => {
   const v = s == null ? NaN : Number(s.replace(',', '.'))
@@ -197,7 +204,7 @@ export function beerName(raw: string, abv: number | null = null, lang: string = 
   const [notName, notBeer] = lang === 'en' ? [NOT_A_NAME_EN, NOT_A_BEER_EN] : [NOT_A_NAME, NOT_A_BEER]
   if (name.length < 3 || name.length > 50 || name.split(' ').length > 6 || notName.test(name) || notBeer.test(name) || notABeerName(name)) return null
   if (!normalizeStyle([name])) return null
-  return { name, abv: toAbv(abv?.toString()) ?? toAbv(raw.match(ABV_IN_NAME)?.[1]) }
+  return { name, abv: toAbv(abv?.toString()) ?? toAbv(raw.match(ABV_IN_NAME)?.[1]) ?? toAbv(raw.match(ABV_BEFORE_NAME)?.[1]) }
 }
 
 /**
@@ -253,7 +260,7 @@ const STYLE_WORD =
   /^(ipa|dipa|tipa|neipa|apa|esb|ale|ales|lager|pils|pilsner|pilsener|stout|porter|sour|gose|saison|tripel|dubbel|quad|witbier|wit|wheat|weizen|hefeweizen|weissbier|weißbier|kölsch|kolsch|märzen|marzen|oktoberfest|festbier|helles|hell|dunkel|dunkles|bock|doppelbock|maibock|eisbock|schwarzbier|kellerbier|keller|zwickel|export|rauchbier|altbier|alt|radler|barleywine|barley|wine|hazy|juicy|double|triple|imperial|session|west|east|coast|new|england|india|pale|light|cream|blonde|blond|amber|red|brown|golden|dark|black|white|american|german|belgian|czech|mexican|vienna|munich|english|irish|scotch|scottish|baltic|russian|oatmeal|milk|pastry|fruited|sweet|dry|hopped|hoppy|dry-hopped|barrel|aged|barrel-aged|nitro|style|non-alcoholic|alkoholfrei|alkoholfreies|naturtrüb|unfiltered|fresh|hop|farmhouse|wild|kettle|berliner|weisse|lambic|kriek|cider|beer|bier|traditional|classic|premium|original|spezial|extra|special|bitter|strong|mild|smoked|rye|and|&|\/|-)$/i
 
 /** „Hazy IPA“, „Imperial Stout“: a line that only names a style – on product tiles the subtitle under the name. */
-export const styleOnly = (name: string) => name.split(/[\s-]+/).every((w) => STYLE_WORD.test(w))
+export const styleOnly = (name: string) => name.split(/[\s-]+/).filter((w) => !/^[\d.,%]*$/.test(w)).every((w) => STYLE_WORD.test(w))
 
 /** Blocks whose whole text names a beer, with the ABV from the blocks up to the next beer. */
 function extractBlocks(body: string, lang: Lang): WebBeer[] {

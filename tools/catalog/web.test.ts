@@ -123,6 +123,13 @@ describe('extractBeers', () => {
 
   it('tidies names', () => {
     expect(cleanName('„Dunkler Doppelbock“ – im Rumfass veredelt')).toBe('Dunkler Doppelbock')
+    // tile labels and menu separators (V9)
+    expect(beerName('Fresh Hop Lager•4.5%', null, 'en')).toEqual({ name: 'Fresh Hop Lager', abv: 4.5 })
+    expect(beerName('5.5% ABV - NE-Style IPA', null, 'en')).toEqual({ name: 'NE-Style IPA', abv: 5.5 })
+    expect(beerName('Porter│6.0% ABV│Year-Round', null, 'en')).toEqual({ name: 'Porter', abv: 6 })
+    expect(cleanName('Imperial IPA ·')).toBe('Imperial IPA')
+    expect(cleanName('Non-Alcoholic Beer Non-Alcoholic Beer')).toBe('Non-Alcoholic Beer')
+    for (const food of ['Lemon Herb Arugula Salad', 'Italian Pilsner Malt', 'IPA Beer Battered Fries']) expect(beerName(food, null, 'en')).toBeNull()
     expect(cleanName('Easy Rider – Alkoholfreies, BIO')).toBe('Easy Rider – Alkoholfreies, BIO')
     expect(cleanName('UR-KROSTITZER SCHWARZBIER')).toBe('UR-Krostitzer Schwarzbier')
     expect(cleanName('HADERNER WEIßBIER')).toBe('Haderner Weißbier')
