@@ -477,7 +477,7 @@ const PDF_NOT_BEER = new RegExp(
     String.raw`served|drizzled|spatzen|sp[äa]tzle|salat|salad|dough|vegan|mayo|sauce|so[ßs]e|fries|pommes|wurst|k[äa]se|\bbrot|bread|pretzel|brezn?`,
     String.raw`chips|tacos?|nachos|pizza|burger|wings|chicken|pork|beef|steak|bacon|shrimp|fish|soup|suppe|braten|schnitzel|kn[öo]del|kraut`,
     String.raw`coca|cola|fanta|sprite|tonic|ginger ale|lemonade|limo|schorle|wasser|water|juice|saft|coffee|kaffee|\btee\b|\btea\b`,
-    String.raw`laktose|\bgluten\b|allergen|brewed with|aged until|notes|radiates|abgang|zeichnen|enth[äa]lt`,
+    String.raw`laktose|\bgluten\b|allergen|brewed with|aged until|notes|radiates|abgang|zeichnen|enth[äa]lt|^pair(ed)? with|drizzle|platter|\bwings?\b|bbq|chipotle|reduction|getr[äa]nke|\bkola\b|topf\b`,
   ].join('|'),
   'iu',
 )

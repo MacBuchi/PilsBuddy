@@ -409,6 +409,9 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       - [x] (b) Getränke-/Menü-Links (schwächer als Bier-Links, ohne Speisen/Wein/Cocktails), `sitemap.xml` als Rückfall,
             Gastbiere (große Marken, „Brauerei – Bier“ anderer Katalog-Brauereien) und Speisen/Wein aussortiert, Diagnose
             `page-failed`: Websites mit Bier 35 → 39 %, „no-beer-page“ 1 794 → 1 081, Brauereien 3 761 → 4 167 (#99)
+      - [x] (c) PDF-Getränkekarten (eigene Website oder Datei-Host des Baukastens, ≤ 2 je Website, nur ohne Bier im HTML)
+            als Text in Zellen wie eine Tabelle; Speisen, umbrochene Beschreibungen und Auswahlzeilen aussortiert:
+            Websites mit Bier 39 → 40 % (94 über PDF), „pdf“ 230 → 148 (#PR)
 - [ ] V10 **Zweite Quellen abgleichen:** Wikidata kennt 8 939 Biere, Open Food Facts 2 534 – als Bestätigung zählen nur
       wenige hundert. Zuordnung zur Brauerei über Wikidata-ID, Marke und Ort verbessern, OFF für alle Länder (M)
 - [ ] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)

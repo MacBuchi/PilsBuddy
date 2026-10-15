@@ -316,6 +316,11 @@ describe('PDF drinks lists (V9c)', () => {
       'full bodied Scottish wee heavy with',
       'Kinley "Tonic“ | "Ginger Ale',
       'Pilsner brewed with Italian-grown barley',
+      'Pair With Homestead Lager',
+      'Smoked Wing Fling Platter',
+      'Chipotle Honey • Brown Ale Bbq',
+      'Liebharts Bio alkoholfreie Getränke',
+      'Oatmeal Stout reduction drizzle',
     ]
     expect(extractPdfBeers([...junk, 'Kiki Lemongrass Lager', 'Trifecta Belgian Tripel', 'GUSSWERK Rhabarber Radler Glutenfrei'], 'en').map((b) => b.name)).toEqual([
       'Kiki Lemongrass Lager',
