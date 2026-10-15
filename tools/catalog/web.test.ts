@@ -60,6 +60,8 @@ describe('drinks links and sitemaps (V9)', () => {
 describe('guestBeer (V9)', () => {
   it('drops big brands and „Brand - Beer“ of other breweries, keeps the own ones', () => {
     expect(guestBeer('Miller Lite', 'Chilly Water Brewing')).toBe(true)
+    expect(guestBeer('Allagash White Ale', 'Taproom 22')).toBe(true)
+    expect(guestBeer('Allagash White', 'Allagash Brewing Company')).toBe(false)
     expect(guestBeer('Odell IPA', 'Broomfield Brewpub')).toBe(true)
     const others = new Set(['New Belgium Brewing Company', "Bell's Brewery, Inc.", 'Chelsea Brewing Company'].map(breweryKey))
     expect(guestBeer('New Belgium - Voodoo Ranger IPA', 'Manayunk Brewery', '', others)).toBe(true)

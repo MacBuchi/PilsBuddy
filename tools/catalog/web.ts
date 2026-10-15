@@ -145,7 +145,7 @@ export function sitemapBeerLinks(urls: string[], base: string, limit = 3): strin
 
 /** Big brands that brewpubs pour as guest beers („Miller Lite“, „Voodoo Ranger IPA“). */
 const GUEST_BRAND =
-  /\b(miller|coors|bud light|budweiser|michelob|busch|natural light|keystone|corona|modelo|pacifico|tecate|dos equis|heineken|stella artois|blue moon|guinness|pabst|pbr|yuengling|new belgium|voodoo ranger|sierra nevada|lagunitas|sam(uel)? adams|odell|founders|deschutes|bell'?s|goose island|elysian|shock top|leinenkugel|truly|white claw|beck'?s|warsteiner|paulaner|spaten|hofbr[äa]u|erdinger|weihenstephaner|krombacher|bitburger|veltins|radeberger|franziskaner|ayinger|schneider weisse)\b/i
+  /\b(miller|coors|bud light|budweiser|michelob|busch|natural light|keystone|corona|modelo|pacifico|tecate|dos equis|heineken|stella artois|blue moon|guinness|pabst|pbr|yuengling|new belgium|voodoo ranger|sierra nevada|lagunitas|sam(uel)? adams|odell|founders|deschutes|bell'?s|goose island|elysian|shock top|leinenkugel|truly|white claw|beck'?s|warsteiner|paulaner|spaten|hofbr[äa]u|erdinger|weihenstephaner|krombacher|bitburger|veltins|radeberger|franziskaner|ayinger|schneider weisse|allagash|cigar city|three floyds)\b/i
 
 const plain = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, ' ').trim()
 
