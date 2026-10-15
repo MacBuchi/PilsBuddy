@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beerLinks, beerName, cleanName, extractBeers, robotsAllows, textOf } from './web'
+import { beerLinks, beerName, cleanName, extractBeers, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
 
 describe('robotsAllows', () => {
   it('follows the * group and our own group, wildcards included', () => {
@@ -27,6 +27,33 @@ describe('beerLinks', () => {
       <a href="/beers-of-the-past">Retired Beers</a>
       <a href="/bier-archiv">Bierarchiv</a>`
     expect(beerLinks(html, 'https://brauerei.de/')).toEqual(['https://www.brauerei.de/sortiment', 'https://brauerei.de/de/unsere-biere/', 'https://brauerei.de/%E0%A4%A/biere'])
+  })
+})
+
+describe('drinks links and sitemaps (V9)', () => {
+  it('takes drinks pages and tap lists after beer links, never food, wine or cocktails', () => {
+    const html = `
+      <a href="/menus/getraenke/">Getränke</a><a href="/menus/speisekarte/">Speisekarte</a>
+      <a href="/basic-01">Draft Lists</a><a href="/cocktails">Cocktail Menu</a><a href="/winelist.html">Wine List</a>
+      <a href="/beers/">Beers</a><a href="/gegen-den-durst">Gegen den Durst</a>`
+    expect(beerLinks(html, 'https://pub.de/', 4)).toEqual([
+      'https://pub.de/beers/',
+      'https://pub.de/gegen-den-durst',
+      'https://pub.de/menus/getraenke/',
+      'https://pub.de/basic-01',
+    ])
+  })
+
+  it('reads sitemaps and sitemap indexes', () => {
+    const index = `<?xml version="1.0"?><sitemapindex><sitemap><loc>https://b.com/post-sitemap.xml</loc></sitemap>
+      <sitemap><loc>https://b.com/page-sitemap.xml</loc></sitemap><sitemap><loc>https://b.com/beer-sitemap.xml</loc></sitemap></sitemapindex>`
+    expect(sitemapUrls(index)).toEqual({ pages: [], sitemaps: ['https://b.com/post-sitemap.xml', 'https://b.com/page-sitemap.xml', 'https://b.com/beer-sitemap.xml'] })
+    expect(pickSitemaps(sitemapUrls(index).sitemaps)).toEqual(['https://b.com/page-sitemap.xml', 'https://b.com/beer-sitemap.xml'])
+    const pages = `<urlset><url><loc><![CDATA[https://www.b.com/beer/sculpin/]]></loc><lastmod>2026-01-01</lastmod></url>
+      <url><loc>https://b.com/beers/</loc></url><url><loc>https://b.com/about/</loc></url><url><loc>https://b.com/shop/beer-pack</loc></url>
+      <url><loc>https://other.com/beers/</loc></url><url><loc>https://b.com/drinks/</loc></url></urlset>`
+    expect(sitemapUrls(pages).pages).toHaveLength(6)
+    expect(sitemapBeerLinks(sitemapUrls(pages).pages, 'https://b.com')).toEqual(['https://b.com/beers/', 'https://www.b.com/beer/sculpin/', 'https://b.com/drinks/'])
   })
 })
 

@@ -1,7 +1,8 @@
 // Brewery websites → raw/web-<shard>.json (R1b). Runs on GitHub Actions (catalog-web.yml), not locally.
 //   npx tsx tools/catalog/crawl.ts [--shard 0 --shards 1] [--limit 50] [--out tools/catalog/raw]
 // Breweries come from the live catalogue (public API, published rows with a website), so every beer is
-// already tied to its brewery; the brewery's country picks the language profile and Accept-Language. Polite: robots.txt, own User-Agent, ≤ 4 pages per site, 1 s between pages.
+// already tied to its brewery; the brewery's country picks the language profile and Accept-Language. Polite: robots.txt, own User-Agent, ≤ 4 pages per site
+// (plus ≤ 3 sitemap files when the home page links no beer page, V9), 1 s between requests.
 // V8: every site also gets a reason (diagnose.ts) in raw/web-diag-<shard>.json – why it gave beers or none.
 /// <reference types="node" />
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -10,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 import COUNTRY_TABLE from './countries.json'
 import { diagnoseSite } from './diagnose'
 import type { Fetched, SiteRow } from './diagnose'
-import { beerLinks, CRAWLER_UA, extractBeers, robotsAllows } from './web'
+import { beerLinks, CRAWLER_UA, extractBeers, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls } from './web'
 import type { Lang } from './web'
 
 const arg = (k: string) => {
@@ -44,12 +45,12 @@ const errorKind = (e: unknown): NonNullable<Fetched['error']> => {
 async function getPage(url: string, country: string): Promise<Fetched> {
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': CRAWLER_UA, Accept: 'text/html,text/plain;q=0.9', 'Accept-Language': ACCEPT_LANGUAGE[country] ?? 'en,de;q=0.5' },
+      headers: { 'User-Agent': CRAWLER_UA, Accept: 'text/html,text/plain;q=0.9,application/xml;q=0.8', 'Accept-Language': ACCEPT_LANGUAGE[country] ?? 'en,de;q=0.5' },
       redirect: 'follow',
       signal: AbortSignal.timeout(15_000),
     })
     const type = res.headers.get('content-type') ?? ''
-    if (!res.ok || !/text\/(html|plain)/.test(type)) return { url: res.url, status: res.status, html: '', type }
+    if (!res.ok || !/text\/(html|plain|xml)|application\/xml/.test(type)) return { url: res.url, status: res.status, html: '', type }
     const html = (await res.text()).slice(0, 2_000_000)
     return { url: res.url, status: res.status, html }
   } catch (e) {
@@ -103,8 +104,10 @@ async function crawl(origin: string, ids: string[]) {
   const robots = await get(`${origin}/robots.txt`)
   const robotsTxt = robots && robots.status === 200 ? robots.html : null
   const allowed = (u: string) => robotsAllows(robotsTxt, new URL(u).pathname)
+  let links: string[] = []
+  let fromSitemap = false
   const note = (home: Fetched | null, beerPages: Fetched[], beers: number) =>
-    diag.push({ origin, country, ...diagnoseSite(origin, { robotsAllowed: !!home, home, pages: beerPages, beers }) })
+    diag.push({ origin, country, ...diagnoseSite(origin, { robotsAllowed: !!home, home, pages: beerPages, beers, links: links.length, sitemap: fromSitemap }) })
   if (!allowed(`${origin}/`)) {
     stats.robots++
     note(null, [], 0)
@@ -119,7 +122,12 @@ async function crawl(origin: string, ids: string[]) {
   }
   const pages = [home]
   const beerPages: Fetched[] = []
-  for (const link of beerLinks(home.html, home.url).filter(allowed)) {
+  links = beerLinks(home.html, home.url).filter(allowed)
+  if (!links.length) {
+    links = (await sitemapLinks(origin, robotsTxt, get, allowed)).filter(allowed)
+    fromSitemap = links.length > 0
+  }
+  for (const link of links) {
     await sleep(1000)
     const page = await get(link)
     beerPages.push(page)
@@ -139,6 +147,31 @@ async function crawl(origin: string, ids: string[]) {
   if (found.size) stats.withBeers++
   rows.push(...found.values())
   note(home, beerPages, found.size)
+}
+
+/** Beer pages from the sitemap (robots.txt „Sitemap:“, else /sitemap.xml) – at most one index and two child sitemaps. */
+async function sitemapLinks(origin: string, robotsTxt: string | null, get: (url: string) => Promise<Fetched>, allowed: (u: string) => boolean) {
+  const host = (u: string) => {
+    try {
+      return new URL(u).hostname.replace(/^www\./, '')
+    } catch {
+      return null
+    }
+  }
+  const own = (u: string) => host(u) === host(origin) && allowed(u)
+  const declared = [...(robotsTxt ?? '').matchAll(/^\s*sitemap:\s*(\S+)/gim)].map((m) => m[1])
+  const first = declared.find(own) ?? `${origin}/sitemap.xml`
+  if (!own(first)) return []
+  await sleep(1000)
+  const top = await get(first)
+  if (!top.html) return []
+  let { pages } = sitemapUrls(top.html)
+  for (const child of pickSitemaps(sitemapUrls(top.html).sitemaps.filter(own))) {
+    await sleep(1000)
+    const sub = await get(child)
+    if (sub.html) pages = [...pages, ...sitemapUrls(sub.html).pages]
+  }
+  return sitemapBeerLinks(pages, origin)
 }
 
 const queue = [...mine]

@@ -64,8 +64,14 @@ export const textOf = (html: string) =>
 
 const BEER_LINK =
   /(unsere[-_\s]?)?biere?\b|bierspezialit|sortiment|produkte|unsere[-_\s]?marken|beers?\b|bierwelt|on[-_\s]?tap|tap[-_\s]?list|line[-_\s]?up|brews\b|bi[eè]res\b/i
+/** Drinks pages and tap lists – the beers are often there (V9); they count less than a link that says beer. */
+const DRINK_LINK = /\bdrinks?\b|getr[äa]nke|\bdraft|\bdraught|\btaps?\b|\bmenus?\b|ausschank|durst|pouring/i
 const SKIP_LINK =
-  /shop|store|merch|warenkorb|cart|checkout|jobs?|careers?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|tickets?|gift[-_\s]?cards?|archiv|retired|of[-_\s]the[-_\s]past|past[-_\s]beers|\.(pdf|jpe?g|png|gif|zip)$/i
+  /food|speise|fr[üu]hst[üu]ck|breakfast|brunch|lunch|dinner|catering|kids|\bwines?\b|cocktail|spirits|shop|store|merch|warenkorb|cart|checkout|jobs?|careers?|karriere|impressum|datenschutz|privacy|agb|kontakt|login|tickets?|gift[-_\s]?cards?|archiv|retired|of[-_\s]the[-_\s]past|past[-_\s]beers|\.(pdf|jpe?g|png|gif|zip)$/i
+
+/** How much a link looks like the beer overview: beer words in text 8 / path 4, drinks words in text 2 / path 1. */
+const linkScore = (path: string, text: string) =>
+  (BEER_LINK.test(text) ? 8 : 0) + (BEER_LINK.test(path) ? 4 : 0) + (DRINK_LINK.test(text) ? 2 : 0) + (DRINK_LINK.test(path) ? 1 : 0)
 
 /** Same-site links that look like the beer overview, best first (max `limit`). */
 export function beerLinks(html: string, base: string, limit = 3): string[] {
@@ -87,13 +93,54 @@ export function beerLinks(html: string, base: string, limit = 3): string[] {
       // malformed %-escape: match on the raw path
     }
     if (SKIP_LINK.test(path) || SKIP_LINK.test(text)) continue
-    const score = (BEER_LINK.test(text) ? 2 : 0) + (BEER_LINK.test(path) ? 1 : 0)
+    const score = linkScore(path, text)
     if (!score) continue
     url.hash = ''
     const key = url.toString()
     scored.set(key, Math.max(scored.get(key) ?? 0, score))
   }
   return [...scored].sort((a, b) => b[1] - a[1] || a[0].length - b[0].length).slice(0, limit).map(([u]) => u)
+}
+
+/** A sitemap: its page URLs, or – for a sitemap index – the sitemaps it lists. */
+export function sitemapUrls(xml: string): { pages: string[]; sitemaps: string[] } {
+  const locs = (tag: string) =>
+    [...xml.matchAll(new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?<loc>\\s*(?:<!\\[CDATA\\[)?([^<\\]]+?)(?:\\]\\]>)?\\s*<\\/loc>`, 'gi'))].map((m) => decode(m[1]))
+  return { pages: locs('url'), sitemaps: locs('sitemap') }
+}
+
+/** Child sitemaps of an index worth reading: pages, products and beers before posts, tags and authors (max `limit`). */
+export function pickSitemaps(urls: string[], limit = 2): string[] {
+  const rank = (u: string) => (/beer|bier|product|produkt|page/i.test(u) ? 0 : /post|tag|author|categor|attachment|image|video/i.test(u) ? 2 : 1)
+  return [...urls].sort((a, b) => rank(a) - rank(b) || a.length - b.length).slice(0, limit)
+}
+
+/**
+ * Sitemap pages that look like the beer overview – when the home page links none (V9): same site, path words only,
+ * overview pages („/beers/“) before single beers („/beer/sculpin/“).
+ */
+export function sitemapBeerLinks(urls: string[], base: string, limit = 3): string[] {
+  const host = new URL(base).hostname.replace(/^www\./, '')
+  const scored: [string, number, number][] = []
+  for (const u of new Set(urls)) {
+    let url: URL
+    try {
+      url = new URL(u)
+    } catch {
+      continue
+    }
+    if (!/^https?:$/.test(url.protocol) || url.hostname.replace(/^www\./, '') !== host) continue
+    let path = url.pathname
+    try {
+      path = decodeURIComponent(path)
+    } catch {
+      // keep the raw path
+    }
+    if (SKIP_LINK.test(path)) continue
+    const score = linkScore(path, '')
+    if (score) scored.push([url.toString(), score, path.split('/').filter(Boolean).length])
+  }
+  return scored.sort((a, b) => b[1] - a[1] || a[2] - b[2] || a[0].length - b[0].length).slice(0, limit).map(([u]) => u)
 }
 
 export interface WebBeer {
