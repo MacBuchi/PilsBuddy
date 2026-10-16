@@ -269,8 +269,11 @@ export function cleanName(raw: string): string {
 
 /** „4,9 % vol“, „5.2% Alc.“, „6.5% ABV“ or „ABV: 6.5%“ */
 const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk|abv)|\babv\b\s*[:\-–]?\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*%/i
+/** „Alkohol: 5,2 %“, „Alkoholgehalt 4,9%“, „Alc. 5.0 %“ – a label before the value (V11). */
+const ABV_LABELLED = /\b(?:alkohol(?:gehalt)?|alc(?:ohol)?|alk|abv)\.?(?:\s*[(/]?\s*(?:%|vol\.?|v\/v)\s*\)?)*\s*[:\-–]?\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*%/i
 const abvIn = (t: string) => {
-  const m = t.match(ABV)
+  // a labelled value first (V11): „Stammwürze 12,5 % Alkohol 5,1 % vol“ would otherwise give 12,5
+  const m = t.match(ABV_LABELLED) ?? t.match(ABV)
   const v = m?.[1] ?? m?.[2]
   return v ? Number(v.replace(',', '.')) : null
 }
@@ -488,4 +491,89 @@ const PDF_PROSE = /^\p{Ll}|\p{Ll}[.!?]\s/u
 export function extractPdfBeers(blocks: string[], lang: Lang = 'de'): WebBeer[] {
   const beers = blockBeers(blocks, lang, (t) => PDF_PROSE.test(t) || PDF_NOT_BEER.test(t))
   return beers.length >= 2 ? beers : []
+}
+
+/** A beer name or URL path segment as a slug: „Hoepfner Pilsner“ → „hoepfner-pilsner“, „Weißbier“ → „weissbier“. */
+const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/ß/g, 'ss')
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
+/** What turns a beer into another one when it follows the name. */
+const VARIANT = /-(alkoholfrei|alkoholarm|non-?alc\w*|n-a|na|zero|0-0|free|frei|light|leicht|radler|alster|shandy|naturradler|dunkel|hell|weiss|imperial|double|dipa|tipa|barrel|ba|nitro|hazy|sour|kirsch|kriek|eis|bock)(-|$)/
+
+/**
+ * V11: links to the detail pages of beers the overview names without ABV – same site, the link text is the beer's name
+ * („<a href="/biere/pils"><h3>Pils</h3></a>“) or the last path segment is its slug („/bier/hoepfner-pils“ for „Pils“
+ * only with a word before it). One page per beer, in the order of `names`, max `limit`.
+ */
+export function beerDetailLinks(html: string, base: string, names: readonly string[], limit = 8): Map<string, string> {
+  const baseUrl = new URL(base)
+  const host = (u: URL) => u.hostname.replace(/^www\./, '')
+  const self = baseUrl.origin + baseUrl.pathname.replace(/\/$/, '')
+  const byText = new Map<string, string>()
+  const bySlug = new Map<string, string>()
+  for (const m of html.matchAll(/<a\b[^>]*href\s*=\s*["']([^"'#]+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+    let url: URL
+    try {
+      url = new URL(decode(m[1]), baseUrl)
+    } catch {
+      continue
+    }
+    url.hash = ''
+    if (!/^https?:$/.test(url.protocol) || host(url) !== host(baseUrl) || url.origin + url.pathname.replace(/\/$/, '') === self) continue
+    let path = url.pathname
+    try {
+      path = decodeURIComponent(path)
+    } catch {
+      // keep the raw path
+    }
+    if (SKIP_LINK.test(path) && !/shop|store/i.test(path)) continue
+    const text = slug(cleanName(textOf(m[2])))
+    if (text && !byText.has(text)) byText.set(text, url.toString())
+    const last = slug(path.split('/').filter(Boolean).pop() ?? '')
+    if (last && !bySlug.has(last)) bySlug.set(last, url.toString())
+  }
+  const out = new Map<string, string>()
+  for (const name of names) {
+    if (out.size >= limit) break
+    const s = slug(name)
+    if (!s) continue
+    // exact first; else a tile whose link wraps the name and a description, or a slug with the brewery before or the
+    // size after it – but not another variant of the beer („Pils“ ≠ „Pils alkoholfrei“)
+    const loose = (key: string) => key.startsWith(`${s}-`) && !VARIANT.test(key.slice(s.length))
+    const url =
+      byText.get(s) ??
+      bySlug.get(s) ??
+      [...bySlug].find(([seg]) => seg.endsWith(`-${s}`))?.[1] ??
+      [...byText].find(([t]) => loose(t))?.[1] ??
+      [...bySlug].find(([seg]) => loose(seg))?.[1]
+    if (url && ![...out.values()].includes(url)) out.set(name, url)
+  }
+  return out
+}
+
+
+/**
+ * V11: the ABV on a beer's detail page – the first (labelled) value after the beer's name in the page text (2 000 characters),
+ * so a carousel with other beers further down does not count. Null when the page does not name the beer.
+ */
+export function detailAbv(html: string, name: string): number | null {
+  const text = textOf(html.replace(/<(nav|header|footer)\b[\s\S]*?<\/\1>/gi, ' '))
+  const lower = text.toLowerCase()
+  const key = name.toLowerCase()
+  // the name in the main heading counts first, else its first mention
+  const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)
+  const inH1 = h1 && textOf(h1[1]).toLowerCase().includes(key) ? lower.indexOf(textOf(h1[1]).toLowerCase()) : -1
+  const at = inH1 >= 0 ? inH1 : lower.indexOf(key)
+  if (at < 0) return null
+  const window = text.slice(at, at + 2000)
+  return toAbv(abvIn(window)?.toString())
 }

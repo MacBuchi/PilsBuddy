@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beerLinks, beerName, beerPdfLinks, breweryKey, cleanName, extractBeers, extractPdfBeers, guestBeer, pdfBlocks, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
+import { beerDetailLinks, beerLinks, beerName, beerPdfLinks, detailAbv, breweryKey, cleanName, extractBeers, extractPdfBeers, guestBeer, pdfBlocks, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls, textOf } from './web'
 
 describe('robotsAllows', () => {
   it('follows the * group and our own group, wildcards included', () => {
@@ -335,5 +335,63 @@ describe('PDF drinks lists (V9c)', () => {
 
   it('takes a single beer word of a food menu for nothing', () => {
     expect(extractPdfBeers(['Schnitzel Wiener Art', 'Bierbratensoße', 'Pils', 'Apfelstrudel'])).toEqual([])
+  })
+})
+
+describe('beerDetailLinks (V11)', () => {
+  it('finds a detail page by link text or path slug, same site only, one page per beer', () => {
+    const html = `
+      <a href="/biere/pils"><h3>Pils</h3></a>
+      <a href="/produkte/hoepfner-weissbier">Mehr erfahren</a>
+      <a href="/bier/maerzen">Details</a>
+      <a href="https://untappd.com/b/dunkel">Dunkel</a>
+      <a href="/biere/">Unsere Biere</a>
+      <a href="/impressum">Helles</a>`
+    const links = beerDetailLinks(html, 'https://brauerei.de/biere/', ['Pils', 'Weißbier', 'Märzen', 'Dunkel', 'Unsere Biere', 'Helles'])
+    expect([...links]).toEqual([
+      ['Pils', 'https://brauerei.de/biere/pils'],
+      ['Weißbier', 'https://brauerei.de/produkte/hoepfner-weissbier'],
+      ['Märzen', 'https://brauerei.de/bier/maerzen'],
+    ])
+    expect(beerDetailLinks(html, 'https://brauerei.de/biere/', ['Pils', 'Märzen'], 1).size).toBe(1)
+  })
+
+  it('also takes a tile with a description or a slug with the size after the name, not another variant', () => {
+    const html = `
+      <a href="/b/1"><h3>Kellerbier</h3><p>Unfiltriert und süffig</p></a>
+      <a href="/shop/export-0-5l">Kaufen</a>
+      <a href="/biere/pils-alkoholfrei">Pils alkoholfrei</a>
+      <a href="/biere/hazy-ipa-imperial">Hazy IPA Imperial</a>`
+    expect([...beerDetailLinks(html, 'https://brauerei.de/', ['Kellerbier', 'Export', 'Pils', 'Hazy IPA'])]).toEqual([
+      ['Kellerbier', 'https://brauerei.de/b/1'],
+      ['Export', 'https://brauerei.de/shop/export-0-5l'],
+    ])
+  })
+})
+
+describe('labelled ABV on the overview (V11)', () => {
+  it('reads „Alkohol: 5,2 %“ under a heading, before a Stammwürze value', () => {
+    const html = '<h3>Hoepfner Pilsner</h3><p>Stammwürze 11,5 % · Alkohol: 4,9 %</p><h3>Hoepfner Export</h3><p>Alkoholgehalt 5,2%</p>'
+    expect(extractBeers(html)).toEqual([
+      { name: 'Hoepfner Pilsner', abv: 4.9 },
+      { name: 'Hoepfner Export', abv: 5.2 },
+    ])
+  })
+})
+
+describe('detailAbv (V11)', () => {
+  it('reads the ABV after the beer name, labelled values first', () => {
+    const page = (body: string) => `<nav>Lager 4,8 % vol</nav><main>${body}</main>`
+    expect(detailAbv(page('<h1>Hoepfner Pilsner</h1><p>Stammwürze 11,5 % Alkohol 4,9 % vol</p>'), 'Hoepfner Pilsner')).toBe(4.9)
+    expect(detailAbv(page('<h1>Pils</h1><table><tr><td>Alkoholgehalt</td><td>5,2%</td></tr></table>'), 'Pils')).toBe(5.2)
+    expect(detailAbv(page('<h1>Hazy IPA</h1><p>Alc./Vol. 6.5%</p>'), 'Hazy IPA')).toBe(6.5)
+    expect(detailAbv(page('<h1>Porter</h1><p>A dark ale. 5.8% ABV</p>'), 'Porter')).toBe(5.8)
+  })
+
+  it('ignores pages that do not name the beer, values before it and implausible ones', () => {
+    expect(detailAbv('<h1>Unsere Biere</h1><p>Alkohol 5 %</p>', 'Dunkel')).toBeNull()
+    expect(detailAbv('<p>Helles 4,9 % vol</p><h1>Dunkel</h1><p>Malzig.</p>', 'Dunkel')).toBeNull()
+    expect(detailAbv('<h1>Dunkel</h1><p>Alkohol 55 %</p>', 'Dunkel')).toBeNull()
+    expect(detailAbv('<h1>Dunkel</h1><p>Alkoholfrei, Stammwürze 7 %</p>', 'Dunkel')).toBeNull()
   })
 })

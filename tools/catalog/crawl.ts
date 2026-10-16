@@ -3,7 +3,8 @@
 // Breweries come from the live catalogue (public API, published rows with a website), so every beer is
 // already tied to its brewery; the brewery's country picks the language profile and Accept-Language. Polite: robots.txt, own User-Agent, ≤ 4 pages per site
 // (plus ≤ 3 sitemap files when the home page links no beer page, V9, and ≤ 2 PDF drinks lists when the pages name no
-// beer, V9c, and ≤ 3 pages rendered in Chromium when they are built by JavaScript, V9d), 1 s between requests.
+// beer, V9c, ≤ 3 pages rendered in Chromium when they are built by JavaScript, V9d, and ≤ 8 detail pages of beers the
+// overview names without ABV, V11), 1 s between requests.
 // V8: every site also gets a reason (diagnose.ts) in raw/web-diag-<shard>.json – why it gave beers or none.
 /// <reference types="node" />
 import { mkdirSync, writeFileSync } from 'node:fs'
@@ -14,7 +15,7 @@ import { openBrowser } from './browser'
 import { diagnoseSite, wantsBrowser } from './diagnose'
 import type { Fetched, SiteRow } from './diagnose'
 import { pdfItems } from './pdf'
-import { beerLinks, beerPdfLinks, CRAWLER_UA, extractBeers, extractPdfBeers, pdfBlocks, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls } from './web'
+import { beerDetailLinks, beerLinks, beerPdfLinks, CRAWLER_UA, detailAbv, extractBeers, extractPdfBeers, pdfBlocks, pickSitemaps, robotsAllows, sitemapBeerLinks, sitemapUrls } from './web'
 import type { Lang } from './web'
 
 const arg = (k: string) => {
@@ -115,7 +116,7 @@ console.log(`${breweries.length} breweries with website, ${sites.size} sites, sh
 
 const rows: Row[] = []
 const diag: SiteRow[] = []
-const stats = { sites: 0, unreachable: 0, robots: 0, withBeers: 0, pages: 0, pdfs: 0, withPdfBeers: 0, rendered: 0, withRenderedBeers: 0 }
+const stats = { sites: 0, unreachable: 0, robots: 0, withBeers: 0, pages: 0, pdfs: 0, withPdfBeers: 0, rendered: 0, withRenderedBeers: 0, details: 0, detailAbv: 0 }
 const browser = await openBrowser()
 console.log(browser ? 'browser: Chromium for JavaScript pages' : 'browser: none (PW_DIR not set or Playwright missing)')
 
@@ -173,6 +174,23 @@ async function crawl(origin: string, ids: string[]) {
       }
   }
   for (const page of pages) add(page.url, extractBeers(page.html, langOf(country)))
+  // V11: the overview names a beer without ABV – read its detail page (≤ 8 per site, robots.txt applies)
+  const noAbv = [...new Set([...found.values()].filter((r) => r.abv == null).map((r) => r.name))]
+  if (noAbv.length) {
+    const details = new Map<string, string>()
+    for (const page of pages)
+      for (const [name, url] of beerDetailLinks(page.html, page.url, noAbv.filter((n) => !details.has(n)), 8 - details.size))
+        if (allowed(url) && !pages.some((p) => p.url === url)) details.set(name, url)
+    for (const [name, url] of details) {
+      await sleep(1000)
+      const page = await get(url)
+      stats.details++
+      const abv = page.html ? detailAbv(page.html, name) : null
+      if (abv == null) continue
+      stats.detailAbv++
+      for (const row of found.values()) if (row.name === name && row.abv == null) row.abv = abv
+    }
+  }
   // V9c: no beer on the pages – the drinks list may be a PDF (own site: robots.txt applies; builder file hosts too)
   if (!found.size) {
     const pdfs = [...new Set(pages.flatMap((p) => beerPdfLinks(p.html, p.url)))]
@@ -257,5 +275,5 @@ mkdirSync(OUT, { recursive: true })
 writeFileSync(join(OUT, `web-${SHARD}.json`), JSON.stringify(rows, null, 1))
 writeFileSync(join(OUT, `web-diag-${SHARD}.json`), JSON.stringify(diag, null, 1))
 console.log(
-  `sites ${stats.sites} · robots.txt says no ${stats.robots} · unreachable ${stats.unreachable} · pages ${stats.pages} · PDFs ${stats.pdfs} · sites with beers ${stats.withBeers} (from PDF ${stats.withPdfBeers}, rendered ${stats.withRenderedBeers} of ${stats.rendered}) · beers ${rows.length}`,
+  `sites ${stats.sites} · robots.txt says no ${stats.robots} · unreachable ${stats.unreachable} · pages ${stats.pages} · PDFs ${stats.pdfs} · sites with beers ${stats.withBeers} (from PDF ${stats.withPdfBeers}, rendered ${stats.withRenderedBeers} of ${stats.rendered}) · detail pages ${stats.details} (ABV ${stats.detailAbv}) · beers ${rows.length} (ABV ${rows.filter((r) => r.abv != null).length})`,
 )

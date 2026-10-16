@@ -48,7 +48,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 27. [x] **V8** Crawler-Diagnose: je Website der Grund, warum sie kein Bier liefert – Bericht entscheidet V9 (Wunsch 2026-10-14) (#96)
 28. [x] **V9** Crawler-Ausbau nach dem V8-Befund: Erkennung lockern („missed“) + Sitemap/Links („no-beer-page“), dann JS-Seiten und PDF-Karten (Ziel: deutlich mehr als 22 % der Brauereien mit Bier)
 29. [x] **V10** Zweite Quellen besser abgleichen: Wikidata-/Open-Food-Facts-Biere zuverlässiger den Brauereien zuordnen → „bestätigt“
-30. [ ] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3)
+30. [x] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3) (#104)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -423,7 +423,11 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
         Produkt außerhalb des Brauerei-Landes nur mit exaktem Namen, `off-other.json` (7 087 Biere, nur Wikidata-Brauereien);
         Zwillinge über Quellen (`twinKey`), bestätigte Biere zuerst. Gleiche Rohdaten: geprüft 13 → 28, bestätigt 811 → 1 034,
         Wikidata-Biere mit Brauerei 7 730 / 9 014. Grenze: nur ≈ 500 Brauereien haben eine zweite Quelle
-- [ ] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)
+- [x] V11 **Alkohol nachtragen:** nur 43 % der Regionalbiere haben einen Alkoholwert; Detailseiten der Biere lesen (S–M)
+      - umgesetzt (2026-10-16, #104): Detailseite über Linktext = Biername oder Pfad-Slug (keine andere Variante),
+        ≤ 8 je Website; Wert nach dem Namen; „Alkohol: 5,2 %“ auch auf der Übersicht, beschriftet vor „x % vol“.
+        Gleiche übrige Rohdaten: Hauptbiere mit Alkohol 48 → 57 % (8 911 → 10 943), „Stammwürze statt Alkohol“ 231 → 184,
+        geprüft 28 → 49; 4 873 Detailseiten, 2 911 mit Wert
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
