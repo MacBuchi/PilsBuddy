@@ -6,6 +6,7 @@ import { normalizeStyle, STYLE_PROFILES } from '../../src/domain/styleProfile'
 import { checkAbv } from './plausible'
 import { styleOnly } from './web'
 import type { PlausibilityNote } from './plausible'
+import type { ResearchRow } from './research'
 import type { Pack } from '../../src/domain/types'
 import COUNTRY_TABLE from './countries.json'
 
@@ -86,6 +87,8 @@ export interface WebRow {
   path: string
   name: string
   abv: number | null
+  /** V12: the style a researched page gives */
+  style?: string | null
 }
 
 /** raw/off-XX.json (fetch-off.mjs) */
@@ -124,9 +127,9 @@ export interface Brewery {
 }
 
 /** beer_sources.id */
-export const SOURCE = { off: 1, wikidata: 2, web: 3, openbeer: 4 } as const
+export const SOURCE = { off: 1, wikidata: 2, web: 3, openbeer: 4, research: 6 } as const
 /** On a tie, the more current source wins (openbeer is from ~2014). */
-const SOURCE_PRIORITY: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3 }
+const SOURCE_PRIORITY: Record<number, number> = { 1: 0, 2: 1, 3: 2, 6: 3, 4: 4 }
 
 export interface RegionalBeer {
   id: string
@@ -339,6 +342,15 @@ export function tooFew(breweries: Brewery[], min?: number): string[] {
   return COUNTRIES.filter((c) => n(c) < (min ?? COUNTRY_INFO[c].minBreweries)).map(
     (c) => `${c}: ${n(c)} < ${min ?? COUNTRY_INFO[c].minBreweries}`,
   )
+}
+
+/**
+ * V12: a brewery only Wikidata knows, without website and without any beer, is not confirmed – mostly listed
+ * buildings („Brauerei Rote Straße 10 in Zirndorf (D-5-73-134-39#9)“) or long-gone breweries; it is not published.
+ */
+export function confirmedBreweries(breweries: Brewery[], beers: readonly { breweryId: string }[]): Brewery[] {
+  const withBeer = new Set(beers.map((b) => b.breweryId))
+  return breweries.filter((b) => withBeer.has(b.id) || b.website || b.sources.some((s) => s !== 'wikidata'))
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -687,6 +699,7 @@ export function mainBeers(
   openbeer: OpenbeerRow[] = [],
   web: WebRow[] = [],
   notes: PlausibilityNote[] = [],
+  research: ResearchRow[] = [],
 ): RegionalBeer[] {
   const match = breweryMatcher(breweries)
   const bySite = breweryBySite(breweries)
@@ -771,11 +784,30 @@ export function mainBeers(
     add(w.breweryId, {
       code,
       name: tidyBeerName(name),
-      style: normalizeStyle([name], abv),
+      style: normalizeStyle([name, w.style ?? ''], abv),
       abv,
       pack: null,
       source: SOURCE.web,
       sourceRef: w.path.slice(0, 300) || '/',
+    })
+  }
+  // V12: researched on another site than the brewery's own – the page is the reference
+  const seenResearch = new Set<string>()
+  for (const r of research) {
+    const name = text(r.name, 200)
+    if (!name || !known.has(r.breweryId)) continue
+    const code = `x${stableHash(`${r.breweryId}|${normName(name)}`)}`
+    if (seenResearch.has(code)) continue
+    seenResearch.add(code)
+    const abv = r.abv != null && r.abv > 0 && r.abv <= 20 ? Math.round(r.abv * 10) / 10 : null
+    add(r.breweryId, {
+      code,
+      name: tidyBeerName(name),
+      style: normalizeStyle([name, r.style ?? ''], abv),
+      abv,
+      pack: null,
+      source: SOURCE.research,
+      sourceRef: r.url,
     })
   }
   // a bare „Blonde“ is an abbey beer in German-speaking countries, an American blonde ale in English-speaking ones
@@ -952,14 +984,23 @@ export interface ImportFile {
 /** A country may lose at most this share of its published breweries in one import. */
 export const MAX_DROP = 0.1
 
-/** Import SQL as ordered files (each one transaction, small enough for `supabase db query`). */
-export function importSql(breweries: Brewery[], beers: RegionalBeer[], places: Place[], batch = 500): ImportFile[] {
+/**
+ * Import SQL as ordered files (each one transaction, small enough for `supabase db query`). The guard counts what was
+ * downloaded (`downloaded`), before breweries are hidden on purpose (V12: research, unconfirmed ones).
+ */
+export function importSql(
+  breweries: Brewery[],
+  beers: RegionalBeer[],
+  places: Place[],
+  batch = 500,
+  downloaded: Brewery[] = breweries,
+): ImportFile[] {
   const files: ImportFile[] = []
   const pad = (i: number) => String(i + 1).padStart(3, '0')
   const tx = (sql: string) => `begin;\n${sql}commit;\n`
   // first file: stop before anything is written when a country lost more than MAX_DROP of what is live – a
   // download can come back short without failing (2026-10: Overpass left out Saxony and Hesse)
-  const counts = COUNTRIES.map((c) => `(${lit(c)}, ${breweries.filter((b) => b.country === c).length})`).join(', ')
+  const counts = COUNTRIES.map((c) => `(${lit(c)}, ${downloaded.filter((b) => b.country === c).length})`).join(', ')
   files.push({
     name: '05-guard.sql',
     sql:

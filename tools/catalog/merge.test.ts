@@ -526,6 +526,11 @@ describe('importSql', () => {
     expect(guard).toContain("where published and id not like 'app-%'")
   })
 
+  it('the guard counts what was downloaded, not what is hidden on purpose (V12)', () => {
+    const two = [brewery({ id: 'osm-n1', name: 'A' }), brewery({ id: 'wd-q2', name: 'B', sources: ['wikidata'] })]
+    expect(importSql(two.slice(0, 1), [], [], 500, two)[0].sql).toContain("(values ('DE', 2),")
+  })
+
   it('splits large imports into batches', () => {
     const many = Array.from({ length: 1201 }, (_, i) => brewery({ id: `osm-n${i}`, name: `B${i}` }))
     expect(importSql(many, [], []).filter((f) => f.name.startsWith('10-')).length).toBe(3)

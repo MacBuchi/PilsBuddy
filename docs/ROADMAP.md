@@ -49,6 +49,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 28. [x] **V9** Crawler-Ausbau nach dem V8-Befund: Erkennung lockern („missed“) + Sitemap/Links („no-beer-page“), dann JS-Seiten und PDF-Karten (Ziel: deutlich mehr als 22 % der Brauereien mit Bier)
 29. [x] **V10** Zweite Quellen besser abgleichen: Wikidata-/Open-Food-Facts-Biere zuverlässiger den Brauereien zuordnen → „bestätigt“
 30. [x] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3) (#104)
+31. [ ] **V12** Jede bestätigte Brauerei hat ein Bier: Recherche-Agenten mit Beleg-URL je Bier, zuerst DACH (Wunsch 2026-10-16)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -428,6 +429,13 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
         ≤ 8 je Website; Wert nach dem Namen; „Alkohol: 5,2 %“ auch auf der Übersicht, beschriftet vor „x % vol“.
         Gleiche übrige Rohdaten: Hauptbiere mit Alkohol 48 → 57 % (8 911 → 10 943), „Stammwürze statt Alkohol“ 231 → 184,
         geprüft 28 → 49; 4 873 Detailseiten, 2 911 mit Wert
+- [ ] V12 **Jede bestätigte Brauerei hat ein Bier** (Wunsch 2026-10-16; Absprache: zuerst DACH, Nordamerika danach;
+      keine Brauerei → mit Beleg ausblenden; Agenten mit Sonnet): Agenten recherchieren je Brauerei ohne Bier die eigenen
+      Biere (Website, Shop, Bierportale, Brauereiführer), ein zweiter Agent öffnet jede Beleg-URL erneut. Ergebnis als
+      Daten im Repo (`tools/catalog/research/*.json`), der Build macht daraus Website-Biere (eigene Seite) oder Quelle 6
+      „Recherche“ (andere Seite, Link am Bier), höchstens 3 je Brauerei; Qualität wie immer berechnet. „geschlossen“/„keine eigene Brauerei“ mit
+      Beleg und Wikidata-Einträge ohne Website und ohne Bier (Baudenkmäler, längst geschlossene) werden nicht veröffentlicht;
+      der Import-Schutz zählt den Download vor diesem Ausblenden (M)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

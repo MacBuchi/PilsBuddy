@@ -55,7 +55,11 @@ async function live(): Promise<{ breweries: BreweryRow[]; beers: BeerRow[] }> {
   return { breweries, beers }
 }
 
-const next = JSON.parse(readFileSync(join(OUT, 'next.json'), 'utf8')) as { breweries: BreweryRow[]; beers: BeerRow[] }
+const next = JSON.parse(readFileSync(join(OUT, 'next.json'), 'utf8')) as {
+  breweries: BreweryRow[]
+  beers: BeerRow[]
+  downloaded?: Record<string, number>
+}
 const diff = catalogDiff(COUNTRIES, await live(), next)
 const md = diffMarkdown(diff)
 writeFileSync(join(OUT, 'diff.md'), md)

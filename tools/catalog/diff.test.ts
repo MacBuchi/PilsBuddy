@@ -69,6 +69,8 @@ describe('catalogDiff', () => {
     const short = catalogDiff(['DE'], live, { breweries: [], beers: [] })
     expect(short[0].blocked).toBe(true)
     expect(diffMarkdown(short)).toContain('[!CAUTION]')
+    // V12: breweries hidden on purpose are no short download
+    expect(catalogDiff(['DE'], live, { breweries: [], beers: [], downloaded: { DE: 99 } })[0].blocked).toBe(false)
   })
 
   it('maps build rows to diff rows', () => {
