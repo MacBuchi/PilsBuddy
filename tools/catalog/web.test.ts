@@ -355,6 +355,18 @@ describe('beerDetailLinks (V11)', () => {
     ])
     expect(beerDetailLinks(html, 'https://brauerei.de/biere/', ['Pils', 'Märzen'], 1).size).toBe(1)
   })
+
+  it('also takes a tile with a description or a slug with the size after the name, not another variant', () => {
+    const html = `
+      <a href="/b/1"><h3>Kellerbier</h3><p>Unfiltriert und süffig</p></a>
+      <a href="/shop/export-0-5l">Kaufen</a>
+      <a href="/biere/pils-alkoholfrei">Pils alkoholfrei</a>
+      <a href="/biere/hazy-ipa-imperial">Hazy IPA Imperial</a>`
+    expect([...beerDetailLinks(html, 'https://brauerei.de/', ['Kellerbier', 'Export', 'Pils', 'Hazy IPA'])]).toEqual([
+      ['Kellerbier', 'https://brauerei.de/b/1'],
+      ['Export', 'https://brauerei.de/shop/export-0-5l'],
+    ])
+  })
 })
 
 describe('detailAbv (V11)', () => {

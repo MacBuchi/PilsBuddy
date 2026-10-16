@@ -503,6 +503,9 @@ const slug = (s: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
 
+/** What turns a beer into another one when it follows the name. */
+const VARIANT = /-(alkoholfrei|alkoholarm|non-?alc\w*|n-a|na|zero|0-0|free|frei|light|leicht|radler|alster|shandy|naturradler|dunkel|hell|weiss|imperial|double|dipa|tipa|barrel|ba|nitro|hazy|sour|kirsch|kriek|eis|bock)(-|$)/
+
 /**
  * V11: links to the detail pages of beers the overview names without ABV – same site, the link text is the beer's name
  * („<a href="/biere/pils"><h3>Pils</h3></a>“) or the last path segment is its slug („/bier/hoepfner-pils“ for „Pils“
@@ -540,7 +543,15 @@ export function beerDetailLinks(html: string, base: string, names: readonly stri
     if (out.size >= limit) break
     const s = slug(name)
     if (!s) continue
-    const url = byText.get(s) ?? bySlug.get(s) ?? [...bySlug].find(([seg]) => seg.endsWith(`-${s}`))?.[1]
+    // exact first; else a tile whose link wraps the name and a description, or a slug with the brewery before or the
+    // size after it – but not another variant of the beer („Pils“ ≠ „Pils alkoholfrei“)
+    const loose = (key: string) => key.startsWith(`${s}-`) && !VARIANT.test(key.slice(s.length))
+    const url =
+      byText.get(s) ??
+      bySlug.get(s) ??
+      [...bySlug].find(([seg]) => seg.endsWith(`-${s}`))?.[1] ??
+      [...byText].find(([t]) => loose(t))?.[1] ??
+      [...bySlug].find(([seg]) => loose(seg))?.[1]
     if (url && ![...out.values()].includes(url)) out.set(name, url)
   }
   return out
