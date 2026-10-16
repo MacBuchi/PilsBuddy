@@ -93,7 +93,7 @@ function diffRows<T extends { id: string; name: string }>(live: T[], next: T[], 
 export function catalogDiff(
   countries: readonly Country[],
   live: { breweries: BreweryRow[]; beers: BeerRow[] },
-  next: { breweries: BreweryRow[]; beers: BeerRow[] },
+  next: { breweries: BreweryRow[]; beers: BeerRow[]; downloaded?: Record<string, number> },
 ): CountryDiff[] {
   const liveBreweries = live.breweries.filter((b) => !fromApp.brewery(b))
   const liveBeers = live.beers.filter((b) => !fromApp.beer(b))
@@ -108,7 +108,9 @@ export function catalogDiff(
     )
     const inCountry = (b: BeerRow) => countryOf.get(b.breweryId) === country
     const beers = diffRows(liveBeers.filter(inCountry), next.beers.filter(inCountry), beerFields)
-    return { country, breweries, beers, blocked: breweries.next < breweries.live * (1 - MAX_DROP) }
+    // like 05-guard.sql: what was downloaded, before breweries are hidden on purpose (V12)
+    const downloaded = next.downloaded?.[country] ?? breweries.next
+    return { country, breweries, beers, blocked: downloaded < breweries.live * (1 - MAX_DROP) }
   })
 }
 

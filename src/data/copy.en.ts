@@ -401,6 +401,7 @@ export const EN: Copy = {
     onList: 'Saved',
     sourceWebsite: "Brewery's website",
     sourceApp: 'Reported in the app',
+    sourceResearch: 'Research',
     website: 'Website',
     route: 'Directions',
     since: 'since {year}',

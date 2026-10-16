@@ -53,6 +53,8 @@ const SOURCES: Record<number, { name: string; url?: (ref: string) => string }> =
   4: { name: 'beer.db (openbeer)', url: (ref) => `https://github.com/openbeer/${ref}` },
   // R6: reported in the app and approved; the ref is the link given with the report
   5: { name: COPY.regional.sourceApp, url: (ref) => safeUrl(ref) ?? '' },
+  // V12: researched on another site than the brewery's own; the ref is that page
+  6: { name: COPY.regional.sourceResearch, url: (ref) => safeUrl(ref) ?? '' },
 }
 
 const COUNTRY_NAME: Record<Country, string> = COPY.countries

@@ -407,6 +407,7 @@ const DE = {
     onList: 'Vorgemerkt',
     sourceWebsite: 'Website der Brauerei',
     sourceApp: 'Meldung aus der App',
+    sourceResearch: 'Recherche',
     website: 'Website',
     route: 'Route',
     since: 'seit {year}',

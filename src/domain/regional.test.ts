@@ -116,6 +116,11 @@ describe('toRegionalBeer', () => {
     expect(sourceUrl({ ...beer('r-a5', 'Pils'), source: 2, source_ref: 'Q501' }, b)).toBe('https://www.wikidata.org/wiki/Q501')
   })
 
+  it('links researched beers (V12) to the page that names them', () => {
+    const x = toRegionalBeer({ ...beer('r-x1', 'Pils'), source: 6, source_ref: 'https://bierfuehrer.example/loewe' }, b)
+    expect(x.regional).toEqual({ breweryId: 'osm-n7', source: 'Recherche', sourceUrl: 'https://bierfuehrer.example/loewe' })
+  })
+
   it('links reported beers (R6) to the link given with the report, if it is safe', () => {
     expect(sourceUrl({ ...beer('r-app37', 'Pils'), source: 5, source_ref: 'https://hinterhof.example/biere' }, b)).toBe('https://hinterhof.example/biere')
     expect(sourceUrl({ ...beer('r-app38', 'Pils'), source: 5, source_ref: 'javascript:alert(1)' }, b)).toBeUndefined()
