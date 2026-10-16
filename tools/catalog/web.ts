@@ -269,8 +269,11 @@ export function cleanName(raw: string): string {
 
 /** „4,9 % vol“, „5.2% Alc.“, „6.5% ABV“ or „ABV: 6.5%“ */
 const ABV = /(\d{1,2}(?:[.,]\d{1,2})?)\s*%\s*(?:vol|alc|alk|abv)|\babv\b\s*[:\-–]?\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*%/i
+/** „Alkohol: 5,2 %“, „Alkoholgehalt 4,9%“, „Alc. 5.0 %“ – a label before the value (V11). */
+const ABV_LABELLED = /\b(?:alkohol(?:gehalt)?|alc(?:ohol)?|alk|abv)\.?(?:\s*[(/]?\s*(?:%|vol\.?|v\/v)\s*\)?)*\s*[:\-–]?\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*%/i
 const abvIn = (t: string) => {
-  const m = t.match(ABV)
+  // a labelled value first (V11): „Stammwürze 12,5 % Alkohol 5,1 % vol“ would otherwise give 12,5
+  const m = t.match(ABV_LABELLED) ?? t.match(ABV)
   const v = m?.[1] ?? m?.[2]
   return v ? Number(v.replace(',', '.')) : null
 }
@@ -557,8 +560,6 @@ export function beerDetailLinks(html: string, base: string, names: readonly stri
   return out
 }
 
-/** „Alkohol: 5,2 %“, „Alkoholgehalt 4,9%“, „Alc. 5.0 %“ – a label before the value (detail pages, V11). */
-const ABV_LABELLED = /\b(?:alkohol(?:gehalt)?|alc(?:ohol)?|alk|abv)\.?(?:\s*[(/]?\s*(?:%|vol\.?|v\/v)\s*\)?)*\s*[:\-–]?\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*%/i
 
 /**
  * V11: the ABV on a beer's detail page – the first (labelled) value after the beer's name in the page text (2 000 characters),
@@ -574,7 +575,5 @@ export function detailAbv(html: string, name: string): number | null {
   const at = inH1 >= 0 ? inH1 : lower.indexOf(key)
   if (at < 0) return null
   const window = text.slice(at, at + 2000)
-  // a labelled value first: „Stammwürze 12,5 % Alkohol 5,1 % vol“ would otherwise give 12,5
-  const m = window.match(ABV_LABELLED) ?? window.match(ABV)
-  return toAbv(m?.[1] ?? m?.[2])
+  return toAbv(abvIn(window)?.toString())
 }

@@ -369,6 +369,16 @@ describe('beerDetailLinks (V11)', () => {
   })
 })
 
+describe('labelled ABV on the overview (V11)', () => {
+  it('reads „Alkohol: 5,2 %“ under a heading, before a Stammwürze value', () => {
+    const html = '<h3>Hoepfner Pilsner</h3><p>Stammwürze 11,5 % · Alkohol: 4,9 %</p><h3>Hoepfner Export</h3><p>Alkoholgehalt 5,2%</p>'
+    expect(extractBeers(html)).toEqual([
+      { name: 'Hoepfner Pilsner', abv: 4.9 },
+      { name: 'Hoepfner Export', abv: 5.2 },
+    ])
+  })
+})
+
 describe('detailAbv (V11)', () => {
   it('reads the ABV after the beer name, labelled values first', () => {
     const page = (body: string) => `<nav>Lager 4,8 % vol</nav><main>${body}</main>`
