@@ -50,6 +50,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 29. [x] **V10** Zweite Quellen besser abgleichen: Wikidata-/Open-Food-Facts-Biere zuverlässiger den Brauereien zuordnen → „bestätigt“
 30. [x] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3) (#104)
 31. [x] **V12** Jede bestätigte Brauerei hat ein Bier: Recherche-Agenten mit Beleg-URL je Bier, zuerst DACH (Wunsch 2026-10-16) (#105)
+32. [x] **V13** Bier-Meldungen per Claude-Triage (Skill `bier-triage`) + Nachrecherche der unklaren Brauereien in Baden-Württemberg (Wunsch 2026-10-17) (#PR)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -438,6 +439,13 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       der Import-Schutz zählt den Download vor diesem Ausblenden (M)
       Ergebnis DACH (1 183 Brauereien ohne Bier): 610 mit Bier (2 141 Biere mit Beleg; Sonnet 410, Opus 200),
       65 ausgeblendet, 508 bleiben unklar (keine Web-Präsenz, Karten als Bild). Wirkt erst mit dem nächsten Katalog-Import
+- [x] V13 **Bier-Meldungen per Claude-Triage + Nachrecherche BW** (#PR) (Wunsch 2026-10-17: „ein reiner Crawler ist dafür zu
+      starr“; Absprache: Triage auf Zuruf, Meldungen werden dabei freigegeben, Lücken über die V12-Recherche statt Issues):
+      Skill `bier-triage` – Meldung gegen die Seite prüfen, korrigieren, Duplikate (live + `research/*.json`) schließen, sonst
+      Label `freigegeben` (der Bot trägt ein, Qualität 2). Erste Triage: #106/#107 eingetragen (`r-app106/107`), #108 kommt mit
+      V12. Nachrecherche der 57 BW-Brauereien ohne Bier, die V12 offen ließ (Opus, Faktencheck je Beleg-URL): 28 mit
+      171 Bieren, 17 ausgeblendet (geschlossen / kein eigenes Bier), 4 Dubletten. BW-Brauereien ohne Bier (live 129):
+      nach V12 63, nach V13 35 – davon 22 ausgeblendet, 13 bleiben unklar. Wirkt mit dem nächsten Katalog-Import (S)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
