@@ -247,7 +247,7 @@ Leitplanken:
 - [x] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
       Achievement „Lokalpatriot“, Share-Card-Zeile (M). Umgesetzt: Pool = letztes Finder-Ergebnis (nur auf dem Gerät,
       max. 60), Regional-Karten mischen sich ab der ersten Karte ein (nicht erst nach dem Onboarding-Set)
-      - Regional zuerst (2026-10-17, #PR, Wunsch: „beim Swipen vor allem regionale Biere, Radius einstellbar,
+      - Regional zuerst (2026-10-17, #117, Wunsch: „beim Swipen vor allem regionale Biere, Radius einstellbar,
         zusätzlich Lieblingsbiere – was will ich ein kanadisches Bier swipen, das ich hier nicht besorgen kann“):
         Regional-Modus ist Standard; nach dem Start-Set sind zwei von drei Karten aus dem Umkreis, die dritte ein
         kuratiertes Bier nur aus der Heimat-Region (`HOME_COUNTRIES`: DACH bzw. USA/Kanada; Heimat aus PLZ-Land,
