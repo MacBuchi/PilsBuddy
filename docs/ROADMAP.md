@@ -264,6 +264,12 @@ Leitplanken:
         Liste aller Brauereien (`id,name,lat,lon,country`, seitenweise) 30 Tage auf dem Gerät; ein angetipptes Glas
         lädt sein 0,5°-Kartenfeld wie der Finder und öffnet das Brauerei-Sheet. Start: eigener Standort (wenn schon
         erlaubt) bzw. PLZ, sonst das Land der Browsersprache. Keine Migration
+      - Kartenbasis (2026-10-17, #PR, Issues #113/#112, Entscheidung „Mehr Natural Earth“ statt Kartenkacheln):
+        hineingezoomt Flüsse, Seen, Straßen und Ortsnamen aus Natural Earth 1:10m, je Region ein eigener Chunk
+        (`src/data/detail/dach.ts` ≈ 33 KB gzip, `na.ts` ≈ 230 KB, `npm run map:detail`), erst ab Zoom 4 und nur für die
+        Region im Bild geladen; Linien nach Natural-Earth-`min_zoom`, Ortsnamen ohne Überlappung (größere zuerst,
+        DACH auf Deutsch) – Logik in `src/domain/worldMap.ts`. Grenze: Natural Earth kennt in DACH nur ~95 Orte,
+        Ortsstraßen gibt es nicht
 - [x] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
       - umgesetzt (#67): Workflow „Regional catalogue (monthly)“ (am 1., ruft fetch + Websites auf) baut den Import,
         `npm run catalog:diff` vergleicht ihn mit dem Live-Katalog (öffentliche API, `tools/catalog/diff.ts`), PR

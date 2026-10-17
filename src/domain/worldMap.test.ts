@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BOTTOM, clampView, clusterPoints, fitBounds, MAX_SCALE, minScale, project, TOP, toScreen, toWorld, unproject, viewAround, WORLD, zoomAt } from './worldMap'
+import { BOTTOM, clampView, clusterPoints, fitBounds, mapZoom, MAX_SCALE, minScale, pathsAt, placeLabels, project, regionsInView, TOP, toScreen, toWorld, unproject, viewAround, WORLD, zoomAt } from './worldMap'
 import type { MapPoint, View } from './worldMap'
 
 const PHONE = { w: 390, h: 700 }
@@ -112,5 +112,48 @@ describe('clusterPoints', () => {
     const v = viewAround({ lat: 49.3, lon: 9 }, 200, PHONE)
     const c = clusterPoints(points, v, PHONE).find((x) => x.kind === 'many')
     expect(c?.kind === 'many' && c.box).toEqual({ x0: points[0].x, y0: points[1].y, x1: points[1].x, y1: points[0].y })
+  })
+})
+
+describe('map detail (#113)', () => {
+  const germany = viewAround({ lat: 51, lon: 10 }, 400, PHONE)
+  const town = viewAround({ lat: 49.24, lon: 9.1 }, 20, PHONE)
+
+  it('mapZoom follows the web-map convention (whole world on 256 px = 0)', () => {
+    expect(mapZoom(256 / WORLD)).toBeCloseTo(0, 9)
+    expect(mapZoom((256 / WORLD) * 2 ** 8)).toBeCloseTo(8, 9)
+  })
+
+  it('loads the region in view only when zoomed in', () => {
+    expect(regionsInView(clampView({ x: 500, y: 400, scale: 0 }, PHONE), PHONE)).toEqual([])
+    expect(regionsInView(germany, PHONE)).toEqual(['dach'])
+    expect(regionsInView(viewAround({ lat: 40.7, lon: -74 }, 50, PHONE), PHONE)).toEqual(['na'])
+    expect(regionsInView(viewAround({ lat: -33.9, lon: 151.2 }, 50, PHONE), PHONE)).toEqual([])
+  })
+
+  it('draws a path from its zoom on', () => {
+    const paths = [[4, 'M0 0l1 1'], [7, 'M2 2l1 1'], [9, 'M3 3l1 1']] as const
+    expect(pathsAt(paths, 7.5)).toEqual(['M0 0l1 1', 'M2 2l1 1'])
+    expect(pathsAt(paths, 3)).toEqual([])
+  })
+
+  it('names places from their zoom on, inside the screen, bigger ones winning overlaps', () => {
+    const at = (lat: number, lon: number) => {
+      const p = project({ lat, lon })
+      return [Math.round(p.x * 100), Math.round(p.y * 100)] as const
+    }
+    const places = [
+      ['Stuttgart', ...at(48.78, 9.18), 5],
+      ['Heilbronn', ...at(49.14, 9.22), 7],
+      ['Neckarsulm', ...at(49.19, 9.22), 8],
+      ['Berlin', ...at(52.52, 13.4), 3],
+    ] as const
+    expect(placeLabels(places, germany, PHONE).map((l) => l.name)).toEqual(['Stuttgart', 'Berlin'])
+    const near = placeLabels(places, town, PHONE).map((l) => l.name)
+    expect(near).toContain('Heilbronn')
+    expect(near).not.toContain('Berlin')
+    // a place 1 km from Heilbronn would overlap its label: the bigger place (listed first) keeps its name
+    const crowded = [...places, ['Sontheim', ...at(49.13, 9.22), 7]] as const
+    expect(placeLabels(crowded, town, PHONE).map((l) => l.name)).toEqual(placeLabels(places, town, PHONE).map((l) => l.name))
   })
 })

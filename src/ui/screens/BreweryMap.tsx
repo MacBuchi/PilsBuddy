@@ -8,8 +8,8 @@ import type { LatLon } from '../../domain/geo'
 import { haversineKm } from '../../domain/geo'
 import type { RegionalBrewery } from '../../domain/regionalBeer'
 import { preferredCountries } from '../../domain/postcode'
-import { boundsOf, clampView, clusterPoints, fitBounds, project, toScreen, viewAround, zoomAt } from '../../domain/worldMap'
-import type { MapPoint, Pt, Size, View } from '../../domain/worldMap'
+import { boundsOf, clampView, clusterPoints, fitBounds, mapZoom, pathsAt, placeLabels, project, regionsInView, toScreen, viewAround, zoomAt } from '../../domain/worldMap'
+import type { DetailRegion, MapDetail, MapPoint, Pt, Size, View } from '../../domain/worldMap'
 import { useApp } from '../../state/AppContext'
 import { LANG } from '../../state/lang'
 import { BeerSubmitSheet } from '../components/BeerSubmitSheet'
@@ -49,6 +49,12 @@ function Glass() {
   )
 }
 
+/** Rivers, lakes, roads and place names per region (#113) – a chunk of its own, fetched when the user zooms in there. */
+const DETAIL: Record<DetailRegion['id'], () => Promise<{ default: MapDetail }>> = {
+  dach: () => import('../../data/detail/dach'),
+  na: () => import('../../data/detail/na'),
+}
+
 const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
 /**
@@ -72,6 +78,7 @@ export default function BreweryMap() {
   const [open, setOpen] = useState<{ brewery: RegionalBrewery; km: number | null } | null>(null)
   const [report, setReport] = useState<{ id: string; name: string } | null>(null)
   const anim = useRef(0)
+  const [detail, setDetail] = useState<Partial<Record<DetailRegion['id'], MapDetail>>>({})
 
   useEffect(() => {
     const el = box.current
@@ -240,6 +247,35 @@ export default function BreweryMap() {
     else if (e.key === '-') zoomBy(0.5)
   }
 
+  /* ---------- detail ---------- */
+
+  const regions = current && size ? regionsInView(current, size).join(',') : ''
+  const asked = useRef(new Set<string>())
+  useEffect(() => {
+    for (const id of regions.split(',').filter(Boolean) as DetailRegion['id'][]) {
+      if (asked.current.has(id)) continue
+      asked.current.add(id)
+      // offline and never loaded: the outline alone, as before – the next zoom tries again
+      DETAIL[id]()
+        .then((m) => setDetail((d) => ({ ...d, [id]: m.default })))
+        .catch(() => asked.current.delete(id))
+    }
+  }, [regions])
+
+  const zoom = current ? mapZoom(current.scale) : 0
+  const shown = useMemo(() => regions.split(',').flatMap((id) => (detail[id as DetailRegion['id']] ? [detail[id as DetailRegion['id']]!] : [])), [regions, detail])
+  const layers = useMemo(
+    () => ({
+      lakes: shown.flatMap((d) => pathsAt(d.lakes, zoom)).join(''),
+      rivers: shown.flatMap((d) => pathsAt(d.rivers, zoom)).join(''),
+      roads: shown.flatMap((d) => pathsAt(d.roads, zoom)).join(''),
+    }),
+    // whole zoom steps are enough – the paths change only there
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [shown, Math.floor(zoom)],
+  )
+  const labels = useMemo(() => (current && size ? shown.flatMap((d) => placeLabels(d.places, current, size)) : []), [shown, current, size])
+
   /* ---------- markers ---------- */
 
   const markers = useMemo(() => (current && size ? clusterPoints(points, current, size) : []), [points, current, size])
@@ -283,10 +319,20 @@ export default function BreweryMap() {
           {transform && (
             <g transform={transform}>
               <path className={styles.land} d={LAND} />
+              {layers.lakes && <path className={styles.lakes} d={layers.lakes} />}
+              {layers.rivers && <path className={styles.rivers} d={layers.rivers} />}
+              {layers.roads && <path className={styles.roads} d={layers.roads} />}
               <path className={styles.borders} d={BORDERS} />
             </g>
           )}
         </svg>
+        <div className={styles.places} aria-hidden="true">
+          {labels.map((l) => (
+            <span key={l.key} className={styles.place} style={{ transform: `translate(${l.x}px, ${l.y}px) translate(-50%, -100%)` }}>
+              {l.name}
+            </span>
+          ))}
+        </div>
         <div className={styles.markers}>
           {markers.map((m) => {
             if (m.kind === 'many') {
