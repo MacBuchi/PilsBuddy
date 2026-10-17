@@ -25,6 +25,11 @@ One array per file, one entry per brewery:
 - `closed` / `no-own-beer` (bar, restaurant, shop without own beer): hidden from the catalogue – only with `evidence`.
 - `duplicate` (V15): another catalogue entry is the same brewery and has its beers – hidden like `closed`, only with
   `evidence` (a page that shows both are one), `note` names the other id.
+- `not-a-brewery` (V17): no brewery at all (a listed building, a company seat, a wrong Wikidata match) – hidden like
+  `closed`, only with `evidence` (e.g. the Wikidata item that shows what it is).
+- `wrong` (V17, optional, any status): beers an open database wrongly gives this brewery, each with an https page of
+  the brewery that makes it – `[{ "name": "<catalogue name>", "url": "https://…" }]`. The build drops them after
+  picking the main beers („Recherche: falsch zugeordnete Biere entfernt“).
 - `unclear`: changes nothing.
 - Ids that are no longer in the sources are ignored.
 
@@ -48,5 +53,9 @@ brewed elsewhere keeps its beers (note „Lohngebraut bei …“); a temporary p
 naming this brewery; respect robots.txt and sites whose terms forbid bots (onetz.de, merkur.de, zefix.ch); no
 nominatim / OSM API. After the full pass, a BeerTasting/Untappd-only sweep over the remaining `unclear` entries found
 beers for another ~60 breweries.
+
+Third pass (V17) over the ~170 still without beer: the same batches, aimed at new evidence for hiding (closure,
+no own beer, duplicate, `not-a-brewery`) and at sources the earlier passes did not use; the http-only losses got https
+pages where they exist. What is still `unclear` after it stays so – no further pass is planned.
 
 To re-research a brewery, replace its entry – one entry per id across all files (`research.test.ts` checks the files).

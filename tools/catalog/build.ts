@@ -9,7 +9,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import COUNTRY_TABLE from './countries.json'
-import { COUNTRIES, COUNTRY_INFO, confirmedBreweries, importSql, mainBeers, mergeBreweries, parseOpenbeer, parsePlaces, tooFew } from './merge'
+import { COUNTRIES, COUNTRY_INFO, confirmedBreweries, importSql, mainBeers, mergeBreweries, normName, parseOpenbeer, parsePlaces, tooFew } from './merge'
 import { beerRow, breweryRow } from './diff'
 import { beerName, breweryKey, guestBeer } from './web'
 import { plausibilityReport } from './plausible'
@@ -107,7 +107,9 @@ const web = readdirSync(RAW)
   // V14: researched beers were checked against their page – no heading heuristics, guest beers still go
   .concat(researchedWebRows(research.web, breweryOf, breweryKeys))
 const notes: PlausibilityNote[] = []
-const beers = mainBeers([...off, ...offAbroad], researched, wdBeers, openbeer, web, notes, research.other)
+// V17: beers an open database gives the wrong brewery (research with the page of the brewery that makes them)
+const picked = mainBeers([...off, ...offAbroad], researched, wdBeers, openbeer, web, notes, research.other)
+const beers = picked.filter((b) => !research.wrong.get(b.breweryId)?.has(normName(b.name)))
 const breweries = confirmedBreweries(researched, beers)
 
 rmSync(OUT, { recursive: true, force: true })
@@ -135,6 +137,7 @@ const report = [
   `  Quellen: ${count(beers, (b) => String(b.source))} (1 = OFF, 2 = Wikidata, 3 = Website, 4 = openbeer, 6 = Recherche)`,
   `  Recherche (V12): ${researchEntries.length} Brauereien · ausgeblendet ${research.hidden.size} · unbestätigt (nur Wikidata, ohne Website und Bier) ${researched.length - breweries.length} · Biere eigene Website ${research.web.length} · andere Seiten ${research.other.length}`,
   `  Recherche ohne verwertbares Bier (nur fremde http-Links, V15): ${research.unusable.length ? research.unusable.join(' ') : '–'}`,
+  `  Recherche: falsch zugeordnete Biere entfernt ${picked.length - beers.length} (V17)`,
   `  je Land: ${COUNTRIES.map((c) => `${c} ${beers.filter((b) => countryOf.get(b.breweryId) === c).length} bei ${new Set(beers.filter((b) => countryOf.get(b.breweryId) === c).map((b) => b.breweryId)).size}`).join(' · ')}`,
   `  mit ABV ${beers.filter((b) => b.abv != null).length} · mit Gebinde ${beers.filter((b) => b.pack).length}`,
   `  Qualität (V4): geprüft ${beers.filter((b) => b.quality === 3).length} · bestätigt ${beers.filter((b) => b.quality === 2).length} · gefunden ${beers.filter((b) => b.quality === 1).length} · fraglich ${beers.filter((b) => b.quality === 0).length}`,
