@@ -1,10 +1,16 @@
 // V12: researched beers – agents looked up breweries the crawler and the open databases had no beer for
 // (tools/catalog/research/*.json, every beer and every hidden brewery with the page that shows it).
+import { normName } from './merge'
 import type { WebRow } from './merge'
 import { cleanName, guestBeer } from './web'
 
-/** duplicate (V15): another catalogue entry is the same brewery and has its beers – note names its id */
-export type ResearchStatus = 'beers' | 'no-own-beer' | 'closed' | 'duplicate' | 'unclear'
+/**
+ * duplicate (V15): another catalogue entry is the same brewery and has its beers – note names its id;
+ * not-a-brewery (V17): a monument, company seat or wrong Wikidata match – no brewery at all
+ */
+export type ResearchStatus = 'beers' | 'no-own-beer' | 'closed' | 'duplicate' | 'not-a-brewery' | 'unclear'
+/** statuses that hide the brewery (with the page that shows it) */
+export const HIDING: readonly ResearchStatus[] = ['closed', 'no-own-beer', 'duplicate', 'not-a-brewery']
 export interface ResearchBeer {
   name: string
   style: string | null
@@ -21,6 +27,8 @@ export interface ResearchEntry {
   checked?: string
   stage?: string
   beers: ResearchBeer[]
+  /** V17: beers an open database wrongly gives this brewery, each with the page of the brewery that makes it */
+  wrong?: { name: string; url: string }[]
 }
 /** a beer named on another site than the brewery's own (beer_sources 6) */
 export interface ResearchRow {
@@ -51,19 +59,23 @@ const https = (url: string) => link(url) && url.startsWith('https://')
  * no beer of its own or duplicates another entry is hidden – all only with the page that shows it. Unknown ids (gone from
  * the sources) and „unclear“ change nothing. At most MAX_RESEARCHED_BEERS beers per brewery, in the order the research
  * lists them. `unusable` (V15): „beers“ entries none of whose links count (another site over http) – the build reports them.
+ * `wrong` (V17): per brewery the names (normName) of beers that belong to another brewery – https page only, whatever the status.
  */
 export function researchInput(
   entries: readonly ResearchEntry[],
   breweries: readonly { id: string; website: string | null }[],
-): { hidden: Set<string>; web: WebRow[]; other: ResearchRow[]; unusable: string[] } {
+): { hidden: Set<string>; web: WebRow[]; other: ResearchRow[]; unusable: string[]; wrong: Map<string, Set<string>> } {
   const site = new Map(breweries.map((b) => [b.id, host(b.website)]))
   const hidden = new Set<string>()
   const web: WebRow[] = []
   const other: ResearchRow[] = []
   const unusable: string[] = []
+  const wrong = new Map<string, Set<string>>()
   for (const e of entries) {
     if (!site.has(e.id)) continue
-    if ((e.status === 'closed' || e.status === 'no-own-beer' || e.status === 'duplicate') && e.evidence && link(e.evidence)) {
+    const names = (e.wrong ?? []).filter((w) => w.name?.trim() && https(w.url)).map((w) => normName(w.name))
+    if (names.length) wrong.set(e.id, new Set(names))
+    if (HIDING.includes(e.status) && e.evidence && link(e.evidence)) {
       hidden.add(e.id)
       continue
     }
@@ -81,7 +93,7 @@ export function researchInput(
       } else other.push({ breweryId: e.id, name: b.name, style, abv, url: b.url })
     }
   }
-  return { hidden, web, other, unusable }
+  return { hidden, web, other, unusable, wrong }
 }
 
 /**

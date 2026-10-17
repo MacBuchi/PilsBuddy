@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { confirmedBreweries, mainBeers, SOURCE } from './merge'
 import type { Brewery } from './merge'
-import { researchedWebRows, researchInput } from './research'
+import { HIDING, researchedWebRows, researchInput } from './research'
 import { beerName } from './web'
 import type { ResearchEntry } from './research'
 
@@ -68,6 +68,31 @@ describe('researchInput (V12)', () => {
     expect([...r.hidden]).toEqual(['osm-n1'])
   })
 
+  it('hides an entry that is no brewery at all only with the page that shows it (V17)', () => {
+    const r = researchInput(
+      [
+        entry({ id: 'osm-n1', status: 'not-a-brewery', evidence: 'https://www.wikidata.org/wiki/Q1' }),
+        entry({ id: 'osm-n2', status: 'not-a-brewery', evidence: null }),
+      ],
+      [loewe, post],
+    )
+    expect([...r.hidden]).toEqual(['osm-n1'])
+  })
+
+  it('names beers of another brewery only with an https page, whatever the status (V17)', () => {
+    const r = researchInput(
+      [
+        entry({ id: 'osm-n1', status: 'unclear', wrong: [
+          { name: 'Aventinus - Weizen Doppelbock', url: 'https://schneider.example/aventinus' },
+          { name: 'Tap7', url: 'http://schneider.example/tap7' },
+        ] }),
+        entry({ id: 'osm-n9', wrong: [{ name: 'Gone', url: 'https://x.example/' }] }),
+      ],
+      [loewe, post],
+    )
+    expect(r.wrong).toEqual(new Map([['osm-n1', new Set(['aventinus weizen doppelbock'])]]))
+  })
+
   it('ignores unclear entries, unknown breweries, beers without a link and links to other sites over http', () => {
     const r = researchInput(
       [
@@ -81,7 +106,7 @@ describe('researchInput (V12)', () => {
       ],
       [loewe, post],
     )
-    expect(r).toEqual({ hidden: new Set(), web: [], other: [], unusable: ['osm-n1'] })
+    expect(r).toEqual({ hidden: new Set(), web: [], other: [], unusable: ['osm-n1'], wrong: new Map() })
   })
 
   it('takes at most three beers per brewery, in the listed order', () => {
@@ -123,8 +148,9 @@ describe('tools/catalog/research/*.json', () => {
     expect(ids.length - new Set(ids).size).toBe(0)
     for (const e of entries) {
       expect(e.id, e.file).toMatch(/^(osm-[nwr]|wd-q)[0-9]+$|^obdb-[0-9a-f-]{36}$/)
-      expect(['beers', 'no-own-beer', 'closed', 'duplicate', 'unclear'], e.id).toContain(e.status)
-      if (e.status === 'closed' || e.status === 'no-own-beer' || e.status === 'duplicate') expect(e.evidence, e.id).toMatch(/^https?:\/\//)
+      expect([...HIDING, 'beers', 'unclear'], e.id).toContain(e.status)
+      if (HIDING.includes(e.status)) expect(e.evidence, e.id).toMatch(/^https?:\/\//)
+      for (const w of e.wrong ?? []) expect(w.url, `${e.id} ${w.name}`).toMatch(/^https:\/\/\S+$/)
       if (e.status === 'beers') expect(e.beers.length, e.id).toBeGreaterThan(0)
       else expect(e.beers, e.id).toEqual([])
       for (const b of e.beers) {
