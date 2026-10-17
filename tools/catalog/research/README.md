@@ -39,4 +39,14 @@ One array per file, one entry per brewery:
    closures to `unclear`.
 4. The verified batches are merged into one file per region (`dach.json`), sorted by id.
 
+Second pass (V16, Opus, batches of 15 sorted by region): each batch gets catalogue entries within 300 m / same website
+domain as duplicate candidates, plus a name lookup in the live catalogue for pubs far from their brewery. Rich sources:
+BeerTasting brewery pages (`beertasting.com/en/brewery/<slug>/beers`, public sitemap; robots.txt only blocks
+`/reviews`), Untappd brewery/beer pages found via search or its public sitemap (never its search API or keys),
+regional guides (bierland-franken.de, bamberg.info). Rules learned: a brand still sold under the brewery's name but
+brewed elsewhere keeps its beers (note „Lohngebraut bei …“); a temporary pause is not `closed`; `closed` needs a page
+naming this brewery; respect robots.txt and sites whose terms forbid bots (onetz.de, merkur.de, zefix.ch); no
+nominatim / OSM API. After the full pass, a BeerTasting/Untappd-only sweep over the remaining `unclear` entries found
+beers for another ~60 breweries.
+
 To re-research a brewery, replace its entry – one entry per id across all files (`research.test.ts` checks the files).
