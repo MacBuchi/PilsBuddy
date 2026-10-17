@@ -456,7 +456,7 @@ export const EN: Copy = {
     opening: 'Loading brewery …',
     missing: 'This brewery can’t be reached right now.',
     hint: 'Drag, zoom, tap a dot',
-    credit: 'Map: Natural Earth · Breweries: OpenStreetMap contributors and others',
+    credit: 'Map: © OpenStreetMap contributors · Breweries: OpenStreetMap contributors and others',
   },
   matches: {
     title: 'Matches',

@@ -39,9 +39,6 @@
   /* brewery world map */
   --map-sea: #dce5e2;
   --map-land: #fffbf3;
-  --map-water: #b7cfd6;
-  --map-road: #e8d3a6;
-  --map-place: #6b6254;
   --map-me: #2f7fe8;
 
   --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif;
@@ -68,9 +65,6 @@
   --edge: #050403;
   --map-sea: #0e1416;
   --map-land: #2a231a;
-  --map-water: #1c3036;
-  --map-road: #4d3f29;
-  --map-place: #aba08e;
   color-scheme: dark;
 }
 

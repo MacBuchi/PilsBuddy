@@ -150,69 +150,43 @@ export function clusterPoints(points: readonly MapPoint[], v: View, size: Size, 
   })
 }
 
-/* ---------- map detail (#113): rivers, lakes, roads and place names around the catalogue countries ---------- */
+/* ---------- online base map (#113): raster tiles in the same Web-Mercator square ---------- */
 
-/** A region with its own detail chunk (lon/lat box, the countries whose places it names). */
-export interface DetailRegion {
-  id: 'dach' | 'na'
-  w: number
-  s: number
-  e: number
-  n: number
-  countries: readonly string[]
-}
+/** Closest tile zoom the map asks for. */
+export const MAX_TILE_ZOOM = 18
 
-export const DETAIL_REGIONS: readonly DetailRegion[] = [
-  { id: 'dach', w: 3, s: 44.5, e: 19, n: 56, countries: ['DE', 'AT', 'CH'] },
-  { id: 'na', w: -170, s: 24, e: -50, n: 72, countries: ['US', 'CA'] },
-]
-
-/** Paths per Natural Earth zoom (smallest first); places: [name, x, y in hundredths of a unit, zoom]. */
-export interface MapDetail {
-  rivers: readonly (readonly [number, string])[]
-  lakes: readonly (readonly [number, string])[]
-  roads: readonly (readonly [number, string])[]
-  places: readonly (readonly [string, number, number, number])[]
-}
-
-/** Detail starts at this zoom – farther out the outline is enough. */
-export const DETAIL_ZOOM = 4
-
-/** The web-map zoom of a view (0 = the whole world on 256 px) – Natural Earth tags its features with it. */
+/** The web-map zoom of a view (0 = the whole world on 256 px). */
 export const mapZoom = (scale: number) => Math.log2((scale * WORLD) / 256)
 
-/** The regions whose box the view touches – only from DETAIL_ZOOM on. */
-export function regionsInView(v: View, size: Size): DetailRegion['id'][] {
-  if (mapZoom(v.scale) < DETAIL_ZOOM) return []
-  const nw = unproject(toWorld({ x: 0, y: 0 }, v, size))
-  const se = unproject(toWorld({ x: size.w, y: size.h }, v, size))
-  return DETAIL_REGIONS.filter((r) => nw.lon <= r.e && se.lon >= r.w && se.lat <= r.n && nw.lat >= r.s).map((r) => r.id)
+export interface Tile {
+  /** `z/x/y` with x wrapped onto the world – the tile's address. */
+  key: string
+  /** Unique on screen while panning (x not wrapped – the same tile can show twice across the date line). */
+  id: string
+  z: number
+  x: number
+  y: number
+  /** Top-left corner on screen and edge length, px. */
+  left: number
+  top: number
+  px: number
 }
 
-/** The paths that belong at this zoom (a feature shows from its zoom on). */
-export const pathsAt = (paths: MapDetail['rivers'], zoom: number) => paths.filter(([z]) => z <= zoom).map(([, d]) => d)
-
-/** Label box on screen: about this many px per letter, this tall. */
-const LABEL_CHAR_PX = 7
-const LABEL_H_PX = 16
-
 /**
- * Place names for the view: those whose zoom has come, inside the screen, in the order given (bigger places first);
- * a name that would overlap one already placed is left out. x/y = the place on screen, `key` stays while panning.
+ * The tiles covering the screen at tile zoom `z` (default: the view's zoom, rounded). A tile is a square of
+ * WORLD / 2^z units; x repeats around the world, y stops at the map's edge. Ordered by row, then column.
  */
-export function placeLabels(places: MapDetail['places'], v: View, size: Size): { key: string; name: string; x: number; y: number }[] {
-  const zoom = mapZoom(v.scale)
-  const out: { key: string; name: string; x: number; y: number }[] = []
-  const boxes: Bounds[] = []
-  for (const [name, px, py, z] of places) {
-    if (z > zoom) continue
-    const s = toScreen({ x: px / 100, y: py / 100 }, v, size)
-    if (s.x < 0 || s.y < 0 || s.x > size.w || s.y > size.h) continue
-    const half = (name.length * LABEL_CHAR_PX) / 2 + 4
-    const b = { x0: s.x - half, y0: s.y - LABEL_H_PX, x1: s.x + half, y1: s.y + LABEL_H_PX / 2 }
-    if (boxes.some((o) => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0)) continue
-    boxes.push(b)
-    out.push({ key: `${name}|${px}|${py}`, name, ...s })
-  }
+export function tilesInView(v: View, size: Size, z = Math.max(0, Math.min(MAX_TILE_ZOOM, Math.round(mapZoom(v.scale))))): Tile[] {
+  const n = 2 ** z
+  const unit = WORLD / n
+  const tl = toWorld({ x: 0, y: 0 }, v, size)
+  const br = toWorld({ x: size.w, y: size.h }, v, size)
+  const out: Tile[] = []
+  for (let ty = Math.max(0, Math.floor(tl.y / unit)); ty <= Math.min(n - 1, Math.floor(br.y / unit)); ty++)
+    for (let tx = Math.floor(tl.x / unit); tx <= Math.floor(br.x / unit); tx++) {
+      const s = toScreen({ x: tx * unit, y: ty * unit }, v, size)
+      const x = ((tx % n) + n) % n
+      out.push({ key: `${z}/${x}/${ty}`, id: `${z}/${tx}/${ty}`, z, x, y: ty, left: s.x, top: s.y, px: unit * v.scale })
+    }
   return out
 }

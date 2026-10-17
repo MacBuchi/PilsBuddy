@@ -48,50 +48,25 @@
   vector-effect: non-scaling-stroke;
 }
 
-.lakes {
-  fill: var(--map-sea);
-  stroke: var(--map-water);
-  stroke-width: 0.8;
-  vector-effect: non-scaling-stroke;
-}
-
-.rivers {
-  fill: none;
-  stroke: var(--map-water);
-  stroke-width: 1.4;
-  vector-effect: non-scaling-stroke;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.roads {
-  fill: none;
-  stroke: var(--map-road);
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* place names: under the glasses, never in the way of a tap */
-.places {
+.tiles {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 
-.place {
+/* Kneipen-Modus: the light OSM map turned dark, colours kept roughly */
+.tilesDark {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
+
+.tile {
   position: absolute;
   left: 0;
   top: 0;
-  transform-origin: 0 0;
-  font: 700 11px/1 var(--font-display);
-  color: var(--map-place);
-  white-space: nowrap;
-  text-shadow:
-    0 0 3px var(--map-land),
-    0 0 3px var(--map-land),
-    0 0 2px var(--map-land);
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .markers {

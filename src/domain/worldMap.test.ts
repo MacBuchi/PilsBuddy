@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BOTTOM, clampView, clusterPoints, fitBounds, mapZoom, MAX_SCALE, minScale, pathsAt, placeLabels, project, regionsInView, TOP, toScreen, toWorld, unproject, viewAround, WORLD, zoomAt } from './worldMap'
+import { BOTTOM, clampView, clusterPoints, fitBounds, mapZoom, MAX_SCALE, minScale, project, tilesInView, TOP, toScreen, toWorld, unproject, viewAround, WORLD, zoomAt } from './worldMap'
 import type { MapPoint, View } from './worldMap'
 
 const PHONE = { w: 390, h: 700 }
@@ -115,45 +115,32 @@ describe('clusterPoints', () => {
   })
 })
 
-describe('map detail (#113)', () => {
-  const germany = viewAround({ lat: 51, lon: 10 }, 400, PHONE)
-  const town = viewAround({ lat: 49.24, lon: 9.1 }, 20, PHONE)
-
+describe('tilesInView (#113)', () => {
   it('mapZoom follows the web-map convention (whole world on 256 px = 0)', () => {
     expect(mapZoom(256 / WORLD)).toBeCloseTo(0, 9)
     expect(mapZoom((256 / WORLD) * 2 ** 8)).toBeCloseTo(8, 9)
   })
 
-  it('loads the region in view only when zoomed in', () => {
-    expect(regionsInView(clampView({ x: 500, y: 400, scale: 0 }, PHONE), PHONE)).toEqual([])
-    expect(regionsInView(germany, PHONE)).toEqual(['dach'])
-    expect(regionsInView(viewAround({ lat: 40.7, lon: -74 }, 50, PHONE), PHONE)).toEqual(['na'])
-    expect(regionsInView(viewAround({ lat: -33.9, lon: 151.2 }, 50, PHONE), PHONE)).toEqual([])
+  it('covers the screen with tiles of the view zoom, about 256 px each', () => {
+    const v = viewAround({ lat: 49.24, lon: 9.1 }, 25, PHONE)
+    const tiles = tilesInView(v, PHONE)
+    const z = Math.round(mapZoom(v.scale))
+    expect(tiles.every((t) => t.z === z && t.px > 180 && t.px < 365)).toBe(true)
+    expect(Math.min(...tiles.map((t) => t.left))).toBeLessThanOrEqual(0)
+    expect(Math.min(...tiles.map((t) => t.top))).toBeLessThanOrEqual(0)
+    expect(Math.max(...tiles.map((t) => t.left + t.px))).toBeGreaterThanOrEqual(PHONE.w)
+    expect(Math.max(...tiles.map((t) => t.top + t.px))).toBeGreaterThanOrEqual(PHONE.h)
+    // the tile under Heilbronn has the standard slippy-map address
+    const n = 2 ** z
+    const p = project({ lat: 49.14, lon: 9.22 })
+    expect(tiles.map((t) => t.key)).toContain(`${z}/${Math.floor((p.x / WORLD) * n)}/${Math.floor((p.y / WORLD) * n)}`)
   })
 
-  it('draws a path from its zoom on', () => {
-    const paths = [[4, 'M0 0l1 1'], [7, 'M2 2l1 1'], [9, 'M3 3l1 1']] as const
-    expect(pathsAt(paths, 7.5)).toEqual(['M0 0l1 1', 'M2 2l1 1'])
-    expect(pathsAt(paths, 3)).toEqual([])
-  })
-
-  it('names places from their zoom on, inside the screen, bigger ones winning overlaps', () => {
-    const at = (lat: number, lon: number) => {
-      const p = project({ lat, lon })
-      return [Math.round(p.x * 100), Math.round(p.y * 100)] as const
-    }
-    const places = [
-      ['Stuttgart', ...at(48.78, 9.18), 5],
-      ['Heilbronn', ...at(49.14, 9.22), 7],
-      ['Neckarsulm', ...at(49.19, 9.22), 8],
-      ['Berlin', ...at(52.52, 13.4), 3],
-    ] as const
-    expect(placeLabels(places, germany, PHONE).map((l) => l.name)).toEqual(['Stuttgart', 'Berlin'])
-    const near = placeLabels(places, town, PHONE).map((l) => l.name)
-    expect(near).toContain('Heilbronn')
-    expect(near).not.toContain('Berlin')
-    // a place 1 km from Heilbronn would overlap its label: the bigger place (listed first) keeps its name
-    const crowded = [...places, ['Sontheim', ...at(49.13, 9.22), 7]] as const
-    expect(placeLabels(crowded, town, PHONE).map((l) => l.name)).toEqual(placeLabels(places, town, PHONE).map((l) => l.name))
+  it('wraps x around the world and stops y at the edge', () => {
+    const v = clampView({ x: 0, y: 500, scale: 2 }, PHONE)
+    const tiles = tilesInView({ ...v, x: 1 }, PHONE, 2)
+    expect(tiles.every((t) => t.x >= 0 && t.x < 4 && t.y >= 0 && t.y < 4)).toBe(true)
+    expect(new Set(tiles.map((t) => t.key)).size).toBeLessThanOrEqual(tiles.length)
+    expect(tiles.some((t) => t.x === 3)).toBe(true)
   })
 })

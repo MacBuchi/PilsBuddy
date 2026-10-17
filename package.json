@@ -14,8 +14,7 @@
     "catalog:build": "tsx tools/catalog/build.ts",
     "catalog:diff": "tsx tools/catalog/compare.ts",
     "classics:build": "tsx tools/classics/build.ts",
-    "map:build": "tsx tools/map/build.ts",
-    "map:detail": "tsx tools/map/detail.ts"
+    "map:build": "tsx tools/map/build.ts"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
