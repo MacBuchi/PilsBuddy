@@ -13,7 +13,7 @@ import { COUNTRIES, COUNTRY_INFO, confirmedBreweries, importSql, mainBeers, merg
 import { beerRow, breweryRow } from './diff'
 import { beerName, breweryKey, guestBeer } from './web'
 import { plausibilityReport } from './plausible'
-import { researchInput } from './research'
+import { researchedWebRows, researchInput } from './research'
 import type { ResearchEntry } from './research'
 import type { PlausibilityNote } from './plausible'
 import type { Country, ObdbRow, OffRow, OpenbeerRow, OsmRow, WebRow, WikidataBeerRow, WikidataRow } from './merge'
@@ -99,12 +99,13 @@ const breweryKeys = new Set(researched.map((b) => breweryKey(b.name)))
 const web = readdirSync(RAW)
   .filter((f) => /^web-\d+\.json$/.test(f))
   .flatMap((f) => read<WebRow[]>(f))
-  .concat(research.web)
   .flatMap((w): WebRow[] => {
     const beer = beerName(w.name, w.abv, langOf.get(w.breweryId))
     // V9: drinks menus of brewpubs also list other breweries' beers
     return beer && !guestBeer(beer.name, breweryOf.get(w.breweryId)?.name ?? '', breweryOf.get(w.breweryId)?.website ?? '', breweryKeys) ? [{ ...w, ...beer }] : []
   })
+  // V14: researched beers were checked against their page – no heading heuristics, guest beers still go
+  .concat(researchedWebRows(research.web, breweryOf, breweryKeys))
 const notes: PlausibilityNote[] = []
 const beers = mainBeers([...off, ...offAbroad], researched, wdBeers, openbeer, web, notes, research.other)
 const breweries = confirmedBreweries(researched, beers)

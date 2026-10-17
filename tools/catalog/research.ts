@@ -1,6 +1,7 @@
 // V12: researched beers – agents looked up breweries the crawler and the open databases had no beer for
 // (tools/catalog/research/*.json, every beer and every hidden brewery with the page that shows it).
 import type { WebRow } from './merge'
+import { cleanName, guestBeer } from './web'
 
 export type ResearchStatus = 'beers' | 'no-own-beer' | 'closed' | 'unclear'
 export interface ResearchBeer {
@@ -77,4 +78,22 @@ export function researchInput(
     }
   }
   return { hidden, web, other }
+}
+
+/**
+ * V14: researched beers on the brewery's own website were checked against the page by the research and the fact-check
+ * – they skip the crawler's heading heuristics (style word in the name, no leading digit), which dropped real names
+ * like „Urvogel“ or „1250er“. They are only tidied, and guest beers of other breweries still go.
+ */
+export function researchedWebRows(
+  rows: readonly WebRow[],
+  breweryOf: ReadonlyMap<string, { name: string; website: string | null }>,
+  breweryKeys: ReadonlySet<string>,
+): WebRow[] {
+  return rows.flatMap((w) => {
+    const name = cleanName(w.name)
+    const b = breweryOf.get(w.breweryId)
+    if (name.length < 2 || name.length > 60 || guestBeer(name, b?.name ?? '', b?.website ?? '', breweryKeys)) return []
+    return [{ ...w, name }]
+  })
 }
