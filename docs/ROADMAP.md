@@ -459,7 +459,10 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       (Belege auf https umgestellt, je Seite neu abgerufen); Rosengarten Einsiedeln bleibt (Seite antwortet 406). Der Build
       listet solche Einträge jetzt („Recherche ohne verwertbares Bier“). Neuer Status `duplicate` (ausgeblendet, nur mit
       Beleg) für 4 Dubletten (Ochsen = Spall, Hotel Adler = Dachsenfranz, Vater Strauss, Schwert Ehingen). Nachrecherche
-      der 8 unklaren: NACHRECHERCHE. Wirkt mit dem nächsten Katalog-Import (S)
+      der 8 unklaren (Opus, Untappd-Suche, jede Beleg-URL neu geöffnet): Alte Werkstatt, TOMO Bräu, Beermanufaktur Heger,
+      Ostel Bräu mit Bieren; Löffler Hardheim geschlossen (2021); Wirtshaus zum Farren = Farrenbräu (Dublette, Biere bei
+      Farrenbräu ergänzt); Weißbier-Biergarten und Hausbrauerei Königsbronn bleiben unklar. BW-Brauereien ohne Bier:
+      erwartet 2 statt 13. Wirkt mit dem nächsten Katalog-Import (S)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
