@@ -149,3 +149,44 @@ export function clusterPoints(points: readonly MapPoint[], v: View, size: Size, 
     return { kind: 'many', key, n: g.length, ...toScreen({ x: sx, y: sy }, v, size), box: boundsOf(g)! }
   })
 }
+
+/* ---------- online base map (#113): raster tiles in the same Web-Mercator square ---------- */
+
+/** Closest tile zoom the map asks for. */
+export const MAX_TILE_ZOOM = 18
+
+/** The web-map zoom of a view (0 = the whole world on 256 px). */
+export const mapZoom = (scale: number) => Math.log2((scale * WORLD) / 256)
+
+export interface Tile {
+  /** `z/x/y` with x wrapped onto the world – the tile's address. */
+  key: string
+  /** Unique on screen while panning (x not wrapped – the same tile can show twice across the date line). */
+  id: string
+  z: number
+  x: number
+  y: number
+  /** Top-left corner on screen and edge length, px. */
+  left: number
+  top: number
+  px: number
+}
+
+/**
+ * The tiles covering the screen at tile zoom `z` (default: the view's zoom, rounded). A tile is a square of
+ * WORLD / 2^z units; x repeats around the world, y stops at the map's edge. Ordered by row, then column.
+ */
+export function tilesInView(v: View, size: Size, z = Math.max(0, Math.min(MAX_TILE_ZOOM, Math.round(mapZoom(v.scale))))): Tile[] {
+  const n = 2 ** z
+  const unit = WORLD / n
+  const tl = toWorld({ x: 0, y: 0 }, v, size)
+  const br = toWorld({ x: size.w, y: size.h }, v, size)
+  const out: Tile[] = []
+  for (let ty = Math.max(0, Math.floor(tl.y / unit)); ty <= Math.min(n - 1, Math.floor(br.y / unit)); ty++)
+    for (let tx = Math.floor(tl.x / unit); tx <= Math.floor(br.x / unit); tx++) {
+      const s = toScreen({ x: tx * unit, y: ty * unit }, v, size)
+      const x = ((tx % n) + n) % n
+      out.push({ key: `${z}/${x}/${ty}`, id: `${z}/${tx}/${ty}`, z, x, y: ty, left: s.x, top: s.y, px: unit * v.scale })
+    }
+  return out
+}

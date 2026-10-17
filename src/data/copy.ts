@@ -463,7 +463,7 @@ const DE = {
     opening: 'Lade Brauerei …',
     missing: 'Diese Brauerei ist gerade nicht erreichbar.',
     hint: 'Ziehen, zoomen, Punkt antippen',
-    credit: 'Karte: Natural Earth · Brauereien: OpenStreetMap-Mitwirkende u. a.',
+    credit: 'Karte: © OpenStreetMap-Mitwirkende · Brauereien: OpenStreetMap-Mitwirkende u. a.',
   },
   matches: {
     title: 'Matches',

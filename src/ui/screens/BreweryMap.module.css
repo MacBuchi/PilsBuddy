@@ -48,6 +48,27 @@
   vector-effect: non-scaling-stroke;
 }
 
+.tiles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Kneipen-Modus: the light OSM map turned dark, colours kept roughly */
+.tilesDark {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
+
+.tile {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 .markers {
   position: absolute;
   inset: 0;

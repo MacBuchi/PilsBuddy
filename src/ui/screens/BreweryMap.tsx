@@ -8,7 +8,7 @@ import type { LatLon } from '../../domain/geo'
 import { haversineKm } from '../../domain/geo'
 import type { RegionalBrewery } from '../../domain/regionalBeer'
 import { preferredCountries } from '../../domain/postcode'
-import { boundsOf, clampView, clusterPoints, fitBounds, project, toScreen, viewAround, zoomAt } from '../../domain/worldMap'
+import { boundsOf, clampView, clusterPoints, fitBounds, project, tilesInView, toScreen, viewAround, zoomAt } from '../../domain/worldMap'
 import type { MapPoint, Pt, Size, View } from '../../domain/worldMap'
 import { useApp } from '../../state/AppContext'
 import { LANG } from '../../state/lang'
@@ -48,6 +48,12 @@ function Glass() {
     </svg>
   )
 }
+
+/**
+ * Base map (#113, decision 2026-10-17): the standard OpenStreetMap tiles – no key, no own server (CARTO now needs a
+ * key). Their usage policy wants the attribution on the map and no prefetching: only the visible tiles are asked for.
+ */
+const tileUrl = (t: { key: string }) => `https://tile.openstreetmap.org/${t.key}.png`
 
 const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -240,6 +246,18 @@ export default function BreweryMap() {
     else if (e.key === '-') zoomBy(0.5)
   }
 
+  /* ---------- base map ---------- */
+
+  // one zoom coarser underneath: it is mostly cached and covers the gaps while the sharp tiles load
+  const tiles = useMemo(() => {
+    if (!current || !size) return []
+    const sharp = tilesInView(current, size)
+    const z = sharp[0]?.z ?? 0
+    return [...(z > 0 ? tilesInView(current, size, z - 1) : []), ...sharp]
+  }, [current, size])
+  // a tile that fails (offline, blocked) is left out – the outline underneath stays
+  const [failed, setFailed] = useState<ReadonlySet<string>>(new Set())
+
   /* ---------- markers ---------- */
 
   const markers = useMemo(() => (current && size ? clusterPoints(points, current, size) : []), [points, current, size])
@@ -287,6 +305,22 @@ export default function BreweryMap() {
             </g>
           )}
         </svg>
+        <div className={`${styles.tiles} ${state.profile.dark ? styles.tilesDark : ''}`} aria-hidden="true">
+          {tiles.map((t) => {
+            const src = tileUrl(t)
+            return failed.has(src) ? null : (
+              <img
+                key={t.id}
+                src={src}
+                alt=""
+                draggable={false}
+                className={styles.tile}
+                style={{ transform: `translate(${t.left}px, ${t.top}px)`, width: Math.ceil(t.px) + 1, height: Math.ceil(t.px) + 1 }}
+                onError={() => setFailed((f) => new Set(f).add(src))}
+              />
+            )
+          })}
+        </div>
         <div className={styles.markers}>
           {markers.map((m) => {
             if (m.kind === 'many') {

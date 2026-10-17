@@ -264,6 +264,12 @@ Leitplanken:
         Liste aller Brauereien (`id,name,lat,lon,country`, seitenweise) 30 Tage auf dem Gerät; ein angetipptes Glas
         lädt sein 0,5°-Kartenfeld wie der Finder und öffnet das Brauerei-Sheet. Start: eigener Standort (wenn schon
         erlaubt) bzw. PLZ, sonst das Land der Browsersprache. Keine Migration
+      - Kartenbasis (2026-10-17, #116, Issues #113/#112): Online-Karte statt nur Umrissen – die Standard-Kacheln von
+        OpenStreetMap (gewählt war CARTO, das inzwischen einen API-Schlüssel verlangt; im Dunkelmodus per CSS-Filter
+        abgedunkelt), selbst gezeichnet ohne Kartenbibliothek
+        (`tilesInView` in `src/domain/worldMap.ts`, eine gröbere Zoomstufe darunter als Lückenfüller). Entscheidung des
+        Maintainers: „Eine Online-Karte reicht vollkommen aus. Leichtgewichtig und nicht selbstgehostet“ – der Grundsatz
+        „kein Kartendienst sieht, wo man hinschaut“ entfällt (Datenschutztext angepasst); offline bleiben die Umrisse
 - [x] R7 **Aktualität:** monatlicher Pipeline-Dry-Run als PR mit Diff-Bericht, Übernahme nach OK (S)
       - umgesetzt (#67): Workflow „Regional catalogue (monthly)“ (am 1., ruft fetch + Websites auf) baut den Import,
         `npm run catalog:diff` vergleicht ihn mit dem Live-Katalog (öffentliche API, `tools/catalog/diff.ts`), PR

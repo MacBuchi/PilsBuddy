@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BOTTOM, clampView, clusterPoints, fitBounds, MAX_SCALE, minScale, project, TOP, toScreen, toWorld, unproject, viewAround, WORLD, zoomAt } from './worldMap'
+import { BOTTOM, clampView, clusterPoints, fitBounds, mapZoom, MAX_SCALE, minScale, project, tilesInView, TOP, toScreen, toWorld, unproject, viewAround, WORLD, zoomAt } from './worldMap'
 import type { MapPoint, View } from './worldMap'
 
 const PHONE = { w: 390, h: 700 }
@@ -112,5 +112,35 @@ describe('clusterPoints', () => {
     const v = viewAround({ lat: 49.3, lon: 9 }, 200, PHONE)
     const c = clusterPoints(points, v, PHONE).find((x) => x.kind === 'many')
     expect(c?.kind === 'many' && c.box).toEqual({ x0: points[0].x, y0: points[1].y, x1: points[1].x, y1: points[0].y })
+  })
+})
+
+describe('tilesInView (#113)', () => {
+  it('mapZoom follows the web-map convention (whole world on 256 px = 0)', () => {
+    expect(mapZoom(256 / WORLD)).toBeCloseTo(0, 9)
+    expect(mapZoom((256 / WORLD) * 2 ** 8)).toBeCloseTo(8, 9)
+  })
+
+  it('covers the screen with tiles of the view zoom, about 256 px each', () => {
+    const v = viewAround({ lat: 49.24, lon: 9.1 }, 25, PHONE)
+    const tiles = tilesInView(v, PHONE)
+    const z = Math.round(mapZoom(v.scale))
+    expect(tiles.every((t) => t.z === z && t.px > 180 && t.px < 365)).toBe(true)
+    expect(Math.min(...tiles.map((t) => t.left))).toBeLessThanOrEqual(0)
+    expect(Math.min(...tiles.map((t) => t.top))).toBeLessThanOrEqual(0)
+    expect(Math.max(...tiles.map((t) => t.left + t.px))).toBeGreaterThanOrEqual(PHONE.w)
+    expect(Math.max(...tiles.map((t) => t.top + t.px))).toBeGreaterThanOrEqual(PHONE.h)
+    // the tile under Heilbronn has the standard slippy-map address
+    const n = 2 ** z
+    const p = project({ lat: 49.14, lon: 9.22 })
+    expect(tiles.map((t) => t.key)).toContain(`${z}/${Math.floor((p.x / WORLD) * n)}/${Math.floor((p.y / WORLD) * n)}`)
+  })
+
+  it('wraps x around the world and stops y at the edge', () => {
+    const v = clampView({ x: 0, y: 500, scale: 2 }, PHONE)
+    const tiles = tilesInView({ ...v, x: 1 }, PHONE, 2)
+    expect(tiles.every((t) => t.x >= 0 && t.x < 4 && t.y >= 0 && t.y < 4)).toBe(true)
+    expect(new Set(tiles.map((t) => t.key)).size).toBeLessThanOrEqual(tiles.length)
+    expect(tiles.some((t) => t.x === 3)).toBe(true)
   })
 })
