@@ -1,4 +1,4 @@
-import { ChatCircleTextIcon, DownloadSimpleIcon, MoonStarsIcon, SparkleIcon, TranslateIcon, UploadSimpleIcon } from '@phosphor-icons/react'
+import { BeerBottleIcon, ChatCircleTextIcon, DownloadSimpleIcon, MoonStarsIcon, SparkleIcon, TranslateIcon, UploadSimpleIcon } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { serializeProfile } from '../../state/storage'
 import { useProfileImport } from '../useProfileImport'
@@ -124,6 +124,13 @@ export function Profile() {
       </section>
 
       <section className={styles.section}>
+        <button type="button" className={styles.setting} onClick={() => go('favorites')}>
+          <BeerBottleIcon weight="bold" size={20} />
+          <span className={styles.settingText}>
+            <span className={styles.settingLabel}>{COPY.profile.favorites}</span>
+            <span className={styles.settingSub}>{COPY.profile.favoritesSub}</span>
+          </span>
+        </button>
         <button type="button" className={styles.setting} onClick={() => dispatch({ type: 'TOGGLE_DARK' })} role="switch" aria-checked={dark}>
           <MoonStarsIcon weight="bold" size={20} />
           <span className={styles.settingText}>

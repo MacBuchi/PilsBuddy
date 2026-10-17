@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CELL_TTL_MS, CELLS_KEY, fetchBreweryMap, fetchChanges, FRESH_EVERY_MS, FRESH_KEY, fetchRegionalByIds, fetchCells, findPostcode, forgetRegional, loadBrewery, loadBreweryMap, loadRegion, MAP_KEY, POOL_KEY, readPool, readPrefs, readSnapshots, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
+import { CELL_TTL_MS, CELLS_KEY, fetchBreweryMap, fetchChanges, FRESH_EVERY_MS, FRESH_KEY, fetchRegionalByIds, fetchCells, findPostcode, forgetRegional, loadBrewery, loadBreweryMap, loadRegion, MAP_KEY, POOL_KEY, readPool, readPrefs, readSnapshots, refreshPool, searchNear, searchPattern, searchRegional, writePool, writePrefs, writeSnapshot } from './regional'
 
 const MANNHEIM = { lat: 49.49, lon: 8.47 }
 const eichbaum = {
@@ -84,7 +84,7 @@ describe('findPostcode', () => {
   const F = (rows: unknown[]) => api(rows) as unknown as typeof fetch
   it('sends only the typed postcode and returns its centre', async () => {
     const f = api([{ country: 'DE', postcode: '74906', name: 'Bad Rappenau', lat: 49.2386, lon: 9.1016 }])
-    expect(await findPostcode(' 74906 ', f as unknown as typeof fetch, 'de-DE')).toEqual([{ label: '74906 Bad Rappenau', lat: 49.2386, lon: 9.1016 }])
+    expect(await findPostcode(' 74906 ', f as unknown as typeof fetch, 'de-DE')).toEqual([{ label: '74906 Bad Rappenau', lat: 49.2386, lon: 9.1016, country: 'DE' }])
     expect(f.mock.calls[0][0]).toContain('postcode=eq.74906')
     expect(await findPostcode('abc', f as unknown as typeof fetch, 'de-DE')).toEqual([])
     expect(await findPostcode('99999', F([]), 'de-DE')).toEqual([])
@@ -92,7 +92,7 @@ describe('findPostcode', () => {
 
   it('cuts a Canadian postcode to its FSA before asking', async () => {
     const f = api([{ country: 'CA', postcode: 'J3L', name: 'Chambly', lat: 45.45, lon: -73.29 }])
-    expect(await findPostcode('j3l 2c7', f as unknown as typeof fetch, 'fr-CA')).toEqual([{ label: 'J3L Chambly', lat: 45.45, lon: -73.29 }])
+    expect(await findPostcode('j3l 2c7', f as unknown as typeof fetch, 'fr-CA')).toEqual([{ label: 'J3L Chambly', lat: 45.45, lon: -73.29, country: 'CA' }])
     expect(f.mock.calls[0][0]).toContain('postcode=eq.J3L&')
     expect(f.mock.calls[0][0]).not.toContain('2C7')
   })
@@ -111,11 +111,14 @@ describe('findPostcode', () => {
 describe('prefs and snapshots', () => {
   it('prefs fall back to 25 km and never hold a position', () => {
     stubStorage()
-    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null, deck: false })
+    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null, deck: true })
     writePrefs({ radius: 50, mode: 'geo', place: null, deck: true })
     expect(readPrefs()).toEqual({ radius: 50, mode: 'geo', place: null, deck: true })
     writePrefs({ radius: 7 as 10, mode: 'plz', place: null, deck: 'ja' as unknown as boolean })
-    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null, deck: false })
+    expect(readPrefs()).toEqual({ radius: 25, mode: null, place: null, deck: true })
+    // the Regional-Modus is on unless switched off; a place keeps a known country only
+    writePrefs({ radius: 10, mode: 'plz', place: { label: '74906 Bad Rappenau', lat: 49.2, lon: 9.1, country: 'XX' as 'DE' }, deck: false })
+    expect(readPrefs()).toEqual({ radius: 10, mode: 'plz', place: { label: '74906 Bad Rappenau', lat: 49.2, lon: 9.1 }, deck: false })
   })
 
   it('remembers touched beers with their brewery facts, newest wins', () => {
@@ -140,6 +143,14 @@ describe('prefs and snapshots', () => {
     expect(pool[0].brewery).not.toHaveProperty('beers')
     stored.set(POOL_KEY, JSON.stringify({ v: 1, data: [{ row: row('kaputt'), brewery, km: 1 }, { row: row('r-ok'), brewery, km: -1 }, { row: row('r-ok2'), brewery, km: 5 }] }))
     expect(readPool().map((p) => p.row.id)).toEqual(['r-ok2'])
+  })
+
+  it('refreshPool loads the surroundings like the finder and keeps them; offline the old pool stays (2026-10-17)', async () => {
+    stubStorage()
+    const pool = await refreshPool(MANNHEIM, 10, api([eichbaum]) as unknown as typeof fetch)
+    expect(pool.map((p) => p.row.id)).toEqual(['r-4000000000001'])
+    expect(pool[0].km).toBeLessThan(2)
+    expect((await refreshPool({ lat: 52.5, lon: 13.4 }, 10, offline() as unknown as typeof fetch)).map((p) => p.row.id)).toEqual(['r-4000000000001'])
   })
 
   it('„Profil zurücksetzen“ forgets postcode, snapshots and pool', () => {

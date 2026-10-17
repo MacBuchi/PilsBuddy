@@ -32,6 +32,8 @@ type Remote = { state: 'idle' | 'loading' | 'error'; query: string } | { state: 
  */
 export function Favorites() {
   const { state, dispatch, go } = useApp()
+  // after onboarding the screen is reached from the profile (2026-10-17: favourites any time) and returns there
+  const later = state.profile.onboarded
   const [query, setQuery] = useState('')
   const [picked, setPicked] = useState<Pick[]>([])
   const [remote, setRemote] = useState<Remote>({ state: 'idle', query: '' })
@@ -78,7 +80,7 @@ export function Favorites() {
     )
     const at = Date.now()
     ids.forEach((id, i) => dispatch({ type: 'RATE', id, rating: 'LIKE', at: at + i }))
-    go('swipe')
+    go(later ? 'profile' : 'swipe')
   }
 
   const row = (p: Pick, meta: string) => {
@@ -110,16 +112,16 @@ export function Favorites() {
   return (
     <div className={page.page} style={{ paddingLeft: 20, paddingRight: 20 }}>
       <div className={legal.head}>
-        <button type="button" className={legal.back} onClick={() => go('howto')} aria-label={COPY.nav.back}>
+        <button type="button" className={legal.back} onClick={() => go(later ? 'profile' : 'howto')} aria-label={COPY.nav.back}>
           <ArrowLeftIcon weight="bold" />
         </button>
-        <span className="t-label">{COPY.favorites.step}</span>
+        {!later && <span className="t-label">{COPY.favorites.step}</span>}
       </div>
       <h1 className={legal.title} style={{ margin: 0 }}>
-        {COPY.favorites.title}
+        {later ? COPY.favorites.later : COPY.favorites.title}
       </h1>
       <p className={finder.note} style={{ margin: 0 }}>
-        {COPY.favorites.sub}
+        {later ? COPY.favorites.laterSub : COPY.favorites.sub}
       </p>
 
       <label className={lib.search}>
@@ -181,7 +183,12 @@ export function Favorites() {
 
       <div style={{ flex: 1 }} />
       <Button block onClick={finish}>
-        {picked.length ? fill(COPY.favorites.go, { n: picked.length, fav: COPY.favorites.favWord[picked.length === 1 ? 0 : 1] }) : COPY.favorites.goNone} <BeerBottleIcon weight="bold" />
+        {later
+          ? COPY.favorites.save
+          : picked.length
+            ? fill(COPY.favorites.go, { n: picked.length, fav: COPY.favorites.favWord[picked.length === 1 ? 0 : 1] })
+            : COPY.favorites.goNone}{' '}
+        <BeerBottleIcon weight="bold" />
       </Button>
       {reporting && <BeerSubmitSheet beerName={q} onClose={() => setReporting(false)} />}
     </div>

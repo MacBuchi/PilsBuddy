@@ -31,7 +31,8 @@ const CHANGES_LIMIT = 500
 const BATCH = 6
 const MAX_CELLS = 200
 const MAX_SNAPS = 300
-const MAX_POOL = 60
+/** Regional-first deck (2026-10-17): enough nearby beers for many sessions of swiping. */
+const MAX_POOL = 200
 
 type FetchFn = typeof fetch
 
@@ -290,6 +291,8 @@ async function loadMap(fetchFn: FetchFn, now: number): Promise<MapLoad> {
 export interface Place extends LatLon {
   /** „74906 Bad Rappenau“ – with the country when the code exists in more than one */
   label: string
+  /** The postcode's country – the swipe deck's home region (missing on places saved before 2026-10-17). */
+  country?: Country
 }
 
 /**
@@ -316,6 +319,7 @@ export async function findPostcode(plz: string, fetchFn: FetchFn = fetch, locale
     label: places.length > 1 ? `${code} ${p.name} (${COPY.countries[p.country]})` : `${code} ${p.name}`,
     lat: p.lat,
     lon: p.lon,
+    country: p.country,
   }))
 }
 
@@ -326,7 +330,7 @@ export interface RegionalPrefs {
   /** How the user found their spot last time; a position is never stored, a typed postcode is. */
   mode: 'geo' | 'plz' | null
   place: Place | null
-  /** R5 Regional-Modus: beers of the last finder result join the swipe deck. */
+  /** R5 Regional-Modus: beers around the user join the swipe deck – on unless switched off (2026-10-17). */
   deck: boolean
 }
 
@@ -337,8 +341,10 @@ export function readPrefs(): RegionalPrefs {
   return {
     radius: (RADII as readonly number[]).includes(p?.radius as number) ? (p!.radius as Radius) : 25,
     mode: p?.mode === 'geo' || (p?.mode === 'plz' && okPlace) ? p.mode : null,
-    place: okPlace ? { label: place.label.slice(0, 90), lat: place.lat, lon: place.lon } : null,
-    deck: p?.deck === true,
+    place: okPlace
+      ? { label: place.label.slice(0, 90), lat: place.lat, lon: place.lon, ...(Object.hasOwn(COPY.countries, place.country ?? '') ? { country: place.country } : {}) }
+      : null,
+    deck: p?.deck !== false,
   }
 }
 
@@ -403,6 +409,25 @@ export function readPool(): PoolItem[] {
     if (row && brewery && typeof i.km === 'number' && Number.isFinite(i.km) && i.km >= 0 && i.km <= 500) out.push({ row, brewery: withoutBeers(brewery), km: i.km })
   }
   return out
+}
+
+/** The beers of the breweries within `radius` km of `origin`, as pool items (nearest first once written). */
+export function poolItems(breweries: readonly RegionalBrewery[], origin: LatLon, radius: number): PoolItem[] {
+  return breweries.flatMap((b) => {
+    const km = haversineKm(origin, b)
+    return km <= radius ? b.beers.map((row) => ({ row, brewery: withoutBeers(b), km })) : []
+  })
+}
+
+/**
+ * Regional-first deck: load the surroundings like the finder does (same coarse cells, cached) and keep them as the
+ * pool. Offline with nothing cached, the old pool stays.
+ */
+export async function refreshPool(origin: LatLon, radius: Radius, fetchFn: FetchFn = fetch): Promise<PoolItem[]> {
+  const { breweries, offline } = await loadRegion(origin, radius, fetchFn)
+  if (offline && !breweries.length) return readPool()
+  writePool(poolItems(breweries, origin, radius))
+  return readPool()
 }
 
 /** „Profil zurücksetzen“: postcode, radius, snapshots, pool, cached cells and the map list go too. */

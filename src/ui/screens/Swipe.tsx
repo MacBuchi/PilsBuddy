@@ -4,6 +4,7 @@ import {
   EyeIcon,
   FireIcon,
   HeartIcon,
+  MapPinIcon,
   QuestionIcon,
   QuestionMarkIcon,
   XIcon,
@@ -12,9 +13,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { BEER_BY_ID, DECK_ORDER, getBeer, knowRegional, rememberRegional } from '../../data/beers'
 import { COPY, fill } from '../../data/copy'
-import { readPool, readPrefs } from '../../data/regional'
-import { buildDeck } from '../../domain/deck'
-import type { NearbyBeer } from '../../domain/deck'
+import { readPool, readPrefs, refreshPool } from '../../data/regional'
+import type { PoolItem, RegionalPrefs } from '../../data/regional'
+import { buildDeck, homeRegionOf } from '../../domain/deck'
+import type { HomeRegion, NearbyBeer } from '../../domain/deck'
+import { preferredCountries } from '../../domain/postcode'
 import { formatKm } from '../../domain/regional'
 import { progressMessage, quipAfterRating } from '../../domain/quips'
 import type { Beer, Rating } from '../../domain/types'
@@ -29,7 +32,9 @@ import { SwipeCoach } from '../components/SwipeCoach'
 import { SwipeDeck } from '../components/SwipeDeck'
 import type { SwipeDeckHandle } from '../components/SwipeDeck'
 import type { CardBadge } from '../components/BeerCard'
+import { RegionalFinder } from '../components/RegionalFinder'
 import { Toast } from '../components/Toast'
+import { geoGranted, locate } from '../locate'
 import { RATING_COLOR } from '../ratingStyle'
 import styles from './Swipe.module.css'
 
@@ -51,6 +56,17 @@ const KEYMAP: Record<string, Rating> = {
   K: 'KNOW',
 }
 
+/**
+ * Where the user lives, for the curated cards (wish 2026-10-17): the typed postcode's country, else the country most
+ * nearby breweries are in, else the browser's.
+ */
+function homeOf(prefs: RegionalPrefs, pool: readonly PoolItem[]): HomeRegion | null {
+  const byCount = new Map<string, number>()
+  for (const p of pool) byCount.set(p.brewery.country, (byCount.get(p.brewery.country) ?? 0) + 1)
+  const most = [...byCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
+  return homeRegionOf(prefs.place?.country) ?? homeRegionOf(most) ?? homeRegionOf(preferredCountries(navigator.language)[0])
+}
+
 /** Show the "DNA auswerten" nudge once this many beers are rated during onboarding. */
 export const ANALYZE_AFTER = 6
 
@@ -64,10 +80,35 @@ export function Swipe() {
   const { state, rate, go, openDetail, dispatch, withTabs } = useApp()
   const { ratings, onboarded } = state.profile
   const { counts, decoded, avatar, candidates, archetype } = useDerived()
-  // R5 Regional-Modus: the last finder result, read once per visit (the finder lives on another screen)
-  const [pool] = useState(() => (readPrefs().deck ? readPool() : []))
+  // R5 Regional-Modus, regional first (2026-10-17): the stored pool at once, then fresh from the saved postcode or a
+  // position the user allowed before – the same coarse cells the finder asks for
+  const [prefs, setPrefs] = useState(readPrefs)
+  const [pool, setPool] = useState<PoolItem[]>(() => (prefs.deck ? readPool() : []))
+  const [where, setWhere] = useState(false)
+  useEffect(() => {
+    if (!prefs.deck) return
+    let live = true
+    const origin = async () => (prefs.mode === 'plz' && prefs.place ? prefs.place : prefs.mode === 'geo' && (await geoGranted()) ? locate() : null)
+    origin()
+      .then((o) => (o ? refreshPool(o, prefs.radius) : null))
+      .then((p) => live && p && setPool(p))
+      .catch(() => {
+        /* no position, no network: the stored pool stays */
+      })
+    return () => {
+      live = false
+    }
+  }, [prefs])
+  const closeWhere = useCallback(() => {
+    // the finder in the sheet saved the new place or radius and wrote its result as the pool
+    const p = readPrefs()
+    setWhere(false)
+    setPrefs(p)
+    setPool(p.deck ? readPool() : [])
+  }, [])
   const nearby = useMemo<NearbyBeer[]>(() => pool.map((p) => ({ beer: knowRegional(p.row, p.brewery), km: p.km })), [pool])
-  const cards = useMemo(() => buildDeck(ratings, DECK_ORDER, BEER_BY_ID, nearby), [ratings, nearby])
+  const home = useMemo(() => homeOf(prefs, pool), [prefs, pool])
+  const cards = useMemo(() => buildDeck(ratings, DECK_ORDER, BEER_BY_ID, nearby, home), [ratings, nearby, home])
   const queue = cards.map((c) => getBeer(c.id))
   const badges = useMemo(() => {
     const out: Record<string, CardBadge> = {}
@@ -185,6 +226,16 @@ export function Swipe() {
         <div className={styles.bar}>
           <div className={styles.fill} style={{ width: `${decoded}%` }} />
         </div>
+        <button type="button" className={styles.where} onClick={() => setWhere(true)}>
+          <MapPinIcon weight="fill" />
+          {!prefs.deck
+            ? COPY.swipe.whereOff
+            : prefs.mode === 'plz' && prefs.place
+              ? fill(COPY.swipe.where, { place: prefs.place.label.replace(/ \(.*\)$/, ''), km: prefs.radius })
+              : prefs.mode === 'geo'
+                ? fill(COPY.swipe.where, { place: COPY.regional.here, km: prefs.radius })
+                : COPY.swipe.whereSet}
+        </button>
       </div>
 
       <div className={styles.stage} onPointerDownCapture={() => setCoachOff(true)}>
@@ -228,6 +279,12 @@ export function Swipe() {
         )}
         {toast && <Toast text={toast.text} color={toast.color} position="bottom" animKey={toast.key} />}
       </div>
+
+      {where && (
+        <Sheet title={COPY.swipe.whereTitle} onClose={closeWhere}>
+          <RegionalFinder />
+        </Sheet>
+      )}
 
       {showAnalyze && (
         <div className={styles.analyzeRow}>

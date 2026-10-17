@@ -247,6 +247,13 @@ Leitplanken:
 - [x] R5 **Regional im Alltag:** Regional-Modus im Swipe-Deck (jede 3. Karte aus dem Umkreis),
       Achievement „Lokalpatriot“, Share-Card-Zeile (M). Umgesetzt: Pool = letztes Finder-Ergebnis (nur auf dem Gerät,
       max. 60), Regional-Karten mischen sich ab der ersten Karte ein (nicht erst nach dem Onboarding-Set)
+      - Regional zuerst (2026-10-17, #117, Wunsch: „beim Swipen vor allem regionale Biere, Radius einstellbar,
+        zusätzlich Lieblingsbiere – was will ich ein kanadisches Bier swipen, das ich hier nicht besorgen kann“):
+        Regional-Modus ist Standard; nach dem Start-Set sind zwei von drei Karten aus dem Umkreis, die dritte ein
+        kuratiertes Bier nur aus der Heimat-Region (`HOME_COUNTRIES`: DACH bzw. USA/Kanada; Heimat aus PLZ-Land,
+        sonst Land der Brauereien im Umkreis, sonst Browsersprache). Der Pool (max. 200) lädt sich beim Öffnen des
+        Decks rund um die gespeicherte PLZ bzw. den erlaubten Standort neu (`refreshPool`); Umkreis-Chip im
+        Swipe-Screen öffnet den Finder als Sheet (PLZ/Standort, 10–100 km). Lieblingsbiere jederzeit über das Profil
 - [x] R6 **„Bier fehlt? Eintragen“** (vor R5 gezogen, Wunsch 2026-10-02): Brauerei Pflicht (aus dem Finder oder
       frei mit PLZ/Ort), dazu ein Link oder die Daten (Name, Stil, Alkohol). Tabelle `beer_submissions` (anonym, nur
       `insert`, Trigger-Limit global + keine Doppelmeldung, 5 je Gerät und Tag) → `tool/beer_bot.py` legt je Meldung

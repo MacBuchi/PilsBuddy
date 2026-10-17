@@ -281,6 +281,10 @@ export const EN: Copy = {
     emptyToDna: 'To your beer DNA',
     emptyAnalyze: 'Analyse DNA',
     restart: 'Start over',
+    where: '{place} · {km} km',
+    whereSet: 'Set your area – beers from nearby',
+    whereOff: 'Beers from nearby: off',
+    whereTitle: 'Your area',
   },
   progress: {
     full: 'Beer DNA decoded',
@@ -360,7 +364,7 @@ export const EN: Copy = {
   regional: {
     title: 'Beers near you',
     deckMode: 'Local mode in the swipe deck',
-    deckModeHint: 'Every 3rd card comes from this area – best matches first.',
+    deckModeHint: 'Two of every three cards come from this area – best matches first. Plus beers from your country only.',
     dnaCta: 'Beers near you',
     dnaCtaGo: 'Find',
     intro: 'Local breweries, sorted by your beer DNA. Your location stays on your device.',
@@ -478,6 +482,8 @@ export const EN: Copy = {
     noRelations: 'No relationships yet. Single. Beer-wise.',
     dark: 'Pub mode',
     darkSub: 'Dark mode. For after 10 pm.',
+    favorites: 'Add favourite beers',
+    favoritesSub: 'What you like to drink – counts as “Like” and sharpens your picks.',
     reset: 'Reset profile – forget everything, like after the village fair.',
     resetConfirm: 'Really forget everything? Your beer DNA, matches, everything.',
     resetConfirmCloud:
@@ -1185,6 +1191,9 @@ export const EN: Copy = {
     go: 'Continue with {n} {fav}',
     favWord: ['favourite', 'favourites'],
     goNone: 'Continue without favourites',
+    later: 'Favourite beers',
+    laterSub: 'Tell us what you like to drink – it counts as “Like” right away.',
+    save: 'Save',
     remove: 'Remove {name}',
   },
   library: {
