@@ -52,6 +52,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 31. [x] **V12** Jede bestätigte Brauerei hat ein Bier: Recherche-Agenten mit Beleg-URL je Bier, zuerst DACH (Wunsch 2026-10-16) (#105)
 32. [x] **V13** Bier-Meldungen per Claude-Triage (Skill `bier-triage`) + Nachrecherche der unklaren Brauereien in Baden-Württemberg (Wunsch 2026-10-17) (#109)
 33. [x] **V14** Recherchierte Biere der eigenen Website nicht mehr am Crawler-Namensfilter verlieren (Befund nach dem V13-Import) (#110)
+34. [x] **V15** Letzte Lücken in BW: fremde http-Belege, Dubletten ausblenden, Nachrecherche (Befund nach dem V14-Import) (#PR)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -452,6 +453,13 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       (Stilwort im Namen, keine führende Ziffer) – „Urvogel“, „1250er“, „Aufruhr“ fielen heraus. Jetzt `researchedWebRows`:
       nur `cleanName` + Gastbier-Filter, gecrawlte Zeilen unverändert. Gleiche Recherche: Website-Biere 547 → 896, Brauereien
       266 → 366 (DACH). Wirkt mit dem nächsten Katalog-Import (S)
+- [x] V15 **Letzte Lücken in BW** (#PR) (Befund 2026-10-17 nach dem V14-Import: in BW 13 Brauereien ohne Bier):
+      Engel Rastatt verlor alle Recherche-Biere – Beleg `http://engel-rastatt.de`, die Website in OSM ist eine andere
+      Domain, und fremde Links zählen nur über https. Gleicher Fall in DACH: Huber Bräu, Braukeller Pulsnitz, Traquenard
+      (Belege auf https umgestellt, je Seite neu abgerufen); Rosengarten Einsiedeln bleibt (Seite antwortet 406). Der Build
+      listet solche Einträge jetzt („Recherche ohne verwertbares Bier“). Neuer Status `duplicate` (ausgeblendet, nur mit
+      Beleg) für 4 Dubletten (Ochsen = Spall, Hotel Adler = Dachsenfranz, Vater Strauss, Schwert Ehingen). Nachrecherche
+      der 8 unklaren: NACHRECHERCHE. Wirkt mit dem nächsten Katalog-Import (S)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 

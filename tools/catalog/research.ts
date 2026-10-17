@@ -3,7 +3,8 @@
 import type { WebRow } from './merge'
 import { cleanName, guestBeer } from './web'
 
-export type ResearchStatus = 'beers' | 'no-own-beer' | 'closed' | 'unclear'
+/** duplicate (V15): another catalogue entry is the same brewery and has its beers – note names its id */
+export type ResearchStatus = 'beers' | 'no-own-beer' | 'closed' | 'duplicate' | 'unclear'
 export interface ResearchBeer {
   name: string
   style: string | null
@@ -46,21 +47,23 @@ const https = (url: string) => link(url) && url.startsWith('https://')
 
 /**
  * The research as catalogue input: beers on the brewery's own website count like crawled ones (they go through the
- * same name and guest-beer filters), beers from other sites become their own source; a brewery that has closed or
- * brews no beer of its own is hidden – both only with the page that shows it. Unknown ids (gone from the sources) and
- * „unclear“ change nothing. At most MAX_RESEARCHED_BEERS beers per brewery, in the order the research lists them.
+ * same name and guest-beer filters), beers from other sites become their own source; a brewery that has closed, brews
+ * no beer of its own or duplicates another entry is hidden – all only with the page that shows it. Unknown ids (gone from
+ * the sources) and „unclear“ change nothing. At most MAX_RESEARCHED_BEERS beers per brewery, in the order the research
+ * lists them. `unusable` (V15): „beers“ entries none of whose links count (another site over http) – the build reports them.
  */
 export function researchInput(
   entries: readonly ResearchEntry[],
   breweries: readonly { id: string; website: string | null }[],
-): { hidden: Set<string>; web: WebRow[]; other: ResearchRow[] } {
+): { hidden: Set<string>; web: WebRow[]; other: ResearchRow[]; unusable: string[] } {
   const site = new Map(breweries.map((b) => [b.id, host(b.website)]))
   const hidden = new Set<string>()
   const web: WebRow[] = []
   const other: ResearchRow[] = []
+  const unusable: string[] = []
   for (const e of entries) {
     if (!site.has(e.id)) continue
-    if ((e.status === 'closed' || e.status === 'no-own-beer') && e.evidence && link(e.evidence)) {
+    if ((e.status === 'closed' || e.status === 'no-own-beer' || e.status === 'duplicate') && e.evidence && link(e.evidence)) {
       hidden.add(e.id)
       continue
     }
@@ -68,6 +71,7 @@ export function researchInput(
     const own = site.get(e.id)
     const onSite = (b: ResearchBeer) => !!own && link(b.url) && host(b.url) === own
     const usable = e.beers.filter((b) => b.name?.trim() && (onSite(b) || https(b.url)))
+    if (!usable.length) unusable.push(e.id)
     for (const b of usable.slice(0, MAX_RESEARCHED_BEERS)) {
       const abv = typeof b.abv === 'number' && b.abv > 0 && b.abv <= 20 ? b.abv : null
       const style = b.style?.trim() || null
@@ -77,7 +81,7 @@ export function researchInput(
       } else other.push({ breweryId: e.id, name: b.name, style, abv, url: b.url })
     }
   }
-  return { hidden, web, other }
+  return { hidden, web, other, unusable }
 }
 
 /**

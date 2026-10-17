@@ -30,6 +30,8 @@ Ein über eine Meldung freigegebenes Bier kommt nie zusätzlich in `research/*.j
 ## Lücken füllen (Nachrecherche)
 Brauereien ohne Bier nachrecherchieren wie in `tools/catalog/research/README.md` (V12): Arbeitsliste aus der Live-API
 (veröffentlichte Brauereien ohne veröffentlichtes Bier) minus Einträge, die nicht `unclear` sind; Rechercheure in
-Batches, danach ein Faktencheck, der jede Beleg-URL neu öffnet. Einträge in `dach.json` ersetzen (eine id je Datei
+Batches, danach ein Faktencheck, der jede Beleg-URL neu öffnet. Beleg-URLs als https-Adresse nach Weiterleitungen (fremder Host über
+http zählt nicht – der Build listet solche Einträge); Dubletten eines anderen Katalog-Eintrags → Status `duplicate` mit
+Beleg und der anderen id in `note`. Einträge in `dach.json` ersetzen (eine id je Datei
 und über alle Dateien), `checked` = heute, `stage` = Modell. Prüfen: `npx vitest run tools/catalog/research.test.ts`.
 Live wird das erst mit dem Katalog-Import (`catalog-import.yml`, Freigabe des Maintainers) – nie selbst auslösen.
