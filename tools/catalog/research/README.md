@@ -18,8 +18,13 @@ One array per file, one entry per brewery:
   → source 6 „Recherche“ with that link. Quality is computed in the build like for every other beer. At most the
   first 3 beers of an entry are used (`MAX_RESEARCHED_BEERS`; list permanent beers first) – the file keeps every
   verified beer with all its values, so a higher limit needs no new research.
+- Links: the address that serves the page after redirects, https whenever the site offers it. A link to another host
+  than the brewery's website on file (OSM often has an old or redirecting domain) counts only over https – otherwise
+  the beer is lost; the build lists such entries („Recherche ohne verwertbares Bier“, V15).
 - `checked` (date) and `stage` (`sonnet` / `opus`, which research pass found it) record where an entry comes from.
 - `closed` / `no-own-beer` (bar, restaurant, shop without own beer): hidden from the catalogue – only with `evidence`.
+- `duplicate` (V15): another catalogue entry is the same brewery and has its beers – hidden like `closed`, only with
+  `evidence` (a page that shows both are one), `note` names the other id.
 - `unclear`: changes nothing.
 - Ids that are no longer in the sources are ignored.
 

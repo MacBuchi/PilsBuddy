@@ -134,6 +134,7 @@ const report = [
   `  Stile: ${count(beers, (b) => b.style ?? '—')}`,
   `  Quellen: ${count(beers, (b) => String(b.source))} (1 = OFF, 2 = Wikidata, 3 = Website, 4 = openbeer, 6 = Recherche)`,
   `  Recherche (V12): ${researchEntries.length} Brauereien · ausgeblendet ${research.hidden.size} · unbestätigt (nur Wikidata, ohne Website und Bier) ${researched.length - breweries.length} · Biere eigene Website ${research.web.length} · andere Seiten ${research.other.length}`,
+  `  Recherche ohne verwertbares Bier (nur fremde http-Links, V15): ${research.unusable.length ? research.unusable.join(' ') : '–'}`,
   `  je Land: ${COUNTRIES.map((c) => `${c} ${beers.filter((b) => countryOf.get(b.breweryId) === c).length} bei ${new Set(beers.filter((b) => countryOf.get(b.breweryId) === c).map((b) => b.breweryId)).size}`).join(' · ')}`,
   `  mit ABV ${beers.filter((b) => b.abv != null).length} · mit Gebinde ${beers.filter((b) => b.pack).length}`,
   `  Qualität (V4): geprüft ${beers.filter((b) => b.quality === 3).length} · bestätigt ${beers.filter((b) => b.quality === 2).length} · gefunden ${beers.filter((b) => b.quality === 1).length} · fraglich ${beers.filter((b) => b.quality === 0).length}`,

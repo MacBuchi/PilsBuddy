@@ -57,6 +57,17 @@ describe('researchInput (V12)', () => {
     expect([...r.hidden]).toEqual(['osm-n1'])
   })
 
+  it('hides a duplicate of another entry only with the page that shows it (V15)', () => {
+    const r = researchInput(
+      [
+        entry({ id: 'osm-n1', status: 'duplicate', evidence: 'https://loewe.example/geschichte', note: 'Dublette von osm-n7' }),
+        entry({ id: 'osm-n2', status: 'duplicate', evidence: null }),
+      ],
+      [loewe, post],
+    )
+    expect([...r.hidden]).toEqual(['osm-n1'])
+  })
+
   it('ignores unclear entries, unknown breweries, beers without a link and links to other sites over http', () => {
     const r = researchInput(
       [
@@ -70,7 +81,7 @@ describe('researchInput (V12)', () => {
       ],
       [loewe, post],
     )
-    expect(r).toEqual({ hidden: new Set(), web: [], other: [] })
+    expect(r).toEqual({ hidden: new Set(), web: [], other: [], unusable: ['osm-n1'] })
   })
 
   it('takes at most three beers per brewery, in the listed order', () => {
@@ -112,8 +123,8 @@ describe('tools/catalog/research/*.json', () => {
     expect(ids.length - new Set(ids).size).toBe(0)
     for (const e of entries) {
       expect(e.id, e.file).toMatch(/^(osm-[nwr]|wd-q)[0-9]+$|^obdb-[0-9a-f-]{36}$/)
-      expect(['beers', 'no-own-beer', 'closed', 'unclear'], e.id).toContain(e.status)
-      if (e.status === 'closed' || e.status === 'no-own-beer') expect(e.evidence, e.id).toMatch(/^https?:\/\//)
+      expect(['beers', 'no-own-beer', 'closed', 'duplicate', 'unclear'], e.id).toContain(e.status)
+      if (e.status === 'closed' || e.status === 'no-own-beer' || e.status === 'duplicate') expect(e.evidence, e.id).toMatch(/^https?:\/\//)
       if (e.status === 'beers') expect(e.beers.length, e.id).toBeGreaterThan(0)
       else expect(e.beers, e.id).toEqual([])
       for (const b of e.beers) {
