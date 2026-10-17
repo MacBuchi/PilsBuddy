@@ -98,6 +98,30 @@
   gap: 7px;
 }
 
+.where {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  margin-top: 2px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--sf);
+  color: var(--ink);
+  font: 700 11px/1.2 var(--font-display);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.where svg {
+  flex: none;
+  color: var(--gold);
+}
+
 .progressRow {
   display: flex;
   justify-content: space-between;

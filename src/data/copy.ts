@@ -286,6 +286,10 @@ const DE = {
     emptyToDna: 'Zur Bier-DNA',
     emptyAnalyze: 'DNA auswerten',
     restart: 'Von vorn',
+    where: '{place} · {km} km',
+    whereSet: 'Umkreis festlegen – Biere aus deiner Nähe',
+    whereOff: 'Biere aus der Nähe: aus',
+    whereTitle: 'Dein Umkreis',
   },
   progress: {
     full: 'Bier-DNA entschlüsselt',
@@ -365,7 +369,7 @@ const DE = {
   regional: {
     title: 'Biere aus deiner Nähe',
     deckMode: 'Regional-Modus im Swipe-Deck',
-    deckModeHint: 'Jede 3. Karte kommt aus diesem Umkreis – die passendsten zuerst.',
+    deckModeHint: 'Zwei von drei Karten kommen aus diesem Umkreis – die passendsten zuerst. Dazu nur Biere aus deinem Land.',
     dnaCta: 'Biere aus deiner Nähe',
     dnaCtaGo: 'Finden',
     intro: 'Regionale Brauereien, sortiert nach deiner Bier-DNA. Dein Standort bleibt auf dem Gerät.',
@@ -485,6 +489,8 @@ const DE = {
     noRelations: 'Noch keine Beziehungen. Du bist Single. Bier-technisch.',
     dark: 'Kneipen-Modus',
     darkSub: 'Dark Mode. Für nach 22 Uhr.',
+    favorites: 'Lieblingsbiere ergänzen',
+    favoritesSub: 'Was du gern trinkst – zählt als „Mag ich“ und schärft deine Empfehlungen.',
     reset: 'Profil zurücksetzen – alles vergessen, wie nach dem Schützenfest.',
     resetConfirm: 'Wirklich alles vergessen? Deine Bier-DNA, Matches, alles.',
     resetConfirmCloud:
@@ -1204,6 +1210,9 @@ const DE = {
     go: 'Weiter mit {n} {fav}',
     favWord: ['Favorit', 'Favoriten'],
     goNone: 'Weiter ohne Favoriten',
+    later: 'Lieblingsbiere',
+    laterSub: 'Nenn uns, was du gern trinkst – es zählt gleich als „Mag ich“.',
+    save: 'Übernehmen',
     remove: '{name} entfernen',
   },
   library: {

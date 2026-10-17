@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { BEERS, BEER_BY_ID, DECK_ORDER, REFERENCE_COUNT, getBeer } from '../data/beers'
 import { DECODE_TARGET } from './dna'
-import { buildDeck, isRegionalId } from './deck'
+import { buildDeck, HOME_COUNTRIES, homeRegionOf, isRegionalId } from './deck'
 import { toRegionalBeer } from './regionalBeer'
 import type { Rating, Ratings } from './types'
 
@@ -81,11 +81,12 @@ describe('Regional-Modus (R5)', () => {
   const lookup = { ...BEER_BY_ID, ...Object.fromEntries(nearby.map((n) => [n.beer.id, n.beer])) }
   const afterOnboarding = rate(referenceIds)
 
-  it('the reference set comes first and stays researched beers only (V1); then every third card is regional', () => {
+  it('the reference set comes first and stays researched beers only (V1); then two of three cards are regional', () => {
     const deck = buildDeck({}, DECK_ORDER, lookup, nearby)
     const n = referenceIds.length
     expect(deck.slice(0, n).map((c) => c.pick)).toEqual(Array(n).fill('reference'))
-    expect(deck.slice(n, n + 9).filter((c) => c.pick === 'regional')).toHaveLength(3)
+    // reference.length = 14 ≡ 2: the first card after the set is curated, then two regional
+    expect(deck.slice(n, n + 3).map((c) => c.pick === 'regional')).toEqual([false, true, true])
     const own = deck.filter((c) => c.pick !== 'regional')
     expect(own).toEqual(buildDeck({}))
     expect(deck).toHaveLength(BEERS.length + nearby.length)
@@ -107,21 +108,30 @@ describe('Regional-Modus (R5)', () => {
   it('keeps its rhythm while the deck is rebuilt after each swipe', () => {
     let ratings: Ratings = { ...afterOnboarding }
     const seen: string[] = []
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 5; i++) {
       const top = buildDeck(ratings, DECK_ORDER, lookup, nearby)[0]
       seen.push(top.pick)
       ratings = { ...ratings, [top.id]: { rating: 'KNOW', at: 1000 + i } }
     }
-    const at = seen.flatMap((p, i) => (p === 'regional' ? [i] : []))
-    expect(at).toHaveLength(3)
-    expect(at[1] - at[0]).toBe(3)
-    expect(at[2] - at[1]).toBe(3)
+    // the same pattern as one deck built at once: curated, regional, regional, curated, regional
+    expect(seen.map((p) => p === 'regional')).toEqual([false, true, true, false, true])
   })
 
   it('skips rated or duplicate nearby beers, and is a no-op without them', () => {
     const deck = buildDeck({ 'r-pils': { rating: 'LIKE', at: 1 } }, DECK_ORDER, lookup, [...nearby, nearby[1]])
     expect(deck.filter((c) => c.pick === 'regional').map((c) => c.id).sort()).toEqual(['r-dunkel', 'r-weizen'])
     expect(buildDeck(afterOnboarding, DECK_ORDER, lookup, [])).toEqual(buildDeck(afterOnboarding))
+  })
+
+  it('deals curated beers of the home region only – the reference set stays (wish 2026-10-17)', () => {
+    const dach = buildDeck(afterOnboarding, DECK_ORDER, lookup, [], 'dach')
+    expect(dach.length).toBeGreaterThan(0)
+    expect(dach.every((c) => HOME_COUNTRIES.dach.includes(lookup[c.id].country))).toBe(true)
+    expect(buildDeck({}, DECK_ORDER, lookup, [], 'dach').filter((c) => c.pick === 'reference')).toEqual(buildDeck({}).filter((c) => c.pick === 'reference'))
+    const na = buildDeck(afterOnboarding, DECK_ORDER, lookup, [], 'na')
+    expect(na.every((c) => ['USA', 'Kanada'].includes(lookup[c.id].country))).toBe(true)
+    expect(buildDeck(afterOnboarding, DECK_ORDER, lookup, [], null)).toEqual(buildDeck(afterOnboarding))
+    expect([homeRegionOf('AT'), homeRegionOf('CA'), homeRegionOf(null), homeRegionOf('FR')]).toEqual(['dach', 'na', null, null])
   })
 
   it('no curated id looks regional', () => {
