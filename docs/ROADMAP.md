@@ -54,6 +54,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 33. [x] **V14** Recherchierte Biere der eigenen Website nicht mehr am Crawler-Namensfilter verlieren (Befund nach dem V13-Import) (#110)
 34. [x] **V15** Letzte Lücken in BW: fremde http-Belege, Dubletten ausblenden, Nachrecherche (Befund nach dem V14-Import) (#111)
 35. [x] **V16** Nachrecherche aller übrigen DACH-Brauereien ohne Bier nach dem BW-Verfahren (#114)
+36. [x] **V17** DACH aufräumen: letzter Recherche-Durchgang, `not-a-brewery`, falsch zugeordnete Biere (#PR)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -472,6 +473,17 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       nur per http erreichbaren Belegseiten verlieren ihre Biere im Build (Bericht „Recherche ohne verwertbares Bier“).
       Neue Regeln: Lohngebraute Eigenmarken behalten ihre Biere; vorübergehende Pause ≠ geschlossen. Wirkt mit dem
       nächsten Katalog-Import (M)
+- [x] V17 **DACH aufräumen + letzter Durchgang** (#PR) (Wunsch 2026-10-17 „Aufräumen + Rest“): nach dem V16-Import
+      (Lauf #22) live ohne Bier DE 120 · AT 19 · CH 28. Dritter Durchgang über diese 167 (12 Pakete, Faktencheck je Paket,
+      danach BeerTasting-Sitemap/Untappd-Nachlauf): 28 mit Bieren (DE 26 · AT 1 · CH 1), 5 ohne eigenes Bier, 2 geschlossen,
+      1 keine Brauerei, 1 Dublette, 130 bleiben unklar (DE 87 · AT 18 · CH 25) – kein weiterer Durchgang geplant. Die
+      4 http-Verluste aus V16: Schwertberger, Gradl, Köpenick, Rosengarten haben jetzt https-Belege. Neu in `research.ts`:
+      Status `not-a-brewery` (ausgeblendet, nur mit Beleg) und Feld `wrong` (Biere, die eine offene Datenbank der falschen
+      Brauerei gibt, je mit https-Seite der richtigen; der Build entfernt sie, Bericht „falsch zugeordnete Biere entfernt“).
+      Nebenbefunde: Schneider Essing verliert die drei Schneider-Weisse-Biere aus Kelheim und bekommt eigene;
+      Sternbräu (osm-n317184850) ist der Landgasthof Elsendorf, Brauerei seit 2013 eingestellt (die Scheubel-Biere dort
+      verschwinden); wd-q98100431 (Baudenkmal Berchtesgaden, „Bier“ „Behördenverlagerungen“) keine Brauerei; Osser Bier
+      (Lohberg) hängt am OSM-Eintrag „Tenne“ (Betreiber Osser Bier). Wirkt mit dem nächsten Katalog-Import (M)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
