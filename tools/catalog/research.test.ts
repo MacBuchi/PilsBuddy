@@ -4,7 +4,8 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { confirmedBreweries, mainBeers, SOURCE } from './merge'
 import type { Brewery } from './merge'
-import { researchInput } from './research'
+import { researchedWebRows, researchInput } from './research'
+import { beerName } from './web'
 import type { ResearchEntry } from './research'
 
 const brewery = (b: Partial<Brewery> & Pick<Brewery, 'id' | 'name'>): Brewery => ({
@@ -15,6 +16,22 @@ const entry = (e: Partial<ResearchEntry> & Pick<ResearchEntry, 'id'>): ResearchE
 })
 const loewe = brewery({ id: 'osm-n1', name: 'Löwenbräu Dorf', website: 'https://www.loewe.example/' })
 const post = brewery({ id: 'osm-n2', name: 'Gasthof Post' })
+
+describe('researchedWebRows (V14)', () => {
+  const vogel = { id: 'osm-n9', name: 'Vogel Hausbräu', website: 'https://www.vogelbraeu.de/' }
+  const of = new Map([[vogel.id, vogel]])
+  const row = (name: string) => ({ breweryId: vogel.id, path: '/', name, abv: null, style: null })
+
+  it('keeps checked names the crawler heuristics drop – no style word, leading digit', () => {
+    for (const n of ['Urvogel', '1250er', 'Aufruhr']) expect(beerName(n)).toBeNull()
+    expect(researchedWebRows([row('Urvogel'), row('1250er'), row('„Aufruhr“')], of, new Set()).map((r) => r.name)).toEqual(['Urvogel', '1250er', 'Aufruhr'])
+  })
+
+  it('still drops guest beers of other breweries and empty names', () => {
+    const others = new Set(['rothaus'])
+    expect(researchedWebRows([row('Rothaus - Tannenzäpfle'), row(' ')], of, others)).toEqual([])
+  })
+})
 
 describe('researchInput (V12)', () => {
   it('beers on the own website count like crawled ones, others become the research source', () => {

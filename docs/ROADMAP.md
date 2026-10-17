@@ -51,6 +51,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 30. [x] **V11** Alkohol nachtragen: Detailseiten der Biere lesen, wo die Übersicht keinen Wert zeigt (Voraussetzung für Stufe 3) (#104)
 31. [x] **V12** Jede bestätigte Brauerei hat ein Bier: Recherche-Agenten mit Beleg-URL je Bier, zuerst DACH (Wunsch 2026-10-16) (#105)
 32. [x] **V13** Bier-Meldungen per Claude-Triage (Skill `bier-triage`) + Nachrecherche der unklaren Brauereien in Baden-Württemberg (Wunsch 2026-10-17) (#109)
+33. [x] **V14** Recherchierte Biere der eigenen Website nicht mehr am Crawler-Namensfilter verlieren (Befund nach dem V13-Import) (#110)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -446,6 +447,11 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       V12. Nachrecherche der 57 BW-Brauereien ohne Bier, die V12 offen ließ (Opus, Faktencheck je Beleg-URL): 28 mit
       171 Bieren, 17 ausgeblendet (geschlossen / kein eigenes Bier), 4 Dubletten. BW-Brauereien ohne Bier (live 129):
       nach V12 63, nach V13 35 – davon 22 ausgeblendet, 13 bleiben unklar. Wirkt mit dem nächsten Katalog-Import (S)
+- [x] V14 **Recherchierte Biere nicht mehr verlieren** (#110) (Befund 2026-10-17 nach dem V13-Import: in BW 26 statt 13
+      Brauereien ohne Bier): Recherche-Biere auf der eigenen Website liefen durch `beerName()` wie gecrawlte Überschriften
+      (Stilwort im Namen, keine führende Ziffer) – „Urvogel“, „1250er“, „Aufruhr“ fielen heraus. Jetzt `researchedWebRows`:
+      nur `cleanName` + Gastbier-Filter, gecrawlte Zeilen unverändert. Gleiche Recherche: Website-Biere 547 → 896, Brauereien
+      266 → 366 (DACH). Wirkt mit dem nächsten Katalog-Import (S)
 
 ### Stufe I – Sprachen (Wunsch 2026-10-02, #46)
 
