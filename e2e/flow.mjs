@@ -351,7 +351,7 @@ await step('regional beer stays on the Probierliste after a reload', async () =>
   await see('Rund um 74906')
   await m.getByText('Bier-DNA', { exact: true }).click()
 })
-await step('regional mode: switch in the finder → every third swipe card is from nearby', async () => {
+await step('regional mode: on by default in the finder → two of three swipe cards are from nearby', async () => {
   await m.getByRole('button', { name: /Biere aus deiner Nähe/ }).click()
   await m.getByText(/\d+ Biere? · \d+ Brauereie?n? im Umkreis/).waitFor({ timeout: 20000 })
   await m.getByLabel(/Regional-Modus im Swipe-Deck/).check()
@@ -367,6 +367,9 @@ await step('regional mode: switch in the finder → every third swipe card is fr
     await page.waitForTimeout(200)
   }
   await badge.first().waitFor({ timeout: 4000 })
+  // the first regional card now follows the reference set at once – the DNA moment may still cover it
+  const more = m.getByRole('button', { name: 'Weiterswipen' })
+  if (await more.isVisible()) await more.click()
   await page.screenshot({ path: `${out}-regional-deck.png` })
   for (let i = 0; i < 3; i++) await page.keyboard.press('k')
   await badge.first().waitFor({ timeout: 4000 })
