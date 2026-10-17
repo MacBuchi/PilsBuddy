@@ -53,7 +53,7 @@ Details stehen beim jeweiligen Paket weiter unten.
 32. [x] **V13** Bier-Meldungen per Claude-Triage (Skill `bier-triage`) + Nachrecherche der unklaren Brauereien in Baden-Württemberg (Wunsch 2026-10-17) (#109)
 33. [x] **V14** Recherchierte Biere der eigenen Website nicht mehr am Crawler-Namensfilter verlieren (Befund nach dem V13-Import) (#110)
 34. [x] **V15** Letzte Lücken in BW: fremde http-Belege, Dubletten ausblenden, Nachrecherche (Befund nach dem V14-Import) (#111)
-35. [x] **V16** Nachrecherche aller übrigen DACH-Brauereien ohne Bier nach dem BW-Verfahren (#PR)
+35. [x] **V16** Nachrecherche aller übrigen DACH-Brauereien ohne Bier nach dem BW-Verfahren (#114)
 
 **Avatar ≠ Flasche:** Der Avatar ist der Nutzer (Glas-Charakter aus Bier-DNA, `src/domain/avatar.ts`).
 Flaschen sind die Biere (Karte, Detail, Match). Beides bleibt getrennt.
@@ -464,7 +464,7 @@ auch Merch („T-Shirt Schwarz“ als Schwarzbier), Überschriften und falsche W
       Ostel Bräu mit Bieren; Löffler Hardheim geschlossen (2021); Wirtshaus zum Farren = Farrenbräu (Dublette, Biere bei
       Farrenbräu ergänzt); Weißbier-Biergarten und Hausbrauerei Königsbronn bleiben unklar. BW-Brauereien ohne Bier:
       erwartet 2 statt 13. Wirkt mit dem nächsten Katalog-Import (S)
-- [x] V16 **Nachrecherche DACH** (#PR) (Wunsch 2026-10-17: BW-Verfahren auf alle Bundesländer, effizient, ein PR):
+- [x] V16 **Nachrecherche DACH** (#114) (Wunsch 2026-10-17: BW-Verfahren auf alle Bundesländer, effizient, ein PR):
       459 veröffentlichte Brauereien ohne Bier (DE ohne BW 366, AT 40, CH 53, alle zuvor Sonnet-„unklar“), 31 Pakete à 15
       (Opus, Dubletten-Kandidaten im 300-m-Umkreis + Namenssuche im Live-Katalog), Faktencheck je Paket, danach ein
       BeerTasting/Untappd-Nachlauf über die übrigen unklaren. Ergebnis: 236 mit Bieren, 18 geschlossen, 13 ohne eigenes
